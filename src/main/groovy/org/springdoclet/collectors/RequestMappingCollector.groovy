@@ -2,16 +2,21 @@ package org.springdoclet.collectors
 
 import com.sun.javadoc.AnnotationDesc
 import com.sun.javadoc.ClassDoc
+import com.sun.javadoc.Parameter
 import groovy.xml.MarkupBuilder
 import org.springdoclet.Collector
 import org.springdoclet.Annotations
 import org.springdoclet.PathBuilder
 import org.springdoclet.TextUtils
+import java.util.logging.Logger
 
 @SuppressWarnings("GroovyVariableNotAssigned")
 class RequestMappingCollector implements Collector {
   private static String MAPPING_TYPE = 'org.springframework.web.bind.annotation.RequestMapping'
   private static String METHOD_TYPE = 'org.springframework.web.bind.annotation.RequestMethod.'
+  private static String PARAM_TYPE = 'org.springframework.web.bind.annotation.RequestParam'
+  
+  Logger logger = Logger.getLogger(RequestMappingCollector.class.getName())
 
   private mappings = []
 
@@ -39,15 +44,43 @@ class RequestMappingCollector implements Collector {
   }
 
   private def processMethod(classDoc, methodDoc, rootPath, defaultHttpMethods, annotation) {
+    def params = []
+    for (parameter in methodDoc.parameters()){
+      for (parmAnnotation in parameter.annotations()) {
+        processParam (classDoc, methodDoc, parameter, rootPath, parmAnnotation, params)
+      }
+    }
+        
     def (path, httpMethods) = getMappingElements(annotation)
     for (httpMethod in (httpMethods ?: defaultHttpMethods)) {
-	addMapping classDoc, methodDoc, concatenatePaths(rootPath, path), httpMethod    
+	addMapping classDoc, methodDoc, concatenatePaths(rootPath, path), httpMethod, params
     }
-
+  }
+  
+  private def processParam(classDoc, methodDoc, parameter, rootPath, annotation, params) {
+      def annotationType = Annotations.getTypeName(annotation)
+      logger.info("[" + methodDoc.name() + "] annotype: " + annotationType)
+      if (annotationType?.startsWith(PARAM_TYPE)) {
+          def desc = null
+          for(paramTag in methodDoc.paramTags()){
+                logger.info("[" + paramTag.parameterName() + "] equals: " + parameter.name())
+              if(paramTag.parameterName().equals(parameter.name())){
+                  desc = paramTag.parameterComment()
+                  break
+              }
+          }
+          params << [
+              name: (getElement(annotation.elementValues(), "name") != null ? getElement(annotation.elementValues(), "name") : getElement(annotation.elementValues(), "value")),
+              type: parameter.typeName(),
+              required: getElement(annotation.elementValues(), "required"),
+              defaultValue: getElement(annotation.elementValues(), "defaultValue"),
+              desc: desc
+          ];
+      }
   }
 
   private def concatenatePaths(rootPath, path) {
-	return "$rootPath$path".replaceAll("\"\"", "/").replaceAll("//", "/")
+	return "$rootPath$path".replaceAll("\"\"", "/").replaceAll("//", "/").replaceAll("\"", "")
   }
 
   private def getMappingAnnotation(annotations) {
@@ -76,12 +109,13 @@ class RequestMappingCollector implements Collector {
     return null
   }
 
-  private void addMapping(classDoc, methodDoc, path, httpMethod) {
+  private void addMapping(classDoc, methodDoc, path, httpMethod, params) {
     def httpMethodName = httpMethod.toString() - METHOD_TYPE
     mappings << [path: path,
             httpMethodName: httpMethodName,
             className: classDoc.qualifiedTypeName(),
-            text: TextUtils.getFirstSentence(methodDoc.commentText())]
+            text: TextUtils.getFirstSentence(methodDoc.commentText()),
+            params: params]
   }
 
   void writeOutput(MarkupBuilder builder, PathBuilder paths) {
@@ -91,16 +125,34 @@ class RequestMappingCollector implements Collector {
         def sortedMappings = mappings.sort { it.path }
         tr {
           th 'Method'
-          th 'URL Template'
-          th 'Class'
+          th 'Path'
+          th 'Parameters'
           th 'Description'
         }
         for (mapping in sortedMappings) {
           tr {
             td mapping.httpMethodName
-            td mapping.path
             td {
-              a(href: paths.buildFilePath(mapping.className), mapping.className)
+                a(href: paths.buildFilePath(mapping.className), mapping.path)
+            }
+            td {
+                for(param in mapping.params){
+                    div {
+                        if(param.required !== false){
+                            b param.name
+                        }else{
+                            span param.name
+                        }
+                        span " : " + param.type
+                        if(param.defaultValue != null){
+                            span{
+                                i String.valueOf(param.defaultValue)
+                            }
+                        }
+                        if(param.desc != null)
+                            span "// " + param.desc
+                    }
+                }
             }
             td { code { mkp.yieldUnescaped(mapping.text ?: ' ') } }
           }

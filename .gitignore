@@ -4,3 +4,5 @@ target
 .classpath
 .settings
 .project
+/.nb-gradle/
+/build/
