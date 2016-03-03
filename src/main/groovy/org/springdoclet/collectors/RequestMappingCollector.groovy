@@ -151,7 +151,7 @@ class RequestMappingCollector implements Collector {
         }
         for (mapping in sortedMappings) {
           tr {
-            td mapping.httpMethodName
+            td class: mapping.httpMethodName.toLowerCase(), mapping.httpMethodName
             td {
                 a(href: paths.buildFilePath(mapping.className), mapping.path)
             }
@@ -174,7 +174,6 @@ class RequestMappingCollector implements Collector {
                             }
                             if(param.desc != null)
                                 span class: 'comment', "// " + param.desc
-//                                span "<span styles='color: blue'>// " + param.desc + "</span>"
                         }
                     }
                 }

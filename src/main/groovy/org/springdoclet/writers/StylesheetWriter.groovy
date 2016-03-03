@@ -65,5 +65,30 @@ td {
   font-family: monospace;
   color: gray
 }
+
+.get{
+  font-weight: bold;
+  color: #4CAF50;
+}
+
+.post{
+  font-weight: bold;
+  color: #2196F3;
+}
+
+.put{
+  font-weight: bold;
+  color: #607D8B;
+}
+
+.patch{
+  font-weight: bold;
+  color: #795548;
+}
+
+.delete{
+  font-weight: bold;
+  color: #F44336;
+}
 """
 }
