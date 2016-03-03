@@ -60,5 +60,10 @@ td {
   border-bottom: 1px solid #ddd;
   padding: .5em;
 }
+
+.comment{
+  font-family: monospace;
+  color: gray
+}
 """
 }

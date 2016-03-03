@@ -49,6 +49,27 @@ class RequestMappingCollector implements Collector {
       for (parmAnnotation in parameter.annotations()) {
         processParam (classDoc, methodDoc, parameter, rootPath, parmAnnotation, params)
       }
+      if(parameter.typeName().equals("Pageable")){
+          params << [
+              name: "page",
+              type: "int",
+              required: false,
+              defaultValue: "0"
+          ];
+          params << [
+              name: "size",
+              type: "int",
+              required: false,
+              defaultValue: "20"
+          ];
+          params << [
+              name: "sort",
+              type: "String",
+              required: false,
+              defaultValue: "asc"
+          ];
+      }
+      // Todo: Check for Specifications 
     }
         
     def (path, httpMethods) = getMappingElements(annotation)
@@ -59,18 +80,17 @@ class RequestMappingCollector implements Collector {
   
   private def processParam(classDoc, methodDoc, parameter, rootPath, annotation, params) {
       def annotationType = Annotations.getTypeName(annotation)
-      logger.info("[" + methodDoc.name() + "] annotype: " + annotationType)
       if (annotationType?.startsWith(PARAM_TYPE)) {
           def desc = null
           for(paramTag in methodDoc.paramTags()){
-                logger.info("[" + paramTag.parameterName() + "] equals: " + parameter.name())
               if(paramTag.parameterName().equals(parameter.name())){
                   desc = paramTag.parameterComment()
                   break
               }
           }
+          def name = (getElement(annotation.elementValues(), "name") != null ? getElement(annotation.elementValues(), "name") : getElement(annotation.elementValues(), "value"))
           params << [
-              name: (getElement(annotation.elementValues(), "name") != null ? getElement(annotation.elementValues(), "name") : getElement(annotation.elementValues(), "value")),
+              name: (name != null ? name.toString() : name),
               type: parameter.typeName(),
               required: getElement(annotation.elementValues(), "required"),
               defaultValue: getElement(annotation.elementValues(), "defaultValue"),
@@ -137,20 +157,25 @@ class RequestMappingCollector implements Collector {
             }
             td {
                 for(param in mapping.params){
-                    div {
-                        if(param.required !== false){
-                            b param.name
-                        }else{
-                            span param.name
-                        }
-                        span " : " + param.type
-                        if(param.defaultValue != null){
-                            span{
-                                i String.valueOf(param.defaultValue)
+                    if(param.name != null && !"".equals(param.name)){
+                        div {
+                            if(param.name != null){
+                                if(param.required != false){
+                                    b param.name.replaceAll("\"\"", "/").replaceAll("//", "/").replaceAll("\"", "")
+                                }else{
+                                    span param.name.replaceAll("\"\"", "/").replaceAll("//", "/").replaceAll("\"", "")
+                                }
                             }
+                            span " : " + param.type
+                            if(param.defaultValue != null){
+                                def defaultValue = String.valueOf(param.defaultValue).replaceAll("\"\"", "/").replaceAll("//", "/").replaceAll("\"", "")
+                                if(defaultValue != 0 && !defaultValue.equals("0"))
+                                    span " = " + String.valueOf(param.defaultValue)
+                            }
+                            if(param.desc != null)
+                                span class: 'comment', "// " + param.desc
+//                                span "<span styles='color: blue'>// " + param.desc + "</span>"
                         }
-                        if(param.desc != null)
-                            span "// " + param.desc
                     }
                 }
             }
