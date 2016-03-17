@@ -83,25 +83,18 @@ class RequestMappingCollector implements Collector {
               type: "String",
               required: false
           ];
-      }else if(parameter.type().qualifiedTypeName().startsWith("com.maxxton")){ //custom filter object
-          logger.info("maxxton filter: " + parameter.type().qualifiedTypeName())
+      }else if(parameter.type().qualifiedTypeName().startsWith("com.maxxton") && parameter.annotations().length == 0){ //custom filter object
           def paramClassDoc = parameter.type().asClassDoc();
           if(paramClassDoc != null){
               def fields = paramClassDoc.fields(false);
-                  logger.info("field length: " + fields.length);
               for(field in fields){
-                  logger.info("field: " + field.name());
                   params << [
                     name: field.name(),
                     type: field.type(),
                     required: false
                 ];
               }
-          }else{
-            logger.info("no class")
           }
-      }else{
-          logger.info("Unknown type: " + parameter.type().qualifiedTypeName())
       }
     }
     def result = (methodDoc.returnType().asParameterizedType() != null ? methodDoc.returnType().asParameterizedType() : methodDoc.returnType())
