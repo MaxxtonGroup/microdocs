@@ -3,7 +3,10 @@ package org.springdoclet.collectors
 import com.sun.javadoc.AnnotationDesc
 import com.sun.javadoc.ClassDoc
 import com.sun.javadoc.Parameter
+import com.sun.javadoc.TypeVariable
+import com.sun.tools.javadoc.ParameterizedTypeImpl
 import groovy.xml.MarkupBuilder
+import java.lang.reflect.ParameterizedType
 import org.springdoclet.Collector
 import org.springdoclet.Annotations
 import org.springdoclet.PathBuilder
@@ -14,6 +17,7 @@ import java.util.logging.Logger
 class RequestMappingCollector implements Collector {
   private static String MAPPING_TYPE = 'org.springframework.web.bind.annotation.RequestMapping'
   private static String METHOD_TYPE = 'org.springframework.web.bind.annotation.RequestMethod.'
+  private static String BODY_TYPE = 'org.springframework.web.bind.annotation.RequestBody'
   private static String PARAM_TYPE = 'org.springframework.web.bind.annotation.RequestParam'
   
   Logger logger = Logger.getLogger(RequestMappingCollector.class.getName())
@@ -45,9 +49,14 @@ class RequestMappingCollector implements Collector {
 
   private def processMethod(classDoc, methodDoc, rootPath, defaultHttpMethods, annotation) {
     def params = []
+    def body = null
     for (parameter in methodDoc.parameters()){
       for (parmAnnotation in parameter.annotations()) {
         processParam (classDoc, methodDoc, parameter, rootPath, parmAnnotation, params)
+        def b = processBodyParam (classDoc, methodDoc, parameter, rootPath, parmAnnotation)
+        if(b != null){
+            body = b;
+        }
       }
       if(parameter.typeName().equals("Pageable")){
           params << [
@@ -68,13 +77,38 @@ class RequestMappingCollector implements Collector {
               required: false,
               defaultValue: "asc"
           ];
+      }else if(parameter.typeName().equals("org.springframework.data.jpa.domain.Specifications")){
+          params << [
+              name: "filter",
+              type: "String",
+              required: false
+          ];
+      }else if(parameter.type().qualifiedTypeName().startsWith("com.maxxton")){ //custom filter object
+          logger.info("maxxton filter: " + parameter.type().qualifiedTypeName())
+          def paramClassDoc = parameter.type().asClassDoc();
+          if(paramClassDoc != null){
+              def fields = paramClassDoc.fields(false);
+                  logger.info("field length: " + fields.length);
+              for(field in fields){
+                  logger.info("field: " + field.name());
+                  params << [
+                    name: field.name(),
+                    type: field.type(),
+                    required: false
+                ];
+              }
+          }else{
+            logger.info("no class")
+          }
+      }else{
+          logger.info("Unknown type: " + parameter.type().qualifiedTypeName())
       }
-      // Todo: Check for Specifications 
     }
+    def result = (methodDoc.returnType().asParameterizedType() != null ? methodDoc.returnType().asParameterizedType() : methodDoc.returnType())
         
     def (path, httpMethods) = getMappingElements(annotation)
     for (httpMethod in (httpMethods ?: defaultHttpMethods)) {
-	addMapping classDoc, methodDoc, concatenatePaths(rootPath, path), httpMethod, params
+	addMapping classDoc, methodDoc, result, concatenatePaths(rootPath, path), httpMethod, params, body
     }
   }
   
@@ -91,12 +125,20 @@ class RequestMappingCollector implements Collector {
           def name = (getElement(annotation.elementValues(), "name") != null ? getElement(annotation.elementValues(), "name") : getElement(annotation.elementValues(), "value"))
           params << [
               name: (name != null ? name.toString() : name),
-              type: parameter.typeName(),
+              type: parameter.type(),
               required: getElement(annotation.elementValues(), "required"),
               defaultValue: getElement(annotation.elementValues(), "defaultValue"),
               desc: desc
           ];
       }
+  }
+  
+  private def processBodyParam(classDoc, methodDoc, parameter, rootPath, annotation) {
+      def annotationType = Annotations.getTypeName(annotation)
+      if (annotationType?.startsWith(BODY_TYPE)) {
+          return parameter.type()
+      }
+      return null;
   }
 
   private def concatenatePaths(rootPath, path) {
@@ -129,13 +171,16 @@ class RequestMappingCollector implements Collector {
     return null
   }
 
-  private void addMapping(classDoc, methodDoc, path, httpMethod, params) {
+  private void addMapping(classDoc, methodDoc, result, path, httpMethod, params, body) {
     def httpMethodName = httpMethod.toString() - METHOD_TYPE
     mappings << [path: path,
             httpMethodName: httpMethodName,
             className: classDoc.qualifiedTypeName(),
+            position: (methodDoc.position() != null ? methodDoc.position().line() : null),
             text: TextUtils.getFirstSentence(methodDoc.commentText()),
-            params: params]
+            params: params,
+            body: body,
+            result: result]
   }
 
   void writeOutput(MarkupBuilder builder, PathBuilder paths) {
@@ -147,13 +192,15 @@ class RequestMappingCollector implements Collector {
           th 'Method'
           th 'Path'
           th 'Parameters'
+          th 'Request Body'
+          th 'Response Body'
           th 'Description'
         }
         for (mapping in sortedMappings) {
           tr {
             td class: mapping.httpMethodName.toLowerCase(), mapping.httpMethodName
             td {
-                a(href: paths.buildFilePath(mapping.className), mapping.path)
+                a(href: paths.buildFilePath(mapping.className) + (mapping.position != null ? "#" + mapping.position : ""), mapping.path)
             }
             td {
                 for(param in mapping.params){
@@ -166,7 +213,26 @@ class RequestMappingCollector implements Collector {
                                     span param.name.replaceAll("\"\"", "/").replaceAll("//", "/").replaceAll("\"", "")
                                 }
                             }
-                            span " : " + param.type
+                            if(param.type instanceof String){
+                                span " : " + param.type
+                            }else if(param.type instanceof ParameterizedTypeImpl){
+                                def string = param.type.simpleTypeName()
+                                if(param.type.typeArguments().length > 0){
+                                    string += "<"
+                                }
+                                def first = true
+                                for(type in param.type.typeArguments()){
+                                    if(!first){
+                                        string += ","
+                                    }
+                                    string += type.simpleTypeName()
+                                    first = false
+                                }
+                                if(param.type.typeArguments().length > 0){
+                                    string += ">"
+                                }
+                                span " : " + string
+                            }
                             if(param.defaultValue != null){
                                 def defaultValue = String.valueOf(param.defaultValue).replaceAll("\"\"", "/").replaceAll("//", "/").replaceAll("\"", "")
                                 if(defaultValue != 0 && !defaultValue.equals("0"))
@@ -176,6 +242,50 @@ class RequestMappingCollector implements Collector {
                                 span class: 'comment', "// " + param.desc
                         }
                     }
+                }
+            }
+            td {
+                if(mapping.body != null){
+                    a(href: paths.buildFilePath(mapping.body.qualifiedTypeName()), mapping.body.simpleTypeName())
+                    if(mapping.body instanceof ParameterizedTypeImpl){
+                        if(mapping.body.typeArguments().length > 0){
+                            span "<"
+                        }
+                        def first = true
+                        for(type in mapping.body.typeArguments()){
+                            if(!first){
+                                span ","
+                            }
+                            a(href: paths.buildFilePath(type.qualifiedTypeName()), type.simpleTypeName())
+                            first = false
+                        }
+                        if(mapping.body.typeArguments().length > 0){
+                            span ">"
+                        }
+                    }
+                    
+                }
+            }
+            td {
+                if(mapping.result != null && !mapping.result.simpleTypeName().equals("void")){
+                    a(href: paths.buildFilePath(mapping.result.qualifiedTypeName()), mapping.result.simpleTypeName())
+                    if(mapping.result instanceof ParameterizedTypeImpl){
+                        if(mapping.result.typeArguments().length > 0){
+                            span "<"
+                        }
+                        def first = true
+                        for(type in mapping.result.typeArguments()){
+                            if(!first){
+                                span ","
+                            }
+                            a(href: paths.buildFilePath(type.qualifiedTypeName()), type.simpleTypeName())
+                            first = false
+                        }
+                        if(mapping.result.typeArguments().length > 0){
+                            span ">"
+                        }
+                    }
+                    
                 }
             }
             td { code { mkp.yieldUnescaped(mapping.text ?: ' ') } }
