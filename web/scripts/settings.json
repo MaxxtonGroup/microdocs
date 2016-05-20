@@ -1,0 +1,41 @@
+{
+  "check": {
+    "mapping": true,
+    "requestParam": true,
+    "requestBody": true,
+    "responseBody": true
+  },
+
+  "links": {
+    "folder": "projects",
+    "target": "_blank",
+    "package": "com.example",
+    "source": "{links.folder}/{group}/{project}/{version}/source/{class}.html"
+  },
+
+  "colors": {
+    "variable": "#4D90FE",
+    "type": "#4CAF50",
+    "primary": "#FF9800",
+    "desc": "#607D8B",
+    "bracket": "#616161"
+  },
+
+  "icons": {
+    "overview": "bubble_chart",
+    "default": "extension",
+    "groups": {
+      "frontend": "important_devices",
+      "services": "memory"
+    }
+  },
+
+  "apiblueprint": {
+    "format": "1A",
+    "host": "https://example.com:8000",
+    "title": "Example application",
+    "introduction": "Api documentation",
+    "groups": ["services"],
+    "projects": []
+  }
+}
