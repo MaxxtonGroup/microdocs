@@ -6,12 +6,16 @@ package org.springdoclet.domain;
 public class Variable {
 
     private final String name;
-    private final Schema schema;
+    private final String type;
     private final String description;
+    private boolean required;
 
-    public Variable(String name, Schema schema, String description) {
+    public Variable(String name, String type, String description) {
+        if(name != null){
+            name = name.replace("\"", "");
+        }
         this.name = name;
-        this.schema = schema;
+        this.type = type;
         this.description = description;
     }
 
@@ -19,23 +23,19 @@ public class Variable {
         return name;
     }
 
-    public Schema getSchema() {
-        return schema;
+    public String getType() {
+        return type;
     }
 
-    public boolean isRequired(){
-        return schema.isRequired();
+    public String getDescription() {
+        return description;
     }
 
-    public void setRequired(boolean required){
-        schema.setRequired(true);
+    public boolean isRequired() {
+        return required;
     }
 
-    public String getDescription(){
-        return schema.getDescription();
-    }
-
-    public void setDescription(String description){
-        schema.setDescription(description);
+    public void setRequired(boolean required) {
+        this.required = required;
     }
 }

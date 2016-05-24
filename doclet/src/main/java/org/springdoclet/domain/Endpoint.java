@@ -16,6 +16,10 @@ public class Endpoint {
     private Schema requestBody;
     private Schema responseBody;
     private String description;
+    private String[] consumes = new String[]{"application/json"};
+    private String[] produces = new String[]{"application/json"};
+    private List<Response> responses = new ArrayList();
+    private Source source;
 
     public Endpoint(String method, String path) {
         this.method = method;
@@ -74,12 +78,12 @@ public class Endpoint {
         this.description = description;
     }
 
-    public void addRequestParam(String name, Schema schema, String description, String defaultValue, boolean required){
-        this.requestParams.add(new Field(name, schema, description, defaultValue, required));
+    public void addRequestParam(String name, String type, String description, String defaultValue, boolean required){
+        this.requestParams.add(new Field(name, type, description, defaultValue, required));
     }
 
-    public void addPathVariable(String name, Schema schema, String description){
-        this.pathVariables.add(new Variable(name, schema, description));
+    public void addPathVariable(String name, String type, String description){
+        this.pathVariables.add(new Variable(name, type, description));
     }
 
     public void addPathVariable(Variable variable){
@@ -91,6 +95,39 @@ public class Endpoint {
     }
 
     public void setPathVariables(List<Variable> pathVariables) {
+
         this.pathVariables = pathVariables;
+    }
+
+    public String[] getConsumes() {
+        return consumes;
+    }
+
+    public void setConsumes(String[] consumes) {
+        this.consumes = consumes;
+    }
+
+    public String[] getProduces() {
+        return produces;
+    }
+
+    public void setProduces(String[] produces) {
+        this.produces = produces;
+    }
+
+    public List<Response> getResponses() {
+        return responses;
+    }
+
+    public void setResponses(List<Response> responses) {
+        this.responses = responses;
+    }
+
+    public Source getSource() {
+        return source;
+    }
+
+    public void setSource(Source source) {
+        this.source = source;
     }
 }

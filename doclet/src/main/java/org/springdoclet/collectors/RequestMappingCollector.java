@@ -1,16 +1,20 @@
 package org.springdoclet.collectors;
 
 import com.googlecode.jatl.MarkupBuilder;
-import org.springdoclet.*;
-import org.springdoclet.domain.*;
 import com.sun.javadoc.*;
-import java.util.*;
+import org.springdoclet.Annotations;
+import org.springdoclet.Collector;
+import org.springdoclet.CollectorUtils;
+import org.springdoclet.PathBuilder;
+import org.springdoclet.domain.*;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
-import org.springdoclet.domain.Endpoint;
-
 /**
- *
  * @author hermans.s
  */
 public class RequestMappingCollector implements Collector {
@@ -91,66 +95,138 @@ public class RequestMappingCollector implements Collector {
 
     private Endpoint processMethod(ClassDoc classDoc, MethodDoc methodDoc, String path, String httpMethod, AnnotationDesc annotation) {
         System.out.println("processMethod: " + classDoc.qualifiedName() + "#" + methodDoc.name());
-        Endpoint endpoint = new Endpoint(path, httpMethod);
+        Endpoint endpoint = new Endpoint(httpMethod, path);
+        endpoint.setDescription(methodDoc.commentText());
+
+        // set source
+        endpoint.setSource(new Source(classDoc.qualifiedTypeName(), classDoc.name(), methodDoc.position() != null ? methodDoc.position().line() : 0));
+
+        // check @response
+        for (Tag tag : methodDoc.tags("response")) {
+            String index = CollectorUtils.getTagIndex(tag.text());
+            if (index != null) {
+                try {
+                    int status = Integer.parseInt(index);
+                    Response response = new Response(status, CollectorUtils.getTagDescription(tag.text()));
+                    endpoint.getResponses().add(response);
+                } catch (NumberFormatException e) {
+                    throw new RuntimeException(tag.toString() + " statuscode is not a number @ " + classDoc.qualifiedName() + "#" + methodDoc.name() + " line " + methodDoc.position().line());
+                }
+            }
+        }
+
+        // check consumes
+        AnnotationValue consumes = getElement(annotation.elementValues(), "consumes");
+        if (consumes != null && consumes.value() != null && consumes.value() instanceof String[] && ((String[]) consumes.value()).length > 0) {
+            endpoint.setConsumes((String[]) consumes.value());
+        }
+        // check produces
+        AnnotationValue produces = getElement(annotation.elementValues(), "produces");
+        if (produces != null && produces.value() != null && produces.value() instanceof String[] && ((String[]) produces.value()).length > 0) {
+            endpoint.setProduces((String[]) produces.value());
+        }
+
         for (Parameter parameter : methodDoc.parameters()) {
             // find description
             String description = null;
-            for(Tag tag : methodDoc.tags()){
-                if(tag.text().trim().startsWith(parameter.name())){
-                    description = tag.text();
+            for (Tag tag : methodDoc.tags()) {
+                if (tag.kind().equals("param") && tag.text().trim().startsWith(parameter.name())) {
+                    description = CollectorUtils.getTagDescription(tag.text());
                     break;
                 }
             }
 
-            Schema schema = modelCollector.parseSchema(parameter.type());
-            if(CollectorUtils.getAnnotation(parameter.annotations(), REQUEST_BODY) != null){
+            if (CollectorUtils.getAnnotation(parameter.annotations(), REQUEST_BODY) != null) {
+                Schema schema = modelCollector.parseSchema(parameter.type());
                 endpoint.setRequestBody(schema);
-            }else if(CollectorUtils.getAnnotation(parameter.annotations(), REQUEST_PARAM) != null){
+            } else if (CollectorUtils.getAnnotation(parameter.annotations(), REQUEST_PARAM) != null) {
                 AnnotationDesc requestParam = CollectorUtils.getAnnotation(parameter.annotations(), REQUEST_PARAM);
                 AnnotationValue name = getElement(requestParam.elementValues(), "name");
-                if(name != null){
+                if (name != null) {
                     AnnotationValue defaultValue = getElement(requestParam.elementValues(), "defaultValue");
                     AnnotationValue required = getElement(requestParam.elementValues(), "required");
-                    endpoint.addRequestParam(name.toString(), modelCollector.parseSchema(parameter.type()), description, (defaultValue != null ? defaultValue.toString() : null), required != null ? (boolean)required.value() : false);
+                    endpoint.addRequestParam(name.toString(), modelCollector.parseSchema(parameter.type()).getType(), description, (defaultValue != null ? defaultValue.toString() : null), required != null ? (boolean) required.value() : false);
                 }
-            }else if(CollectorUtils.getAnnotation(parameter.annotations(), PATH_VARIABLE) != null){
+            } else if (CollectorUtils.getAnnotation(parameter.annotations(), PATH_VARIABLE) != null) {
                 AnnotationDesc pathVariable = CollectorUtils.getAnnotation(parameter.annotations(), PATH_VARIABLE);
-                AnnotationValue name = getElement(pathVariable.elementValues(), "name");
-                if(name != null){
-                    endpoint.addPathVariable(name.toString(), modelCollector.parseSchema(parameter.type()), description);
+                AnnotationValue name = getElement(pathVariable.elementValues(), "value");
+                if (name != null) {
+                    endpoint.addPathVariable(name.toString(), modelCollector.parseSchema(parameter.type()).getType(), description);
                 }
-            }else if(parameter.type().qualifiedTypeName().equals("org.springframework.data.domain.Pageable")){
-                endpoint.addRequestParam(new Field("page", new Schema(Schema.NUMBER, null, false), "0", null));
-                endpoint.addRequestParam(new Field("size", new Schema(Schema.NUMBER, null, false), "20", null));
-                endpoint.addRequestParam(new Field("sort", new Schema(Schema.STRING, null, false), "asc", null));
+            } else if (parameter.type().qualifiedTypeName().equals("org.springframework.data.domain.Pageable")) {
+                endpoint.addRequestParam(new Field("page", Schema.NUMBER, "page number", "0", false));
+                endpoint.addRequestParam(new Field("size", Schema.NUMBER, "items per page", "20", false));
+                endpoint.addRequestParam(new Field("sort", Schema.NUMBER, "sort option", "asc", false));
             } else if (parameter.typeName().equals("org.springframework.data.jpa.domain.Specifications")) {
-                endpoint.addRequestParam(new Field("filter", new Schema(Schema.STRING, null, false), null, null));
-            } else /**if (parameter.type().qualifiedTypeName().startsWith("com.maxxton") && parameter.annotations().length == 0 ) */{ //custom filter object
+                endpoint.addRequestParam(new Field("filter", Schema.STRING, "Filter query", null, false));
+            } else /**if (parameter.type().qualifiedTypeName().startsWith("com.maxxton") && parameter.annotations().length == 0 ) */ { //custom filter object
+                Schema schema = modelCollector.parseSchema(parameter.type());
                 if (schema instanceof SchemaObject) {
                     for (Map.Entry<String, Schema> entry : ((SchemaObject) schema).getProperties().entrySet()) {
-                        endpoint.addRequestParam(new Field(entry.getKey(), entry.getValue(), entry.getValue().getDescription(), null, entry.getValue().isRequired()));
+                        endpoint.addRequestParam(new Field(entry.getKey(), entry.getValue().getType(), entry.getValue().getDescription(), null, entry.getValue().isRequired()));
                     }
                 }
             }
         }
-        endpoint.setResponseBody(modelCollector.parseSchema(methodDoc.returnType()));
+        if (methodDoc.returnType().qualifiedTypeName().equals("org.springframework.data.domain.Page")) {
+            endpoint.setResponseBody(createPageSchema(methodDoc.returnType()));
+        } else if (methodDoc.returnType().qualifiedTypeName().equals("org.springframework.http.ResponseEntity")) {
+            ClassType classType = CollectorUtils.getClassType(methodDoc.returnType());
+            if(classType.getGeneric() != null){
+                endpoint.setResponseBody(modelCollector.parseSchema(classType.getGeneric()));
+            }
+        } else {
+            endpoint.setResponseBody(modelCollector.parseSchema(methodDoc.returnType()));
+        }
         return endpoint;
     }
 
+    public Schema createPageSchema(Type returnType) {
+        ClassType classType = CollectorUtils.getClassType(returnType);
+
+        SchemaObject schemaObject = new SchemaObject(classType);
+        Schema genericSchema = modelCollector.parseSchema(classType.getGeneric());
+        schemaObject.addProperty("content", new SchemaArray(genericSchema, classType.getGenericType()));
+        schemaObject.addProperty("last", new Schema(Schema.BOOLEAN, null).setDummy(false));
+        schemaObject.addProperty("first", new Schema(Schema.BOOLEAN, null).setDummy(true));
+        schemaObject.addProperty("totalPages", new Schema(Schema.NUMBER, null).setDummy(20));
+        schemaObject.addProperty("totalElements", new Schema(Schema.NUMBER, null).setDummy(196));
+        schemaObject.addProperty("size", new Schema(Schema.NUMBER, null).setDummy(20));
+        schemaObject.addProperty("number", new Schema(Schema.NUMBER, null).setDummy(1));
+        schemaObject.addProperty("numberOfElements", new Schema(Schema.NUMBER, null).setDummy(20));
+        schemaObject.addProperty("sort", new SchemaObject(null));
+
+        return schemaObject;
+    }
+
     private String concatenatePaths(String rootPath, String path) {
-        return (rootPath + path).replaceAll("\"\"", "/").replaceAll("//", "/").replaceAll("\"", "");
+        String fullPath = "";
+        if (rootPath != null) {
+            fullPath += rootPath;
+        }
+        if (path != null) {
+            fullPath += path;
+        }
+        return fullPath.replaceAll("\"\"", "/").replaceAll("//", "/").replaceAll("\"", "");
     }
 
     private MappingElement getMappingElements(AnnotationDesc annotation) {
         AnnotationDesc.ElementValuePair[] elements = annotation.elementValues();
-        String path = getElement(elements, "value").toString() != null ? getElement(elements, "value").toString() : "";
+        AnnotationValue pathVariable = getElement(elements, "value");
+        if (pathVariable == null) {
+            pathVariable = getElement(elements, "path");
+        }
+        String path = "";
+        if (pathVariable != null) {
+            path = pathVariable.toString();
+        }
         String[] httpMethods = new String[]{};
         if (getElement(elements, "method") != null) {
             AnnotationValue[] values = (AnnotationValue[]) getElement(elements, "method").value();
             httpMethods = new String[values.length];
             for (int i = 0; i < values.length; i++) {
                 String[] fullName = values[i].toString().split("\\.");
-                httpMethods[i] = fullName[fullName.length-1];
+                httpMethods[i] = fullName[fullName.length - 1];
             }
         }
         return new MappingElement(path, httpMethods);
@@ -172,7 +248,7 @@ public class RequestMappingCollector implements Collector {
         return mapping;
     }
 
-//    private void addMapping(classDoc, methodDoc, result, path, httpMethod, params, body) {
+    //    private void addMapping(classDoc, methodDoc, result, path, httpMethod, params, body) {
 //        def httpMethodName = httpMethod.toString() - REQUEST_METHOD
 //        mappings << [path: path,
 //            httpMethodName: httpMethodName,

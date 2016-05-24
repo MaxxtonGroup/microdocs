@@ -1,9 +1,15 @@
 package org.springdoclet.collectors;
 
-import java.util.*;
-import org.springdoclet.*;
-import com.sun.javadoc.*;
 import com.googlecode.jatl.MarkupBuilder;
+import com.sun.javadoc.AnnotationDesc;
+import com.sun.javadoc.ClassDoc;
+import com.sun.javadoc.Tag;
+import org.springdoclet.Annotations;
+import org.springdoclet.Collector;
+import org.springdoclet.CollectorUtils;
+import org.springdoclet.PathBuilder;
+
+import java.util.*;
 
 /**
  *
@@ -13,8 +19,16 @@ public class ComponentCollector implements Collector {
 
     private static String COMPONENT_TYPE = "org.springframework.stereotype.";
     private Map<String, List<Component>> componentsByType  = new HashMap();
+    private Set<String> authors = new HashSet();
 
     public void processClass(ClassDoc classDoc, AnnotationDesc[] annotations) {
+        System.out.println("tags: " + classDoc.tags("author").length);
+        for(Tag tag : classDoc.tags("author")){
+            String author = tag.text().replaceAll("\\(.*\\)", "");
+            if(!author.trim().equals("")) {
+                authors.add(author.trim().toLowerCase());
+            }
+        }
         for (AnnotationDesc annotation :  annotations) {
             String annotationType = Annotations.getTypeName(annotation);
             if(annotationType != null && annotationType.startsWith(COMPONENT_TYPE)){
@@ -30,6 +44,14 @@ public class ComponentCollector implements Collector {
             componentsByType.put(type, new ArrayList());
         }
         componentsByType.get(type).add(component);
+    }
+
+    public Map<String, List<Component>> getComponents() {
+        return componentsByType;
+    }
+
+    public Set<String> getAuthors() {
+        return authors;
     }
 
     public void writeOutput(MarkupBuilder builder, PathBuilder paths) {

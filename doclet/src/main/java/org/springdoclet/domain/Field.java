@@ -9,13 +9,13 @@ public class Field extends Variable{
 
     private final String defaultValue;
     
-    public Field(String name, Schema schema, String description, String defaultValue){
-        super(name, schema, description);
+    public Field(String name, String type, String description, String defaultValue){
+        super(name, type, description);
         this.defaultValue = defaultValue;
     }
 
-    public Field(String name, Schema schema, String description, String defaultValue, boolean required){
-        super(name, schema, description);
+    public Field(String name, String type, String description, String defaultValue, boolean required){
+        super(name, type, description);
         this.defaultValue = defaultValue;
         setRequired(required);
     }

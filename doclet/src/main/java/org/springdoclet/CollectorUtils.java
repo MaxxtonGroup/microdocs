@@ -15,6 +15,34 @@ import java.util.List;
  */
 public class CollectorUtils {
 
+    public static String getTagIndex(String text){
+        if(text != null){
+            String[] words = text.split(" ");
+            if(words.length > 0) {
+                return words[0];
+            }
+        }
+        return null;
+    }
+
+    public static String getTagDescription(String text){
+        if(text != null){
+            String[] words = text.split(" ");
+            if(words.length > 1) {
+                String out = null;
+                for (int i = 1; i < words.length; i++) {
+                    if(out == null){
+                        out = words[i];
+                    }else{
+                        out += " " + words[i];
+                    }
+                }
+                return out;
+            }
+        }
+        return null;
+    }
+
     public static String getFirstSentence(String text) {
         BreakIterator boundary = BreakIterator.getSentenceInstance();
         boundary.setText(text);

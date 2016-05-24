@@ -2,8 +2,6 @@ package org.springdoclet;
 
 import com.sun.javadoc.RootDoc;
 import com.sun.tools.doclets.standard.Standard;
-import java.io.FileNotFoundException;
-import java.io.UnsupportedEncodingException;
 import org.springdoclet.collectors.ComponentCollector;
 import org.springdoclet.collectors.ModelCollector;
 import org.springdoclet.collectors.RequestMappingCollector;
@@ -29,7 +27,7 @@ public class SpringDoclet extends Standard {
         new ClassProcessor().process(root.classes(), collectors);
 
         try {
-            new JsonWriter().writeJson(requestMappingCollector, modelCollector, config);
+            new JsonWriter().writeJson(requestMappingCollector, modelCollector, componentCollector, config);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

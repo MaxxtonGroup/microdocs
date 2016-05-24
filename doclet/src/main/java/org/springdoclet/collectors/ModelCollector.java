@@ -36,15 +36,16 @@ public class ModelCollector implements Collector {
 
     public Schema parseSchema(Type type) {
         System.out.println("processModel(" + type.qualifiedTypeName());
+        ClassType classType = CollectorUtils.getClassType(type);
         if(schemas.containsKey(type.qualifiedTypeName())){
             System.out.println("return from cache");
-            return schemas.get(type.qualifiedTypeName());
+            return new SchemaReference(classType);
         }
 
-        ClassType classType = CollectorUtils.getClassType(type);
         Schema schema = getScheme(type, classType.getGeneric(), classType, true);
         if(schema instanceof SchemaObject) {
             schemas.put(type.qualifiedTypeName(), schema);
+            return new SchemaReference(classType);
         }
         return schema;
     }
@@ -84,7 +85,7 @@ public class ModelCollector implements Collector {
             System.out.println("object");
             if(!root) {
                 Schema schema = new SchemaReference(CollectorUtils.getClassType(type));
-                this.schemas.put(type.qualifiedTypeName(), schema);
+//                this.schemas.put(type.qualifiedTypeName(), schema);
                 parseSchema(type);
                 return schema;
             }else{
@@ -93,10 +94,30 @@ public class ModelCollector implements Collector {
                     if (!field.isStatic()) {
                         System.out.println("check field: " + field.name() + " ~ " + field.type().qualifiedTypeName());
                         ClassType paramType = CollectorUtils.getClassType(field.type());
+
                         if (paramType.getGeneric() == null && classType != null) {
                             paramType = classType.getGenericType();
                         }
                         Schema schema = getScheme(field.type(), (paramType != null ? paramType.getGeneric() : null), (paramType != null ? paramType.getGenericType() : null), false);
+
+                        if(field.tags("dummy").length > 0){
+                            String preview = field.tags("dummy")[0].text();
+                            try {
+                                if (schema.getType().equals(Schema.NUMBER)) {
+                                    Integer number = Integer.parseInt(preview);
+                                    schema.setDummy(number);
+                                }else if (schema.getType().equals(Schema.BOOLEAN)) {
+                                    Boolean b = Boolean.parseBoolean(preview);
+                                    schema.setDummy(b);
+                                }else if (schema.getType().equals(Schema.STRING)) {
+                                    schema.setDummy(preview);
+                                }
+                            }catch(Exception e){
+                                throw new RuntimeException("Could not parse @preview " + preview + " at " + clazzDoc.qualifiedName() + "#" + field.name());
+                            }
+                        }
+                        schema.setDescription(field.commentText());
+
                         modelObject.addProperty(field.name(), schema);
                     }
                 }

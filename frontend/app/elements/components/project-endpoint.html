@@ -1,0 +1,198 @@
+<link rel="import" href="http-param.html">
+<link rel="import" href="response-status.html">
+<link rel="import" href="json-preview.html">
+
+<dom-module id="project-endpoint">
+  <template>
+    <style include="shared-styles">
+
+
+      :host ::content paper-material {
+        padding: 10px 30px !important;
+        margin-top: 0px !important;
+        margin-bottom: 5px !important;
+      }
+
+      :host ::content .endpoint-header {
+        position: relative;
+        cursor: pointer;
+        font-family: monospace;
+      }
+
+      :host ::content .endpoint-header::after {
+        content: " ";
+        position: absolute;
+        top: -10px;
+        left: -30px;
+        bottom: -10px;
+        right: -30px;
+      }
+
+      :host ::content .endpoint-content {
+        font-family: monospace;
+      }
+
+      :host ::content .endpoint-method span {
+        padding: 5px;
+        width: 45px;
+        border-radius: 5px;
+        display: inline-block;
+        text-align: center;
+        text-transform: uppercase;
+        background-color: #9E9E9E;
+        color: white;
+      }
+
+      :host ::content .endpoint-method span.GET {
+        background-color: #4CAF50;
+      }
+
+      :host ::content .endpoint-method span.POST {
+        background-color: #2196F3;
+      }
+
+      :host ::content .endpoint-method span.DELETE {
+        background-color: #F44336;
+      }
+
+      :host ::content .endpoint-method span.PATCH {
+        background-color: #616161;
+      }
+
+      :host ::content .endpoint-method span.PUT {
+        background-color: #FF9800;
+      }
+
+      :host ::content .endpoint-path {
+        font-weight: bold;
+      }
+
+      :host ::content .highlight {
+        color: #2196F3;
+      }
+
+      :host ::content .endpoint-body {
+        overflow: hidden;
+      }
+
+      :host ::content table {
+        width: 100%;
+      }
+
+      :host ::content .description {
+        margin-top: 10px;
+        font-size: 14px;
+      }
+
+      :host ::content project-link{
+        position: absolute;
+        right: 0;
+        display: inline-block;
+        z-index: 1;
+      }
+
+      :host ::content h4{
+        position: relative;
+      }
+    </style>
+
+    <paper-material elevation="1" id="container">
+      <div class="endpoint-header" id="header">
+        <span class="endpoint-method">
+          <span class$="{{endpoint.method}}">{{endpoint.method}}</span>
+        </span>
+        <span class="endpoint-path" id="path">{{_markupPath(endpoint.path)}}</span>
+        <project-link rel={{endpoint.source.simpleName}} classpath="{{endpoint.source.name}}" line="{{endpoint.source.lineNumber}}" project="{{project}}"></project-link>
+      </div>
+      <div class="endpoint-body" hidden$="{{!expanded}}">
+        <div class="description">{{endpoint.description}}</div>
+        <h3 hidden$="{{!showRequest}}">Request</h3>
+        <div class="endpoint-content">
+          <div hidden$="{{!showParams}}">
+            <h4>Parameters</h4>
+            <template is="dom-repeat" items="{{endpoint.pathVariables}}">
+              <http-param request-param="{{item}}"></http-param>
+            </template>
+            <template is="dom-repeat" items="{{endpoint.requestParams}}">
+              <http-param request-param="{{item}}"></http-param>
+            </template>
+          </div>
+          <div hidden$="{{!showRequestBody}}">
+            <h4>Body
+              <span class="highlight"
+                    hidden$="{{!showRequestContentType}}">({{endpoint.requestBody.content-type}})</span>
+              <project-link rel={{endpoint.requestBody.classType.simpleName}} classpath="{{endpoint.requestBody.classType.name}}" project="{{project}}"></project-link>
+            </h4>
+
+            <json-preview schema="[[endpoint.requestBody]]" domain-schemas="[[project.models]]"></json-preview>
+          </div>
+        </div>
+
+        <h3>Response</h3>
+        <template is="dom-repeat" items="{{endpoint.responses}}" as="response">
+          <response-status response="[[response]]"></response-status>
+        </template>
+        <div class="endpoint-content">
+          <div hidden$="{{!showResponseBody}}">
+            <h4>Body
+              <span class="highlight"
+                    hidden$="{{!showResponseContentType}}">({{endpoint.responseBody.content-type}})</span>
+              <project-link rel={{endpoint.responseBody.classType.simpleName}} classpath="{{endpoint.responseBody.classType.name}}" project="{{project}}"></project-link>
+            </h4>
+            <json-preview schema="[[endpoint.responseBody]]" domain-schemas="[[project.models]]"></json-preview>
+          </div>
+        </div>
+      </div>
+    </paper-material>
+  </template>
+  <script>
+    Polymer({
+      is: 'project-endpoint',
+
+      properties: {
+        endpoint: Object,
+        expanded: {
+          type: Boolean,
+          value: false
+        },
+        project: Object,
+
+        showRequestBody: Boolean,
+        showResponseBody: Boolean,
+        showRequestContentType: Boolean,
+        showResponseContentType: Boolean,
+        showRequestParams: Boolean
+      },
+
+      observers: [
+        '_initData(endpoint)',
+      ],
+
+      listeners: {
+        'header.click': '_toggle'
+      },
+
+      _toggle: function () {
+        this.expanded = !this.expanded;
+      },
+
+      _initData: function (endpoint) {
+        this.$.path.innerHTML = this._markupPath(endpoint.path);
+        this.showRequestBody = this.endpoint.requestBody != undefined && this.endpoint.requestBody != null && this.endpoint.method.toLowerCase() != 'get';
+        this.showResponseBody = this.endpoint.responseBody != undefined && this.endpoint.responseBody != null;
+        this.showRequestContentType = this.endpoint.requestBody != null && this.endpoint.requestBody != undefined && this.endpoint.requestBody['content-type'] != undefined && this.endpoint.requestBody['content-type'] != null && this.endpoint.requestBody['content-type'] != "";
+        this.showResponseContentType = this.endpoint.responseBody != null && this.endpoint.responseBody != undefined && this.endpoint.responseBody['content-type'] != undefined && this.endpoint.responseBody['content-type'] != null && this.endpoint.responseBody['content-type'] != "";
+        this.showRequestParams = this.endpoint.requestParams != null && this.endpoint.requestParams != undefined && this.endpoint.requestParams.length > 0;
+        this.showPathVariables = this.endpoint.pathVariables != null && this.endpoint.pathVariables != undefined && this.endpoint.pathVariables.length > 0;
+        this.showParams = this.showRequestParams || this.showPathVariables;
+        this.showRequest = this.showRequestBody || this.showParams;
+      },
+
+      _markupPath: function (path) {
+        path = path.replace(new RegExp('{', 'g'), "<span class='highlight'>{");
+        path = path.replace(new RegExp('}', 'g'), "}</span>");
+        return path;
+      }
+    });
+  </script>
+</dom-module>

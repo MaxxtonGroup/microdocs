@@ -90,6 +90,7 @@ class MaxxtonDocumentationPlugin implements Plugin<Project>{
             source = project.sourceSets.main.allJava
             destinationDir = project.reporting.file("javadoc")
             classpath = project.sourceSets.main.compileClasspath
+            options.tags = ['response', 'dummy']
         }
         
         project.task('buildJxrDoc', type: Copy, dependsOn: ['jxr'], group: 'documentation'){

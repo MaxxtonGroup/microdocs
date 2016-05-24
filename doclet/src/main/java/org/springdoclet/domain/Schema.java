@@ -18,6 +18,7 @@ public class Schema {
     private String description;
     private final ClassType classType;
     private boolean required;
+    private Object dummy;
 
     public Schema(String type, ClassType classType) {
         this.type = type;
@@ -52,6 +53,15 @@ public class Schema {
 
     public void setDescription(String description){
         this.description = description;
+    }
+
+    public Object getDummy() {
+        return dummy;
+    }
+
+    public Schema setDummy(Object dummy) {
+        this.dummy = dummy;
+        return this;
     }
 }
 
