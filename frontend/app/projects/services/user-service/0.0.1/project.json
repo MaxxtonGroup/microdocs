@@ -1,0 +1,10 @@
+{
+  "endpoints": [
+    {
+      "controllerClass": "com.example.controller.UserController",
+      "path": "/api/v1/users/{userId}",
+      "method": "GET",
+      "requestParams": []
+    }
+  ]
+}

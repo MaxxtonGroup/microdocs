@@ -1,0 +1,99 @@
+<link rel="import" href="../../bower_components/x-json/dist/x-json.html">
+
+<dom-module id="json-preview">
+  <template>
+    <style>
+      :host ::content {
+        display: block;
+      }
+
+      :host ::content .x-json {
+        overflow: auto;
+        max-height: 300px;
+        border: 1px solid #D8D8D8;
+        padding: 5px;
+      }
+    </style>
+    <x-json class="x-json" data="[[dummy]]"></x-json>
+  </template>
+  <script>
+    Polymer({
+      is: 'json-preview',
+
+      properties: {
+        schema: Object,
+        domainSchemas: Object,
+        dummy: Object
+      },
+
+      observers: [
+        '_initData(schema)',
+        '_initData(domainSchemas)'
+      ],
+
+      _initData: function (param) {
+        this.dummy = this._renderSchema(this.schema);
+      },
+
+      _renderSchema: function (schema, propName) {
+        var preview = null;
+        if (schema != null && schema != undefined) {
+          if (schema.type == 'object') {
+            if(Object.keys(schema.properties).length > 0) {
+              preview = {};
+              for (var key in schema.properties) {
+                preview[key] = this._renderSchema(schema.properties[key], key);
+              }
+            }
+          } else if (schema.type == 'array') {
+            preview = [this._renderSchema(schema.items)];
+          } else if (schema.type == 'string') {
+            if (schema.dummy != undefined || schema.dummy != null) {
+              preview = schema.dummy;
+            } else {
+              preview = this._randomString(propName);
+            }
+          } else if (schema.type == 'number') {
+            if (schema.dummy != undefined || schema.dummy != null) {
+              preview = schema.dummy;
+            } else {
+              preview = this._randomNumber(1, 99);
+            }
+          } else if (schema.type == 'boolean') {
+            if (schema.dummy != undefined || schema.dummy != null) {
+              preview = schema.dummy;
+            } else {
+              preview = this._randomNumber(1, 2) == 1 ? true : false;
+            }
+          } else if (schema.type == 'enum') {
+            preview = schema.items;
+          } else if (schema['$ref'] != undefined && this.domainSchemas != undefined && this.domainSchemas != null) {
+            var name = schema['$ref'];
+            var subSchema = this.domainSchemas[name];
+            return this._renderSchema(subSchema, propName);
+          }
+        }
+        return preview;
+      },
+
+      _randomString: function (propName) {
+        if (propName == 'name') {
+          switch (this._randomNumber(1, 3)) {
+            case 1:
+              return 'Bob';
+            case 2:
+              return 'Elise';
+            case 3:
+              return 'John';
+          }
+          return 'Joke'
+        }
+        return "some string";
+      },
+
+      _randomNumber: function (min, max) {
+        return Math.floor(Math.random() * (max - min + 1) + min);
+      }
+    });
+  </script>
+</dom-module>

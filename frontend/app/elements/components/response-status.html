@@ -1,0 +1,46 @@
+<dom-module id="response-status">
+    <template>
+        <style include="shared-styles">
+            :host ::content .wrapper{
+                display: inline-block;
+                text-transform: lowercase;
+                font-family: monospace;
+                min-width: 100px;
+            }
+            :host ::content .status{
+                color: #2196F3;
+            }
+            :host ::content .description{
+                color: #607D8B;
+            }
+        </style>
+        <div class="response">
+            <span class="wrapper">
+                <span class="status">{{response.status}}</span>
+                <span class="status-name" hidden$="{{!showStatusName}}">{{response.statusName}}</span>
+            </span>
+            <span class="description" hidden$="{{!showDescription}}">- {{response.description}}</span>
+        </div>
+    </template>
+    <script>
+        Polymer({
+            is: 'response-status',
+
+            properties: {
+                response: Object,
+
+                showDescription: Boolean,
+                showStatusName: Boolean
+            },
+
+            observers: [
+                '_initData(response)',
+            ],
+
+          _initData: function(response){
+                this.showDescription = response.description != undefined && response.description != null;
+                this.showStatusName = response.statusName != undefined && response.statusName != null;
+            }
+        });
+    </script>
+</dom-module>

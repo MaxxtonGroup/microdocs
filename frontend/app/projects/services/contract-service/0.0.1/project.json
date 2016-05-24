@@ -1,0 +1,30 @@
+{
+  "endpoints": [
+    {
+      "path": "/api/v1/contracts",
+      "method": "GET",
+      "requestParam": [
+      ]
+    }
+  ],
+  "clients": [
+    {
+      "name": "customer-service",
+      "endpoints": [
+        {
+          "path": "/api/v1/customers",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "name": "employee-service",
+      "endpoints": [
+        {
+          "path": "/api/v1/employees",
+          "method": "GET"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,77 @@
+<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../bower_components/iron-icons/image-icons.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+
+<dom-module id="project-link">
+    <template>
+        <style include="shared-styles">
+            :host ::content {
+                display: block;
+            }
+
+            :host ::content a {
+                text-decoration: none;
+                color: #2196F3;
+            }
+
+            :host ::content a:hover {
+                text-decoration: underline;
+            }
+        </style>
+        <iron-ajax id="ajax" url="/api/settings.php" last-response="{{settings}}"></iron-ajax>
+
+        <a href="{{href}}" target="{{target}}">
+            <iron-icon hidden$="{{!prefix}}" icon="image:navigate-next"></iron-icon>
+            <span>{{rel}}</span>
+        </a>
+    </template>
+    <script>
+        Polymer({
+            is: 'project-link',
+
+            properties: {
+                settings: Object,
+                href: {
+                    type: String,
+                    value: undefined
+                },
+                target: {
+                    type: String,
+                    value: '_blank'
+                },
+                rel: String,
+                prefix: Boolean,
+                classpath: String,
+                line: Number,
+                project: Object
+            },
+
+            observers: [
+                '_updateClassPath(settings)',
+                '_updateClassPath(classpath)'
+            ],
+
+            ready: function(){
+                this.$.ajax.generateRequest();
+            },
+
+            _updateClassPath(){
+                if(this.settings != undefined && this.classpath != undefined) {
+                    var link = this.settings.links.source;
+                    link = link.replace("{links.folder}", this.settings.links.folder);
+                    if(this.project != undefined) {
+                      link = link.replace("{group}", this.project.group);
+                      link = link.replace("{project}", this.project.name);
+                      link = link.replace("{version}", this.project.version);
+                    }
+                    link = link.replace("{class}", this.classpath.replace(new RegExp("\\.", 'g'), '/'));
+                    link = link.replace("{classDots}", this.classpath);
+                    if(this.line != undefined) {
+                      link += "#" + this.line;
+                    }
+                    this.href = link;
+                }
+            }
+        });
+    </script>
+</dom-module>
