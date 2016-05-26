@@ -322,7 +322,7 @@ function checkEndpoint($clientEndpoint, $producerEndpoints)
             if ($_SETTINGS['check']['requestBody'] == true) {
                 if (isset($producerEndpoint['requestBody']) && !empty($producerEndpoint['requestBody'])) {
                     if (isset($clientEndpoint['requestBody']) && !empty($clientEndpoint['requestBody'])) {
-                        if ($producerEndpoint['requestBody'] != $clientEndpoint['requestBody']) {
+                        if (!checkModels($producerEndpoint['requestBody'],$clientEndpoint['requestBody'])){
                             $errors[] = "Incompatible type for the request body";
                         }
                     } else {
@@ -335,7 +335,7 @@ function checkEndpoint($clientEndpoint, $producerEndpoints)
             if ($_SETTINGS['check']['responseBody'] == true) {
                 if (isset($producerEndpoint['responseBody']) && !empty($producerEndpoint['responseBody'])) {
                     if (isset($clientEndpoint['responseBody']) && !empty($clientEndpoint['responseBody'])) {
-                        if ($producerEndpoint['responseBody'] != $clientEndpoint['responseBody']) {
+                        if (!checkModels($producerEndpoint['responseBody'], $clientEndpoint['responseBody'])){
                             $errors[] = "Incompatible type for the response body";
                         }
                     }
@@ -351,7 +351,7 @@ function checkEndpoint($clientEndpoint, $producerEndpoints)
 }
 
 function checkModels($modelA, $modelB){
-
+    
 }
 
 function traceClients(&$project, &$projectList){

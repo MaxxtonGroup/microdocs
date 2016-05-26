@@ -27,27 +27,31 @@ try{
 
     // Check clients and aggregate projects
     $tinyProjectList = array();
-    foreach($projectList as &$project){
-        checkProject($project, $projectList);
+    foreach($projectList as &$pr){
+        checkProject($pr, $projectList);
         $clients = array();
-        if (isset($project['clients']) && !empty($project['clients'])) {
-            foreach ($project['clients'] as $client) {
+        if (isset($pr['clients']) && !empty($pr['clients'])) {
+            foreach ($pr['clients'] as $client) {
                 array_push($clients, array("name" => $client['name'], "version" => $client['version']));
             }
         }
         array_push($tinyProjectList, array(
-            "name" => $project['name'],
-            "group" => $project['group'],
-            "version" => $project['version'],
-            "versions" => $project['versions'],
-            "errors" => $project['errors'],
+            "name" => $pr['name'],
+            "group" => $pr['group'],
+            "version" => $pr['version'],
+            "versions" => $pr['versions'],
+            "errors" => $pr['errors'],
             "clients" => $clients
         ));
     }
 
     // save projects.json
     $projectsFile = "../" . $_SETTINGS['links']['folder'] . "/projects.json";
-    file_put_contents($projectsFile, json_encode(array("groups" => $groups, "projects" => $tinyProjectList)));
+    echo "save file: $projectsFile" . PHP_EOL;
+    $succeed = file_put_contents($projectsFile, json_encode(array("groups" => $groups, "projects" => $tinyProjectList)));
+    if($succeed == false){
+        throw new Exception("Failed to save file: " . $_projectFile);
+    }
 
     // trace clients
     for($i = 0; $i < count($projectList); $i++){
@@ -57,7 +61,11 @@ try{
     // save _project.json
     foreach($projectList as $project){
         $_projectFile = "../" . $_SETTINGS['links']['folder'] . "/" . $project['group'] . "/" . $project['name'] . "/" . $project['version'] . "/_project.json";
-        file_put_contents($_projectFile, json_encode($project));
+        echo "save file: $_projectFile" . PHP_EOL;
+        $succeed = file_put_contents($_projectFile, json_encode($project));
+        if($succeed == false){
+            throw new Exception("Failed to save file: " . $_projectFile);
+        }
     }
 
 

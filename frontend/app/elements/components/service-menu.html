@@ -66,12 +66,12 @@
                 position: absolute;
                 right: 5px;
                 top: 12px;
-                padding-left: 5px;
-                padding-right: 5px;
+                padding-left: 8px;
+                padding-right: 8px;
                 color: white;
                 background-color: #F44336;
                 text-align: center;
-                font-size: 16px;
+                font-size: 12px;
                 font-weight: bold;
                 border-radius: 100%;
             }
@@ -85,7 +85,7 @@
             <template is="dom-repeat" items="{{groups}}" as="group">
                 <div class="group">{{group}}</div>
                 <template is="dom-repeat" items="{{projects}}" as="project" filter="{{_isInGroup(group)}}">
-                    <a data-route=":project/:name" href="{{baseUrl}}{{project.group}}/{{project.name}}">
+                    <a data-route="{{baseUrl}}{{project.group}}/{{project.name}}" href="{{baseUrl}}{{project.group}}/{{project.name}}">
                         <iron-icon icon="{{project.icon}}"></iron-icon>
                         <span>{{project.name}}</span>
                         <span class="project-error" hidden$="{{!project.hasError}}">{{project.errors}}</span>
@@ -99,6 +99,7 @@
             is: 'service-menu',
 
             properties: {
+                baseUrl: String,
                 projects: Array,
                 groups: Array,
                 settings: Object,
