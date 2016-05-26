@@ -4,7 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * Created by steve on 25-5-2016.
+ * @author Steven Hermans (s.hermans@maxxton.com)
  */
 @SpringBootApplication
 public class OrderServiceApplication {

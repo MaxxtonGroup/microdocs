@@ -2,7 +2,7 @@ package com.example.service.order.domain;
 import java.io.Serializable;
 
 /**
- * Created by steve on 23-5-2016.
+ * @author Steven Hermans (s.hermans@maxxton.com)
  */
 public class Customer implements Serializable {
 

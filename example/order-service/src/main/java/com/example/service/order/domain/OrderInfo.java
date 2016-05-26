@@ -1,11 +1,12 @@
 package com.example.service.order.domain;
 
 import javax.persistence.Entity;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import java.util.Date;
 
 /**
- * Created by steve on 25-5-2016.
+ * @author Steven Hermans (s.hermans@maxxton.com)
  */
 @Entity
 public class OrderInfo {
@@ -22,6 +23,9 @@ public class OrderInfo {
 
     /** @dummy 94 */
     private Long billId;
+
+    @Enumerated
+    private OrderStatus status = OrderStatus.PENDING;
 
     public Long getOrderId() {
         return orderId;
@@ -53,5 +57,13 @@ public class OrderInfo {
 
     public void setBillId(Long billId) {
         this.billId = billId;
+    }
+
+    public OrderStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(OrderStatus status) {
+        this.status = status;
     }
 }
