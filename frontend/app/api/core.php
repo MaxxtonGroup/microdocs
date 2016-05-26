@@ -499,3 +499,63 @@ function getModel($schema, $name = null){
     }
     return null;
 }
+
+function fetchSwaggerFile($url){
+    global $_SETTINGS;
+    $rootFolder = "../" . $_SETTINGS['links']['folder'];
+    $projectFolder = $rootFolder . "/" . $project['group'] . "/" . $project['name'] . "/" . $project['version'];
+    $swaggerFile = $projectFolder . "/swagger_cache.json";
+
+    $content = file_get_contents($url);
+    if($content != false){
+        file_put_contents($swaggerFile, $content);
+    }else{
+        //log failed to fetch url
+    }
+}
+
+function importSwaggerFile($json){
+    // decode json
+    $root = json_decode($json, true);
+    if($root == null){
+        //log failed to decode json
+        return false;
+    }
+
+    // find project information
+    if(!isset($root['info']) || empty($root['info'])){
+        //log no info
+        return false;
+    }
+    $info = $root['info'];
+    if(!isset($info['title']) || empty($info['title'])){
+        //log no title
+        return false;
+    }
+    if(!isset($info['version']) || empty($info['version'])){
+        //log no version
+        return false;
+    }
+    $name = $info['title'];
+    $version = $info['version'];
+
+    $basePath = "/";
+    if(isset($root['basePath'])){
+        $basePath = $root['basePath'];
+    }
+
+    $defaultConsumes = array();
+    if(isset($root['consumes'])){
+        foreach($root['consumes'] as $mime){
+            array_push($defaultConsumes, $mime);
+        }
+    }
+    $defaultProduces = array();
+    if(isset($root['produces'])){
+        foreach($root['produces'] as $mime){
+            array_push($defaultProduces, $mime);
+        }
+    }
+
+    //todo: retrieve models and paths
+}

@@ -6,109 +6,117 @@
 
 
 <dom-module id="project-route">
-  <template>
-    <style include="shared-styles">
-      :host ::content .author {
-        padding: 5px;
-        margin-top: 20px;
-        border-radius: 15px;
-        font-size: 12px;
-        color: white;
-        background-color: rgba(255, 152, 0, 0.7);
-        box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
-      }
-    </style>
-    <iron-ajax id="ajax" url="{{requestUrl}}" last-response="{{project}}" lastError="{{error}}"></iron-ajax>
+    <template>
+        <style include="shared-styles">
+            :host ::content .author {
+                padding: 5px;
+                margin-top: 20px;
+                border-radius: 15px;
+                font-size: 12px;
+                color: white;
+                background-color: rgba(255, 152, 0, 0.7);
+                box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+            }
+        </style>
+        <iron-ajax id="ajax" url="{{requestUrl}}" last-response="{{project}}" lastError="{{error}}"></iron-ajax>
 
-    <template is="dom-if" if="showLinks">
-      <h3>Links</h3>
-      <paper-material elevation="1">
-        <template is="dom-repeat" items="{{project.links}}" as="link">
-          <project-link href="{{link.href}}" rel="{{link.rel}}"></project-link>
+        <template is="dom-if" if="showLinks">
+            <h3>Links</h3>
+            <paper-material elevation="1">
+                <template is="dom-repeat" items="{{project.links}}" as="link">
+                    <project-link settings="{{settings}}" href="{{link.href}}" rel="{{link.rel}}"></project-link>
+                </template>
+            </paper-material>
         </template>
-      </paper-material>
-    </template>
-    <template is="dom-if" if="{{showEndpoints}}">
-      <h3>Endpoints</h3>
-      <template is="dom-repeat" items="{{project.endpoints}}" as="endpoint">
-        <project-endpoint endpoint="{{endpoint}}" project="{{project}}"></project-endpoint>
-      </template>
-    </template>
-    <template is="dom-if" if="{{showClients}}">
-      <h3>Clients</h3>
-      <template is="dom-repeat" items="{{project.clients}}" as="client">
-        <project-link href="" rel="{{client.name}}"></project-link>
-        <template is="dom-repeat" items="{{client.endpoints}}" as="endpoint">
-          <project-endpoint endpoint="{{endpoint}}"></project-endpoint>
+        <template is="dom-if" if="{{showEndpoints}}">
+            <h3>Endpoints</h3>
+            <template is="dom-repeat" items="{{project.endpoints}}" as="endpoint">
+                <project-endpoint settings="{{settings}}" endpoint="{{endpoint}}" project="{{project}}"></project-endpoint>
+            </template>
         </template>
-      </template>
+        <template is="dom-if" if="{{showClients}}">
+            <h3>Clients</h3>
+            <template is="dom-repeat" items="{{project.clients}}" as="client">
+                <project-link settings="{{settings}}" href="" rel="{{client.name}}"></project-link>
+                <template is="dom-repeat" items="{{client.endpoints}}" as="endpoint">
+                    <project-endpoint settings="{{settings}}" endpoint="{{endpoint}}"></project-endpoint>
+                </template>
+            </template>
+        </template>
+
+        <h3>Models</h3>
+        <template is="dom-repeat" items="{{modelNames}}" as="name">
+            <paper-material evelation="1">
+                <h4>{{_getModelName(name)}}</h4>
+                <json-preview schema="{{_getModel(name)}}" domain-schemas="{{project.models}}"></json-preview>
+            </paper-material>
+        </template>
+
+        <template is="dom-repeat" items="{{project.authors}}" as="author">
+            <span class="author">@{{author}}</span>
+        </template>
     </template>
+    <script>
+        Polymer({
+            is: 'project-route',
 
-    <h3>Models</h3>
-      <template is="dom-repeat" items="{{modelNames}}" as="name">
-        <paper-material evelation="1">
-          <h4>{{_getModelName(name)}}</h4>
-          <json-preview schema="{{_getModel(name)}}" domain-schemas="{{project.models}}"></json-preview>
-        </paper-material>
-      </template>
+            properties: {
+                name: String,
+                url: String,
+                project: Object,
+                error: Object,
+                settings: Object,
 
-    <template is="dom-repeat" items="{{project.authors}}" as="author">
-      <span class="author">@{{author}}</span>
-    </template>
-  </template>
-  <script>
-    Polymer({
-      is: 'project-route',
+                showLinks: Boolean,
+                showEndpoints: Boolean,
+                showClients: Boolean,
+                modelNames: Array
+            },
 
-      properties: {
-        name: String,
-        url: String,
-        project: Object,
-        error: Object,
+            observers: [
+                '_requestData(name)',
+                '_requestData(url)',
+                '_initData(project)',
+                '_handleError(error)'
+            ],
 
-        showLinks: Boolean,
-        showEndpoints: Boolean,
-        showClients: Boolean,
-        modelNames: Array
-      },
+            _requestData: function (url) {
+                if (this.url != undefined && this.name != undefined) {
+                    this.requestUrl = this.url + "?project=" + this.name;
+                    this.$.ajax.generateRequest();
+                } else {
+                    this.requestUrl = undefined;
+                }
+            }
+            ,
 
-      observers: [
-        '_requestData(name)',
-        '_requestData(url)',
-        '_initData(project)',
-        '_handleError(error)'
-      ],
+            _initData: function (data) {
+                if (this.project != undefined && this.project != null) {
+                    this.showLinks = this.project.links != null && this.project.links != undefined && this.project.links.length > 0;
+                    this.showEndpoints = this.project.endpoints != null && this.project.endpoints != undefined && this.project.endpoints.length != 0;
+                    this.showClients = this.project.clients != undefined && this.project.clients != null && this.project.clients.length != 0;
+                    if (this.project.models) {
+                        this.modelNames = Object.keys(this.project.models);
+                    }
+                }
+            }
+            ,
 
-      _requestData: function (url) {
-        if (this.url != undefined && this.name != undefined) {
-          this.requestUrl = this.url + "?project=" + this.name;
-          this.$.ajax.generateRequest();
-        } else {
-          this.requestUrl = undefined;
-        }
-      },
+            _handleError: function (error) {
 
-      _initData: function (data) {
-        if (this.project != undefined && this.project != null) {
-          this.showLinks = this.project.links != null && this.project.links != undefined && this.project.links.length > 0;
-          this.showEndpoints = this.project.endpoints != null && this.project.endpoints != undefined && this.project.endpoints.length != 0;
-          this.showClients = this.project.clients != undefined && this.project.clients != null && this.project.clients.length != 0;
-          this.modelNames = Object.keys(this.project.models);
-        }
-      },
+            }
+            ,
 
-      _handleError: function (error) {
+            _getModel: function (name) {
+                return this.project.models[name];
+            }
+            ,
 
-      },
+            _getModelName: function (name) {
+                return this.project.models[name].classType.simpleName;
+            }
 
-      _getModel: function(name){
-        return this.project.models[name];
-      },
-
-      _getModelName: function(name){
-        return this.project.models[name].classType.simpleName;
-      }
-
-    });
-  </script>
+        })
+        ;
+    </script>
 </dom-module>

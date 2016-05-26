@@ -1,6 +1,5 @@
 <link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../../bower_components/iron-icons/image-icons.html">
-<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
 
 <dom-module id="project-link">
     <template>
@@ -18,7 +17,6 @@
                 text-decoration: underline;
             }
         </style>
-        <iron-ajax id="ajax" url="/api/settings.php" last-response="{{settings}}"></iron-ajax>
 
         <a href="{{href}}" target="{{target}}">
             <iron-icon hidden$="{{!prefix}}" icon="image:navigate-next"></iron-icon>
@@ -43,31 +41,49 @@
                 prefix: Boolean,
                 classpath: String,
                 line: Number,
-                project: Object
+                project: Object,
+                model: Object,
+                generic: Object
             },
 
             observers: [
                 '_updateClassPath(settings)',
-                '_updateClassPath(classpath)'
+                '_updateClassPath(classpath)',
+                '_updateModel(project)',
+                '_updateModel(model)'
             ],
 
-            ready: function(){
-                this.$.ajax.generateRequest();
+            _updateModel: function (model) {
+                if (model) {
+                    if (model['$ref'] && this.project && this.project.models[model['$ref']]) {
+                        var m = this.project.models[model['$ref']];
+                    } else {
+                        var m = model;
+                    }
+                    if (m.classType) {
+                        this.rel = m.classType.simpleName;
+                        this.classpath = m.classType.name;
+                        if (model.classType.genericType) {
+                            this.generic = {classType: m.classType.genericType};
+                        }
+                    }
+                }
+                console.info("update: " + this.model + " " + this.project);
             },
 
             _updateClassPath(){
-                if(this.settings != undefined && this.classpath != undefined) {
+                if (this.settings != undefined && this.classpath != undefined) {
                     var link = this.settings.links.source;
                     link = link.replace("{links.folder}", this.settings.links.folder);
-                    if(this.project != undefined) {
-                      link = link.replace("{group}", this.project.group);
-                      link = link.replace("{project}", this.project.name);
-                      link = link.replace("{version}", this.project.version);
+                    if (this.project != undefined) {
+                        link = link.replace("{group}", this.project.group);
+                        link = link.replace("{project}", this.project.name);
+                        link = link.replace("{version}", this.project.version);
                     }
                     link = link.replace("{class}", this.classpath.replace(new RegExp("\\.", 'g'), '/'));
                     link = link.replace("{classDots}", this.classpath);
-                    if(this.line != undefined) {
-                      link += "#" + this.line;
+                    if (this.line != undefined) {
+                        link += "#" + this.line;
                     }
                     this.href = link;
                 }

@@ -1,106 +1,124 @@
-<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../../bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/iron-icons/hardware-icons.html">
 
 <dom-module id="service-menu">
-  <template>
-    <style include="shared-styles">
-      :host ::content paper-menu {
-        --paper-menu-selected-item: {
-          color: var(--primary-color);
-        };
+    <template>
+        <style include="shared-styles">
+            :host ::content paper-menu {
+                --paper-menu-selected-item: {
+                    color: var(--primary-color);
+                };
 
-        --paper-menu-focused-item-after: {
-          background: var(--primary-color);
-        };
-      }
+                --paper-menu-focused-item-after: {
+                    background: var(--primary-color);
+                };
+            }
 
-      :host ::content paper-menu iron-icon {
-        margin-right: 33px;
-        opacity: 0.54;
-      }
+            :host ::content paper-menu iron-icon {
+                margin-right: 33px;
+                opacity: 0.54;
+            }
 
-      :host ::content paper-menu a {
-        @apply(--layout-horizontal);
-        @apply(--layout-center);
+            :host ::content paper-menu a {
+                @apply(--layout-horizontal);
+                @apply(--layout-center);
 
-        text-decoration: none;
-        color: var(--menu-link-color);
-        font-family: 'Roboto', 'Noto', sans-serif;
-        -webkit-font-smoothing: antialiased;
-        text-rendering: optimizeLegibility;
-        font-size: 14px;
-        font-weight: 400;
-        line-height: 24px;
-        min-height: 48px;
-        padding: 0 16px;
-      }
+                text-decoration: none;
+                color: var(--menu-link-color);
+                font-family: 'Roboto', 'Noto', sans-serif;
+                -webkit-font-smoothing: antialiased;
+                text-rendering: optimizeLegibility;
+                font-size: 14px;
+                font-weight: 400;
+                line-height: 24px;
+                min-height: 48px;
+                padding: 0 16px;
+            }
 
-      :host ::content .group {
-        padding: 10px;
-        margin-right: 10px;
-        margin-left: 10px;
-        text-transform: capitalize;
-        font-size: 14px;
-        border-bottom: 1px solid #C7C7C7;
+            :host ::content .group {
+                padding: 10px;
+                margin-right: 10px;
+                margin-left: 10px;
+                text-transform: capitalize;
+                font-size: 14px;
+                border-bottom: 1px solid #C7C7C7;
 
-        color: black !important;
-        font-weight: normal !important;
-        background: none !important;
-      }
+                color: black !important;
+                font-weight: normal !important;
+                background: none !important;
+            }
 
-      :host ::content .group::after {
-        background: none !important;
-      }
+            :host ::content .group::after {
+                background: none !important;
+            }
 
-      :host ::content a{
-        color: black !important;
-        font-weight: normal !important;
-      }
+            :host ::content a {
+                color: black !important;
+                font-weight: normal !important;
+            }
 
-    </style>
+        </style>
+        <paper-menu class="app-menu" attr-for-selected="data-route" selected="[[route]]">
+            <a data-route="home" href="{{baseUrl}}">
+                <iron-icon icon="home"></iron-icon>
+                <span>Home</span>
+            </a>
+            <template is="dom-repeat" items="{{groups}}" as="group">
+                <div class="group">{{group}}</div>
+                <template is="dom-repeat" items="{{projects}}" as="project" filter="{{_isInGroup(group)}}">
+                    <a data-route=":project/:name" href="{{baseUrl}}{{project.group}}/{{project.name}}">
+                        <iron-icon icon="{{project.icon}}"></iron-icon>
+                        <span>{{project.name}}</span>
+                    </a>
+                </template>
+            </template>
+        </paper-menu>
+    </template>
+    <script>
+        Polymer({
+            is: 'service-menu',
 
-    <iron-ajax id="ajax" url="{{url}}" last-response="{{data}}"></iron-ajax>
-    <paper-menu class="app-menu" attr-for-selected="data-route" selected="[[route]]">
-      <a data-route="home" href="{{baseUrl}}">
-        <iron-icon icon="home"></iron-icon>
-        <span>Home</span>
-      </a>
-      <template is="dom-repeat" items="{{data.groups}}" as="group">
-        <div class="group">{{group}}</div>
-        <template is="dom-repeat" items="{{data.projects}}" as="project" filter="{{_isInGroup(group)}}">
-          <a data-route=":project/:name" href="{{baseUrl}}{{project.group}}/{{project.name}}">
-            <iron-icon icon="home"></iron-icon>
-            <span>{{project.name}}</span>
-          </a>
-        </template>
-      </template>
-    </paper-menu>
-  </template>
-  <script>
-    Polymer({
-      is: 'service-menu',
+            properties: {
+                projects: Array,
+                groups: Array,
+                settings: Object,
+                route: String
+            },
 
-      properties: {
-        url: String,
-        data: Object,
-        baseUrl: String,
-        route: String
-      },
+            observers: ['_updateProjects(projects)', '_updateProjects(settings)'],
 
-      observers: [
-        '_requestData(url)'
-      ],
+            _isInGroup: function (group) {
+                return function (project) {
+                    return project.group == group;
+                }
+            },
 
-      _requestData: function (url) {
-        this.$.ajax.generateRequest();
-      },
+            _updateProjects: function (projects) {
+                var self = this;
+                if (this.projects != undefined) {
+                    this.projects.forEach(function (project) {
+                        project.icon = self._getIcon(project.group, project.name);
+                    });
+                }
 
-      _isInGroup: function (group) {
-        return function (project) {
-          return project.group == group;
-        }
-      }
-    });
-  </script>
+            }
+            ,
+
+            _getIcon: function (group, project) {
+                if (this.settings != undefined) {
+                    if (this.settings.icons.projects != undefined && this.settings.icons.projects[project] != undefined) {
+                        return this.settings.icons.projects[project];
+                    } else if (this.settings.icons.groups && this.settings.icons.groups[group] != undefined) {
+                        return this.settings.icons.groups[group];
+                    }
+                    return this.settings.icons.default;
+                } else {
+                    return "extension";
+                }
+            }
+        });
+    </script>
 </dom-module>

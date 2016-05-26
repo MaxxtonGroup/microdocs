@@ -25,8 +25,8 @@
     "overview": "bubble_chart",
     "default": "extension",
     "groups": {
-      "frontend": "important_devices",
-      "services": "memory"
+      "frontend": "important-devices",
+      "services": "hardware:memory"
     }
   },
 
