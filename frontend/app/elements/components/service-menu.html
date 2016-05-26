@@ -58,6 +58,22 @@
             :host ::content a {
                 color: black !important;
                 font-weight: normal !important;
+                position: relative;
+            }
+
+            :host ::content .project-error{
+                display: inline-block;
+                position: absolute;
+                right: 5px;
+                top: 12px;
+                padding-left: 8px;
+                padding-right: 8px;
+                color: white;
+                background-color: #F44336;
+                text-align: center;
+                font-size: 12px;
+                font-weight: bold;
+                border-radius: 100%;
             }
 
         </style>
@@ -69,9 +85,10 @@
             <template is="dom-repeat" items="{{groups}}" as="group">
                 <div class="group">{{group}}</div>
                 <template is="dom-repeat" items="{{projects}}" as="project" filter="{{_isInGroup(group)}}">
-                    <a data-route=":project/:name" href="{{baseUrl}}{{project.group}}/{{project.name}}">
+                    <a data-route="{{baseUrl}}{{project.group}}/{{project.name}}" href="{{baseUrl}}{{project.group}}/{{project.name}}">
                         <iron-icon icon="{{project.icon}}"></iron-icon>
                         <span>{{project.name}}</span>
+                        <span class="project-error" hidden$="{{!project.hasError}}">{{project.errors}}</span>
                     </a>
                 </template>
             </template>
@@ -82,6 +99,7 @@
             is: 'service-menu',
 
             properties: {
+                baseUrl: String,
                 projects: Array,
                 groups: Array,
                 settings: Object,
@@ -101,6 +119,7 @@
                 if (this.projects != undefined) {
                     this.projects.forEach(function (project) {
                         project.icon = self._getIcon(project.group, project.name);
+                        project.hasError = project.errors != null && project.errors != undefined && project.errors > 0;
                     });
                 }
 

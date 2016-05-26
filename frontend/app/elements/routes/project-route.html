@@ -17,6 +17,16 @@
                 background-color: rgba(255, 152, 0, 0.7);
                 box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
             }
+
+            :host ::content h4 {
+                position: relative;
+            }
+
+            :host ::content .model-link {
+                display: inline-block;
+                position: absolute;
+                right: 0;
+            }
         </style>
         <iron-ajax id="ajax" url="{{requestUrl}}" last-response="{{project}}" lastError="{{error}}"></iron-ajax>
 
@@ -31,7 +41,8 @@
         <template is="dom-if" if="{{showEndpoints}}">
             <h3>Endpoints</h3>
             <template is="dom-repeat" items="{{project.endpoints}}" as="endpoint">
-                <project-endpoint settings="{{settings}}" endpoint="{{endpoint}}" project="{{project}}"></project-endpoint>
+                <project-endpoint settings="{{settings}}" endpoint="{{endpoint}}"
+                                  project="{{project}}"></project-endpoint>
             </template>
         </template>
         <template is="dom-if" if="{{showClients}}">
@@ -39,17 +50,23 @@
             <template is="dom-repeat" items="{{project.clients}}" as="client">
                 <project-link settings="{{settings}}" href="" rel="{{client.name}}"></project-link>
                 <template is="dom-repeat" items="{{client.endpoints}}" as="endpoint">
-                    <project-endpoint settings="{{settings}}" endpoint="{{endpoint}}"></project-endpoint>
+                    <project-endpoint settings="{{settings}}" endpoint="{{endpoint}}" project="{{project}}"></project-endpoint>
                 </template>
             </template>
         </template>
 
-        <h3>Models</h3>
-        <template is="dom-repeat" items="{{modelNames}}" as="name">
-            <paper-material evelation="1">
-                <h4>{{_getModelName(name)}}</h4>
-                <json-preview schema="{{_getModel(name)}}" domain-schemas="{{project.models}}"></json-preview>
-            </paper-material>
+        <template is="dom-if" if="{{showModels}}">
+            <h3>Models</h3>
+            <template is="dom-repeat" items="{{modelNames}}" as="name">
+                <paper-material evelation="1">
+                    <h4>
+                        <span>{{_getModelName(name)}}</span>
+                        <project-link class="model-link" settings="{{settings}}" model="{{_getModel(name)}}"
+                                      project="{{project}}"></project-link>
+                    </h4>
+                    <json-preview schema="{{_getModel(name)}}" domain-schemas="{{project.models}}"></json-preview>
+                </paper-material>
+            </template>
         </template>
 
         <template is="dom-repeat" items="{{project.authors}}" as="author">
@@ -98,6 +115,7 @@
                     if (this.project.models) {
                         this.modelNames = Object.keys(this.project.models);
                     }
+                    this.showModels = this.project.models != undefined && this.project.models != null && this.project.models.length != 0;
                 }
             }
             ,

@@ -1,6 +1,8 @@
 <link rel="import" href="http-param.html">
 <link rel="import" href="response-status.html">
 <link rel="import" href="json-preview.html">
+<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 
 <dom-module id="project-endpoint">
     <template>
@@ -94,6 +96,20 @@
             :host ::content h4 {
                 position: relative;
             }
+
+            :host ::content .endpoint-path[error], :host ::content .endpoint-path[error] *{
+                color: #F44336;
+            }
+
+            :host ::content .error-icon{
+                color: #F44336;
+                font-size: 14px;
+            }
+
+            :host ::content .errors{
+                color: #F44336;
+                font-size: 14px;
+            }
         </style>
 
         <paper-material elevation="1" id="container">
@@ -101,13 +117,19 @@
                 <span class="endpoint-method">
                   <span class$="{{endpoint.method}}">{{endpoint.method}}</span>
                 </span>
-                <span class="endpoint-path" id="path">{{_markupPath(endpoint.path)}}</span>
+                <span class="endpoint-path" id="path" error$="{{hasErrors}}">{{_markupPath(endpoint.path)}}</span>
+                <iron-icon class="error-icon" icon="icons:warning" hidden$="{{!hasErrors}}"></iron-icon>
                 <project-link settings="{{settings}}" rel={{endpoint.source.simpleName}}
                               classpath="{{endpoint.source.name}}" line="{{endpoint.source.lineNumber}}"
                               project="{{project}}"></project-link>
             </div>
             <div class="endpoint-body" hidden$="{{!expanded}}">
                 <div class="description">{{endpoint.description}}</div>
+                <ul class="errors">
+                    <template is="dom-repeat" items="{{endpoint.errors}}" as="error">
+                        <li>{{error}}</li>
+                    </template>
+                </ul>
                 <h3 hidden$="{{!showRequest}}">Request</h3>
                 <div class="endpoint-content">
                     <div hidden$="{{!showParams}}">
@@ -168,7 +190,8 @@
                 showResponseBody: Boolean,
                 showRequestContentType: Boolean,
                 showResponseContentType: Boolean,
-                showRequestParams: Boolean
+                showRequestParams: Boolean,
+                hasErrors: Boolean
             },
 
             observers: [
@@ -193,6 +216,7 @@
                 this.showPathVariables = this.endpoint.pathVariables != null && this.endpoint.pathVariables != undefined && this.endpoint.pathVariables.length > 0;
                 this.showParams = this.showRequestParams || this.showPathVariables;
                 this.showRequest = this.showRequestBody || this.showParams;
+                this.hasErrors = this.endpoint.errors != undefined && this.endpoint.errors != null && this.endpoint.errors.length != 0;
             },
 
             _markupPath: function (path) {

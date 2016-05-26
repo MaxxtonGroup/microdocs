@@ -16,3 +16,8 @@ body {
 .page-title {
   outline: none;
 }
+
+
+#headerContainer{
+  z-index: 100;
+}

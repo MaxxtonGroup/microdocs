@@ -1,2 +1,5 @@
 /.idea
+/example/order-service/.gradle
+/example/order-service/build
+/example/customer-service/.gradle
 /example/customer-service/build
