@@ -60,6 +60,7 @@ class MaxxtonDocumentationPlugin implements Plugin<Project>{
             source = project.sourceSets.main.allJava
             destinationDir = project.reporting.file("javadoc")
             classpath = project.sourceSets.main.compileClasspath
+            options.tags = ['response', 'dummy']
         }
         
 		// deprecated
@@ -72,6 +73,7 @@ class MaxxtonDocumentationPlugin implements Plugin<Project>{
         project.task('maxxtonDoc', type:Zip, dependsOn: ['maxxtonDocSpring', 'maxxtonDocJavadoc', 'maxxtonDocJxr'], group: 'maxxton'){
             from project.reporting.file("./")
             baseName = "maxxton-doc"
+            version = "latest";
         }
 		
         
@@ -101,6 +103,7 @@ class MaxxtonDocumentationPlugin implements Plugin<Project>{
         project.task('buildDoc', type:Zip, dependsOn: ['buildApidoc', 'buildJavadoc', 'buildJxrDoc'], group: 'documentation'){
             from project.reporting.file("./")
             baseName = "maxxton-doc"
+            version = "latest";
         }
     }
 }
