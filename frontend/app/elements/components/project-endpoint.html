@@ -98,9 +98,9 @@
 
         <paper-material elevation="1" id="container">
             <div class="endpoint-header" id="header">
-        <span class="endpoint-method">
-          <span class$="{{endpoint.method}}">{{endpoint.method}}</span>
-        </span>
+                <span class="endpoint-method">
+                  <span class$="{{endpoint.method}}">{{endpoint.method}}</span>
+                </span>
                 <span class="endpoint-path" id="path">{{_markupPath(endpoint.path)}}</span>
                 <project-link settings="{{settings}}" rel={{endpoint.source.simpleName}}
                               classpath="{{endpoint.source.name}}" line="{{endpoint.source.lineNumber}}"
@@ -141,7 +141,8 @@
                     <div hidden$="{{!showResponseBody}}">
                         <h4>Body
                             <span class="highlight" hidden$="{{!showResponseContentType}}">({{endpoint.responseBody.content-type}})</span>
-                            <project-link settings="{{settings}}" model="{{endpoint.responseBody}}" project="{{project}}"></project-link>
+                            <project-link settings="{{settings}}" model="{{endpoint.responseBody}}"
+                                          project="{{project}}"></project-link>
                         </h4>
                         <json-preview schema="[[endpoint.responseBody]]"
                                       domain-schemas="[[project.models]]"></json-preview>

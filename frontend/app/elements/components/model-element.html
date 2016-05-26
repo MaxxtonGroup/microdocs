@@ -1,0 +1,36 @@
+<dom-module is="model-element">
+    <template>
+        <style include="shared-styles">
+
+        </style>
+        <paper-material elevation="1" id="container">
+            <div class="model-header" id="header">
+                <span>{{model.classPath.simpleName}}</span>
+                <project-link settings="{{settings}}" model="{{model}}" project="{{project}}"></project-link>
+            </div>
+            <div class="model-content" hidden$="{{!expanded}}">
+                <json-preview schema="{{model}}" domain-schemas="{{project.models}}"></json-preview>
+            </div>
+        </paper-material>
+    </template>
+    <script>
+        Polymer({
+            is: "model-element",
+
+            properties: {
+                settings: Object,
+                project: Object,
+                model: Object,
+                expanded: Boolean
+            },
+
+            listeners: {
+                'header.click': '_toggle'
+            },
+
+            _toggle: function () {
+                this.expanded = !this.expanded;
+            }
+        });
+    </script>
+</dom-module>
