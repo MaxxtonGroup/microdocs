@@ -32,7 +32,7 @@ public class ComponentCollector implements Collector {
         for (AnnotationDesc annotation :  annotations) {
             String annotationType = Annotations.getTypeName(annotation);
             if(annotationType != null && annotationType.startsWith(COMPONENT_TYPE)){
-                String type = annotationType.substring(COMPONENT_TYPE.length());
+                String type = annotationType.substring(COMPONENT_TYPE.length()).toLowerCase();
                 addComponent(classDoc, type);
             }
         }

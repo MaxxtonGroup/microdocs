@@ -60,7 +60,7 @@ public class RequestMappingCollector implements Collector {
             if (name == null) {
                 name = getElement(feignClient.elementValues(), "serviceId");
             }
-            clients.add(new Client((name != null ? name.toString() : null), endpoints));
+            clients.add(new Client((name != null ? name.toString().replace("\"", "") : null), endpoints));
         }
     }
 
@@ -243,7 +243,7 @@ public class RequestMappingCollector implements Collector {
 
     public Map<String, Object> getMapping() {
         Map<String, Object> mapping = new HashMap();
-        mapping.put("client", clients);
+        mapping.put("clients", clients);
         mapping.put("endpoints", endpoints);
         return mapping;
     }

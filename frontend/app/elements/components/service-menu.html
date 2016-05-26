@@ -58,6 +58,22 @@
             :host ::content a {
                 color: black !important;
                 font-weight: normal !important;
+                position: relative;
+            }
+
+            :host ::content .project-error{
+                display: inline-block;
+                position: absolute;
+                right: 5px;
+                top: 12px;
+                padding-left: 5px;
+                padding-right: 5px;
+                color: white;
+                background-color: #F44336;
+                text-align: center;
+                font-size: 16px;
+                font-weight: bold;
+                border-radius: 100%;
             }
 
         </style>
@@ -72,6 +88,7 @@
                     <a data-route=":project/:name" href="{{baseUrl}}{{project.group}}/{{project.name}}">
                         <iron-icon icon="{{project.icon}}"></iron-icon>
                         <span>{{project.name}}</span>
+                        <span class="project-error" hidden$="{{!project.hasError}}">{{project.errors}}</span>
                     </a>
                 </template>
             </template>
@@ -101,6 +118,7 @@
                 if (this.projects != undefined) {
                     this.projects.forEach(function (project) {
                         project.icon = self._getIcon(project.group, project.name);
+                        project.hasError = project.errors != null && project.errors != undefined && project.errors > 0;
                     });
                 }
 
