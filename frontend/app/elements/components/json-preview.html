@@ -53,6 +53,12 @@
             } else {
               preview = this._randomString(propName);
             }
+          } else if (schema.type == 'date') {
+            if (schema.dummy != undefined || schema.dummy != null) {
+              preview = schema.dummy;
+            } else {
+              preview = this._randomString(propName);
+            }
           } else if (schema.type == 'number') {
             if (schema.dummy != undefined || schema.dummy != null) {
               preview = schema.dummy;
@@ -66,7 +72,7 @@
               preview = this._randomNumber(1, 2) == 1 ? true : false;
             }
           } else if (schema.type == 'enum') {
-            preview = schema.items;
+            preview = schema.enum[0];
           } else if (schema['$ref'] != undefined && this.domainSchemas != undefined && this.domainSchemas != null) {
             var name = schema['$ref'];
             var subSchema = this.domainSchemas[name];

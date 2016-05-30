@@ -68,6 +68,8 @@ public class ModelCollector implements Collector {
             return new Schema(Schema.NUMBER, classType);
         } else if (type.qualifiedTypeName().equals(Boolean.class.getCanonicalName()) || type.qualifiedTypeName().equals(Boolean.TYPE.getCanonicalName())) {
             return new Schema(Schema.BOOLEAN, classType);
+        } else if (type.qualifiedTypeName().equals(Date.class.getCanonicalName())) {
+            return new Schema(Schema.DATE, classType);
         } else if (CollectorUtils.hasParent(type.asClassDoc(), List.class.getCanonicalName(), Iterator.class.getCanonicalName())) {
             if (generic != null && classType != null && classType.getGenericType() != null) {
                 return new SchemaArray(getScheme(generic, classType.getGenericType().getGeneric(), classType.getGenericType(), false), classType);

@@ -141,11 +141,15 @@ public class RequestMappingCollector implements Collector {
             } else if (CollectorUtils.getAnnotation(parameter.annotations(), REQUEST_PARAM) != null) {
                 AnnotationDesc requestParam = CollectorUtils.getAnnotation(parameter.annotations(), REQUEST_PARAM);
                 AnnotationValue name = getElement(requestParam.elementValues(), "name");
+                System.out.println(parameter.name() + " - " + name);
+                System.out.println(parameter.type().typeName());
+                String nameString = parameter.name();
                 if (name != null) {
-                    AnnotationValue defaultValue = getElement(requestParam.elementValues(), "defaultValue");
-                    AnnotationValue required = getElement(requestParam.elementValues(), "required");
-                    endpoint.addRequestParam(name.toString(), modelCollector.parseSchema(parameter.type()).getType(), description, (defaultValue != null ? defaultValue.toString() : null), required != null ? (boolean) required.value() : false);
+                    nameString = name.toString();
                 }
+                AnnotationValue defaultValue = getElement(requestParam.elementValues(), "defaultValue");
+                AnnotationValue required = getElement(requestParam.elementValues(), "required");
+                endpoint.addRequestParam(nameString, modelCollector.parseSchema(parameter.type()).getType(), description, (defaultValue != null ? defaultValue.toString() : null), required != null ? (boolean) required.value() : false);
             } else if (CollectorUtils.getAnnotation(parameter.annotations(), PATH_VARIABLE) != null) {
                 AnnotationDesc pathVariable = CollectorUtils.getAnnotation(parameter.annotations(), PATH_VARIABLE);
                 AnnotationValue name = getElement(pathVariable.elementValues(), "value");
@@ -171,7 +175,7 @@ public class RequestMappingCollector implements Collector {
             endpoint.setResponseBody(createPageSchema(methodDoc.returnType()));
         } else if (methodDoc.returnType().qualifiedTypeName().equals("org.springframework.http.ResponseEntity")) {
             ClassType classType = CollectorUtils.getClassType(methodDoc.returnType());
-            if(classType.getGeneric() != null){
+            if (classType.getGeneric() != null) {
                 endpoint.setResponseBody(modelCollector.parseSchema(classType.getGeneric()));
             }
         } else {

@@ -27,7 +27,9 @@
           "dummy": 56
         },
         "orderDate": {
-          "$ref": "java.util.Date"
+          "type": "date",
+          "description": "",
+          "required": false
         },
         "status": {
           "type": "enum",
@@ -81,49 +83,6 @@
         }
       }
     },
-    "sun.util.calendar.BaseCalendar.Date": {
-      "type": "object",
-      "classType": {
-        "simpleName": "Date",
-        "name": "sun.util.calendar.BaseCalendar.Date"
-      },
-      "required": false,
-      "properties": {
-        "cachedFixedDateJan1": {
-          "type": "number",
-          "description": "",
-          "required": false
-        },
-        "cachedFixedDateNextJan1": {
-          "type": "number",
-          "description": "",
-          "required": false
-        },
-        "cachedYear": {
-          "type": "number",
-          "description": "",
-          "required": false
-        }
-      }
-    },
-    "java.util.Date": {
-      "type": "object",
-      "classType": {
-        "simpleName": "Date",
-        "name": "java.util.Date"
-      },
-      "required": false,
-      "properties": {
-        "cdate": {
-          "$ref": "sun.util.calendar.BaseCalendar.Date"
-        },
-        "fastTime": {
-          "type": "number",
-          "description": "",
-          "required": false
-        }
-      }
-    },
     "com.example.service.order.domain.Order": {
       "type": "object",
       "classType": {
@@ -139,7 +98,9 @@
           "dummy": 54
         },
         "orderDate": {
-          "$ref": "java.util.Date"
+          "type": "date",
+          "description": "",
+          "required": false
         },
         "customer": {
           "$ref": "com.example.service.order.domain.Customer"
@@ -390,7 +351,16 @@
           "required": false
         }
       ],
-      "requestParams": [],
+      "requestParams": [
+        {
+          "name": "status",
+          "type": "enum",
+          "required": false
+        }
+      ],
+      "responseBody": {
+        "$ref": "com.example.service.order.domain.Order"
+      },
       "description": "Update order status",
       "consumes": [
         "application/json"

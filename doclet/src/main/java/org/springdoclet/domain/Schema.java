@@ -13,6 +13,7 @@ public class Schema {
     public static final String STRING = "string";
     public static final String NUMBER = "number";
     public static final String BOOLEAN = "boolean";
+    public static final String DATE = "date";
 
     private final String type;
     private String description;

@@ -73,7 +73,7 @@ public class OrderController {
      * @return Order with the new status
      */
     @RequestMapping(path="/{orderId}/status", method = RequestMethod.PUT)
-    public ResponseEntity updateStatus(@PathVariable("orderId") Long orderId, @RequestParam("status") OrderStatus status){
+    public ResponseEntity<Order> updateStatus(@PathVariable("orderId") Long orderId, @RequestParam("status") OrderStatus status){
         Order order = orderService.updateStatus(orderId, status);
         if(order != null){
             return new ResponseEntity<Order>(order, HttpStatus.OK);
