@@ -35,20 +35,25 @@ public class ModelCollector implements Collector {
     }
 
     public Schema parseSchema(Type type) {
+        System.out.println("parse schema: " + type.qualifiedTypeName());
         ClassType classType = CollectorUtils.getClassType(type);
         if(schemas.containsKey(type.qualifiedTypeName())){
+            System.out.println("return reference");
             return new SchemaReference(classType);
         }
 
         Schema schema = getScheme(type, classType.getGeneric(), classType, true);
         if(schema instanceof SchemaObject) {
+            System.out.println("Store and return reference");
             schemas.put(type.qualifiedTypeName(), schema);
             return new SchemaReference(classType);
         }
+        System.out.println("Return full schema");
         return schema;
     }
 
     private Schema getScheme(Type type, Type generic, ClassType classType, boolean root) {
+        System.out.println("getSchema: " + type.qualifiedTypeName());
         ClassDoc clazzDoc = type.asClassDoc();
         if (clazzDoc != null && clazzDoc.enumConstants().length > 0) {//enum
             List<String> enums = new ArrayList();
@@ -77,6 +82,7 @@ public class ModelCollector implements Collector {
                 return new SchemaArray(null, classType);
             }
         } else if (clazzDoc != null) {
+            schemas.put(type.qualifiedTypeName(), null); // reserve place
             if(!root) {
                 Schema schema = new SchemaReference(CollectorUtils.getClassType(type));
 //                this.schemas.put(type.qualifiedTypeName(), schema);

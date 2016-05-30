@@ -8,10 +8,7 @@ import org.springdoclet.CollectorUtils;
 import org.springdoclet.PathBuilder;
 import org.springdoclet.domain.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Logger;
 
 /**
@@ -44,13 +41,28 @@ public class RequestMappingCollector implements Collector {
         AnnotationDesc feignClient = CollectorUtils.getAnnotation(annotations, FEIGN_CLIENT);
         AnnotationDesc requestMapping = CollectorUtils.getAnnotation(annotations, REQUEST_MAPPING);
         List<Endpoint> endpoints;
+        String[] defaultConsumes = new String[]{"application/json"};
+        String[] defaultProduces = new String[]{"application/json"};
         if (requestMapping != null) {
             MappingElement mappingElement = getMappingElements(requestMapping);
             String rootPath = mappingElement.getPath();
             String[] defaultHttpMethods = mappingElement.getMethods();
-            endpoints = processMethods(classDoc, rootPath, defaultHttpMethods);
+
+            // check consumes
+            AnnotationValue consumes = getElement(requestMapping.elementValues(), "consumes");
+            if (consumes != null && consumes.value() != null && consumes.value() instanceof String[] && ((String[]) consumes.value()).length > 0) {
+                defaultConsumes = (String[]) consumes.value();
+            }
+            // check produces
+            AnnotationValue produces = getElement(requestMapping.elementValues(), "produces");
+            if (produces != null && produces.value() != null && produces.value() instanceof String[] && ((String[]) produces.value()).length > 0) {
+                defaultProduces = (String[]) produces.value();
+            }
+
+
+            endpoints = processMethods(classDoc, rootPath, defaultHttpMethods, defaultConsumes, defaultProduces);
         } else {
-            endpoints = processMethods(classDoc, "", new String[]{});
+            endpoints = processMethods(classDoc, "", new String[]{}, defaultConsumes, defaultProduces);
         }
         if (restController != null) {
             this.endpoints.addAll(endpoints);
@@ -60,11 +72,14 @@ public class RequestMappingCollector implements Collector {
             if (name == null) {
                 name = getElement(feignClient.elementValues(), "serviceId");
             }
+            if (name == null) {
+                name = getElement(feignClient.elementValues(), "value");
+            }
             clients.add(new Client((name != null ? name.toString().replace("\"", "") : null), endpoints));
         }
     }
 
-    private List<Endpoint> processMethods(ClassDoc classDoc, String rootPath, String[] defaultHttpMethods) {
+    private List<Endpoint> processMethods(ClassDoc classDoc, String rootPath, String[] defaultHttpMethods, String[] defaultConsumes, String[] defaultProduces) {
         List<Endpoint> endpoints = new ArrayList();
         MethodDoc[] methods = classDoc.methods(true);
         for (MethodDoc method : methods) {
@@ -74,7 +89,7 @@ public class RequestMappingCollector implements Collector {
                     MappingElement mappingElement = getMappingElements(annotation);
 
                     for (String requestMethod : defaultHttpMethods) {
-                        endpoints.add(processMethod(classDoc, method, concatenatePaths(rootPath, mappingElement.getPath()), requestMethod, annotation));
+                        endpoints.add(processMethod(classDoc, method, concatenatePaths(rootPath, mappingElement.getPath()), requestMethod, annotation, defaultConsumes, defaultProduces));
                     }
                     for (String requestMethod : mappingElement.getMethods()) {
                         boolean done = false;
@@ -84,7 +99,7 @@ public class RequestMappingCollector implements Collector {
                             }
                         }
                         if (!done) {
-                            endpoints.add(processMethod(classDoc, method, concatenatePaths(rootPath, mappingElement.getPath()), requestMethod, annotation));
+                            endpoints.add(processMethod(classDoc, method, concatenatePaths(rootPath, mappingElement.getPath()), requestMethod, annotation, defaultConsumes, defaultProduces));
                         }
                     }
                 }
@@ -93,7 +108,7 @@ public class RequestMappingCollector implements Collector {
         return endpoints;
     }
 
-    private Endpoint processMethod(ClassDoc classDoc, MethodDoc methodDoc, String path, String httpMethod, AnnotationDesc annotation) {
+    private Endpoint processMethod(ClassDoc classDoc, MethodDoc methodDoc, String path, String httpMethod, AnnotationDesc annotation, String[] defaultConsumes, String[] defaultProduces) {
         Endpoint endpoint = new Endpoint(httpMethod, path);
         endpoint.setDescription(methodDoc.commentText());
 
@@ -114,15 +129,30 @@ public class RequestMappingCollector implements Collector {
             }
         }
 
+
         // check consumes
+        Set<String> consumTypes = new HashSet();
+        for(String type : defaultConsumes){
+            consumTypes.add(type);
+        }
         AnnotationValue consumes = getElement(annotation.elementValues(), "consumes");
         if (consumes != null && consumes.value() != null && consumes.value() instanceof String[] && ((String[]) consumes.value()).length > 0) {
-            endpoint.setConsumes((String[]) consumes.value());
+            for(String type : (String[]) consumes.value()){
+                consumTypes.add(type);
+            }
+            endpoint.setConsumes(consumTypes.toArray(new String[consumTypes.size()]));
         }
         // check produces
+        Set<String> produceTypes = new HashSet();
+        for(String type : defaultProduces){
+            produceTypes.add(type);
+        }
         AnnotationValue produces = getElement(annotation.elementValues(), "produces");
         if (produces != null && produces.value() != null && produces.value() instanceof String[] && ((String[]) produces.value()).length > 0) {
-            endpoint.setProduces((String[]) produces.value());
+            for(String type : (String[]) produces.value()){
+                produceTypes.add(type);
+            }
+            endpoint.setProduces(produceTypes.toArray(new String[produceTypes.size()]));
         }
 
         for (Parameter parameter : methodDoc.parameters()) {
@@ -163,7 +193,8 @@ public class RequestMappingCollector implements Collector {
             } else if (parameter.typeName().equals("org.springframework.data.jpa.domain.Specifications")) {
                 endpoint.addRequestParam(new Field("filter", Schema.STRING, "Filter query", null, false));
             } else /**if (parameter.type().qualifiedTypeName().startsWith("com.maxxton") && parameter.annotations().length == 0 ) */ { //custom filter object
-                Schema schema = modelCollector.parseSchema(parameter.type());
+                modelCollector.parseSchema(parameter.type());
+                Schema schema = modelCollector.getSchemas().get(parameter.type().qualifiedTypeName());
                 if (schema instanceof SchemaObject) {
                     for (Map.Entry<String, Schema> entry : ((SchemaObject) schema).getProperties().entrySet()) {
                         endpoint.addRequestParam(new Field(entry.getKey(), entry.getValue().getType(), entry.getValue().getDescription(), null, entry.getValue().isRequired()));
