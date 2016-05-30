@@ -5,7 +5,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
 /**
- * Created by steve on 25-5-2016.
+ * @author Steven Hermans (s.hermans@maxxton.com)
  */
 @Repository
 public interface OrderRepository extends PagingAndSortingRepository<OrderInfo, Long> {

@@ -4,19 +4,19 @@
     <meta charset="utf-8">
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="generator" content="Polymer Starter Kit">
-    <title>Polymer Starter Kit</title>
+    <meta name="generator" content="Microservice Documentation Tool">
+    <title>MicroDocs</title>
 
     <!-- Place favicon.ico in the `app/` directory -->
 
     <!-- Chrome for Android theme color -->
-    <meta name="theme-color" content="#2E3AA1">
+    <meta name="theme-color" content="#2196F3">
 
     <!-- Web Application Manifest -->
     <link rel="manifest" href="manifest.json">
 
     <!-- Tile color for Win8 -->
-    <meta name="msapplication-TileColor" content="#3372DF">
+    <meta name="msapplication-TileColor" content="#2196F3">
 
     <!-- Add to homescreen for Chrome on Android -->
     <meta name="mobile-web-app-capable" content="yes">
@@ -60,11 +60,11 @@
 
             <!-- Drawer Toolbar -->
             <paper-toolbar id="drawerToolbar">
-                <span class="menu-name">Service Documentation</span>
+                <span class="menu-name"><span class="blue">Micro</span><span class="orange">Docs</span></span>
             </paper-toolbar>
 
             <!-- Drawer Content -->
-            <service-menu base-url="{{baseUrl}}" projects="{{projects}}" groups="{{groups}}" settings="[[settings]]" route="[[route]]"></service-menu>
+            <service-menu base-url="[[baseUrl]]" projects="[[projects]]" groups="[[groups]]" settings="[[settings]]" route="[[route]]"></service-menu>
         </paper-scroll-header-panel>
 
         <!-- Main Area -->
@@ -76,85 +76,49 @@
                 <span class="space"></span>
 
                 <!-- Toolbar icons -->
-                <paper-icon-button icon="refresh"></paper-icon-button>
-                <paper-icon-button icon="search"></paper-icon-button>
+                <template is="dom-if" if="{{!empty(currentProject)}}">
+                    <paper-dropdown-menu label="{{currentProject.version}}">
+                        <paper-listbox class="dropdown-content" selected="1">
+                            <template is="dom-repeat" items="{{currentProject.versions}}">
+                                <paper-item>{{item}}</paper-item>
+                            </template>
+                        </paper-listbox>
+                    </paper-dropdown-menu>
+                </template>
+                <!--<paper-icon-button icon="refresh"></paper-icon-button>-->
+                <!--<paper-icon-button icon="search"></paper-icon-button>-->
 
                 <!-- Application name -->
-                <div class="middle middle-container">
-                    <div class="app-name">Microservice Documentation Tool</div>
-                </div>
-
-                <!-- Application sub title -->
-                <div class="bottom bottom-container">
-                    <div class="bottom-title">Automatically documentate your microservice architecture</div>
-                </div>
+                <template is="dom-if" if="{{empty(currentProject)}}">
+                    <div class="middle middle-container">
+                        <div class="app-name">Microservice Documentation Tool</div>
+                    </div>
+                    <div class="bottom bottom-container">
+                        <div class="bottom-title">Automatically documentate your microservice architecture</div>
+                    </div>
+                </template>
+                <template is="dom-if" if="{{!empty(currentProject)}}">
+                    <div class="middle middle-container">
+                        <div class="app-name">{{currentProject.name}}</div>
+                    </div>
+                    <div class="bottom bottom-container">
+                        <div class="bottom-title">{{currentProject.group}}</div>
+                    </div>
+                </template>
             </paper-toolbar>
 
             <!-- Main Content -->
             <div class="content">
                 <iron-pages attr-for-selected="data-route" selected="{{routeName}}">
                     <section data-route="home" tabindex="-1">
+                        <h3>Overview</h3>
                         <paper-material elevation="1">
                             <dependency-graph url="[[getApiUrl('dependencies')]]"></dependency-graph>
-                        </paper-material>
-                        <paper-material elevation="1">
-                            <my-greeting></my-greeting>
-
-                            <p class="subhead">You now have:</p>
-                            <my-list></my-list>
-
-                            <p>Looking for more Web App layouts? Check out our <a
-                                    href="https://github.com/PolymerElements/app-layout-templates">layouts</a>
-                                collection. You can also <a
-                                        href="http://polymerelements.github.io/app-layout-templates/">dummy</a> them
-                                live.</p>
-                        </paper-material>
-
-                        <paper-material elevation="1">
-                            <p>This is another card.</p>
-                        </paper-material>
-
-                        <paper-material elevation="1">
-                            <h2 id="license">License</h2>
-                            <p>Everything in this repo is BSD style license unless otherwise specified.</p>
-                            <p>Copyright (c) 2015 The Polymer Authors. All rights reserved.</p>
-                            <p>Redistribution and use in source and binary forms, with or without modification, are
-                                permitted provided
-                                that the following conditions are met:</p>
-                            <ul>
-                                <li>Redistributions of source code must retain the above copyright
-                                    notice, this list of conditions and the following disclaimer.
-                                </li>
-                                <li>Redistributions in binary form must reproduce the above
-                                    copyright notice, this list of conditions and the following disclaimer
-                                    in the documentation and/or other materials provided with the
-                                    distribution.
-                                </li>
-                                <li>Neither the name of Google Inc. nor the names of its
-                                    contributors may be used to endorse or promote products derived from
-                                    this software without specific prior written permission.
-                                </li>
-                            </ul>
-                            <p>THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS &quot;AS IS&quot; AND
-                                ANY EXPRESS
-                                OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
-                                MERCHANTABILITY AND
-                                FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER
-                                OR CONTRIBUTORS
-                                BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-                                DAMAGES (INCLUDING,
-                                BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-                                PROFITS; OR
-                                BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-                                CONTRACT, STRICT
-                                LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-                                OF THIS
-                                SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</p>
                         </paper-material>
                     </section>
 
                     <section data-route=":group/:name" tabindex="-1">
-                        <project-route name="{{params.name}}" settings="[[settings]]" url="{{getApiUrl('project')}}"></project-route>
+                        <project-route project="{{currentProject}}" settings="[[settings]]"></project-route>
                     </section>
                 </iron-pages>
             </div>
@@ -166,7 +130,6 @@
     </paper-toast>
 
     <!-- Uncomment next block to enable Service Worker support (1/2) -->
-    <!--
     <paper-toast id="caching-complete"
                  duration="6000"
                  text="Caching complete! This app will work offline.">
@@ -177,11 +140,10 @@
                           skip-waiting
                           base-uri="bower_components/platinum-sw/bootstrap"
                           on-service-worker-installed="displayInstalledToast">
-      <platinum-sw-cache default-cache-strategy="fastest"
-                         cache-config-file="cache-config.json">
-      </platinum-sw-cache>
+        <platinum-sw-cache default-cache-strategy="fastest"
+                           cache-config-file="cache-config.json">
+        </platinum-sw-cache>
     </platinum-sw-register>
-    -->
 
 </template>
 

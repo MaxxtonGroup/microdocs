@@ -1,0 +1,77 @@
+<dom-module is="model-element">
+    <template>
+        <style include="shared-styles">
+            :host ::content .model-header{
+                cursor: pointer;
+                font-family: monospace;
+            }
+
+            :host ::content h4 {
+                position: relative;
+                margin: 0px;
+            }
+
+            :host ::content h4 > span{
+                display: inline-block;
+                margin-top: 5px;
+                margin-bottom: 5px;
+            }
+
+            :host ::content h4 .link {
+                display: inline-block;
+                position: absolute;
+                right: 0;
+            }
+
+            :host ::content paper-material {
+                padding: 10px 30px !important;
+                margin-top: 0px !important;
+                margin-bottom: 5px !important;
+            }
+
+            :host ::content .model-content{
+                margin-top: 10px;
+            }
+        </style>
+        <paper-material elevation="1" id="container">
+            <div class="model-header" id="header">
+                <h4>
+                    <span>{{model.classType.simpleName}}</span>
+                    <project-link class="link" settings="{{settings}}" model="{{model}}" project="{{project}}"></project-link>
+                </h4>
+            </div>
+            <div class="model-content" hidden$="{{!expanded}}">
+                <json-preview schema="{{model}}" domain-schemas="{{project.models}}"></json-preview>
+            </div>
+        </paper-material>
+    </template>
+    <script>
+        Polymer({
+            is: "model-element",
+
+            properties: {
+                settings: Object,
+                project: Object,
+                model: Object,
+                expanded: {
+                    type: Boolean,
+                    value: false
+                }
+            },
+
+            observers: ['_init(model)'],
+
+            listeners: {
+                'header.click': '_toggle'
+            },
+
+            _toggle: function () {
+                this.expanded = !this.expanded;
+            },
+
+            _init: function () {
+                console.info(this.model);
+            }
+        });
+    </script>
+</dom-module>

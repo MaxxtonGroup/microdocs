@@ -3,6 +3,7 @@
 <link rel="import" href="../components/project-link.html">
 <link rel="import" href="../components/project-endpoint.html">
 <link rel="import" href="../components/json-preview.html">
+<link rel="import" href="../components/model-element.html">
 
 
 <dom-module id="project-route">
@@ -22,50 +23,59 @@
                 position: relative;
             }
 
-            :host ::content .model-link {
+            :host ::content .client-title {
+                margin-bottom: 5px;
+            }
+
+            :host ::content .client-title project-link {
                 display: inline-block;
-                position: absolute;
-                right: 0;
+            }
+
+            :host ::content .client-title .note {
+                font-size: 12px;
+                color: #F44336;
             }
         </style>
-        <iron-ajax id="ajax" url="{{requestUrl}}" last-response="{{project}}" lastError="{{error}}"></iron-ajax>
-
-        <template is="dom-if" if="showLinks">
+        <template is="dom-if" if="{{!_empty(project.links)}}">
             <h3>Links</h3>
             <paper-material elevation="1">
                 <template is="dom-repeat" items="{{project.links}}" as="link">
-                    <project-link settings="{{settings}}" href="{{link.href}}" rel="{{link.rel}}"></project-link>
+                    <project-link settings="{{settings}}" href="{{link.href}}" rel="{{link.rel}}" target="_blank"></project-link>
                 </template>
             </paper-material>
         </template>
-        <template is="dom-if" if="{{showEndpoints}}">
+        <template is="dom-if" if="{{!_empty(project.endpoints)}}">
             <h3>Endpoints</h3>
             <template is="dom-repeat" items="{{project.endpoints}}" as="endpoint">
-                <project-endpoint settings="{{settings}}" endpoint="{{endpoint}}"
-                                  project="{{project}}"></project-endpoint>
+                <project-endpoint settings="{{settings}}" endpoint="{{endpoint}}" project="{{project}}"></project-endpoint>
             </template>
         </template>
-        <template is="dom-if" if="{{showClients}}">
+        <template is="dom-if" if="{{!_empty(project.clients)}}">
             <h3>Clients</h3>
             <template is="dom-repeat" items="{{project.clients}}" as="client">
-                <project-link settings="{{settings}}" href="" rel="{{client.name}}"></project-link>
+                <div class="client-title">
+                    <project-link settings="{{settings}}" href="{{_getProjectLink(client)}}" rel="{{client.name}}" no-target="true"></project-link>
+                    <span hidden&="{{_isClientNotLatest(client)}}" class="note">
+                        <span>
+                            (current:
+                            <span hidden$="{{client.version == null}}">unsupported</span><project-link hidden$="{{client.version != null}}" settings="{{settings}}" href="{{_getProjectLink(client, client.version)}}" rel="{{client.version}}" prefix="false" no-target="{{true}}">
+                            </project-link>, latest:
+                            <project-link settings="{{settings}}" href="{{_getProjectLink(client, client.latestVersion)}}" rel="{{client.latestVersion}}" prefix="false" no-target="true"></project-link>)
+                        </span>
+                    </span>
+                </div>
                 <template is="dom-repeat" items="{{client.endpoints}}" as="endpoint">
                     <project-endpoint settings="{{settings}}" endpoint="{{endpoint}}" project="{{project}}"></project-endpoint>
                 </template>
             </template>
         </template>
 
-        <template is="dom-if" if="{{showModels}}">
+        <template is="dom-if" if="{{!_empty(modelNames)}}">
             <h3>Models</h3>
             <template is="dom-repeat" items="{{modelNames}}" as="name">
-                <paper-material evelation="1">
-                    <h4>
-                        <span>{{_getModelName(name)}}</span>
-                        <project-link class="model-link" settings="{{settings}}" model="{{_getModel(name)}}"
-                                      project="{{project}}"></project-link>
-                    </h4>
-                    <json-preview schema="{{_getModel(name)}}" domain-schemas="{{project.models}}"></json-preview>
-                </paper-material>
+                <template is="dom-if" if="{{_isProjectModel(name)}}">
+                    <model-element model="{{_getModel(name)}}" project="{{project}}" settings="{{settings}}"></model-element>
+                </template>
             </template>
         </template>
 
@@ -78,63 +88,74 @@
             is: 'project-route',
 
             properties: {
-                name: String,
-                url: String,
-                project: Object,
-                error: Object,
+                project: {
+                    type: Object,
+                    observer: '_projectChange'
+                },
                 settings: Object,
 
-                showLinks: Boolean,
-                showEndpoints: Boolean,
-                showClients: Boolean,
-                modelNames: Array
+                modelNames: {
+                    computed: '_computeModelNames(project)'
+                }
             },
 
-            observers: [
-                '_requestData(name)',
-                '_requestData(url)',
-                '_initData(project)',
-                '_handleError(error)'
-            ],
+            _projectChange: function(project){
+                console.info('change project');
+                console.info(project);
+            },
 
-            _requestData: function (url) {
-                if (this.url != undefined && this.name != undefined) {
-                    this.requestUrl = this.url + "?project=" + this.name;
-                    this.$.ajax.generateRequest();
-                } else {
-                    this.requestUrl = undefined;
+            _computeModelNames: function (project) {
+                var modelNames = [];
+                if (!this._empty(this.project) && !this._empty(this.project.models)) {
+                    modelNames = Object.keys(this.project.models);
                 }
-            }
-            ,
-
-            _initData: function (data) {
-                if (this.project != undefined && this.project != null) {
-                    this.showLinks = this.project.links != null && this.project.links != undefined && this.project.links.length > 0;
-                    this.showEndpoints = this.project.endpoints != null && this.project.endpoints != undefined && this.project.endpoints.length != 0;
-                    this.showClients = this.project.clients != undefined && this.project.clients != null && this.project.clients.length != 0;
-                    if (this.project.models) {
-                        this.modelNames = Object.keys(this.project.models);
-                    }
-                    this.showModels = this.project.models != undefined && this.project.models != null && this.project.models.length != 0;
-                }
-            }
-            ,
-
-            _handleError: function (error) {
-
-            }
-            ,
+                return modelNames;
+            },
 
             _getModel: function (name) {
-                return this.project.models[name];
-            }
-            ,
+                if (!this._empty(this.project) && !this._empty(this.project.models)) {
+                    return this.project.models[name];
+                }
+                return null;
+            },
 
             _getModelName: function (name) {
                 return this.project.models[name].classType.simpleName;
+            },
+
+            _isProjectModel: function (name) {
+                var model = this._getModel(name);
+                if (!this._empty(model)) {
+                    return model.classType.name.indexOf(this.settings.links.package) == 0;
+                }
+            },
+
+            _isClientNotLatest: function (client) {
+                return client.latestVersion != client.version;
+            },
+
+            _getClientVersion: function (client) {
+                return client.version != null ? client.version : "unsupported";
+            },
+
+            _getProjectLink: function (client, version) {
+                var url = this.settings.baseUrl + client.group + "/" + client.name;
+                if (!this._empty(version)) {
+                    url += "/" + version;
+                }
+                return url;
+            },
+
+            _empty: function (obj) {
+                if (obj == undefined || obj == null) {
+                    return true;
+                }
+                if (obj.length != undefined && obj.length == 0) {
+                    return true;
+                }
+                return false;
             }
 
-        })
-        ;
+        });
     </script>
 </dom-module>

@@ -3,13 +3,15 @@
 
     var app = document.querySelector('#app');
 
+    app.currentProject = null;
     app.settings = {};
-
-    app.projects = [];
+    app.projects = {};
     app.groups = [];
+    app.loading = true;
 
     // Sets app default base URL
     app.baseUrl = '/';
+    app.settings['baseUrl'] = app.baseUrl;
     if (window.location.port === '') {  // if production
 
     }
@@ -21,20 +23,41 @@
         }
     };
 
-    app.currentProject = null;
-    app.currentGroup = null;
-
-    app.setProject = function (name, group) {
+    app.setProject = function (name, group, version) {
         if (name != undefined && group != undefined) {
-            this.currentProject = name;
-            this.currentGroup = group;
-            Polymer.dom(document).querySelector('#mainToolbar .app-name').textContent = name;
-            Polymer.dom(document).querySelector('#mainToolbar .bottom-title').textContent = group;
+            if(!this.empty(this.projects[name])){
+                var project = this.projects[name];
+                var versions = Object.keys(project).sort();
+                var latestVersion = versions[versions.length-1];
+                if(version == undefined || this.empty(project[version])){
+                    version = latestVersion;
+                }
+                app.currentProject = project[version];
+                if(!app.currentProject.loaded){
+                    app.loadProject(app.currentProject, function(project){
+                        app.currentProject = {};
+                        app.currentProject = project;
+                    });
+                }
+            }else if(app.loading) {
+                this.currentProject = {name: name, group: group, version: version, loaded: false};
+            }else{
+                this.currentProject = null;
+                this.$.toast.text = 'Can\'t find: project ' + name + '. Redirected you to Home Page';
+                this.$.toast.show();
+                page.redirect(this.baseUrl);
+            }
+
+            // this.currentProject = name;
+            // this.currentGroup = group;
+
+            // Polymer.dom(document).querySelector('#mainToolbar .app-name').textContent = name;
+            // Polymer.dom(document).querySelector('#mainToolbar .bottom-title').textContent = group;
         } else {
             this.currentProject = null;
-            this.currentGroup = null;
-            Polymer.dom(document).querySelector('#mainToolbar .app-name').textContent = "Microservice Documentation Tool";
-            Polymer.dom(document).querySelector('#mainToolbar .bottom-title').textContent = "Automatically documentate your microservice architecture";
+            // this.currentGroup = null;
+            // Polymer.dom(document).querySelector('#mainToolbar .app-name').textContent = "Microservice Documentation Tool";
+            // Polymer.dom(document).querySelector('#mainToolbar .bottom-title').textContent = "Automatically documentate your microservice architecture";
         }
     };
 
@@ -120,10 +143,69 @@
     fetch(app.getApiUrl("projects")).then(function(response){
         return response.json();
     }).then(function(projectsInfo){
-        app.projects = projectsInfo.projects;
+        projectsInfo.projects.forEach(function(project){
+            if(app.empty(app.projects[project.name])){
+                // app.set(['projects', project.name], {});
+                app.projects[project.name] = {};
+            }
+            project.versions.forEach(function(version){
+                if(app.empty(app.projects[project.name][version])){
+                    // app.set(['projects', project.name, version], {});
+                    app.projects[project.name][version] = {};
+                }
+                var properties = Object.keys(project);
+                properties.forEach(function(property){
+                    // app.set(['projects', project.name, version, property], project[property]);
+                    app.projects[project.name][version][property] = project[property];
+                });
+                app.projects[project.name][version]['loaded'] = false;
+            });
+        });
+        var projects = app.projects;
+        app.projects = {};
+        app.projects = projects;
+
         app.groups = projectsInfo.groups;
+        app.loading = false;
+
+        if(app.currentProject != null){
+            app.setProject(app.currentProject.name, app.currentProject.group, app.currentProject.version);
+        }
     }).catch(function(e){
         console.error(e);
     });
+
+    app.empty = function (obj) {
+        if (obj == undefined || obj == null) {
+            return true;
+        }
+        if (obj.length && obj.length == 0) {
+            return true;
+        }
+        return false;
+    };
+
+    app.loadProject = function(project, callback){
+        if(project.loaded){
+            return;
+        }
+        console.info("load project: ");
+        console.info(project);
+        fetch(app.getApiUrl("project", {project: project.name})).then(function(response){
+            return response.json();
+        }).then(function(response){
+            var properties = Object.keys(response);
+            for(var i = 0; i < properties.length; i++){
+                var key = properties[i];
+                project[key] = response[key];
+            }
+            project.loaded = true;
+            app.projects[project.name][project.version] = project;
+            callback(project);
+        }).catch(function(e){
+            console.error(e);
+            project['loadError'] = true;
+        });
+    };
 
 })(document);

@@ -97,16 +97,16 @@
                 position: relative;
             }
 
-            :host ::content .endpoint-path[error], :host ::content .endpoint-path[error] *{
+            :host ::content .endpoint-path[error], :host ::content .endpoint-path[error] * {
                 color: #F44336;
             }
 
-            :host ::content .error-icon{
+            :host ::content .error-icon {
                 color: #F44336;
                 font-size: 14px;
             }
 
-            :host ::content .errors{
+            :host ::content .errors {
                 color: #F44336;
                 font-size: 14px;
             }
@@ -114,14 +114,12 @@
 
         <paper-material elevation="1" id="container">
             <div class="endpoint-header" id="header">
-        <span class="endpoint-method">
-          <span class$="{{endpoint.method}}">{{endpoint.method}}</span>
-        </span>
-                <span class="endpoint-path" id="path" error$="{{hasErrors}}">{{_markupPath(endpoint.path)}}</span>
-                <iron-icon class="error-icon" icon="icons:warning" hidden$="{{!hasErrors}}"></iron-icon>
-                <project-link settings="{{settings}}" rel={{endpoint.source.simpleName}}
-                              classpath="{{endpoint.source.name}}" line="{{endpoint.source.lineNumber}}"
-                              project="{{project}}"></project-link>
+                <span class="endpoint-method">
+                  <span class$="{{endpoint.method}}">{{endpoint.method}}</span>
+                </span>
+                <span class="endpoint-path" id="path" error$="{{!_empty(endpoint.errors)}}">{{_markupPath(endpoint.path)}}</span>
+                <iron-icon class="error-icon" icon="icons:warning" hidden$="{{_empty(endpoint.errors)}}"></iron-icon>
+                <project-link settings="{{settings}}" rel={{endpoint.source.simpleName}} classpath="{{endpoint.source.name}}" line="{{endpoint.source.lineNumber}}" project="{{project}}"></project-link>
             </div>
             <div class="endpoint-body" hidden$="{{!expanded}}">
                 <div class="description">{{endpoint.description}}</div>
@@ -130,9 +128,9 @@
                         <li>{{error}}</li>
                     </template>
                 </ul>
-                <h3 hidden$="{{!showRequest}}">Request</h3>
+                <h3 hidden$="{{!_showRequest(endpoint)}}">Request</h3>
                 <div class="endpoint-content">
-                    <div hidden$="{{!showParams}}">
+                    <div hidden$="{{!_showRequestParams(endpoint)}}">
                         <h4>Parameters</h4>
                         <template is="dom-repeat" items="{{endpoint.pathVariables}}">
                             <http-param request-param="{{item}}"></http-param>
@@ -141,35 +139,33 @@
                             <http-param request-param="{{item}}"></http-param>
                         </template>
                     </div>
-                    <div hidden$="{{!showRequestBody}}">
-                        <h4>Body
-              <span class="highlight"
-                    hidden$="{{!showRequestContentType}}">({{endpoint.requestBody.content-type}})</span>
-                            <project-link settings="{{settings}}" rel={{endpoint.requestBody.classType.simpleName}}
-                                          classpath="{{endpoint.requestBody.classType.name}}"
-                                          project="{{project}}"></project-link>
+                    <div hidden$="{{!_showRequestBody(endpoint)}}">
+                        <h4>
+                            Body
+                            <span class="highlight" hidden$="{{_empty(endpoint.requestBody.content-type)}}">({{endpoint.requestBody.content-type}})</span>
+                            <project-link settings="{{settings}}" rel={{endpoint.requestBody.classType.simpleName}} classpath="{{endpoint.requestBody.classType.name}}" project="{{project}}"></project-link>
                         </h4>
 
-                        <json-preview schema="[[endpoint.requestBody]]"
-                                      domain-schemas="[[project.models]]"></json-preview>
+                        <json-preview schema="[[endpoint.requestBody]]" domain-schemas="[[project.models]]"></json-preview>
                     </div>
                 </div>
 
-                <h3>Response</h3>
-                <template is="dom-repeat" items="{{endpoint.responses}}" as="response">
-                    <response-status response="[[response]]"></response-status>
+                <template is="dom-if" if="{{_showResponse(endpoint)}}">
+                    <h3>Response</h3>
+                    <template is="dom-repeat" items="{{endpoint.responses}}" as="response">
+                        <response-status response="[[response]]"></response-status>
+                    </template>
+                    <div class="endpoint-content">
+                        <div hidden$="{{!_showResponseBody(endpoint)}}">
+                            <h4>
+                                Body
+                                <span class="highlight" hidden$="{{_empty(endpoint.responseBody.content-type)}}">({{endpoint.responseBody.content-type}})</span>
+                                <project-link settings="{{settings}}" model="{{endpoint.responseBody}}" project="{{project}}"></project-link>
+                            </h4>
+                            <json-preview schema="[[endpoint.responseBody]]" domain-schemas="[[project.models]]"></json-preview>
+                        </div>
+                    </div>
                 </template>
-                <div class="endpoint-content">
-                    <div hidden$="{{!showResponseBody}}">
-                        <h4>Body
-                            <span class="highlight" hidden$="{{!showResponseContentType}}">({{endpoint.responseBody.content-type}})</span>
-                            <project-link settings="{{settings}}" model="{{endpoint.responseBody}}"
-                                          project="{{project}}"></project-link>
-                        </h4>
-                        <json-preview schema="[[endpoint.responseBody]]"
-                                      domain-schemas="[[project.models]]"></json-preview>
-                    </div>
-                </div>
             </div>
         </paper-material>
     </template>
@@ -178,25 +174,18 @@
             is: 'project-endpoint',
 
             properties: {
-                endpoint: Object,
+                endpoint: {
+                    type: Object,
+                    observer: '_initData'
+                },
                 expanded: {
                     type: Boolean,
-                    value: false
+                    value: false,
+                    notify: true
                 },
                 project: Object,
                 settings: Object,
-
-                showRequestBody: Boolean,
-                showResponseBody: Boolean,
-                showRequestContentType: Boolean,
-                showResponseContentType: Boolean,
-                showRequestParams: Boolean,
-                hasErrors: Boolean
             },
-
-            observers: [
-                '_initData(endpoint)',
-            ],
 
             listeners: {
                 'header.click': '_toggle'
@@ -208,21 +197,46 @@
 
             _initData: function (endpoint) {
                 this.$.path.innerHTML = this._markupPath(endpoint.path);
-                this.showRequestBody = this.endpoint.requestBody != undefined && this.endpoint.requestBody != null && this.endpoint.method.toLowerCase() != 'get';
-                this.showResponseBody = this.endpoint.responseBody != undefined && this.endpoint.responseBody != null;
-                this.showRequestContentType = this.endpoint.requestBody != null && this.endpoint.requestBody != undefined && this.endpoint.requestBody['content-type'] != undefined && this.endpoint.requestBody['content-type'] != null && this.endpoint.requestBody['content-type'] != "";
-                this.showResponseContentType = this.endpoint.responseBody != null && this.endpoint.responseBody != undefined && this.endpoint.responseBody['content-type'] != undefined && this.endpoint.responseBody['content-type'] != null && this.endpoint.responseBody['content-type'] != "";
-                this.showRequestParams = this.endpoint.requestParams != null && this.endpoint.requestParams != undefined && this.endpoint.requestParams.length > 0;
-                this.showPathVariables = this.endpoint.pathVariables != null && this.endpoint.pathVariables != undefined && this.endpoint.pathVariables.length > 0;
-                this.showParams = this.showRequestParams || this.showPathVariables;
-                this.showRequest = this.showRequestBody || this.showParams;
-                this.hasErrors = this.endpoint.errors != undefined && this.endpoint.errors != null && this.endpoint.errors.length != 0;
+            },
+
+            _showRequest: function (endpoint) {
+                return this._showRequestBody(endpoint) || this._showRequestParams(endpoint);
+            },
+
+            _showRequestParams: function (endpoint) {
+                return !this._empty(this.endpoint) && (!this._empty(this.endpoint.pathVariables) || !this._empty(this.endpoint.showRequestParams));
+            },
+
+            _showRequestBody: function (endpoint) {
+                return !this._empty(this.endpoint) && !this._empty(this.endpoint.requestBody);
+            },
+
+            _showResponse: function (endpoint) {
+                return this._showResponseBody(endpoint) || this._showResponses(endpoint);
+            },
+
+            _showResponseBody: function (endpoint) {
+                return !this._empty(this.endpoint) && !this._empty(this.endpoint.responseBody);
+            },
+
+            _showResponses: function (endpoint) {
+                return !this._empty(this.endpoint) && !this._empty(this.endpoint.responses);
             },
 
             _markupPath: function (path) {
                 path = path.replace(new RegExp('{', 'g'), "<span class='highlight'>{");
                 path = path.replace(new RegExp('}', 'g'), "}</span>");
                 return path;
+            },
+
+            _empty: function (obj) {
+                if (obj == undefined || obj == null) {
+                    return true;
+                }
+                if (obj.length && obj.length == 0) {
+                    return true;
+                }
+                return false;
             }
         });
     </script>
