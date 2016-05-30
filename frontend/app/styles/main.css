@@ -8,16 +8,42 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 */
 
 body {
-  background: #fafafa;
-  font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  color: #333;
+    background: #fafafa;
+    font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    color: #333;
 }
 
 .page-title {
-  outline: none;
+    outline: none;
 }
 
+#headerContainer {
+    z-index: 100;
+}
 
-#headerContainer{
-  z-index: 100;
+.version-box {
+    width: 100px;
+    text-align: right;
+
+    --paper-dropdown-menu-icon: {
+        color: white !important;
+    }
+
+}
+
+.version-box .label-and-input-container, .version-box .label-and-input-container label, .version-box iron-icon {
+    color: white !important;
+    padding-bottom: 10px;
+}
+
+.version-box .unfocused-line {
+    background: transparent !important;
+}
+
+.version-box .focused-line {
+    background: #2196F3 !important;
+}
+
+.version-box paper-item {
+    color: black !important
 }

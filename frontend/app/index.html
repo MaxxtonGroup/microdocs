@@ -64,7 +64,8 @@
             </paper-toolbar>
 
             <!-- Drawer Content -->
-            <service-menu base-url="[[baseUrl]]" projects="[[projects]]" groups="[[groups]]" settings="[[settings]]" route="[[route]]"></service-menu>
+            <service-menu base-url="[[baseUrl]]" projects="[[projects]]" groups="[[groups]]" settings="[[settings]]"
+                          route="[[route]]"></service-menu>
         </paper-scroll-header-panel>
 
         <!-- Main Area -->
@@ -77,7 +78,7 @@
 
                 <!-- Toolbar icons -->
                 <template is="dom-if" if="{{!empty(currentProject)}}">
-                    <paper-dropdown-menu label="{{currentProject.version}}">
+                    <paper-dropdown-menu id="version-box" class="version-box" label="{{currentProject.version}}">
                         <paper-listbox class="dropdown-content" selected="1">
                             <template is="dom-repeat" items="{{currentProject.versions}}">
                                 <paper-item>{{item}}</paper-item>
@@ -89,22 +90,23 @@
                 <!--<paper-icon-button icon="search"></paper-icon-button>-->
 
                 <!-- Application name -->
-                <template is="dom-if" if="{{empty(currentProject)}}">
-                    <div class="middle middle-container">
-                        <div class="app-name">Microservice Documentation Tool</div>
+                <div class="middle middle-container">
+                    <div class="app-name">
+                        <span hidden$="{{!empty(currentProject)}}">Microservice Documentation Tool</span>
+                        <span hidden$="{{empty(currentProject)}}">{{currentProject.name}}</span>
                     </div>
-                    <div class="bottom bottom-container">
-                        <div class="bottom-title">Automatically documentate your microservice architecture</div>
+                </div>
+                <div class="bottom bottom-container">
+                    <div class="bottom-title">
+                        <span hidden$="{{!empty(currentProject)}}">Automatically documentate your microservice architecture</span>
+                        <span hidden$="{{empty(currentProject)}}">{{currentProject.group}}</span>
+                        <span class="author-container">
+                            <template is="dom-repeat" items="{{currentProject.authors}}" as="author">
+                                <span class="author">@{{author}}</span>
+                            </template>
+                        </span>
                     </div>
-                </template>
-                <template is="dom-if" if="{{!empty(currentProject)}}">
-                    <div class="middle middle-container">
-                        <div class="app-name">{{currentProject.name}}</div>
-                    </div>
-                    <div class="bottom bottom-container">
-                        <div class="bottom-title">{{currentProject.group}}</div>
-                    </div>
-                </template>
+                </div>
             </paper-toolbar>
 
             <!-- Main Content -->
