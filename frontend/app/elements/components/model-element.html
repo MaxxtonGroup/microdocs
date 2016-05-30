@@ -32,11 +32,30 @@
             :host ::content .model-content{
                 margin-top: 10px;
             }
+
+            :host .model-name{
+                display: inline-block;
+                min-width: 300px;
+            }
+
+            :host .entity {
+                color: #2196F3;
+                font-size: 10px;
+            }
+
+            :host .table{
+                color: #4CAF50;
+                font-size: 10px;
+                text-transform: uppercase;
+            }
         </style>
         <paper-material elevation="1" id="container">
             <div class="model-header" id="header">
                 <h4>
-                    <span>{{model.classType.simpleName}}</span>
+                    <span class="model-name">{{model.classType.simpleName}}</span>
+                    <span hidden$="{{_null(model.tables)}}">
+                        <span class="entity">Table: </span><template is="dom-repeat" items="{{model.tables}}"><span hidden$="{{_zero(index)}}">,</span><span class="table">{{item}}</span></template>
+                    </span>
                     <project-link class="link" settings="{{settings}}" model="{{model}}" project="{{project}}"></project-link>
                 </h4>
             </div>
@@ -65,6 +84,14 @@
 
             _toggle: function () {
                 this.expanded = !this.expanded;
+            },
+
+            _null: function(obj){
+                return obj == null;
+            },
+
+            _zero: function(obj){
+                return obj == 0;
             }
         });
     </script>

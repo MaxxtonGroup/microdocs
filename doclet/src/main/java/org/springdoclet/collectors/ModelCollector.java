@@ -2,6 +2,7 @@ package org.springdoclet.collectors;
 
 import com.googlecode.jatl.MarkupBuilder;
 import com.sun.javadoc.*;
+import org.springdoclet.Annotations;
 import org.springdoclet.Collector;
 import org.springdoclet.CollectorUtils;
 import org.springdoclet.PathBuilder;
@@ -82,7 +83,9 @@ public class ModelCollector implements Collector {
                 return new SchemaArray(null, classType);
             }
         } else if (clazzDoc != null) {
-            schemas.put(type.qualifiedTypeName(), null); // reserve place
+            if(!schemas.containsKey(type.qualifiedTypeName())){
+                schemas.put(type.qualifiedTypeName(), null); // reserve place
+            }
             if(!root) {
                 Schema schema = new SchemaReference(CollectorUtils.getClassType(type));
 //                this.schemas.put(type.qualifiedTypeName(), schema);
@@ -120,6 +123,26 @@ public class ModelCollector implements Collector {
                         modelObject.addProperty(field.name(), schema);
                     }
                 }
+
+                AnnotationDesc[] annotations = clazzDoc.annotations();
+                if(CollectorUtils.getAnnotation(annotations, "javax.persistence.Entity") != null){
+                    List<String> tables = new ArrayList();
+
+                    for (AnnotationDesc annotation : annotations) {
+                        String annotationType = Annotations.getTypeName(annotation);
+                        if (annotationType != null && annotationType.startsWith("javax.persistence.Table") || annotationType.startsWith("javax.persistence.SecondaryTable")) {
+                            if(annotation != null && annotation.elementValues() != null){
+                                for(AnnotationDesc.ElementValuePair pair : annotation.elementValues()){
+                                    if(pair.element().name().equals("name")){
+                                        tables.add(pair.value().toString().replace("\"", ""));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    modelObject.setTables(tables);
+                }
+
                 return modelObject;
             }
         }

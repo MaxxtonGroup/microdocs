@@ -41,7 +41,8 @@ try{
             "version" => $pr['version'],
             "versions" => $pr['versions'],
             "errors" => $pr['errors'],
-            "clients" => $clients
+            "clients" => $clients,
+            "dependencies" => $pr['dependencies']
         ));
     }
 

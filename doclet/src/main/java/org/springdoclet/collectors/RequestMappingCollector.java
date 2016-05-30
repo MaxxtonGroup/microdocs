@@ -132,24 +132,24 @@ public class RequestMappingCollector implements Collector {
 
         // check consumes
         Set<String> consumTypes = new HashSet();
-        for(String type : defaultConsumes){
+        for (String type : defaultConsumes) {
             consumTypes.add(type);
         }
         AnnotationValue consumes = getElement(annotation.elementValues(), "consumes");
         if (consumes != null && consumes.value() != null && consumes.value() instanceof String[] && ((String[]) consumes.value()).length > 0) {
-            for(String type : (String[]) consumes.value()){
+            for (String type : (String[]) consumes.value()) {
                 consumTypes.add(type);
             }
             endpoint.setConsumes(consumTypes.toArray(new String[consumTypes.size()]));
         }
         // check produces
         Set<String> produceTypes = new HashSet();
-        for(String type : defaultProduces){
+        for (String type : defaultProduces) {
             produceTypes.add(type);
         }
         AnnotationValue produces = getElement(annotation.elementValues(), "produces");
         if (produces != null && produces.value() != null && produces.value() instanceof String[] && ((String[]) produces.value()).length > 0) {
-            for(String type : (String[]) produces.value()){
+            for (String type : (String[]) produces.value()) {
                 produceTypes.add(type);
             }
             endpoint.setProduces(produceTypes.toArray(new String[produceTypes.size()]));
@@ -183,9 +183,11 @@ public class RequestMappingCollector implements Collector {
             } else if (CollectorUtils.getAnnotation(parameter.annotations(), PATH_VARIABLE) != null) {
                 AnnotationDesc pathVariable = CollectorUtils.getAnnotation(parameter.annotations(), PATH_VARIABLE);
                 AnnotationValue name = getElement(pathVariable.elementValues(), "value");
+                String nameString = parameter.name();
                 if (name != null) {
-                    endpoint.addPathVariable(name.toString(), modelCollector.parseSchema(parameter.type()).getType(), description);
+                    nameString = name.toString();
                 }
+                endpoint.addPathVariable(nameString, modelCollector.parseSchema(parameter.type()).getType(), description);
             } else if (parameter.type().qualifiedTypeName().equals("org.springframework.data.domain.Pageable")) {
                 endpoint.addRequestParam(new Field("page", Schema.NUMBER, "page number", "0", false));
                 endpoint.addRequestParam(new Field("size", Schema.NUMBER, "items per page", "20", false));

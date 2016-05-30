@@ -145,9 +145,9 @@
                         <h4>
                             Body
                             <span hidden$="{{_empty(endpoint.consumes)}}">(<template is="dom-repeat" items="{{endpoint.consumes}}"><span hidden$="{{_zero(index)}}">,</span><span class="highlight">{{item}}</span></template>)</span>
-                            <project-link settings="{{settings}}" rel={{endpoint.requestBody.classType.simpleName}} classpath="{{endpoint.requestBody.classType.name}}" project="{{project}}"></project-link>
+                            <project-link settings="{{settings}}" model="{{endpoint.requestBody}}" project="{{project}}" project="{{project}}"></project-link>
                         </h4>
-                        <template is="dom-if" if="{{_isObjectOrArray(endpoint.responsebody)}}">
+                        <template is="dom-if" if="{{_isObjectOrArray(endpoint.requestBody)}}">
                             <json-preview schema="[[endpoint.requestBody]]" domain-schemas="[[project.models]]"></json-preview>
                         </template>
                     </div>
@@ -165,7 +165,7 @@
                                 <span hidden$="{{_empty(endpoint.produces)}}">(<template is="dom-repeat" items="{{endpoint.produces}}"><span hidden$="{{_zero(index)}}">,</span><span class="highlight">{{item}}</span></template>)</span>
                                 <project-link settings="{{settings}}" model="{{endpoint.responseBody}}" project="{{project}}"></project-link>
                             </h4>
-                            <template is="dom-if" if="{{_isObjectOrArray(endpoint.responsebody)}}">
+                            <template is="dom-if" if="{{_isObjectOrArray(endpoint.responseBody)}}">
                                 <json-preview schema="[[endpoint.responseBody]]" domain-schemas="[[project.models]]"></json-preview>
                             </template>
                         </div>
@@ -206,7 +206,6 @@
 
             _showRequest: function (endpoint) {
                 var showRequest = this._showRequestBody(endpoint) || this._showRequestParams(endpoint);
-                console.info("showRequest: " +(!this._empty(this.endpoint.pathVariables)));
                 return showRequest;
             },
 
@@ -240,14 +239,21 @@
                 if (obj == undefined || obj == null) {
                     return true;
                 }
-                if (obj.length && obj.length == 0) {
+                if (obj.length != undefined && obj.length == 0) {
                     return true;
                 }
                 return false;
             },
 
             _isObjectOrArray: function (model) {
-                return !this._empty(model) && (model.type == 'object' || model.type == 'array');
+                if(this._empty(model)){
+                    return false;
+                }
+                var m = model;
+                if(model['$ref'] != undefined && this.project['models'] != undefined){
+                    m = this.project['models'][model['$ref']];
+                }
+                return (m.type == 'object' || m.type == 'array');
             },
 
             _zero: function(number){

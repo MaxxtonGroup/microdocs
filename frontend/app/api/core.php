@@ -201,6 +201,11 @@ function getProjectData($project, $version = null)
         $json['links'] = $links;
     }
 
+    $json['dependencies'] = array();
+    if(isset($json['repository']) && !empty($json['repository'])){
+        array_push($json['dependencies'], "database");
+    }
+
     // add info
     $json['name'] = $project['name'];
     $json['group'] = $project['group'];
@@ -299,7 +304,7 @@ function checkEndpoint($clientEndpoint, $clientModels, $producerEndpoints, $prod
     $errors = array();
     foreach ($producerEndpoints as $producerEndpoint) {
         //compare mapping
-        if ($producerEndpoint['path'] == $clientEndpoint['path'] &&
+        if (comparePaths($producerEndpoint['path'],$clientEndpoint['path']) &&
             strtolower($producerEndpoint['method']) == strtolower($clientEndpoint['method'])
         ) {
 
@@ -363,6 +368,28 @@ function checkEndpoint($clientEndpoint, $clientModels, $producerEndpoints, $prod
 }
 
 /**
+ * Compare two paths and ignore variable segments
+ * @param $pathA
+ * @param $pathB
+ * @return bool
+ */
+function comparePaths($pathA, $pathB){
+    $segmentsA = explode("/", $pathA);
+    $segmentsB = explode("/", $pathB);
+    if(count($segmentsA) != count($segmentsB)){
+        return false;
+    }
+    for($i = 0; $i < count($segmentsA); $i++){
+        if(!(startsWith($segmentsA[$i], "{") && endsWith($segmentsA[$i], "}"))){
+            if($segmentsA[$i] != $segmentsB[$i]){
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+/**
  * Check two model schemas
  * @param $modelA base model
  * @param $modelB compare with modelA
@@ -376,7 +403,7 @@ function checkModels($modelA, $modelB, $modelName = "model"){
             $errors[] = "$modelName is missing";
         }
         if(isset($modelB) && !empty($modelB) && isset($modelB['type'])){
-            if($modelA['type'] != $modelB['type']){
+            if($modelA['type'] != $modelB['type'] && !($modelA['type'] == 'enum' && $modelB['type'] == 'string')){
                 $errors[] = "$modelName type mismatches: required " . $modelA['type'] . ' found ' . $modelB['type'];
             }else{
                 if($modelA['type'] == "object"){
@@ -641,4 +668,14 @@ function importSwaggerFile($json){
     }
 
     //todo: retrieve models and paths
+}
+
+function startsWith($haystack, $needle) {
+    // search backwards starting from haystack length characters from the end
+    return $needle === "" || strrpos($haystack, $needle, -strlen($haystack)) !== false;
+}
+
+function endsWith($haystack, $needle) {
+    // search forward starting from end minus needle length characters
+    return $needle === "" || (($temp = strlen($haystack) - strlen($needle)) >= 0 && strpos($haystack, $needle, $temp) !== false);
 }

@@ -20,6 +20,11 @@ try {
                     array_push($links, array("source" => $project['name'], "target" => $client['name'], "type" => "client"));
                 }
             }
+            if(isset($project['dependencies'])){
+                foreach($project['dependencies'] as $dependency){
+                    array_push($links, array("source" => $project['name'], "target" => $dependency, "type" => "dependency"));
+                }
+            }
         }
     }
 

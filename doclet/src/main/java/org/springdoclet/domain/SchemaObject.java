@@ -2,6 +2,7 @@
 package org.springdoclet.domain;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -11,6 +12,7 @@ import java.util.Map;
 public class SchemaObject extends Schema {
 	
     private final Map<String, Schema> properties = new HashMap();
+    private List<String> tables = null;
 
     public SchemaObject(ClassType classType) {
         super(Schema.OBJECT, classType);
@@ -27,6 +29,13 @@ public class SchemaObject extends Schema {
     public Map<String, Schema> getProperties(){
         return properties;
     }
-    
+
+    public List<String> getTables() {
+        return tables;
+    }
+
+    public void setTables(List<String> tables) {
+        this.tables = tables;
+    }
 }
 

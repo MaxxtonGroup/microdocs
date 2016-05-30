@@ -33,50 +33,52 @@
                 font-size: 14px;
             }
         </style>
-        <template is="dom-if" if="{{!_empty(project.links)}}">
-            <h3>Links</h3>
-            <paper-material elevation="1">
-                <template is="dom-repeat" items="{{project.links}}" as="link">
-                    <project-link settings="{{settings}}" href="{{link.href}}" rel="{{link.rel}}" target="_blank"></project-link>
-                </template>
-            </paper-material>
-        </template>
-        <template is="dom-if" if="{{!_empty(project.endpoints)}}">
-            <h3>Endpoints</h3>
-            <template is="dom-repeat" items="{{project.endpoints}}" as="endpoint">
-                <project-endpoint settings="{{settings}}" endpoint="{{endpoint}}" project="{{project}}"></project-endpoint>
+        <template is="dom-if" if="{{project.loaded}}">
+            <template is="dom-if" if="{{!_empty(project.links)}}">
+                <h3>Links</h3>
+                <paper-material elevation="1">
+                    <template is="dom-repeat" items="{{project.links}}" as="link">
+                        <project-link settings="{{settings}}" href="{{link.href}}" rel="{{link.rel}}" target="_blank"></project-link>
+                    </template>
+                </paper-material>
             </template>
-        </template>
-        <template is="dom-if" if="{{!_empty(project.clients)}}">
-            <h3>Clients</h3>
-            <template is="dom-repeat" items="{{project.clients}}" as="client">
-                <div class="client-title">
-                    <project-link settings="{{settings}}" href="{{_getProjectLink(client)}}" rel="{{client.name}}" no-target="true"></project-link>
-                    <template is="dom-if" if="{{_isClientNotLatest(client)}}">
-                        <span class="note">
-                            (current:
-                            <span hidden$="{{_empty(client.version)}}">unsupported</span><project-link hidden$="{{!_empty(client.version)}}" settings="{{settings}}" href="{{_getProjectLink(client, client.version)}}" rel="{{client.version}}" prefix="false" no-target="{{true}}">
-                            </project-link>, latest:
-                            <project-link settings="{{settings}}" href="{{_getProjectLink(client, client.latestVersion)}}" rel="{{client.latestVersion}}" prefix="false" no-target="true"></project-link>)
-                        </span>
-                    </template>
-                </div>
-                <ul class="errors">
-                    <template is="dom-repeat" items="{{client.errors}}" as="error">
-                        <li>{{error}}</li>
-                    </template>
-                </ul>
-                <template is="dom-repeat" items="{{client.endpoints}}" as="endpoint">
+            <template is="dom-if" if="{{!_empty(project.endpoints)}}">
+                <h3>Endpoints</h3>
+                <template is="dom-repeat" items="{{project.endpoints}}" as="endpoint" sort="_sortEndpoints">
                     <project-endpoint settings="{{settings}}" endpoint="{{endpoint}}" project="{{project}}"></project-endpoint>
                 </template>
             </template>
-        </template>
+            <template is="dom-if" if="{{!_empty(project.clients)}}">
+                <h3>Clients</h3>
+                <template is="dom-repeat" items="{{project.clients}}" as="client" sort="_sortClients">
+                    <div class="client-title">
+                        <project-link settings="{{settings}}" href="{{_getProjectLink(client)}}" rel="{{client.name}}" no-target="true"></project-link>
+                        <template is="dom-if" if="{{_isClientNotLatest(client)}}">
+                        <span class="note">
+                            (current:
+                            <span hidden$="{{!_empty(client.version)}}">unsupported</span><project-link hidden$="{{_empty(client.version)}}" settings="{{settings}}" href="{{_getProjectLink(client, client.version)}}" rel="{{client.version}}" prefix="false" no-target="{{true}}">
+                            </project-link>, latest:
+                            <project-link settings="{{settings}}" href="{{_getProjectLink(client, client.latestVersion)}}" rel="{{client.latestVersion}}" prefix="false" no-target="true"></project-link>)
+                        </span>
+                        </template>
+                    </div>
+                    <ul class="errors">
+                        <template is="dom-repeat" items="{{client.errors}}" as="error">
+                            <li>{{error}}</li>
+                        </template>
+                    </ul>
+                    <template is="dom-repeat" items="{{client.endpoints}}" as="endpoint" sort="_sortEndpoints">
+                        <project-endpoint settings="{{settings}}" endpoint="{{endpoint}}" project="{{project}}"></project-endpoint>
+                    </template>
+                </template>
+            </template>
 
-        <template is="dom-if" if="{{!_empty(modelNames)}}">
-            <h3>Models</h3>
-            <template is="dom-repeat" items="{{modelNames}}" as="name">
-                <template is="dom-if" if="{{_isProjectModel(name)}}">
-                    <model-element model="{{_getModel(name)}}" project="{{project}}" settings="{{settings}}"></model-element>
+            <template is="dom-if" if="{{!_empty(modelNames)}}">
+                <h3>Models</h3>
+                <template is="dom-repeat" items="{{modelNames}}" as="name" sort="_sortModels">
+                    <template is="dom-if" if="{{_isProjectModel(name)}}">
+                        <model-element model="{{_getModel(name)}}" project="{{project}}" settings="{{settings}}"></model-element>
+                    </template>
                 </template>
             </template>
         </template>
@@ -123,8 +125,7 @@
             },
 
             _isClientNotLatest: function (client) {
-                if(this._empty(client.latestVersion)){
-                    console.info(client.latestVersion);
+                if (this._empty(client.latestVersion)) {
                     return false;
                 }
                 return client.latestVersion != client.version;
@@ -150,6 +151,21 @@
                     return true;
                 }
                 return false;
+            },
+
+            _sortEndpoints: function(a, b){
+                if (a.path === b.path) return 0;
+                return a.path < b.path ? -1 : 1;
+            },
+
+            _sortClients: function(a, b){
+                if (a.name === b.name) return 0;
+                return a.name < b.name ? -1 : 1;
+            },
+
+            _sortModels: function(a, b){
+                if (a === b) return 0;
+                return a < b ? -1 : 1;
             }
 
         });
