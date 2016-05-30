@@ -94,7 +94,6 @@ public class RequestMappingCollector implements Collector {
     }
 
     private Endpoint processMethod(ClassDoc classDoc, MethodDoc methodDoc, String path, String httpMethod, AnnotationDesc annotation) {
-        System.out.println("processMethod: " + classDoc.qualifiedName() + "#" + methodDoc.name());
         Endpoint endpoint = new Endpoint(httpMethod, path);
         endpoint.setDescription(methodDoc.commentText());
 
@@ -207,7 +206,9 @@ public class RequestMappingCollector implements Collector {
         if (path != null) {
             fullPath += path;
         }
-        return fullPath.replaceAll("\"\"", "/").replaceAll("//", "/").replaceAll("\"", "");
+
+        fullPath = fullPath.replaceAll("//", "/").replaceAll("\"", "");
+        return fullPath;
     }
 
     private MappingElement getMappingElements(AnnotationDesc annotation) {

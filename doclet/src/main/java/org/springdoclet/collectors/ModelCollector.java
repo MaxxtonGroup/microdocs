@@ -35,10 +35,8 @@ public class ModelCollector implements Collector {
     }
 
     public Schema parseSchema(Type type) {
-        System.out.println("processModel(" + type.qualifiedTypeName());
         ClassType classType = CollectorUtils.getClassType(type);
         if(schemas.containsKey(type.qualifiedTypeName())){
-            System.out.println("return from cache");
             return new SchemaReference(classType);
         }
 
@@ -53,14 +51,12 @@ public class ModelCollector implements Collector {
     private Schema getScheme(Type type, Type generic, ClassType classType, boolean root) {
         ClassDoc clazzDoc = type.asClassDoc();
         if (clazzDoc != null && clazzDoc.enumConstants().length > 0) {//enum
-            System.out.println("enum");
             List<String> enums = new ArrayList();
             for (FieldDoc constants : clazzDoc.enumConstants()) {
                 enums.add(constants.name());
             }
             return new SchemaEnum(enums, classType);
         } else if (type.qualifiedTypeName().equals(String.class.getCanonicalName())) {
-            System.out.println("string");
             return new Schema(Schema.STRING, classType);
         } else if (type.qualifiedTypeName().equals(Integer.class.getCanonicalName()) || type.qualifiedTypeName().equals(Integer.TYPE.getCanonicalName())
                 || type.qualifiedTypeName().equals(Byte.class.getCanonicalName()) || type.qualifiedTypeName().equals(Byte.TYPE.getCanonicalName())
@@ -69,20 +65,16 @@ public class ModelCollector implements Collector {
                 || type.qualifiedTypeName().equals(Character.class.getCanonicalName()) || type.qualifiedTypeName().equals(Character.TYPE.getCanonicalName())
                 || type.qualifiedTypeName().equals(Float.class.getCanonicalName()) || type.qualifiedTypeName().equals(Float.TYPE.getCanonicalName())
                 || type.qualifiedTypeName().equals(Double.class.getCanonicalName()) || type.qualifiedTypeName().equals(Double.TYPE.getCanonicalName())) {
-            System.out.println("number");
             return new Schema(Schema.NUMBER, classType);
         } else if (type.qualifiedTypeName().equals(Boolean.class.getCanonicalName()) || type.qualifiedTypeName().equals(Boolean.TYPE.getCanonicalName())) {
-            System.out.println("boolean");
             return new Schema(Schema.BOOLEAN, classType);
         } else if (CollectorUtils.hasParent(type.asClassDoc(), List.class.getCanonicalName(), Iterator.class.getCanonicalName())) {
-            System.out.println("array");
             if (generic != null && classType != null && classType.getGenericType() != null) {
                 return new SchemaArray(getScheme(generic, classType.getGenericType().getGeneric(), classType.getGenericType(), false), classType);
             } else {
                 return new SchemaArray(null, classType);
             }
         } else if (clazzDoc != null) {
-            System.out.println("object");
             if(!root) {
                 Schema schema = new SchemaReference(CollectorUtils.getClassType(type));
 //                this.schemas.put(type.qualifiedTypeName(), schema);
@@ -92,7 +84,6 @@ public class ModelCollector implements Collector {
                 SchemaObject modelObject = new SchemaObject(classType);
                 for (FieldDoc field : clazzDoc.fields(false)) {
                     if (!field.isStatic()) {
-                        System.out.println("check field: " + field.name() + " ~ " + field.type().qualifiedTypeName());
                         ClassType paramType = CollectorUtils.getClassType(field.type());
 
                         if (paramType.getGeneric() == null && classType != null) {

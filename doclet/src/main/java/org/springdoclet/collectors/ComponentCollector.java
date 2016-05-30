@@ -22,7 +22,6 @@ public class ComponentCollector implements Collector {
     private Set<String> authors = new HashSet();
 
     public void processClass(ClassDoc classDoc, AnnotationDesc[] annotations) {
-        System.out.println("tags: " + classDoc.tags("author").length);
         for(Tag tag : classDoc.tags("author")){
             String author = tag.text().replaceAll("\\(.*\\)", "");
             if(!author.trim().equals("")) {
