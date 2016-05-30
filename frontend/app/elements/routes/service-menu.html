@@ -84,7 +84,7 @@
             </a>
             <template is="dom-repeat" items="{{groups}}" as="group">
                 <div class="group">{{group}}</div>
-                <template is="dom-repeat" items="{{projects}}" as="project" filter="{{_isInGroup(group)}}">
+                <template is="dom-repeat" items="{{projectList}}" as="project" filter="{{_isInGroup(group)}}">
                     <a data-route="{{baseUrl}}{{project.group}}/{{project.name}}" href="{{baseUrl}}{{project.group}}/{{project.name}}">
                         <iron-icon icon="{{project.icon}}"></iron-icon>
                         <span>{{project.name}}</span>
@@ -100,31 +100,28 @@
 
             properties: {
                 baseUrl: String,
-                projects: Array,
+                projects: Object,
                 groups: Array,
                 settings: Object,
-                route: String
+                route: String,
+
+                projectList: {
+                    type: Array,
+                    computed: '_asList(projects)'
+                }
             },
 
-            observers: ['_updateProjects(projects)', '_updateProjects(settings)'],
+            observers: ['_initProject(projects)'],
+
+            _initProject: function(projects){
+                console.info(projects);
+            },
 
             _isInGroup: function (group) {
                 return function (project) {
                     return project.group == group;
                 }
             },
-
-            _updateProjects: function (projects) {
-                var self = this;
-                if (this.projects != undefined) {
-                    this.projects.forEach(function (project) {
-                        project.icon = self._getIcon(project.group, project.name);
-                        project.hasError = project.errors != null && project.errors != undefined && project.errors > 0;
-                    });
-                }
-
-            }
-            ,
 
             _getIcon: function (group, project) {
                 if (this.settings != undefined) {
@@ -137,6 +134,24 @@
                 } else {
                     return "extension";
                 }
+            },
+
+            _asList: function(projects){
+                console.info(projects);
+                var list = [];
+                var keys = Object.keys(projects);
+                var self = this;
+                keys.forEach(function(name){
+                    var versions = Object.keys(projects[name]).sort();
+                    var latestVersion = versions[versions.length-1];
+                    if(projects[name][latestVersion] != undefined) {
+                        var project = projects[name][latestVersion];
+                        project.icon = self._getIcon(project.group, project.name);
+                        project.hasError = project.errors != null && project.errors != undefined && project.errors > 0;
+                        list.push(project);
+                    }
+                });
+                return list;
             }
         });
     </script>

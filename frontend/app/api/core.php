@@ -226,15 +226,18 @@ function checkProject(&$clientProject, $projects)
             $clientName = $client['name'];
             $clientEndpoints = &$client['endpoints'];
             $producerEndpoints = null;
+            $producerProject = null;
             // find producer endpoints of this client
-            foreach ($projects as $producerProject) {
-                if ($producerProject['name'] == $clientName) {
-                    $producerEndpoints = $producerProject['endpoints'];
+            foreach ($projects as $pp) {
+                if ($pp['name'] == $clientName) {
+                    $producerEndpoints = $pp['endpoints'];
+                    $producerProject = $pp;
                     break;
                 }
             }
             if ($producerEndpoints != null) {
                 // check compatible
+                $client['group'] = $producerProject['group'];
                 $client['latestVersion'] = $producerProject['version'];
                 foreach ($clientEndpoints as &$clientEndpoint) {
                     $endpointErrors = checkEndpoint($clientEndpoint, $producerEndpoints);
@@ -351,7 +354,7 @@ function checkEndpoint($clientEndpoint, $producerEndpoints)
 }
 
 function checkModels($modelA, $modelB){
-    
+
 }
 
 function traceClients(&$project, &$projectList){

@@ -24,10 +24,18 @@
         </style>
 
         <template is="dom-if" if="{{showLink}}">
-            <a href="{{href}}" target="{{target}}">
-                <iron-icon hidden$="{{prefix}}" icon="image:navigate-next"></iron-icon>
-                <span>{{rel}}</span>
-            </a>
+            <template is="dom-if" if="{{noTarget}}">
+                <a href="{{href}}">
+                    <iron-icon hidden$="{{prefix}}" icon="image:navigate-next"></iron-icon>
+                    <span>{{rel}}</span>
+                </a>
+            </template>
+            <template is="dom-if" if="{{!noTarget}}">
+                <a href="{{href}}" target="{{target}}">
+                    <iron-icon hidden$="{{prefix}}" icon="image:navigate-next"></iron-icon>
+                    <span>{{rel}}</span>
+                </a>
+            </template>
         </template>
         <template is="dom-if" if="{{!showLink}}">
             <iron-icon hidden$="{{prefix}}" icon="image:navigate-next"></iron-icon>
@@ -58,6 +66,10 @@
                 project: Object,
                 model: Object,
                 generic: Object,
+                noTarget: {
+                    type: Boolean,
+                    value: false
+                },
 
                 showGeneric: Boolean,
                 showLink: Boolean
