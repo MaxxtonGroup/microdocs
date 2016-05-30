@@ -119,7 +119,9 @@
                 </span>
                 <span class="endpoint-path" id="path" error$="{{!_empty(endpoint.errors)}}">{{_markupPath(endpoint.path)}}</span>
                 <iron-icon class="error-icon" icon="icons:warning" hidden$="{{_empty(endpoint.errors)}}"></iron-icon>
-                <project-link settings="{{settings}}" rel={{endpoint.source.simpleName}} classpath="{{endpoint.source.name}}" line="{{endpoint.source.lineNumber}}" project="{{project}}"></project-link>
+                <project-link settings="{{settings}}" rel={{endpoint.source.simpleName}}
+                              classpath="{{endpoint.source.name}}" line="{{endpoint.source.lineNumber}}"
+                              project="{{project}}"></project-link>
             </div>
             <div class="endpoint-body" hidden$="{{!expanded}}">
                 <div class="description">{{endpoint.description}}</div>
@@ -142,11 +144,12 @@
                     <div hidden$="{{!_showRequestBody(endpoint)}}">
                         <h4>
                             Body
-                            <span class="highlight" hidden$="{{_empty(endpoint.requestBody.content-type)}}">({{endpoint.requestBody.content-type}})</span>
+                            <span hidden$="{{_empty(endpoint.consumes)}}">(<template is="dom-repeat" items="{{endpoint.consumes}}"><span hidden$="{{_zero(index)}}">,</span><span class="highlight">{{item}}</span></template>)</span>
                             <project-link settings="{{settings}}" rel={{endpoint.requestBody.classType.simpleName}} classpath="{{endpoint.requestBody.classType.name}}" project="{{project}}"></project-link>
                         </h4>
-
-                        <json-preview schema="[[endpoint.requestBody]]" domain-schemas="[[project.models]]"></json-preview>
+                        <template is="dom-if" if="{{_isObjectOrArray(endpoint.responsebody)}}">
+                            <json-preview schema="[[endpoint.requestBody]]" domain-schemas="[[project.models]]"></json-preview>
+                        </template>
                     </div>
                 </div>
 
@@ -159,10 +162,12 @@
                         <div hidden$="{{!_showResponseBody(endpoint)}}">
                             <h4>
                                 Body
-                                <span class="highlight" hidden$="{{_empty(endpoint.responseBody.content-type)}}">({{endpoint.responseBody.content-type}})</span>
+                                <span hidden$="{{_empty(endpoint.produces)}}">(<template is="dom-repeat" items="{{endpoint.produces}}"><span hidden$="{{_zero(index)}}">,</span><span class="highlight">{{item}}</span></template>)</span>
                                 <project-link settings="{{settings}}" model="{{endpoint.responseBody}}" project="{{project}}"></project-link>
                             </h4>
-                            <json-preview schema="[[endpoint.responseBody]]" domain-schemas="[[project.models]]"></json-preview>
+                            <template is="dom-if" if="{{_isObjectOrArray(endpoint.responsebody)}}">
+                                <json-preview schema="[[endpoint.responseBody]]" domain-schemas="[[project.models]]"></json-preview>
+                            </template>
                         </div>
                     </div>
                 </template>
@@ -200,7 +205,9 @@
             },
 
             _showRequest: function (endpoint) {
-                return this._showRequestBody(endpoint) || this._showRequestParams(endpoint);
+                var showRequest = this._showRequestBody(endpoint) || this._showRequestParams(endpoint);
+                console.info("showRequest: " +(!this._empty(this.endpoint.pathVariables)));
+                return showRequest;
             },
 
             _showRequestParams: function (endpoint) {
@@ -237,6 +244,14 @@
                     return true;
                 }
                 return false;
+            },
+
+            _isObjectOrArray: function (model) {
+                return !this._empty(model) && (model.type == 'object' || model.type == 'array');
+            },
+
+            _zero: function(number){
+                return number == 0;
             }
         });
     </script>

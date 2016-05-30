@@ -16,6 +16,7 @@
 
             :host ::content .client-title {
                 margin-bottom: 5px;
+                margin-top: 10px;
             }
 
             :host ::content .client-title project-link {
@@ -25,6 +26,11 @@
             :host ::content .client-title .note {
                 font-size: 12px;
                 color: #F44336;
+            }
+
+            :host ::content .errors {
+                color: #F44336;
+                font-size: 14px;
             }
         </style>
         <template is="dom-if" if="{{!_empty(project.links)}}">
@@ -46,15 +52,20 @@
             <template is="dom-repeat" items="{{project.clients}}" as="client">
                 <div class="client-title">
                     <project-link settings="{{settings}}" href="{{_getProjectLink(client)}}" rel="{{client.name}}" no-target="true"></project-link>
-                    <span hidden&="{{_isClientNotLatest(client)}}" class="note">
-                        <span>
+                    <template is="dom-if" if="{{_isClientNotLatest(client)}}">
+                        <span class="note">
                             (current:
-                            <span hidden$="{{client.version == null}}">unsupported</span><project-link hidden$="{{client.version != null}}" settings="{{settings}}" href="{{_getProjectLink(client, client.version)}}" rel="{{client.version}}" prefix="false" no-target="{{true}}">
+                            <span hidden$="{{_empty(client.version)}}">unsupported</span><project-link hidden$="{{!_empty(client.version)}}" settings="{{settings}}" href="{{_getProjectLink(client, client.version)}}" rel="{{client.version}}" prefix="false" no-target="{{true}}">
                             </project-link>, latest:
                             <project-link settings="{{settings}}" href="{{_getProjectLink(client, client.latestVersion)}}" rel="{{client.latestVersion}}" prefix="false" no-target="true"></project-link>)
                         </span>
-                    </span>
+                    </template>
                 </div>
+                <ul class="errors">
+                    <template is="dom-repeat" items="{{client.errors}}" as="error">
+                        <li>{{error}}</li>
+                    </template>
+                </ul>
                 <template is="dom-repeat" items="{{client.endpoints}}" as="endpoint">
                     <project-endpoint settings="{{settings}}" endpoint="{{endpoint}}" project="{{project}}"></project-endpoint>
                 </template>
@@ -112,6 +123,10 @@
             },
 
             _isClientNotLatest: function (client) {
+                if(this._empty(client.latestVersion)){
+                    console.info(client.latestVersion);
+                    return false;
+                }
                 return client.latestVersion != client.version;
             },
 

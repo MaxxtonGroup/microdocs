@@ -1,6 +1,0 @@
-com.example.service.order
-com.example.service.order.client
-com.example.service.order.controller
-com.example.service.order.domain
-com.example.service.order.repository
-com.example.service.order.service

@@ -1,4 +1,3 @@
-<link rel="import" href="../../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../../bower_components/paper-menu/paper-menu.html">
 <link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
@@ -13,8 +12,13 @@
                 };
 
                 --paper-menu-focused-item-after: {
-                    background: var(--primary-color);
+                    background-color: #FF9800;
                 };
+            }
+
+            :host ::content paper-menu a.active{
+                background-color: rgba(33, 150, 243, 0.76);
+                color: white !important;
             }
 
             :host ::content paper-menu iron-icon {
@@ -61,7 +65,7 @@
                 position: relative;
             }
 
-            :host ::content .project-error{
+            :host ::content .project-error {
                 display: inline-block;
                 position: absolute;
                 right: 5px;
@@ -77,15 +81,15 @@
             }
 
         </style>
-        <paper-menu class="app-menu" attr-for-selected="data-route" selected="[[route]]">
-            <a data-route="home" href="{{baseUrl}}">
+        <paper-menu class="app-menu">
+            <a href="{{baseUrl}}" class$="{{_getSelectedClass('home', route)}}">
                 <iron-icon icon="home"></iron-icon>
                 <span>Home</span>
             </a>
             <template is="dom-repeat" items="{{groups}}" as="group">
                 <div class="group">{{group}}</div>
                 <template is="dom-repeat" items="{{projectList}}" as="project" filter="{{_isInGroup(group)}}">
-                    <a data-route="{{baseUrl}}{{project.group}}/{{project.name}}" href="{{baseUrl}}{{project.group}}/{{project.name}}">
+                    <a href="{{baseUrl}}{{project.group}}/{{project.name}}" class$="{{_getSelectedProjectClass(project.group,project.name, route)}}">
                         <iron-icon icon="{{project.icon}}"></iron-icon>
                         <span>{{project.name}}</span>
                         <span class="project-error" hidden$="{{!project.hasError}}">{{project.errors}}</span>
@@ -130,15 +134,14 @@
                 }
             },
 
-            _asList: function(projects){
-                console.info(projects);
+            _asList: function (projects) {
                 var list = [];
                 var keys = Object.keys(projects);
                 var self = this;
-                keys.forEach(function(name){
+                keys.forEach(function (name) {
                     var versions = Object.keys(projects[name]).sort();
-                    var latestVersion = versions[versions.length-1];
-                    if(projects[name][latestVersion] != undefined) {
+                    var latestVersion = versions[versions.length - 1];
+                    if (projects[name][latestVersion] != undefined) {
                         var project = projects[name][latestVersion];
                         project.icon = self._getIcon(project.group, project.name);
                         project.hasError = project.errors != null && project.errors != undefined && project.errors > 0;
@@ -146,6 +149,18 @@
                     }
                 });
                 return list;
+            },
+
+            _getSelectedProjectClass: function(group, project, route){
+                return this._getSelectedClass(group + "/" + project, route);
+            },
+
+            _getSelectedClass: function (path, route) {
+                var active = route.indexOf(path) == 0;
+                if (active) {
+                    return "active";
+                }
+                return "inactive";
             }
         });
     </script>

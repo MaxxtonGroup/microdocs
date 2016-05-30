@@ -95,6 +95,8 @@
             },
 
             _updateModel: function () {
+                this.generic = null;
+                this.showGeneric = false;
                 if (this.model != undefined && this.model != null) {
                     if (this.model['$ref'] && this.project && this.project.models != undefined && this.project.models[this.model['$ref']]) {
                         var m = this.project.models[this.model['$ref']];
