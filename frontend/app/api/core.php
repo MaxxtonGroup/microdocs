@@ -350,8 +350,25 @@ function checkEndpoint($clientEndpoint, $producerEndpoints)
     return $errors;
 }
 
-function checkModels($modelA, $modelB){
-    
+function checkModels($modelA, $modelListA, $modelB, $modelListB){
+    print_r($modelA);
+}
+
+function collectModel($model, $modelList){
+    if(isset($model['$ref']) && !empty($model['$ref'])){
+        if(isset($modelList[$model['$ref']]) && !empty($modelList[$model['$ref']])){
+            return $modelList[$model['$ref']];
+        }
+    }
+    if($model['type'] == "object"){
+        if(isset($model['properties'])){
+            $newProps = array();
+            foreach($model['properties'] as $key => $child){
+                $newProps[$key] = collectModel($child, $modelList);
+            }
+            $model['properties'] = $newProps;
+        }
+    }else if()
 }
 
 function traceClients(&$project, &$projectList){
