@@ -206,6 +206,9 @@ function getProjectData($project, $version = null)
     $json['group'] = $project['group'];
     $json['version'] = $version;
     $json['versions'] = getVersions($project);
+    if(!isset($json['models'])){
+        $json['models'] = array();
+    }
 
     return $json;
 }
@@ -240,7 +243,7 @@ function checkProject(&$clientProject, $projects)
                 $client['group'] = $producerProject['group'];
                 $client['latestVersion'] = $producerProject['version'];
                 foreach ($clientEndpoints as &$clientEndpoint) {
-                    $endpointErrors = checkEndpoint($clientEndpoint, $producerEndpoints);
+                    $endpointErrors = checkEndpoint($clientEndpoint, $clientProject['models'], $producerEndpoints, $producerProject['models']);
                     if (!empty($endpointErrors)) {
                         $errorCount += count($endpointErrors);
                         $clientEndpoint['errors'] = $endpointErrors;
@@ -258,7 +261,7 @@ function checkProject(&$clientProject, $projects)
                         $producerData = getProjectData($producerProject, $availableVersion);
                         $compatible = true;
                         foreach ($clientEndpoints as $clientEndpoint) {
-                            $endpointErrors = checkEndpoint($clientEndpoint, $producerData['endpoints']);
+                            $endpointErrors = checkEndpoint($clientEndpoint, $clientProject['models'], $producerData['endpoints'], $producerData['models']);
                             if (!empty($endpointErrors)) {
                                 $compatible = false;
                             }
@@ -290,7 +293,7 @@ function checkProject(&$clientProject, $projects)
  * @param $producerEndpoints
  * @return array list of errors
  */
-function checkEndpoint($clientEndpoint, $producerEndpoints)
+function checkEndpoint($clientEndpoint, $clientModels, $producerEndpoints, $producerModels)
 {
     global $_SETTINGS;
     $errors = array();
@@ -325,8 +328,11 @@ function checkEndpoint($clientEndpoint, $producerEndpoints)
             if ($_SETTINGS['check']['requestBody'] == true) {
                 if (isset($producerEndpoint['requestBody']) && !empty($producerEndpoint['requestBody'])) {
                     if (isset($clientEndpoint['requestBody']) && !empty($clientEndpoint['requestBody'])) {
-                        if (!checkModels($producerEndpoint['requestBody'],$clientEndpoint['requestBody'])){
-                            $errors[] = "Incompatible type for the request body";
+                        $cRequestBody = collectModel($clientEndpoint['requestBody'], $clientModels);
+                        $pRequestBody = collectModel($producerEndpoint['requestBody'], $producerModels);
+                        $modelErrors = checkModels($pRequestBody, $cRequestBody);
+                        foreach($modelErrors as $mError){
+                            $errors[] = "RequestBody: " . $mError;
                         }
                     } else {
                         $errors[] = "Missing RequestBody";
@@ -338,8 +344,11 @@ function checkEndpoint($clientEndpoint, $producerEndpoints)
             if ($_SETTINGS['check']['responseBody'] == true) {
                 if (isset($producerEndpoint['responseBody']) && !empty($producerEndpoint['responseBody'])) {
                     if (isset($clientEndpoint['responseBody']) && !empty($clientEndpoint['responseBody'])) {
-                        if (!checkModels($producerEndpoint['responseBody'], $clientEndpoint['responseBody'])){
-                            $errors[] = "Incompatible type for the response body";
+                        $cResponseBody = collectModel($clientEndpoint['responseBody'], $clientModels);
+                        $pResponseBody = collectModel($producerEndpoint['responseBody'], $producerModels);
+                        $modelErrors = checkModels($pResponseBody, $cResponseBody);
+                        foreach($modelErrors as $mError){
+                            $errors[] = "ResponseBody: " . $mError;
                         }
                     }
                 }
@@ -353,10 +362,56 @@ function checkEndpoint($clientEndpoint, $producerEndpoints)
     return $errors;
 }
 
-function checkModels($modelA, $modelB){
+/**
+ * Check two model schemas
+ * @param $modelA base model
+ * @param $modelB compare with modelA
+ * @param string $modelName current path
+ * @return array errors
+ */
+function checkModels($modelA, $modelB, $modelName = "model"){
+    $errors = array();
+    if(isset($modelA) && !empty($modelA) && isset($modelA['type'])){
+        if(isset($modelA['required']) && $modelA['required'] == true && (!isset($modelB) || empty($modelB))){
+            $errors[] = "$modelName is missing";
+        }
+        if(isset($modelB) && !empty($modelB) && isset($modelB['type'])){
+            if($modelA['type'] != $modelB['type']){
+                $errors[] = "$modelName type mismatches: required " . $modelA['type'] . ' found ' . $modelB['type'];
+            }else{
+                if($modelA['type'] == "object"){
+                    if(isset($modelA['properties']) && isset($modelB['properties'])) {
+                        $propertiesA = $modelA['properties'];
+                        $propertiesB = $modelB['properties'];
+                        foreach ($propertiesA as $key => $childA) {
+                            $name = ($modelName == "model" ? $key : $modelName . "." . $key);
+                            $childB = (isset($propertiesB[$key]) ? $propertiesB[$key] : null);
+                            $childErrors = checkModels($childA, $childB, $name);
+                            $errors = array_merge($errors, $childErrors);
+                        }
+                    }
+                }else if($modelA['type'] == "array"){
+                    if(isset($modelA['items']) && isset($modelB['items'])) {
+                        $itemsA = $modelA['items'];
+                        $itemsB = $modelB['items'];
+                        $name = ($modelName == "model" ? "0" : $modelName . ".0");
+                        $childErrors = checkModels($itemsA, $itemsB, $name);
+                        $errors = array_merge($errors, $childErrors);
+                    }
+                }
+            }
+        }
+    }
 
+    return $errors;
 }
 
+/**
+ * Resolve reference in models
+ * @param $model model to be resolved
+ * @param $modelList list of models
+ * @return mixed
+ */
 function collectModel($model, $modelList){
     if(isset($model['$ref']) && !empty($model['$ref'])){
         if(isset($modelList[$model['$ref']]) && !empty($modelList[$model['$ref']])){
@@ -371,9 +426,17 @@ function collectModel($model, $modelList){
             }
             $model['properties'] = $newProps;
         }
-    }else if()
+    }else if($model['type'] == "array"){
+        $model['items'] = collectModel($model['items'], $modelList);
+    }
+    return $model;
 }
 
+/**
+ * Trace the dependency tree and add missing project to it
+ * @param $project project where to start from tracing
+ * @param $projectList
+ */
 function traceClients(&$project, &$projectList){
     if (isset($project['clients']) && !empty($project['clients'])) {
         foreach($project['clients'] as &$client){

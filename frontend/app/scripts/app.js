@@ -189,8 +189,6 @@
         if(project.loaded){
             return;
         }
-        console.info("load project: ");
-        console.info(project);
         fetch(app.getApiUrl("project", {project: project.name})).then(function(response){
             return response.json();
         }).then(function(response){

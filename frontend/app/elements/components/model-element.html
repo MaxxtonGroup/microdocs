@@ -59,18 +59,12 @@
                 }
             },
 
-            observers: ['_init(model)'],
-
             listeners: {
                 'header.click': '_toggle'
             },
 
             _toggle: function () {
                 this.expanded = !this.expanded;
-            },
-
-            _init: function () {
-                console.info(this.model);
             }
         });
     </script>

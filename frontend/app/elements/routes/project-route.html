@@ -89,19 +89,13 @@
 
             properties: {
                 project: {
-                    type: Object,
-                    observer: '_projectChange'
+                    type: Object
                 },
                 settings: Object,
 
                 modelNames: {
                     computed: '_computeModelNames(project)'
                 }
-            },
-
-            _projectChange: function(project){
-                console.info('change project');
-                console.info(project);
             },
 
             _computeModelNames: function (project) {

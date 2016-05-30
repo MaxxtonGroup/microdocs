@@ -204,7 +204,7 @@
             },
 
             _showRequestParams: function (endpoint) {
-                return !this._empty(this.endpoint) && (!this._empty(this.endpoint.pathVariables) || !this._empty(this.endpoint.showRequestParams));
+                return !this._empty(this.endpoint) && (!this._empty(this.endpoint.pathVariables) || !this._empty(this.endpoint.requestParams));
             },
 
             _showRequestBody: function (endpoint) {

@@ -111,12 +111,6 @@
                 }
             },
 
-            observers: ['_initProject(projects)'],
-
-            _initProject: function(projects){
-                console.info(projects);
-            },
-
             _isInGroup: function (group) {
                 return function (project) {
                     return project.group == group;
