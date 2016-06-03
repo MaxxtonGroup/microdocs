@@ -1,6 +1,8 @@
 
 package org.springdoclet.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +15,7 @@ public class SchemaObject extends Schema {
 	
     private final Map<String, Schema> properties = new HashMap();
     private List<String> tables = null;
+    private String superReference = null;
 
     public SchemaObject(ClassType classType) {
         super(Schema.OBJECT, classType);
@@ -36,6 +39,15 @@ public class SchemaObject extends Schema {
 
     public void setTables(List<String> tables) {
         this.tables = tables;
+    }
+
+    @JsonProperty("$super")
+    public String getSuperReference() {
+        return superReference;
+    }
+
+    public void setSuperReference(String superReference) {
+        this.superReference = superReference;
     }
 }
 

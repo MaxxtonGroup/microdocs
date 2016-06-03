@@ -8,7 +8,7 @@
     "links": {
         "folder": "projects",
         "target": "_blank",
-        "package": "com.example",
+        "package": "com.maxxton",
         "source": "{links.folder}/{group}/{project}/{version}/source/{class}.html"
     },
     "colors": {

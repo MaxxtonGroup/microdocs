@@ -8,6 +8,8 @@ import org.springdoclet.CollectorUtils;
 import org.springdoclet.PathBuilder;
 import org.springdoclet.domain.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -74,7 +76,7 @@ public class ModelCollector implements Collector {
             return new Schema(Schema.NUMBER, classType);
         } else if (type.qualifiedTypeName().equals(Boolean.class.getCanonicalName()) || type.qualifiedTypeName().equals(Boolean.TYPE.getCanonicalName())) {
             return new Schema(Schema.BOOLEAN, classType);
-        } else if (type.qualifiedTypeName().equals(Date.class.getCanonicalName())) {
+        } else if (type.qualifiedTypeName().equals(Date.class.getCanonicalName()) || type.qualifiedTypeName().equals(LocalDate.class.getCanonicalName()) || type.qualifiedTypeName().equals(LocalDateTime.class.getCanonicalName())) {
             return new Schema(Schema.DATE, classType);
         } else if (CollectorUtils.hasParent(type.asClassDoc(), List.class.getCanonicalName(), Iterator.class.getCanonicalName())) {
             if (generic != null && classType != null && classType.getGenericType() != null) {
@@ -140,7 +142,15 @@ public class ModelCollector implements Collector {
                             }
                         }
                     }
+                    if(tables.isEmpty()){
+                        tables.add(clazzDoc.name().replaceAll("(.)([A-Z])", "$1_$2"));
+                    }
                     modelObject.setTables(tables);
+                }
+
+                if(clazzDoc.superclass() != null && !clazzDoc.superclass().qualifiedName().equals(Object.class.getCanonicalName())){
+                    modelObject.setSuperReference(clazzDoc.superclass().qualifiedName());
+                    parseSchema(clazzDoc.superclass());
                 }
 
                 return modelObject;
