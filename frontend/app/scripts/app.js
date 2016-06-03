@@ -130,7 +130,7 @@
             } else {
                 url += "&";
             }
-            url += key + "=" + params[key];
+            url += key + "=" + encodeURIComponent(params[key]);
             first = false;
         }
         return url;
