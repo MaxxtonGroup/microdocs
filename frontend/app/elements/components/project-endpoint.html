@@ -118,14 +118,14 @@
                   <span class$="{{endpoint.method}}">{{endpoint.method}}</span>
                 </span>
                 <span class="endpoint-path" id="path" error$="{{!_empty(endpoint.errors)}}">{{_markupPath(endpoint.path)}}</span>
-                <iron-icon class="error-icon" icon="icons:warning" hidden$="{{_empty(endpoint.errors)}}"></iron-icon>
+                <iron-icon class="error-icon" icon="icons:error" hidden$="{{_empty(endpoint.errors)}}"></iron-icon>
                 <project-link settings="{{settings}}" rel={{endpoint.source.simpleName}}
                               classpath="{{endpoint.source.name}}" line="{{endpoint.source.lineNumber}}"
                               project="{{project}}"></project-link>
             </div>
             <div class="endpoint-body" hidden$="{{!expanded}}">
                 <div class="description">{{endpoint.description}}</div>
-                <ul class="errors">
+                <ul class="errors" hidden$="{{_empty(endpoint.errors)}}">
                     <template is="dom-repeat" items="{{endpoint.errors}}" as="error">
                         <li>{{error}}</li>
                     </template>
@@ -250,7 +250,7 @@
                     return false;
                 }
                 var m = model;
-                if(model['$ref'] != undefined && this.project['models'] != undefined){
+                if(model['$ref'] != undefined && !this._empty(this.project) && this.project['models'] != undefined){
                     m = this.project['models'][model['$ref']];
                 }
                 return (m.type == 'object' || m.type == 'array');

@@ -3,6 +3,7 @@
  * (re)index all the project and dependencies
  * @author Steven Hermans
  */
+header('Content-Type: application/json');
 try{
     require 'core.php';
 
@@ -58,7 +59,7 @@ try{
     for($i = 0; $i < count($projectList); $i++){
         traceClients($projectList[$i], $projectList);
     }
-    
+
     // save _project.json
     foreach($projectList as $project){
         $_projectFile = "../" . $_SETTINGS['links']['folder'] . "/" . $project['group'] . "/" . $project['name'] . "/" . $project['version'] . "/_project.json";
@@ -71,8 +72,9 @@ try{
 
 
 //    header('Content-Type: application/json');
-    echo json_encode(array("indexing" => "succeed", "groups" => count($groups), "projects" => count($projectList)));
+    echo json_encode(array("status" => "succeed", "groups" => count($groups), "projects" => count($projectList)));
 } catch (Exception $e) {
     http_response_code(500);
-    throw $e;
+    $response = array("status" => "failed", "message" => $e->getMessage());
+    exit(json_encode($response));
 }

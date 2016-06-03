@@ -21,7 +21,7 @@
     <!-- Add to homescreen for Chrome on Android -->
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="application-name" content="PSK">
-    <link rel="icon" sizes="192x192" href="images/touch/chrome-touch-icon-192x192.png">
+    <link rel="icon" sizes="192x192" href="images/microdocs.png">
 
     <!-- Add to homescreen for Safari on iOS -->
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -60,12 +60,14 @@
 
             <!-- Drawer Toolbar -->
             <paper-toolbar id="drawerToolbar">
-                <span class="menu-name"><span class="blue">Micro</span><span class="orange">Docs</span></span>
+                <span class="menu-name">
+                    <img class="app-icon" src="images/microdocs.png" />
+                    <span class="blue">Micro</span><span class="orange">Docs</span>
+                </span>
             </paper-toolbar>
 
             <!-- Drawer Content -->
-            <service-menu base-url="[[baseUrl]]" projects="[[projects]]" groups="[[groups]]" settings="[[settings]]"
-                          route="[[route]]"></service-menu>
+            <service-menu base-url="[[baseUrl]]" projects="[[projects]]" groups="[[groups]]" settings="[[settings]]" route="[[route]]"></service-menu>
         </paper-scroll-header-panel>
 
         <!-- Main Area -->
@@ -78,10 +80,10 @@
 
                 <!-- Toolbar icons -->
                 <template is="dom-if" if="{{!empty(currentProject)}}">
-                    <paper-dropdown-menu id="version-box" class="version-box" label="{{currentProject.version}}">
-                        <paper-listbox class="dropdown-content" selected="1">
+                    <paper-dropdown-menu id="version-box" class="version-box">
+                        <paper-listbox id="version-list" class="dropdown-content" attr-for-selected="version" selected="[[currentProject.version]]" on-iron-select="updateVersion">
                             <template is="dom-repeat" items="{{currentProject.versions}}">
-                                <paper-item>{{item}}</paper-item>
+                                <paper-item version="{{item}}">{{item}}</paper-item>
                             </template>
                         </paper-listbox>
                     </paper-dropdown-menu>
@@ -113,7 +115,7 @@
             <div class="content">
                 <iron-pages attr-for-selected="data-route" selected="{{routeName}}">
                     <section data-route="home" tabindex="-1">
-                        <h3>Service Overview</h3>
+                        <h3>Services Overview</h3>
                         <paper-material elevation="1">
                             <dependency-graph url="[[getApiUrl('dependencies')]]"></dependency-graph>
                         </paper-material>
@@ -132,20 +134,22 @@
     </paper-toast>
 
     <!-- Uncomment next block to enable Service Worker support (1/2) -->
-    <paper-toast id="caching-complete"
-                 duration="6000"
-                 text="Caching complete! This app will work offline.">
-    </paper-toast>
+    <!--<template is="dom-if" if="{{settings.caching}}">-->
+        <!--<paper-toast id="caching-complete"-->
+                     <!--duration="6000"-->
+                     <!--text="Caching complete! This app will work offline.">-->
+        <!--</paper-toast>-->
 
-    <platinum-sw-register auto-register
-                          clients-claim
-                          skip-waiting
-                          base-uri="bower_components/platinum-sw/bootstrap"
-                          on-service-worker-installed="displayInstalledToast">
-        <platinum-sw-cache default-cache-strategy="fastest"
-                           cache-config-file="cache-config.json">
-        </platinum-sw-cache>
-    </platinum-sw-register>
+        <!--<platinum-sw-register auto-register-->
+                              <!--clients-claim-->
+                              <!--skip-waiting-->
+                              <!--base-uri="bower_components/platinum-sw/bootstrap"-->
+                              <!--on-service-worker-installed="displayInstalledToast">-->
+            <!--<platinum-sw-cache default-cache-strategy="fastest"-->
+                               <!--cache-config-file="cache-config.json">-->
+            <!--</platinum-sw-cache>-->
+        <!--</platinum-sw-register>-->
+    <!--</template>-->
 
 </template>
 

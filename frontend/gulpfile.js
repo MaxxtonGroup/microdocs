@@ -13,6 +13,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 require('es6-promise').polyfill();
 
 // Include Gulp & tools we'll use
+var gutil = require('gulp-util');
 var gulp = require('gulp');
 var $ = require('gulp-load-plugins')();
 var del = require('del');
@@ -126,6 +127,7 @@ gulp.task('copy', function() {
     'app/*',
     '!app/test',
     '!app/elements',
+    '!app/api',
     '!app/bower_components',
     '!app/cache-config.json',
     '!**/.DS_Store'
@@ -154,6 +156,15 @@ gulp.task('fonts', function() {
     }));
 });
 
+// Copy api to dist
+gulp.task('api', function() {
+    return gulp.src(['app/api/**'])
+        .pipe(gulp.dest(dist('api')))
+        .pipe($.size({
+            title: 'api'
+        }));
+});
+
 // Scan your HTML for assets & optimize them
 gulp.task('html', function() {
   return optimizeHtmlTask(
@@ -169,8 +180,11 @@ gulp.task('vulcanize', function() {
       inlineCss: true,
       inlineScripts: true
     }))
+      .on('error', gutil.log)
     .pipe(gulp.dest(dist('elements')))
-    .pipe($.size({title: 'vulcanize'}));
+      .on('error', gutil.log)
+    .pipe($.size({title: 'vulcanize'}))
+      .on('error', gutil.log);
 });
 
 // Generate config data for the <sw-precache-cache> element.
@@ -271,8 +285,8 @@ gulp.task('default', ['clean'], function(cb) {
   // Uncomment 'cache-config' if you are going to use service workers.
   runSequence(
     ['ensureFiles', 'copy', 'styles'],
-    ['images', 'fonts', 'html'],
-    'vulcanize', 'cache-config',
+    ['images', 'fonts', 'html', 'api'],
+    'vulcanize', //'cache-config',
     cb);
 });
 

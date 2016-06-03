@@ -69,7 +69,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         page('/:group/:name/:version', function (data) {
             app.route = data.params.group + '/' + data.params.name;
             app.routeName = ':group/:name';
-            app.setProject(data.params.name, data.params.group);
+            app.setProject(data.params.name, data.params.group, data.params.version);
             app.params = data.params;
             setFocus(app.route);
         });

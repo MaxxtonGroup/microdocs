@@ -31,7 +31,7 @@ body {
 
 }
 
-.version-box .label-and-input-container, .version-box .label-and-input-container label, .version-box iron-icon {
+.version-box .label-and-input-container, .version-box .label-and-input-container input, .version-box iron-icon {
     color: white !important;
     padding-bottom: 10px;
 }

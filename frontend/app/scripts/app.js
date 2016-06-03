@@ -4,7 +4,7 @@
     var app = document.querySelector('#app');
 
     app.currentProject = null;
-    app.settings = {};
+    app.settings = {caching: false};
     app.projects = {};
     app.groups = [];
     app.loading = true;
@@ -23,25 +23,35 @@
         }
     };
 
+    app.updateVersion = function(){
+        var version = app.$.mainToolbar.querySelector('#version-list').selected;
+        console.info(this.currentProject + " - " + version + " - " + this.currentProject.version);
+        if(this.currentProject != null && this.currentProject.version != version) {
+            page.redirect(this.baseUrl + this.currentProject.group + "/" + this.currentProject.name + "/" + version);
+            // this.setProject(this.currentProject.name, this.currentProject.group, version);
+        }
+    };
+
     app.setProject = function (name, group, version) {
         if (name != undefined && group != undefined) {
-            if(!this.empty(this.projects[name])){
+            if (!this.empty(this.projects[name])) {
                 var project = this.projects[name];
                 var versions = Object.keys(project).sort();
-                var latestVersion = versions[versions.length-1];
-                if(version == undefined || this.empty(project[version])){
+                var latestVersion = versions[versions.length - 1];
+                if (version == undefined || this.empty(project[version])) {
                     version = latestVersion;
                 }
                 app.currentProject = project[version];
-                if(!app.currentProject.loaded){
-                    app.loadProject(app.currentProject, function(project){
+                console.info("go to: " + name + ":" + version);
+                if (!app.currentProject.loaded) {
+                    app.loadProject(app.currentProject, function (project) {
                         app.currentProject = {};
                         app.currentProject = project;
                     });
                 }
-            }else if(app.loading) {
+            } else if (app.loading) {
                 this.currentProject = {name: name, group: group, version: version, loaded: false};
-            }else{
+            } else {
                 this.currentProject = null;
                 this.$.toast.text = 'Can\'t find: project ' + name + '. Redirected you to Home Page';
                 this.$.toast.show();
@@ -118,6 +128,7 @@
                 url += "&";
             }
             url += key + "=" + params[key];
+            first = false;
         }
         return url;
     };
@@ -130,49 +141,95 @@
         return this.getApiUrl(endpoint, params);
     };
 
-    fetch(app.getApiUrl("settings")).then(function(response){
-        return response.json();
-    }).then(function(settings){
-        for(var key in settings){
-            app.settings[key] = settings[key];
+    fetch(app.getApiUrl("settings")).then(function (response) {
+        if (response.status >= 400) {
+            response.json().then(function (error) {
+                console.error(error.message);
+                app.$.toast.text = "Failed to load Settings. " + error.message;
+                app.$.toast.show();
+            }).catch(function(e){
+                console.error(e);
+                app.$.toast.text = "Failed to load Settings.";
+                app.$.toast.show();
+            });;
+        } else {
+            response.json().then(function (settings) {
+                for (var key in settings) {
+                    app.settings[key] = settings[key];
+                }
+                var s = app.settings;
+                app.settings = {};
+                app.settings = s;
+            }).catch(function (e) {
+                console.error(e);
+                app.$.toast.text = "Failed to load Settings";
+                app.$.toast.show();
+            });
         }
-    }).catch(function(e){
+    }).catch(function (e) {
         console.error(e);
+        app.$.toast.text = "Failed to load Settings";
+        app.$.toast.show();
     });
 
-    fetch(app.getApiUrl("projects")).then(function(response){
-        return response.json();
-    }).then(function(projectsInfo){
-        projectsInfo.projects.forEach(function(project){
-            if(app.empty(app.projects[project.name])){
-                // app.set(['projects', project.name], {});
-                app.projects[project.name] = {};
-            }
-            project.versions.forEach(function(version){
-                if(app.empty(app.projects[project.name][version])){
-                    // app.set(['projects', project.name, version], {});
-                    app.projects[project.name][version] = {};
-                }
-                var properties = Object.keys(project);
-                properties.forEach(function(property){
-                    // app.set(['projects', project.name, version, property], project[property]);
-                    app.projects[project.name][version][property] = project[property];
+    fetch(app.getApiUrl("projects")).then(function (response) {
+        if (response.status >= 400) {
+            response.json().then(function (error) {
+                console.error(error.message);
+                app.$.toast.text = "Failed to load projects. " + error.message;
+                app.$.toast.show();
+            }).catch(function(e){
+                console.error(e);
+                app.$.toast.text = "Failed to load projects.";
+                app.$.toast.show();
+            });;
+        } else {
+            response.json().then(function (projectsInfo) {
+                projectsInfo.projects.forEach(function (project) {
+                    if (app.empty(app.projects[project.name])) {
+                        // app.set(['projects', project.name], {});
+                        app.projects[project.name] = {};
+                    }
+                    project.versions.forEach(function (version) {
+                        if (app.empty(app.projects[project.name][version])) {
+                            // app.set(['projects', project.name, version], {});
+                            app.projects[project.name][version] = {
+                                name: project.name,
+                                group: project.group,
+                                version: version,
+                                versions: project.versions,
+                                loaded: false
+                            };
+                        }
+                    });
+
+                    var properties = Object.keys(project);
+                    properties.forEach(function (property) {
+                        // app.set(['projects', project.name, version, property], project[property]);
+                        app.projects[project.name][project.version][property] = project[property];
+                    });
+                    app.projects[project.name][project.version]['loaded'] = false;
                 });
-                app.projects[project.name][version]['loaded'] = false;
+                var projects = app.projects;
+                app.projects = {};
+                app.projects = projects;
+
+                app.groups = projectsInfo.groups;
+                app.loading = false;
+
+                if (app.currentProject != null) {
+                    app.setProject(app.currentProject.name, app.currentProject.group, app.currentProject.version);
+                }
+            }).catch(function (e) {
+                console.error(e);
+                app.$.toast.text = "Failed to load projects";
+                app.$.toast.show();
             });
-        });
-        var projects = app.projects;
-        app.projects = {};
-        app.projects = projects;
-
-        app.groups = projectsInfo.groups;
-        app.loading = false;
-
-        if(app.currentProject != null){
-            app.setProject(app.currentProject.name, app.currentProject.group, app.currentProject.version);
         }
-    }).catch(function(e){
+    }).catch(function (e) {
         console.error(e);
+        app.$.toast.text = "Failed to load projects";
+        app.$.toast.show();
     });
 
     app.empty = function (obj) {
@@ -185,24 +242,47 @@
         return false;
     };
 
-    app.loadProject = function(project, callback){
-        if(project.loaded){
+    app.loadProject = function (project, callback) {
+        if (project.loaded) {
             return;
         }
-        fetch(app.getApiUrl("project", {project: project.name})).then(function(response){
-            return response.json();
-        }).then(function(response){
-            var properties = Object.keys(response);
-            for(var i = 0; i < properties.length; i++){
-                var key = properties[i];
-                project[key] = response[key];
+        console.info("load project: " + project.name + ":" + project.version);
+        fetch(app.getApiUrl("project", {project: project.name, version: project.version})).then(function (response) {
+            if(response.status >= 400){
+                response.json().then(function (error) {
+                    console.error(error.message);
+                    app.$.toast.text = "Failed to load project " + project.name + ":" + project.version + ". " + error.message;
+                    app.$.toast.show();
+                }).catch(function(e){
+                    console.error(e);
+                    app.$.toast.text = "Failed to load project " + project.name + ":" + project.version;
+                    app.$.toast.show();
+                });
+            }else{
+                response.json().then(function(response){
+                    var properties = Object.keys(response);
+                    for (var i = 0; i < properties.length; i++) {
+                        var key = properties[i];
+                        if(key != 'name' && key != 'group' && key != 'version' && key != 'versions') {
+                            project[key] = response[key];
+                        }
+                    }
+                    project.loaded = true;
+                    app.projects[project.name][project.version] = project;
+                    project['loadError'] = false;
+                    callback(project);
+                }).catch(function (e) {
+                    console.error(e);
+                    project['loadError'] = true;
+                    app.$.toast.text = "Failed to load project " + project.name + ":" + project.version;
+                    app.$.toast.show();
+                });;
             }
-            project.loaded = true;
-            app.projects[project.name][project.version] = project;
-            callback(project);
-        }).catch(function(e){
+        }).catch(function (e) {
             console.error(e);
             project['loadError'] = true;
+            app.$.toast.text = "Failed to load project " + project.name + ":" + project.version;
+            app.$.toast.show();
         });
     };
 

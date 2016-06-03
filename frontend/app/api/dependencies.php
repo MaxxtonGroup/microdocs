@@ -3,6 +3,7 @@
  * Get list of all projectgroups with projects.
  * @author Steven Hermans
  */
+header('Content-Type: application/json');
 try {
     require 'core.php';
 
@@ -30,9 +31,9 @@ try {
 
     $response = array("nodes" => $projects, "links" => $links);
 
-    header('Content-Type: application/json');
     echo json_encode($response);
 } catch (Exception $e) {
     http_response_code(500);
-    throw $e;
+    $response = array("status" => "failed", "message" => $e->getMessage());
+    exit(json_encode($response));
 }

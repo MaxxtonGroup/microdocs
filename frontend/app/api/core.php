@@ -506,8 +506,10 @@ function getAggregatedProjects($asJson = true){
     $projectsFile = "../" . $_SETTINGS['links']['folder'] . "/projects.json";
 
     if(!file_exists($projectsFile)){
-        http_response_code(404);
-        exit("Run reindex.php first");
+        header('Content-Type: application/json');
+        http_response_code(500);
+        $errorResponse = array("status" => "failed", "message" => "Run reindex first");
+        exit(json_encode($errorResponse));
     }
 
     $string = file_get_contents($projectsFile);
@@ -526,16 +528,31 @@ function getAggregatedProjects($asJson = true){
 }
 
 /**
+ * Check if version of a project has existed
+ * @param $project
+ * @param $version
+ * @return bool
+ */
+function hasAggregatedVersionExists($project, $version){
+    global $_SETTINGS;
+    return is_dir("../" . $_SETTINGS['links']['folder'] . "/" . $project['group'] . "/" . $project['name'] . "/" . $version);
+}
+
+/**
  * Get aggregated project from ../{links.folder}/{group}/{projectMame}/{version}/_project.json
  * @param $project project object
  * @param $version version to load
  * @param bool $asJson
- * @return mixed content of _project.json as json
+ * @return mixed content of _project.json as json or null if file does not exists
  * @throws Exception
  */
 function getAggregatedProject($project, $version, $asJson = true){
     global $_SETTINGS;
     $projectFile = "../" . $_SETTINGS['links']['folder'] . "/" . $project['group'] . "/" . $project['name'] . "/" . $version . "/_project.json";
+
+    if(!is_file($projectFile)){
+        return null;
+    }
 
     $string = file_get_contents($projectFile);
     if ($string === false) {
