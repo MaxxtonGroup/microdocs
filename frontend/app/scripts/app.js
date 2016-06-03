@@ -12,8 +12,9 @@
     // Sets app default base URL
     app.baseUrl = '/';
     app.settings['baseUrl'] = app.baseUrl;
+    console.info(window.location.port);
     if (window.location.port === '') {  // if production
-
+        app.baseUrl = "/microdocs/";
     }
 
     app.displayInstalledToast = function () {
@@ -118,8 +119,10 @@
         app.$.paperDrawerPanel.closeDrawer();
     };
 
+    var baseUrl = app.baseUrl;
+
     app.getApiUrl = function (endpoint, params) {
-        var url = "/api/" + endpoint + ".php";
+        var url = baseUrl + "api/" + endpoint + ".php";
         var first = true;
         for (var key in params) {
             if (first) {
