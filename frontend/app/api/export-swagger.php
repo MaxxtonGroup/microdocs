@@ -10,6 +10,13 @@ try {
     $json = getAggregatedProjects();
     $projectList = $json['projects'];
 
+    // get project black list
+    if (isset($_GET['exclude']) && !empty($_GET['exclude'])) {
+        $projectBlackList = explode(",", $_GET['exclude']);
+    } else {
+        $projectBlackList = $_SETTINGS['swagger']['exclude'];
+    }
+
     // get project white list
     if (isset($_GET['projects']) && !empty($_GET['projects'])) {
         $projectWhiteList = explode(",", $_GET['projects']);
@@ -47,6 +54,22 @@ try {
                     array_push($newArray, $project);
                     break;
                 }
+            }
+        }
+        $projectList = $newArray;
+    }
+    if (!empty($projectBlackList)) {
+        $newArray = array();
+        foreach ($projectList as $project) {
+            $blackListed = false;
+            foreach ($projectBlackList as $item) {
+                if ($item == $project['name']) {
+                    $blackListed = true;
+                    break;
+                }
+            }
+            if(!$blackListed){
+                array_push($newArray, $project);
             }
         }
         $projectList = $newArray;

@@ -52,7 +52,8 @@
         "groups": [
             "services"
         ],
-        "projects": []
+        "projects": [],
+        "exclude": []
     },
     "cleanup": {
         "storeLimit": 5,
