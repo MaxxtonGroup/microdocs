@@ -119,6 +119,7 @@
         app.$.paperDrawerPanel.closeDrawer();
     };
 
+    app.encodeURIComponent = encodeURIComponent;
     var baseUrl = app.baseUrl;
 
     app.getApiUrl = function (endpoint, params) {

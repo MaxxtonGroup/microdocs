@@ -81,9 +81,9 @@
                 <!-- Toolbar icons -->
                 <template is="dom-if" if="{{!empty(currentProject)}}">
                     <paper-dropdown-menu id="version-box" class="version-box">
-                        <paper-listbox id="version-list" class="dropdown-content" attr-for-selected="version" selected="[[currentProject.version]]" on-iron-select="updateVersion">
+                        <paper-listbox id="version-list" class="dropdown-content" attr-for-selected="version" selected="[[encodeURIComponent(currentProject.version)]]" on-iron-select="updateVersion">
                             <template is="dom-repeat" items="{{currentProject.versions}}">
-                                <paper-item version="{{item}}">{{item}}</paper-item>
+                                <paper-item version="{{encodeURIComponent(item)}}">{{item}}</paper-item>
                             </template>
                         </paper-listbox>
                     </paper-dropdown-menu>
