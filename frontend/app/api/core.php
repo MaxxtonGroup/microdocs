@@ -168,6 +168,7 @@ function getProjectData($project, $version = null)
     }
 
     $rootFolder = "../" . $_SETTINGS['links']['folder'];
+    $basePath = $_SETTINGS['links']['basePath'];
     $projectFolder = $rootFolder . "/" . $project['group'] . "/" . $project['name'] . "/" . $version;
     $projectFile = $projectFolder . "/project.json";
     $json = array();
@@ -188,7 +189,7 @@ function getProjectData($project, $version = null)
     $folders = scandir($projectFolder);
     foreach ($folders as $folder) {
         if ($folder != "." && $folder != ".." && is_dir($projectFolder . "/" . $folder)) {
-            array_push($links, array("rel" => basename($folder), "href" => substr($projectFolder, 2) . "/" . $folder));
+            array_push($links, array("rel" => basename($folder), "href" => $basePath . substr($projectFolder, 2) . "/" . $folder));
         }
     }
 

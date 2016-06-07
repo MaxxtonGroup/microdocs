@@ -6,6 +6,7 @@
         "responseBody": true
     },
     "links": {
+        "basePath": "/",
         "folder": "projects",
         "target": "_blank",
         "package": "com.maxxton",

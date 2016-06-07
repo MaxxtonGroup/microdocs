@@ -21,6 +21,14 @@ body {
     z-index: 100;
 }
 
+#drawer{
+    z-index: 150;
+}
+
+#scrim{
+    z-index: 149;
+}
+
 .version-box {
     width: 100px;
     text-align: right;
