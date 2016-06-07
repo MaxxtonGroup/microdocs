@@ -56,15 +56,11 @@ try {
     if (isset($_GET['title']) && !empty($_GET['title'])) {
         $title = $_GET['title'];
     } else {
-        $title = $_SETTINGS['apiblueprint']['title'];
+        $title = $_SETTINGS['info']['title'];
     }
 
     // get host
-    if (isset($_GET['host']) && !empty($_GET['host'])) {
-        $host = $_GET['host'];
-    } else {
-        $host = $_SETTINGS['apiblueprint']['host'];
-    }
+    $host = $_SETTINGS['info']['schemas'][0] . "://" . $_SETTINGS['info']['host'] . $_SETTINGS['info']['basePath'];
 
     // get format
     if (isset($_GET['format']) && !empty($_GET['format'])) {
@@ -74,10 +70,10 @@ try {
     }
 
     // get introduction
-    if (isset($_GET['introduction']) && !empty($_GET['introduction'])) {
+    if (isset($_GET['desc']) && !empty($_GET['desc'])) {
         $introduction = $_GET['introduction'];
     } else {
-        $introduction = $_SETTINGS['apiblueprint']['introduction'];
+        $introduction = $_SETTINGS['info']['description'];
     }
 } catch (Exception $e) {
     http_response_code(500);
@@ -85,7 +81,6 @@ try {
 }
 
 // start document
-
 echo "FORMAT: $format" . PHP_EOL;
 echo "HOST: $host" . PHP_EOL;
 echo PHP_EOL;
@@ -136,16 +131,16 @@ foreach($projectList as $project){
                 }
                 if(isset($endpoint['requestBody']) && !empty($endpoint['requestBody'])){
                     echo "    + Body" . PHP_EOL . PHP_EOL;
-                    echo renderModel($endpoint['requestBody']['schema'], 12) . PHP_EOL . PHP_EOL;
+                    echo renderModel($endpoint['requestBody'], 12) . PHP_EOL . PHP_EOL;
                     echo "    + Schema" . PHP_EOL . PHP_EOL;
-                    echo renderSchema($endpoint['requestBody']['schema'], 12) . PHP_EOL . PHP_EOL;
+                    echo renderSchema($endpoint['requestBody'], 12) . PHP_EOL . PHP_EOL;
                 }
                 if(isset($endpoint['responseBody']) && !empty($endpoint['responseBody'])){
                     echo "+ Response (" . $endpoint['requestBody']['content-type'] . ")" . PHP_EOL . PHP_EOL;
                     echo "    + Body" . PHP_EOL . PHP_EOL;
-                    echo renderModel($endpoint['requestBody']['schema'], 12) . PHP_EOL . PHP_EOL;
+                    echo renderModel($endpoint['requestBody'], 12) . PHP_EOL . PHP_EOL;
                     echo "    + Schema" . PHP_EOL . PHP_EOL;
-                    echo renderSchema($endpoint['requestBody']['schema'], 12) . PHP_EOL . PHP_EOL;
+                    echo renderSchema($endpoint['requestBody'], 12) . PHP_EOL . PHP_EOL;
                 }
             }
         }

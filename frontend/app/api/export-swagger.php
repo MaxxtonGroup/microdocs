@@ -1,6 +1,6 @@
 <?php
 /**
- * Export project to the 'api blueprint' standard
+ * Export project to the 'swagger 2.0' standard
  * @author Steven Hermans
  */
 try {
@@ -14,14 +14,14 @@ try {
     if (isset($_GET['projects']) && !empty($_GET['projects'])) {
         $projectWhiteList = explode(",", $_GET['projects']);
     } else {
-        $projectWhiteList = $_SETTINGS['apiblueprint']['projects'];
+        $projectWhiteList = $_SETTINGS['swagger']['projects'];
     }
 
     // get group white list
     if (isset($_GET['groups']) && !empty($_GET['groups'])) {
         $groupsWhiteList = explode(",", $_GET['groups']);
     } else {
-        $groupsWhiteList = $_SETTINGS['apiblueprint']['groups'];
+        $groupsWhiteList = $_SETTINGS['swagger']['groups'];
     }
 
     // filter projects
@@ -39,7 +39,7 @@ try {
         }
         $projectList = $newArray;
     }
-    if(!empty($groupsWhiteList)){
+    if (!empty($groupsWhiteList)) {
         $newArray = array();
         foreach ($projectList as $project) {
             foreach ($groupsWhiteList as $item) {
@@ -52,32 +52,35 @@ try {
         $projectList = $newArray;
     }
 
+    $projects = array();
+    foreach ($projectList as $project) {
+        $projectData = getAggregatedProject($project, $project['version']);
+        array_push($projects, $projectData);
+    }
+
     // get title
     if (isset($_GET['title']) && !empty($_GET['title'])) {
         $title = $_GET['title'];
     } else {
-        $title = $_SETTINGS['apiblueprint']['title'];
+        $title = $_SETTINGS['info']['title'];
     }
 
-    // get host
-    if (isset($_GET['host']) && !empty($_GET['host'])) {
-        $host = $_GET['host'];
-    } else {
-        $host = $_SETTINGS['apiblueprint']['host'];
-    }
+    $version = $_SETTINGS['info']['version'];
+    $schemas = $_SETTINGS['info']['schemas'];
+    $host = $_SETTINGS['info']['host'];
+    $basePath = $_SETTINGS['info']['basePath'];
+    $termsOfService = $_SETTINGS['info']['termsOfService'];
+    $contactName = $_SETTINGS['info']['contactName'];
+    $contactUrl = $_SETTINGS['info']['contactUrl'];
+    $contactEmail = $_SETTINGS['info']['contactEmail'];
+    $licenseName = $_SETTINGS['info']['licenseName'];
+    $licenseUrl = $_SETTINGS['info']['licenseUrl'];
 
-    // get format
-    if (isset($_GET['format']) && !empty($_GET['format'])) {
-        $format = $_GET['format'];
+    // get description
+    if (isset($_GET['desc']) && !empty($_GET['desc'])) {
+        $description = $_GET['introduction'];
     } else {
-        $format = $_SETTINGS['apiblueprint']['format'];
-    }
-
-    // get introduction
-    if (isset($_GET['introduction']) && !empty($_GET['introduction'])) {
-        $introduction = $_GET['introduction'];
-    } else {
-        $introduction = $_SETTINGS['apiblueprint']['introduction'];
+        $description = $_SETTINGS['info']['description'];
     }
 } catch (Exception $e) {
     http_response_code(500);
@@ -85,74 +88,130 @@ try {
 }
 
 // start document
+$swagger = array(
+    "swagger" => "2.0",
+    "info" => array(
+        "title" => $title,
+        "description" => $description,
+        "termsOfService" => $termsOfService,
+        "version" => $version,
+        "contact" => (empty($contactName) && empty($contactUrl) && empty($contactEmail) ? null : array(
+            "name" => $contactName,
+            "email" => $contactEmail,
+            "url" => $contactUrl
+        )),
+        "license" => (empty($licenseName) && empty($licenseUrl) ? null : array(
+            "name" => $licenseName,
+            "url" => $licenseUrl
+        ))
+    ),
+    "host" => $host,
+    "basePath" => $basePath,
+    "schemas" => $schemas
+);
 
-echo "FORMAT: $format" . PHP_EOL;
-echo "HOST: $host" . PHP_EOL;
-echo PHP_EOL;
-echo "# $title" . PHP_EOL;
-echo PHP_EOL;
-echo $introduction . PHP_EOL;
-echo PHP_EOL;
+$tags = array();
+foreach ($projects as $project){
+    $tag = array(
+        "name" => $project['name']
+    );
+    if(isset($project['description']) && !empty($project['description'])){
+        $tag['description'] = $project['description'];
+    }
+    array_push($tags, $tag);
+}
+$swagger['tags'] = $tags;
 
-foreach($projectList as $project){
-    // load project
-    $projectData = getAggregatedProject($project, $project['version']);
+$definitions = array();
+foreach ($projects as $project){
+    foreach(value($project, "models", array()) as $model){
+        $plainModel = stripModel(collectSuperModel($model, value($project, "models", array())));
+        $resolvedModel = collectModel($model, value($project, "models", array()));
+        $name = value(value($resolvedModel, 'classType'), 'name');
+        $definitions[$name] = $plainModel;
+    }
+}
+$swagger['definitions'] = $definitions;
+
+$paths = array();
+foreach ($projects as $project){
     // combine endpoints
     $endpoints = array();
-    foreach($projectData['endpoints'] as $endpoint){
+    foreach(value($projectData, 'endpoints', array()) as $endpoint){
         if(!isset($endpoints[$endpoint['path']])){
             $endpoints[$endpoint['path']] = array();
         }
         array_push($endpoints[$endpoint['path']], $endpoint);
     }
-
-    echo "# Group " . $projectData['name'] . PHP_EOL;
-    echo PHP_EOL;
     foreach($endpoints as $path => $list){
-        if(count($list) > 0){
-            echo "## $path" . PHP_EOL;
-            echo PHP_EOL;
-            foreach($list as $endpoint){
-                echo "### " . strtoupper($endpoint['method']) . PHP_EOL;
-                echo PHP_EOL;
-                echo "+ Request";
-                if(isset($endpoint['requestBody']) && !empty($endpoint['requestBody'])){
-                    echo " (" . $endpoint['requestBody']['content-type'] . ")";
-                }
-                echo PHP_EOL . PHP_EOL;
-                if(isset($endpoint['requestParams']) && !empty($endpoint['requestParams'])){
-                    echo "    + Attributes" . PHP_EOL . PHP_EOL;
-                    foreach($endpoint['requestParams'] as $requestParam){
-                        echo "        + " . $requestParam['name'];
-                        if(isset($requestParam['description']) && !empty($requestParam['description'])){
-                            echo ": " . $requestParam['description'];
-                        }
-                        echo " (" . $requestParam['type'];
-                        if(isset($requestParam['required']) && $requestParam['required'] == true){
-                            echo ", required";
-                        }
-                        echo ")" . PHP_EOL . PHP_EOL;
-                    }
-                }
-                if(isset($endpoint['requestBody']) && !empty($endpoint['requestBody'])){
-                    echo "    + Body" . PHP_EOL . PHP_EOL;
-                    echo renderModel($endpoint['requestBody']['schema'], 12) . PHP_EOL . PHP_EOL;
-                    echo "    + Schema" . PHP_EOL . PHP_EOL;
-                    echo renderSchema($endpoint['requestBody']['schema'], 12) . PHP_EOL . PHP_EOL;
-                }
-                if(isset($endpoint['responseBody']) && !empty($endpoint['responseBody'])){
-                    echo "+ Response (" . $endpoint['requestBody']['content-type'] . ")" . PHP_EOL . PHP_EOL;
-                    echo "    + Body" . PHP_EOL . PHP_EOL;
-                    echo renderModel($endpoint['requestBody']['schema'], 12) . PHP_EOL . PHP_EOL;
-                    echo "    + Schema" . PHP_EOL . PHP_EOL;
-                    echo renderSchema($endpoint['requestBody']['schema'], 12) . PHP_EOL . PHP_EOL;
-                }
+        $methods = array();
+        foreach($list as $endpoint){
+            $params = array();
+            foreach(value($endpoint, 'requestParams', array()) as $pathVariable){
+                array_push($params, array(
+                    "name" => value($pathVariable, 'name'),
+                    "description" => value($pathVariable, 'description'),
+                    "required" => value($pathVariable, 'required'),
+                    "in" => "query",
+                    "default" => value($pathVariable, 'defaultValue')
+                ));
             }
+            foreach(value($endpoint, 'pathVariables', array()) as $pathVariable){
+                array_push($params, array(
+                    "name" => value($pathVariable, 'name'),
+                    "description" => value($pathVariable, 'description'),
+                    "required" => true,
+                    "in" => "path"
+                ));
+            }
+            $requestBody = value($endpoint, 'requestBody');
+            if($requestBody != null){
+                $model = stripModel(collectSuperModel($requestBody, value($project, 'models', array())));
+                $resolvedModel = collectModel($requestBody, value($project, 'models', array()));
+                $name = value(value($resolvedModel, 'classType'), 'simpleName');
+                array_push($params, array(
+                    "name" => $name,
+                    "in" => "body",
+                    "description" => value($resolvedModel, 'description'),
+                    "schema" => $model,
+                    "required" => true
+                ));
+            }
+
+            $responses = array(
+                "default" => array(
+                    "description" => "Response when the request has succeed"
+                )
+            );
+            if(isset($endpoint['responseBody']) && !empty($endpoint['responseBody'])){
+                $responses['default']['schema'] = $endpoint['responseBody'];
+                $contentType = value($endpoint, 'consumes', array("application/json"))[0];
+                $responses['default']['examples'] = array(
+                    $contentType =>  getModel($endpoint['responseBody'])
+                );
+            }
+            foreach(value($endpoint, 'responses', array()) as $response){
+                $responses[$response['status']] = array(
+                    "description" => value($response, 'description')
+                );
+            }
+
+            $methods[strtolower($endpoint['method'])] = array(
+                "tags" => array($project['name']),
+                "description" => value($endpoint, 'description'),
+                "operationId" => strtoupper($endpoint['method'])."#".$endpoint['path'],
+                "consumes" => value($endpoint, 'consumes', array()),
+                "produces" => value($endpoint, 'produces', array()),
+                "parameters" => $params,
+                "responses" => $responses
+            );
         }
+        $paths[$path] = $methods;
     }
-
 }
+$swagger['paths'] = $paths;
 
+echo json_encode($swagger);
 
 // end document
 ?>

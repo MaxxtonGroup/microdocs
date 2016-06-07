@@ -1,4 +1,18 @@
 {
+    "info": {
+        "title": "Example application",
+        "version": "1.0.0",
+        "description": "This is the documentation of an example project for MicroDocs",
+        "schemas": ["http"],
+        "host": "example.com:8080",
+        "basePath": "/",
+        "termsOfService": null,
+        "licenseName": null,
+        "licenseUrl": null,
+        "contactName": null,
+        "contactUrl": null,
+        "contactEmail": null
+    },
     "check": {
         "mapping": true,
         "requestParam": true,
@@ -28,9 +42,12 @@
     },
     "apiblueprint": {
         "format": "1A",
-        "host": "https://example.com:8000",
-        "title": "Example application",
-        "introduction": "Api documentation",
+        "groups": [
+            "services"
+        ],
+        "projects": []
+    },
+    "swagger": {
         "groups": [
             "services"
         ],

@@ -4,6 +4,8 @@
  * @author Steven Hermans
  */
 
+error_reporting(E_ERROR | E_WARNING | E_PARSE);
+
 // declare global variables
 $_SETTINGS = getSettings();
 
@@ -434,7 +436,7 @@ function checkModels($modelA, $modelB, $modelName = "model"){
 }
 
 /**
- * Resolve reference in models
+ * Resolve reference in a model
  * @param $model model to be resolved
  * @param $modelList list of models
  * @return mixed
@@ -446,15 +448,48 @@ function collectModel($model, $modelList){
         }
     }
     if($model['type'] == "object"){
+        $newProps = array();
         if(isset($model['properties'])){
-            $newProps = array();
             foreach($model['properties'] as $key => $child){
                 $newProps[$key] = collectModel($child, $modelList);
             }
-            $model['properties'] = $newProps;
         }
+        $model['properties'] = $newProps;
+        $model = collectSuperModel($model, $modelList);
     }else if($model['type'] == "array"){
         $model['items'] = collectModel($model['items'], $modelList);
+    }
+    return $model;
+}
+
+/**
+ * Resolve super references in a model
+ * @param $model
+ * @param $modelList
+ * @return mixed
+ */
+function collectSuperModel($model, $modelList){
+    if(isset($model['properties'])  && isset($model['$super'])){
+        if(isset($modelList[$model['$super']])){
+            $superModel = $modelList[$model['$super']];
+            if(isset($superModel['properties'])){
+                foreach($superModel['properties'] as $key => $child){
+                    $model['properties'][$key] = collectModel($child, $modelList);
+                }
+            }
+        }
+    }
+    return $model;
+}
+
+/**
+ * Strip classTypes from a model
+ * @param $model
+ * @return mixed stripped model
+ */
+function stripModel($model){
+    if(isset($model['classType'])){
+        unset($model['classType']);
     }
     return $model;
 }
@@ -603,6 +638,7 @@ function renderModel($schema, $spaces){
 /**
  * Get model described in the json-schema
  * @param $schema json-schema
+ * @param null $name
  * @return array|bool|int|null|string
  */
 function getModel($schema, $name = null){
@@ -695,4 +731,17 @@ function startsWith($haystack, $needle) {
 function endsWith($haystack, $needle) {
     // search forward starting from end minus needle length characters
     return $needle === "" || (($temp = strlen($haystack) - strlen($needle)) >= 0 && strpos($haystack, $needle, $temp) !== false);
+}
+
+/**
+ * Null and empty check for getting a property of an object
+ * @param $object
+ * @param $property
+ * @param $defaultValue
+ * @return null
+ */
+function value($object, $property, $defaultValue = null){
+    if(isset($object) && !empty($object) && isset($object[$property]) && !empty($object[$property]))
+        return $object[$property];
+    return $defaultValue;
 }
