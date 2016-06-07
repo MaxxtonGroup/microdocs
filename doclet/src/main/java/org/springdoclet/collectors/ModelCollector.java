@@ -38,6 +38,9 @@ public class ModelCollector implements Collector {
     }
 
     public Schema parseSchema(Type type) {
+        if(type == null){
+            return null;
+        }
         System.out.println("parse schema: " + type.qualifiedTypeName());
         ClassType classType = CollectorUtils.getClassType(type);
         if(schemas.containsKey(type.qualifiedTypeName())){
