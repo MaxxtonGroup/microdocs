@@ -92,7 +92,7 @@
                 <h3>Clients</h3>
                 <template is="dom-repeat" items="{{project.clients}}" as="client" sort="_sortClients">
                     <div class="client-title">
-                        <project-link settings="{{settings}}" href="{{_getProjectLink(client)}}" rel="{{client.name}}" no-target="true"></project-link>
+                        <project-link settings="{{settings}}" href="{{_getProjectLink(client)}}" rel="{{_getClientName(client.name)}}" no-target="true"></project-link>
                         <template is="dom-if" if="{{_isClientNotLatest(client)}}">
                         <span class="note">
                             (supported:
@@ -132,6 +132,7 @@
                     type: Object
                 },
                 settings: Object,
+                baseUrl: String,
 
                 modelNames: {
                     computed: '_computeModelNames(project)'
@@ -176,11 +177,15 @@
             },
 
             _getProjectLink: function (client, version) {
-                var url = this.settings.baseUrl + client.group + "/" + client.name;
+                var url = this.baseUrl + client.group + "/" + client.name;
                 if (!this._empty(version)) {
                     url += "/" + version;
                 }
-                return url;
+                return url.toLowerCase();
+            },
+
+            _getClientName: function(name){
+                return name.toLowerCase();
             },
 
             _empty: function (obj) {

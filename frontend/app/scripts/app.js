@@ -33,8 +33,20 @@
         }
     };
 
+    app.goToProject = function(projectName){
+        var project = this.projects[projectName];
+        var versions = Object.keys(project).sort();
+        var latestVersion = versions[versions.length - 1];
+        var group = project[latestVersion].group;
+
+        app.route = group + '/' + projectName;
+        app.routeName = ':group/:name';
+        app.setProject(projectName, group);
+        app.params = {group: group, project: projectName};
+    };
+
     app.setProject = function (name, group, version) {
-        if (name != undefined && group != undefined) {
+        if (name != undefined ) {
             if (!this.empty(this.projects[name])) {
                 var project = this.projects[name];
                 var versions = Object.keys(project).sort();
@@ -43,6 +55,7 @@
                     version = latestVersion;
                 }
                 app.currentProject = project[version];
+                group = app.currentProject.group;
                 console.info("go to: " + name + ":" + version);
                 if (!app.currentProject.loaded) {
                     app.loadProject(app.currentProject, function (project) {

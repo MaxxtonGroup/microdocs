@@ -29,6 +29,10 @@ body {
     z-index: 149;
 }
 
+#toast{
+    z-index: 200;
+}
+
 .version-box {
     width: 100px;
     text-align: right;

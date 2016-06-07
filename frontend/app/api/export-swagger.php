@@ -137,7 +137,7 @@ $paths = array();
 foreach ($projects as $project){
     // combine endpoints
     $endpoints = array();
-    foreach(value($projectData, 'endpoints', array()) as $endpoint){
+    foreach(value($project, 'endpoints', array()) as $endpoint){
         if(!isset($endpoints[$endpoint['path']])){
             $endpoints[$endpoint['path']] = array();
         }

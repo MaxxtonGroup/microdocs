@@ -14,9 +14,9 @@
             }
 
             :host ::content .graph text {
-                font: 10px sans-serif;
-                pointer-events: none;
+                font-size: 10px;
                 text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
+                cursor: pointer;
             }
 
             :host ::content .graph path {
@@ -55,7 +55,7 @@
             <iron-icon class="icon" icon="warning"></iron-icon>
             <span>{{error}}</span>
         </div>
-        <div id="container" class="graph" style="height: 500px;"></div>
+        <div id="container" class="graph" style="height: 70vh;"></div>
     </template>
 
     <script>
@@ -69,6 +69,7 @@
             properties: {
                 url: String,
                 data: Object,
+                app: Object,
                 error: {
                     type: String,
                     value: null
@@ -138,7 +139,7 @@
                     .nodes(d3.values(nodes))
                     .links(links)
                     .size([this.$.container.getBoundingClientRect().width, this.$.container.getBoundingClientRect().height])
-                    .linkDistance(80)
+                    .linkDistance(150)
                     .charge(-300)
                     .on("tick", tick)
                     .start();
@@ -184,6 +185,11 @@
                     .enter().append("text")
                     .attr("x", 8)
                     .attr("y", ".31em")
+                        .on({
+                            "click": function(){
+                                app.goToProject(this.textContent);
+                            }
+                        })
                     .text(function (d) {
                         return d.name;
                     });

@@ -117,12 +117,12 @@
                     <section data-route="home" tabindex="-1">
                         <h3>Services Overview</h3>
                         <paper-material elevation="1">
-                            <dependency-graph url="[[getApiUrl('dependencies')]]"></dependency-graph>
+                            <dependency-graph app="[[this]]" url="[[getApiUrl('dependencies')]]"></dependency-graph>
                         </paper-material>
                     </section>
 
                     <section data-route=":group/:name" tabindex="-1">
-                        <project-route project="{{currentProject}}" settings="[[settings]]"></project-route>
+                        <project-route project="{{currentProject}}" settings="[[settings]]" base-url="[[baseUrl]]"></project-route>
                     </section>
                 </iron-pages>
             </div>
