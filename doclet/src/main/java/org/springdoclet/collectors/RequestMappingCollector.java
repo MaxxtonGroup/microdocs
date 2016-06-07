@@ -221,7 +221,12 @@ public class RequestMappingCollector implements Collector {
         ClassType classType = CollectorUtils.getClassType(returnType);
 
         SchemaObject schemaObject = new SchemaObject(classType);
-        Schema genericSchema = modelCollector.parseSchema(classType.getGeneric());
+        Schema genericSchema;
+        if(classType.getGeneric() != null){
+            genericSchema = modelCollector.parseSchema(classType.getGeneric());
+        }else{
+            genericSchema = new SchemaObject(classType.getGenericType());
+        }
         schemaObject.addProperty("content", new SchemaArray(genericSchema, classType.getGenericType()));
         schemaObject.addProperty("last", new Schema(Schema.BOOLEAN, null).setDummy(false));
         schemaObject.addProperty("first", new Schema(Schema.BOOLEAN, null).setDummy(true));

@@ -89,7 +89,7 @@ function getProjectByName($projectName)
 {
     $projects = getAllProjects();
     foreach ($projects as $project) {
-        if ($project['name'] == $projectName) {
+        if (strtolower($project['name']) == strtolower($projectName)){
             return $project;
         }
     }
@@ -170,6 +170,7 @@ function getProjectData($project, $version = null)
     }
 
     $rootFolder = "../" . $_SETTINGS['links']['folder'];
+    $basePath = $_SETTINGS['links']['basePath'];
     $projectFolder = $rootFolder . "/" . $project['group'] . "/" . $project['name'] . "/" . $version;
     $projectFile = $projectFolder . "/project.json";
     $json = array();
@@ -190,7 +191,7 @@ function getProjectData($project, $version = null)
     $folders = scandir($projectFolder);
     foreach ($folders as $folder) {
         if ($folder != "." && $folder != ".." && is_dir($projectFolder . "/" . $folder)) {
-            array_push($links, array("rel" => basename($folder), "href" => substr($projectFolder, 2) . "/" . $folder));
+            array_push($links, array("rel" => basename($folder), "href" => $basePath . substr($projectFolder, 2) . "/" . $folder));
         }
     }
 
@@ -239,7 +240,7 @@ function checkProject(&$clientProject, $projects)
             $producerProject = null;
             // find producer endpoints of this client
             foreach ($projects as $pp) {
-                if ($pp['name'] == $clientName) {
+                if (strtolower($pp['name']) == strtolower($clientName)){
                     $producerEndpoints = $pp['endpoints'];
                     $producerProject = $pp;
                     break;
@@ -505,7 +506,7 @@ function traceClients(&$project, &$projectList){
             if(isset($client['version']) && !empty($client['version'])){
                 $exists = false;
                 foreach($projectList as $loadedProject){
-                    if($client['name'] == $loadedProject['name'] && $client['version'] == $loadedProject['version']){
+                    if(strtolower($client['name']) == strtolower($loadedProject['name']) && strtolower($client['version']) == strtolower($loadedProject['version'])){
                         $exists = true;
                     }
                 }

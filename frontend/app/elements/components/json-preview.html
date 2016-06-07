@@ -43,7 +43,7 @@
                         for (var key in schema.properties) {
                             preview[key] = this._renderSchema(schema.properties[key], key);
                         }
-                        if (schema['$super'] != undefined && schema['$super'] != null) {
+                        if (schema['$super'] != undefined && schema['$super'] != null && this.domainSchemas != undefined && this.domainSchemas != null) {
                             var name = schema['$super'];
                             var subSchema = this.domainSchemas[name];
                             var superProperties = this._renderSchema(subSchema, propName);

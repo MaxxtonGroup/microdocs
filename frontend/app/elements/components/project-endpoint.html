@@ -253,7 +253,7 @@
                 if(model['$ref'] != undefined && !this._empty(this.project) && this.project['models'] != undefined){
                     m = this.project['models'][model['$ref']];
                 }
-                return (m.type == 'object' || m.type == 'array');
+                return !this._empty(m) && (m.type == 'object' || m.type == 'array');
             },
 
             _zero: function(number){

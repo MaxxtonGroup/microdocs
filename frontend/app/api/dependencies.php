@@ -18,12 +18,12 @@ try {
         if($project != null){
             if(isset($project['clients'])){
                 foreach($project['clients'] as $client){
-                    array_push($links, array("source" => $project['name'], "target" => $client['name'], "type" => "client"));
+                    array_push($links, array("source" => strtolower($project['name']), "target" => strtolower($client['name']), "type" => "client"));
                 }
             }
             if(isset($project['dependencies'])){
                 foreach($project['dependencies'] as $dependency){
-                    array_push($links, array("source" => $project['name'], "target" => $dependency, "type" => "dependency"));
+                    array_push($links, array("source" => strtolower($project['name']), "target" => strtolower($dependency), "type" => "dependency"));
                 }
             }
         }
