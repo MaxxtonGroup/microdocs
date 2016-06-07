@@ -99,6 +99,10 @@ try {
     $licenseName = $_SETTINGS['info']['licenseName'];
     $licenseUrl = $_SETTINGS['info']['licenseUrl'];
 
+    if(isset($_GET['basePath'])){
+        $basePath = $_GET['basePath'];
+    }
+
     // get description
     if (isset($_GET['desc']) && !empty($_GET['desc'])) {
         $description = $_GET['introduction'];
@@ -160,11 +164,14 @@ $paths = array();
 foreach ($projects as $project){
     // combine endpoints
     $endpoints = array();
-    foreach(value($project, 'endpoints', array()) as $endpoint){
-        if(!isset($endpoints[$endpoint['path']])){
-            $endpoints[$endpoint['path']] = array();
+    foreach(value($project, 'endpoints', array()) as &$endpoint){
+        if(startsWith($endpoint['path'], $basePath)) {
+            $endpoint['path'] = substr($endpoint['path'], strlen($basePath));
+            if (!isset($endpoints[$endpoint['path']])) {
+                $endpoints[$endpoint['path']] = array();
+            }
+            array_push($endpoints[$endpoint['path']], $endpoint);
         }
-        array_push($endpoints[$endpoint['path']], $endpoint);
     }
     foreach($endpoints as $path => $list){
         $methods = array();
@@ -228,6 +235,7 @@ foreach ($projects as $project){
                 "parameters" => $params,
                 "responses" => $responses
             );
+
         }
         $paths[$path] = $methods;
     }
