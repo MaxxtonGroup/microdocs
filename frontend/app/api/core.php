@@ -488,9 +488,27 @@ function collectSuperModel($model, $modelList){
  * @param $model
  * @return mixed stripped model
  */
-function stripModel($model){
+function stripModel($model, $refPrefix){
     if(isset($model['classType'])){
         unset($model['classType']);
+    }
+    if(isset($model['$ref'])){
+        $model['$ref'] = $refPrefix . $model['$ref'];
+    }
+    if(isset($model['properties'])){
+        $newProps = array();
+        foreach($model['properties'] as $property => $subModel){
+            if(isset($subModel['$ref'])){
+                $subModel['$ref'] = $refPrefix . $subModel['$ref'];
+            }
+            $newProps[$property] = $subModel;
+        }
+        $model['properties'] = $newProps;
+    }
+    if(isset($model['items'])){
+        if(isset($model['items']['$ref'])){
+            $model['items']['$ref'] = $refPrefix . $model['items']['$ref'];
+        }
     }
     return $model;
 }

@@ -1,17 +1,11 @@
 {
     "info": {
-        "title": "Example application",
-        "version": "1.0.0",
-        "description": "This is the documentation of an example project for MicroDocs",
+        "title": "Newyse",
+        "version": "2.0",
+        "description": "Newyse 2.0",
         "schemas": ["http"],
-        "host": "example.com:8080",
-        "basePath": "/",
-        "termsOfService": null,
-        "licenseName": null,
-        "licenseUrl": null,
-        "contactName": null,
-        "contactUrl": null,
-        "contactEmail": null
+        "host": "192.168.252.141:8000",
+        "basePath": "/"
     },
     "check": {
         "mapping": true,
@@ -20,7 +14,7 @@
         "responseBody": true
     },
     "links": {
-        "basePath": "/",
+        "basePath": "/microdocs",
         "folder": "projects",
         "target": "_blank",
         "package": "com.maxxton",
@@ -53,8 +47,7 @@
             "services"
         ],
         "projects": [],
-        "exclude": [],
-        "basePath": "/api/v1"
+        "exclude": []
     },
     "cleanup": {
         "storeLimit": 5,
@@ -63,3 +56,4 @@
         "type": "full"
     }
 }
+

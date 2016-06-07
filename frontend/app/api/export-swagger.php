@@ -152,7 +152,7 @@ $swagger['tags'] = $tags;
 $definitions = array();
 foreach ($projects as $project){
     foreach(value($project, "models", array()) as $model){
-        $plainModel = stripModel(collectSuperModel($model, value($project, "models", array())));
+        $plainModel = stripModel(collectSuperModel($model, value($project, "models", array())), "#/definitions/");
         $resolvedModel = collectModel($model, value($project, "models", array()));
         $name = value(value($resolvedModel, 'classType'), 'name');
         $definitions[$name] = $plainModel;
@@ -164,7 +164,7 @@ $paths = array();
 foreach ($projects as $project){
     // combine endpoints
     $endpoints = array();
-    foreach(value($project, 'endpoints', array()) as &$endpoint){
+    foreach(value($project, 'endpoints', array()) as $endpoint){
         if(startsWith($endpoint['path'], $basePath)) {
             $endpoint['path'] = substr($endpoint['path'], strlen($basePath));
             if (!isset($endpoints[$endpoint['path']])) {
@@ -196,7 +196,7 @@ foreach ($projects as $project){
             }
             $requestBody = value($endpoint, 'requestBody');
             if($requestBody != null){
-                $model = stripModel(collectSuperModel($requestBody, value($project, 'models', array())));
+                $model = stripModel(collectSuperModel($requestBody, value($project, 'models', array())), "#/definitions/");
                 $resolvedModel = collectModel($requestBody, value($project, 'models', array()));
                 $name = value(value($resolvedModel, 'classType'), 'simpleName');
                 array_push($params, array(
