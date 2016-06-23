@@ -27,12 +27,20 @@ dependencies {
 }
 
 group='com.maxxton.gradle'
-version = '0.5'
+version = '0.8'
 
 uploadArchives {
     repositories {
           mavenLocal()
 //        mavenDeployer {
+//        }
+//        maven {
+//            name 'Maxxton Private repository'
+//            url 'http://mxt-maven01.newyse.maxxton/repository/internal'
+//            credentials {
+//                username 'microservices'
+//                password 'M1cr053rv1c35!'
+//            }
 //        }
     }
 }
