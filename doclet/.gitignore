@@ -1,8 +1,0 @@
-target
-.idea
-*.iml
-.classpath
-.settings
-.project
-/.nb-gradle/
-/build/
