@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/MaxxtonGroup/microservice-documentation-tool.svg?branch=master)](https://travis-ci.org/MaxxtonGroup/microservice-documentation-tool)
 # Microservice Documentation tool
 
 This is an advanced tool which can automatically documentate your whole microservice architecture. 
