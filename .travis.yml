@@ -1,0 +1,7 @@
+language: node_js
+node_js:
+  - "6"
+env:
+#  - PROJECT_FOLDER=microdocs-ui
+  - PROJECT_FOLDER=microdocs-server
+script: cd $PROJECT_FOLDER && npm install && npm test

@@ -5,3 +5,7 @@
 /example/customer-service/build
 /frontend/app/projects
 /example/customer-service/.nb-gradle/
+/microdocs-server/node_modules
+/microdocs-server/.tscache
+/microdocs-server/typings
+/microdocs-server/.baseDir.js
