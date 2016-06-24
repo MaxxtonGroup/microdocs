@@ -1,6 +1,6 @@
 language: node_js
 node_js:
-  - "latest"
+  - "6"
 env:
 #  - PROJECT_FOLDER=microdocs-ui
   - PROJECT_FOLDER=microdocs-server

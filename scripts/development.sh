@@ -7,4 +7,4 @@ PORT=3000
 #docker stop ${CONTAINER_NAME}
 #docker rm ${CONTAINER_NAME}
 
-docker run -d -p ${PORT}:3000 --name ${CONTAINER_NAME} -e "NODE_ENV=development" -v `pwd`:/microdocs -w /microdocs library/node:5.0 scripts/dev_entrypoint.sh
+docker run -d -p ${PORT}:3000 --name ${CONTAINER_NAME} -e "NODE_ENV=development" -v `pwd`:/microdocs -w /microdocs library/node:6 scripts/dev_entrypoint.sh

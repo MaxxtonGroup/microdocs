@@ -1,4 +1,4 @@
-FROM node:5.0
+FROM node:6
 
 ADD ./microdocs-ui /microdocs/microdocs-ui
 ADD ./microdocs-server /microdocs/microdocs-server

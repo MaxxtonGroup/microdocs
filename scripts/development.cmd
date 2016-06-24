@@ -8,4 +8,4 @@ SET PROJECT_DIR=/c/Users/steve/projects/microdocs-documentation-tool
 docker stop %CONTAINER_NAME%
 docker rm %CONTAINER_NAME%
 
-docker run -d -p %PORT%:3000 --name %CONTAINER_NAME% -e "NODE_ENV=development" -v %PROJECT_DIR%:/microdocs -w /microdocs library/node:5.0 pwd & bash scripts/dev_entrypoint.sh
+docker run -d -p %PORT%:3000 --name %CONTAINER_NAME% -e "NODE_ENV=development" -v %PROJECT_DIR%:/microdocs -w /microdocs library/node:6 pwd & bash scripts/dev_entrypoint.sh
