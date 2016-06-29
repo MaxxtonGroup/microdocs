@@ -1,14 +1,14 @@
 package com.maxxton.microdocs.crawler.doclet.collectors;
 
-import com.maxxton.microdocs.crawler.doclet.domain.SchemaObject;
-import com.maxxton.microdocs.crawler.doclet.domain.ClassType;
-import com.maxxton.microdocs.crawler.doclet.domain.SchemaArray;
-import com.maxxton.microdocs.crawler.doclet.domain.Source;
-import com.maxxton.microdocs.crawler.doclet.domain.Client;
-import com.maxxton.microdocs.crawler.doclet.domain.Schema;
-import com.maxxton.microdocs.crawler.doclet.domain.Field;
-import com.maxxton.microdocs.crawler.doclet.domain.Endpoint;
-import com.maxxton.microdocs.crawler.doclet.domain.Response;
+import com.maxxton.microdocs.crawler.doclet.domain_old.SchemaObject;
+import com.maxxton.microdocs.crawler.doclet.domain_old.ClassType;
+import com.maxxton.microdocs.crawler.doclet.domain_old.SchemaArray;
+import com.maxxton.microdocs.crawler.doclet.domain_old.Source;
+import com.maxxton.microdocs.crawler.doclet.domain_old.Client;
+import com.maxxton.microdocs.crawler.doclet.domain_old.Schema;
+import com.maxxton.microdocs.crawler.doclet.domain_old.Field;
+import com.maxxton.microdocs.crawler.doclet.domain_old.Endpoint;
+import com.maxxton.microdocs.crawler.doclet.domain_old.Response;
 import com.googlecode.jatl.MarkupBuilder;
 import com.sun.javadoc.*;
 import com.maxxton.microdocs.crawler.doclet.Annotations;
@@ -196,11 +196,11 @@ public class RequestMappingCollector implements Collector {
                     nameString = name.toString();
                 }
                 endpoint.addPathVariable(nameString, modelCollector.parseSchema(parameter.type()).getType(), description);
-            } else if (parameter.type().qualifiedTypeName().equals("org.springframework.data.domain.Pageable")) {
+            } else if (parameter.type().qualifiedTypeName().equals("org.springframework.data.domain_old.Pageable")) {
                 endpoint.addRequestParam(new Field("page", Schema.NUMBER, "page number", "0", false));
                 endpoint.addRequestParam(new Field("size", Schema.NUMBER, "items per page", "20", false));
                 endpoint.addRequestParam(new Field("sort", Schema.NUMBER, "sort option", "asc", false));
-            } else if (parameter.typeName().equals("org.springframework.data.jpa.domain.Specifications")) {
+            } else if (parameter.typeName().equals("org.springframework.data.jpa.domain_old.Specifications")) {
                 endpoint.addRequestParam(new Field("filter", Schema.STRING, "Filter query", null, false));
             } else /**if (parameter.type().qualifiedTypeName().startsWith("com.maxxton") && parameter.annotations().length == 0 ) */ { //custom filter object
                 modelCollector.parseSchema(parameter.type());
@@ -212,7 +212,7 @@ public class RequestMappingCollector implements Collector {
                 }
             }
         }
-        if (methodDoc.returnType().qualifiedTypeName().equals("org.springframework.data.domain.Page")) {
+        if (methodDoc.returnType().qualifiedTypeName().equals("org.springframework.data.domain_old.Page")) {
             endpoint.setResponseBody(createPageSchema(methodDoc.returnType()));
         } else if (methodDoc.returnType().qualifiedTypeName().equals("org.springframework.http.ResponseEntity")) {
             ClassType classType = CollectorUtils.getClassType(methodDoc.returnType());

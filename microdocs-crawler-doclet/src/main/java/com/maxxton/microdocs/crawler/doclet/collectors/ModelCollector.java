@@ -1,11 +1,11 @@
 package com.maxxton.microdocs.crawler.doclet.collectors;
 
-import com.maxxton.microdocs.crawler.doclet.domain.SchemaObject;
-import com.maxxton.microdocs.crawler.doclet.domain.ClassType;
-import com.maxxton.microdocs.crawler.doclet.domain.SchemaArray;
-import com.maxxton.microdocs.crawler.doclet.domain.SchemaReference;
-import com.maxxton.microdocs.crawler.doclet.domain.SchemaEnum;
-import com.maxxton.microdocs.crawler.doclet.domain.Schema;
+import com.maxxton.microdocs.crawler.doclet.domain_old.SchemaObject;
+import com.maxxton.microdocs.crawler.doclet.domain_old.ClassType;
+import com.maxxton.microdocs.crawler.doclet.domain_old.SchemaArray;
+import com.maxxton.microdocs.crawler.doclet.domain_old.SchemaReference;
+import com.maxxton.microdocs.crawler.doclet.domain_old.SchemaEnum;
+import com.maxxton.microdocs.crawler.doclet.domain_old.Schema;
 import com.googlecode.jatl.MarkupBuilder;
 import com.sun.javadoc.*;
 import com.maxxton.microdocs.crawler.doclet.Annotations;

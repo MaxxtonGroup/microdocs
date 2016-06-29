@@ -5,7 +5,7 @@ import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.ParameterizedType;
 import com.sun.javadoc.Type;
 import com.sun.xml.internal.xsom.impl.scd.Iterators;
-import com.maxxton.microdocs.crawler.doclet.domain.ClassType;
+import com.maxxton.microdocs.crawler.doclet.domain_old.ClassType;
 
 import java.text.BreakIterator;
 import java.util.List;
