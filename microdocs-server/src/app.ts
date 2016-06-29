@@ -3,7 +3,11 @@
 
 import * as bodyParser from "body-parser";
 import * as express from "express";
+import * as helmet from "helmet";
 import * as path from "path";
+import {Config} from "./config";
+import * as projectsRoute from "./routes/projects.route";
+import {BaseRoute} from "./routes/route";
 
 /**
  * The server.
@@ -38,6 +42,7 @@ class Server {
 
         //configure application
         this.config();
+        this.routes();
     }
 
     /**
@@ -48,12 +53,11 @@ class Server {
      * @return void
      */
     private config() {
-        //configure jade
-        this.app.set("views", path.join(__dirname, "views"));
-        this.app.set("view engine", "jade");
-
         //mount logger
         //this.app.use(logger("dev"));
+
+        //mount helmet
+        this.app.use(helmet());
 
         //mount json form parser
         this.app.use(bodyParser.json());
@@ -62,15 +66,52 @@ class Server {
         this.app.use(bodyParser.urlencoded({ extended: true }));
 
         //add static paths
-        this.app.use(express.static(path.join(__dirname, "public")));
-        this.app.use(express.static(path.join(__dirname, "bower_components")));
+        var staticFolder = "../microdocs-ui";
+        if(Config.has("staticFolder")){
+            staticFolder = Config.get("staticFolder");
+        }
+        console.info("static: " + __dirname + "../" + staticFolder);
+        this.app.use(express.static(path.join(__dirname, '../' + staticFolder)));
+    }
 
-        // catch 404 and forward to error handler
-        this.app.use(function(err: any, req: express.Request, res: express.Response, next: express.NextFunction) {
-            var error = new Error("Not Found");
-            err.status = 404;
-            next(err);
+    /**
+     * Configure routes
+     *
+     * @class Server
+     * @method routes
+     * @return void
+     */
+    private routes() {
+        //get router
+        let router: express.Router;
+        router = express.Router();
+
+        //create routes
+        var routes : BaseRoute[] = [
+            new projectsRoute.ProjectsRoute()
+        ];
+
+        //define basePath
+        var basePath = "";
+        if(Config.has('basePath')){
+            basePath = Config.get('basePath');
+        }
+
+        //map routes
+        routes.forEach((route) => {
+            route.methods().forEach((method) => {
+                var requestMethod = method.toLowerCase();
+                var path = basePath + route.path();
+                if(router[requestMethod] == undefined){
+                    throw "unknown request method: " + requestMethod + " for path: " + path;
+                }
+                console.info("map route: [" + requestMethod + "] " + path);
+                router[requestMethod](path, route.handler());
+            });
         });
+
+        //use router middleware
+        this.app.use(router);
     }
 }
 
