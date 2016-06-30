@@ -13,7 +13,7 @@ public abstract class Schema extends JsonReference {
     @JsonProperty("default")
     private String defaultValue;
     private String description;
-    private boolean required;
+    private boolean required = false;
     private Number multipleOf;
     private Number maximum;
     private Number minimum;

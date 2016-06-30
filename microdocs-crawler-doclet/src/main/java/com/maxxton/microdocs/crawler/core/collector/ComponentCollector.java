@@ -22,7 +22,7 @@ public class ComponentCollector implements Collector<ComponentBuilder> {
     }
 
     @Override
-    public List<ComponentBuilder> collect(List<ReflectClass> classes) {
+    public List<ComponentBuilder> collect(List<ReflectClass<?>> classes) {
         List<ComponentBuilder> componentBuilders = new ArrayList();
         for (ReflectClass<?> reflectClass : classes) {
             for (ReflectAnnotation annotation : reflectClass.getAnnotations()) {

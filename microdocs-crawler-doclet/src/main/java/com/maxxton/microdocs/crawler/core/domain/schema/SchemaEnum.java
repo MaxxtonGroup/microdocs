@@ -14,6 +14,10 @@ public class SchemaEnum extends Schema {
     private String name;
     private String simpleName;
 
+    public SchemaEnum(){
+        setType(SchemaType.ENUM);
+    }
+
     public List getEnums() {
         return enums;
     }

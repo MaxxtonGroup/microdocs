@@ -9,12 +9,25 @@ repositories {
 
 dependencies {
     compile gradleApi()
-    compile 'org.codehaus.groovy:groovy-all:2.4.4'
+    compile 'org.codehaus.groovy:groovy-all:2.4.7'
     compile files("${System.properties['java.home']}/../lib/tools.jar")
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.7.5'
 }
 
-group='org.springdoclet'
-version = '0.5'
+group='com.maxxton.microdocs'
+version = '1.0'
+
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Implementation-Title': 'microdocs-crawler-doclet',
+                'Implementation-Version': version
+    }
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    include('com/maxxton/**')
+    include('com/fasterxml/**')
+    with jar
+}
 
 uploadArchives {
     repositories {

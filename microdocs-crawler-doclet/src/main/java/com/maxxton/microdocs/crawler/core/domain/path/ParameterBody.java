@@ -11,7 +11,7 @@ public class ParameterBody extends JsonReference implements Parameter {
     private String name;
     private ParameterPlacing in;
     private String description;
-    private boolean required;
+    private boolean required = false;
     private Schema schema;
 
     @Override

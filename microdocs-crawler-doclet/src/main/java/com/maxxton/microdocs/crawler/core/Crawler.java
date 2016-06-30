@@ -17,7 +17,7 @@ public abstract class Crawler {
      * @param classes list of ReflectClasses
      * @return extracted project
      */
-    public Project crawl(List<ReflectClass> classes){
+    public Project crawl(List<ReflectClass<?>> classes){
         //start builder
         ProjectBuilder projectBuilder = new ProjectBuilder();
         classes.forEach(clazz -> projectBuilder.projectClass(clazz.getName()));
@@ -33,6 +33,6 @@ public abstract class Crawler {
      * @return extracted project
      * @throws Exception
      */
-    protected abstract Project extractProject(ProjectBuilder projectBuilder, List<ReflectClass> classes);
+    protected abstract Project extractProject(ProjectBuilder projectBuilder, List<ReflectClass<?>> classes);
 
 }

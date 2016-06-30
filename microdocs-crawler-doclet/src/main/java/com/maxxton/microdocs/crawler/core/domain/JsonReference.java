@@ -9,7 +9,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class JsonReference {
 
     @JsonProperty("$ref")
-    @JsonBackReference
     private String reference;
 
     public String getReference() {

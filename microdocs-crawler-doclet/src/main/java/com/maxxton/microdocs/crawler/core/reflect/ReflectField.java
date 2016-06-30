@@ -10,7 +10,7 @@ public class ReflectField extends ReflectDoc {
 
     private List<ReflectAnnotation> annotations = new ArrayList();
     private ReflectGenericClass type;
-    private Object defaultValue;
+    private String defaultValue;
     private boolean isStatic;
     private boolean isPublic;
 
@@ -30,11 +30,11 @@ public class ReflectField extends ReflectDoc {
         this.type = type;
     }
 
-    public Object getDefaultValue() {
+    public String getDefaultValue() {
         return defaultValue;
     }
 
-    public void setDefaultValue(Object defaultValue) {
+    public void setDefaultValue(String defaultValue) {
         this.defaultValue = defaultValue;
     }
 

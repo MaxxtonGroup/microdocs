@@ -1,5 +1,7 @@
 package com.maxxton.microdocs.crawler.core.reflect;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +10,7 @@ import java.util.List;
  */
 public class ReflectGenericClass {
 
+    @JsonIgnore
     private ReflectClass classType;
     private List<ReflectGenericClass> genericTypes = new ArrayList();
 

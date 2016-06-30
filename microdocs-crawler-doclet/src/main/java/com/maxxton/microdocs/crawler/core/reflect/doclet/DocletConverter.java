@@ -5,6 +5,7 @@ import com.sun.javadoc.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -20,7 +21,21 @@ public class DocletConverter {
      * @param classDocs list of ClassDocs
      * @return List of ReflectClasses
      */
-    public static List<ReflectClass> convert(List<ClassDoc> classDocs) {
+    public static List<ReflectClass<?>> convert(ClassDoc... classDocs){
+        List<ClassDoc> classes = new ArrayList();
+        for(ClassDoc classDoc : classDocs){
+            classes.add(classDoc);
+        }
+        return convert(classes);
+    }
+
+    /**
+     * Converts com.sun.javadoc.ClassDoc to ReflectClasses
+     *
+     * @param classDocs list of ClassDocs
+     * @return List of ReflectClasses
+     */
+    public static List<ReflectClass<?>> convert(List<ClassDoc> classDocs) {
         List<ReflectClass<ClassDoc>> reflectClasses = new ArrayList();
         classDocs.forEach(classDoc -> reflectClasses.add(convertClass(classDoc)));
         reflectClasses.forEach(reflectClass -> updateClass(reflectClass, reflectClasses));
@@ -88,6 +103,7 @@ public class DocletConverter {
     private static ReflectParameter convertParameter(Parameter parameter, List<ReflectClass<ClassDoc>> reflectClasses) {
         ReflectParameter reflectParameter = new ReflectParameter();
         reflectParameter.setName(parameter.name());
+        reflectParameter.setType(convertGenericClass(parameter.type(), reflectClasses));
         //find annotations
         for (AnnotationDesc annotationDesc : parameter.annotations()) {
             reflectParameter.getAnnotations().add(convertAnnotation(annotationDesc));
@@ -102,7 +118,8 @@ public class DocletConverter {
         field.setStatic(fieldDoc.isStatic());
         field.setPublic(fieldDoc.isPublic());
         field.setDescription(convertDoc(fieldDoc));
-        field.setDefaultValue(fieldDoc.constantValue());
+        field.setDefaultValue(fieldDoc.constantValue() != null ? fieldDoc.constantValue().toString() : null);
+        field.setType(convertGenericClass(fieldDoc.type(), reflectClasses));
         //find annotations
         for (AnnotationDesc annotationDesc : fieldDoc.annotations()) {
             field.getAnnotations().add(convertAnnotation(annotationDesc));
@@ -116,15 +133,18 @@ public class DocletConverter {
         annotation.setName(annotationDesc.annotationType().qualifiedName());
         annotation.setPackageName(annotationDesc.annotationType().containingPackage() != null ? annotationDesc.annotationType().containingPackage().name() : null);
         for (AnnotationDesc.ElementValuePair pair : annotationDesc.elementValues()) {
-            annotation.getProperties().put(pair.element().name(), pair.value().value());
+            annotation.getProperties().put(pair.element().name(), pair.value().toString());
         }
         return annotation;
     }
 
     private static ReflectGenericClass convertGenericClass(Type type, List<ReflectClass<ClassDoc>> classes) {
         ReflectGenericClass genericClass = new ReflectGenericClass();
-        ReflectClass reflectClass = classes.stream().filter(clazz -> clazz.getName().equals(type.qualifiedTypeName())).findFirst().get();
-        if (reflectClass == null) {
+        Optional<ReflectClass<ClassDoc>> optional = classes.stream().filter(clazz -> clazz.getName().equals(type.qualifiedTypeName())).findFirst();
+        ReflectClass<ClassDoc> reflectClass;
+        if (optional.isPresent()) {
+            reflectClass = optional.get();
+        }else{
             if (type.asClassDoc() != null) {
                 reflectClass = convertClass(type.asClassDoc());
             } else {
@@ -173,7 +193,7 @@ public class DocletConverter {
         ReflectDescription reflectDescription = new ReflectDescription();
         reflectDescription.setText(doc.commentText());
         for (Tag tag : doc.tags()) {
-            reflectDescription.getTags().add(new ReflectDescriptionTag(tag.toString()));
+            reflectDescription.getTags().add(new ReflectDescriptionTag(tag.kind(), tag.text()));
         }
         return reflectDescription;
     }

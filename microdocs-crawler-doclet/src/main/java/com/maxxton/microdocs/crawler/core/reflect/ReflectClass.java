@@ -1,12 +1,14 @@
 package com.maxxton.microdocs.crawler.core.reflect;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author Steven Hermans
  */
-public class ReflectClass<T> extends ReflectDoc{
+public class ReflectClass<T> extends ReflectDoc {
 
     private String packageName;
     private ClassType type;
@@ -22,6 +24,7 @@ public class ReflectClass<T> extends ReflectDoc{
     private List<ReflectMethod> declaredMethods = new ArrayList();
     private List<ReflectMethod> classMethods = new ArrayList();
 
+    @JsonIgnore
     private T original;
 
     public String getPackageName() {
@@ -120,12 +123,41 @@ public class ReflectClass<T> extends ReflectDoc{
         this.original = original;
     }
 
-    public boolean hasAnnotation(String... names){
-        for(String name : names) {
-            if(annotations.stream().filter(annotation -> annotation.getName().equals(name) || annotation.getSimpleName().equals(name)).count() > 0) {
+    public boolean hasAnnotation(String... names) {
+        for (String name : names) {
+            if (annotations.stream().filter(annotation -> annotation.getName().equals(name) || annotation.getSimpleName().equals(name)).count() > 0) {
                 return true;
             }
         }
         return false;
+    }
+
+    public boolean hasParent(String... classNames) {
+        for(String className : classNames){
+            if(this.getName().equals(className)){
+                return true;
+            }
+        }
+
+        if(superClass != null && superClass.getClassType() != null && superClass.getClassType().hasParent(classNames)){
+            return true;
+        }
+
+        for(ReflectGenericClass genericInterface : this.interfaces){
+            if(genericInterface.getClassType() != null && genericInterface.getClassType().hasParent(classNames)){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public ReflectAnnotation getAnnotation(String name) {
+        for(ReflectAnnotation annotation : annotations){
+            if(annotation.getName().equals(name) || annotation.getSimpleName().equals(name)){
+                return annotation;
+            }
+        }
+        return null;
     }
 }

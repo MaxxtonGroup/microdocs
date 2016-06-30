@@ -16,6 +16,6 @@ public interface Collector<T extends Builder> {
      * @param classes reflect classes
      * @return extracted objects
      */
-    public List<T> collect(List<ReflectClass> classes);
+    public List<T> collect(List<ReflectClass<?>> classes);
 
 }

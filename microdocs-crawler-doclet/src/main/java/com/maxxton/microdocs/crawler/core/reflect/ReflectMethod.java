@@ -53,4 +53,22 @@ public class ReflectMethod extends ReflectDoc {
     public void setPublic(boolean aPublic) {
         isPublic = aPublic;
     }
+
+    public boolean hasAnnotation(String... names) {
+        for (String name : names) {
+            if (annotations.stream().filter(annotation -> annotation.getName().equals(name) || annotation.getSimpleName().equals(name)).count() > 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public ReflectAnnotation getAnnotation(String name) {
+        for(ReflectAnnotation annotation : annotations){
+            if(annotation.getName().equals(name) || annotation.getSimpleName().equals(name)){
+                return annotation;
+            }
+        }
+        return null;
+    }
 }

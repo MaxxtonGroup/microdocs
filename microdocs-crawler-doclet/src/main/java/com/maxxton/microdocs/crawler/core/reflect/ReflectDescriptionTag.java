@@ -15,6 +15,25 @@ public class ReflectDescriptionTag {
         setDescription(description);
     }
 
+    public ReflectDescriptionTag(String tagName, String text) {
+        setTagName(tagName);
+        String[] split = text.split(" ");
+        if(split.length > 0){
+            setKeyword(split[0]);
+        }else{
+            setKeyword(null);
+        }
+        if(split.length > 1){
+            String desc = split[1];
+            for(int i = 2; i < split.length; i++){
+                desc += " " + split[i];
+            }
+            setDescription(desc);
+        }else{
+            setDescription(null);
+        }
+    }
+
     public ReflectDescriptionTag(String text){
         setText(text);
     }
@@ -70,7 +89,7 @@ public class ReflectDescriptionTag {
         if(split.length > 2){
             String desc = split[2];
             for(int i = 3; i < split.length; i++){
-                desc += split[i];
+                desc += " " + split[i];
             }
             setDescription(desc);
         }else{

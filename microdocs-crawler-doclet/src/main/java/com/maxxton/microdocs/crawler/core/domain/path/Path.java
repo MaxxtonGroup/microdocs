@@ -18,7 +18,7 @@ public class Path extends JsonReference{
     private String operationId;
     private List<String> consumes;
     private List<String> produces;
-    private Map<String, Parameter> parameters;
+    private List<Parameter> parameters;
     private Map<String, Response> responses;
     private Map<String, List<String>> security;
     private boolean deprecated;
@@ -79,11 +79,11 @@ public class Path extends JsonReference{
         this.produces = produces;
     }
 
-    public Map<String, Parameter> getParameters() {
+    public List<Parameter> getParameters() {
         return parameters;
     }
 
-    public void setParameters(Map<String, Parameter> parameters) {
+    public void setParameters(List<Parameter> parameters) {
         this.parameters = parameters;
     }
 
