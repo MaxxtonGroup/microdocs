@@ -81,7 +81,7 @@
                 width: 100%;
             }
 
-            :host ::content .description {
+            :host ::content .text {
                 margin-top: 10px;
                 font-size: 14px;
             }
@@ -124,7 +124,7 @@
                               project="{{project}}"></project-link>
             </div>
             <div class="endpoint-body" hidden$="{{!expanded}}">
-                <div class="description">{{endpoint.description}}</div>
+                <div class="text">{{endpoint.text}}</div>
                 <ul class="errors" hidden$="{{_empty(endpoint.errors)}}">
                     <template is="dom-repeat" items="{{endpoint.errors}}" as="error">
                         <li>{{error}}</li>
@@ -178,7 +178,7 @@
         Polymer({
             is: 'project-endpoint',
 
-            properties: {
+            declaredFields: {
                 endpoint: {
                     type: Object,
                     observer: '_initData'

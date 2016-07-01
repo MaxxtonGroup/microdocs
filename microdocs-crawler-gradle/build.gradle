@@ -26,8 +26,8 @@ dependencies {
     compile 'org.codehaus.groovy:groovy-all:2.4.4'
 }
 
-group='com.maxxton.gradle'
-version = '0.8'
+group='com.maxxton.microdocs'
+version = '0.81'
 
 uploadArchives {
     repositories {

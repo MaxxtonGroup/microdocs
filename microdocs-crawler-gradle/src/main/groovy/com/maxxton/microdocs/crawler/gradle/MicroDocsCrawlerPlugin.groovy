@@ -7,11 +7,14 @@ import org.gradle.api.tasks.bundling.Zip
 import org.gradle.api.tasks.javadoc.Javadoc
 
 class MicroDocsCrawlerPlugin implements Plugin<Project>{
+
+    def jarName = "microdocs-crawler-doclet.jar";
+
     void apply(Project project){
         
         project.task('extractDoclet', group: 'microdocs') <<{
             File tmpDir = new File("$project.buildDir/tmp")
-            File jarFile = new File(tmpDir, "spring-doclet-all.jar")
+            File jarFile = new File(tmpDir, jarName)
             if(jarFile.exists()){
                 return;
             }
@@ -21,9 +24,9 @@ class MicroDocsCrawlerPlugin implements Plugin<Project>{
                 tmpDir.mkdirs()
                 jarFile.delete()
             
-                inputStream = MaxxtonDocumentationPlugin.class.getResourceAsStream("/spring-doclet-all.jar")
+                inputStream = MicroDocsCrawlerPlugin.class.getResourceAsStream("/" + jarName)
                 if(inputStream == null){
-                    throw new NullPointerException("Could not find '/spring-doclet-all.jar' in resources")
+                    throw new NullPointerException("Could not find '/" + jarName + "' in resources")
                 }
                 fileOut = new FileOutputStream(jarFile)
                 byte[] buffer = new byte[1024]
@@ -48,8 +51,8 @@ class MicroDocsCrawlerPlugin implements Plugin<Project>{
             source = project.sourceSets.main.allJava
             classpath = project.configurations.compile
             destinationDir = project.reporting.file('./')
-            options.docletpath = [new File("$project.buildDir/tmp/spring-doclet-all.jar")]
-            options.doclet = 'org.springdoclet.SpringDoclet'
+            options.docletpath = [new File("$project.buildDir/tmp/" + jarName)]
+            options.doclet = 'com.maxxton.microdocs.crawler.doclet.DocletRunner'
             options.addStringOption("linkpath", "../jxr/");
         }
         
@@ -66,7 +69,7 @@ class MicroDocsCrawlerPlugin implements Plugin<Project>{
             into project.reporting.file("source")
         }
         
-        project.task('buildDoc', type:Zip, dependsOn: ['buildMicroDoc', 'buildJavadoc', 'buildJxrDoc'], group: 'microdocs'){
+        project.task('microDocs', type:Zip, dependsOn: ['buildMicroDoc', 'buildJavadoc', 'buildJxrDoc'], group: 'microdocs'){
             from project.reporting.file("./")
             baseName = "microdoc"
             version = "latest";

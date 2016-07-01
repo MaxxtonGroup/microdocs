@@ -20,7 +20,7 @@
         Polymer({
             is: 'json-preview',
 
-            properties: {
+            declaredFields: {
                 schema: Object,
                 domainSchemas: Object,
                 dummy: Object
@@ -40,8 +40,8 @@
                 if (schema != null && schema != undefined) {
                     if (schema.type == 'object') {
                         preview = {};
-                        for (var key in schema.properties) {
-                            preview[key] = this._renderSchema(schema.properties[key], key);
+                        for (var key in schema.declaredFields) {
+                            preview[key] = this._renderSchema(schema.declaredFields[key], key);
                         }
                         if (schema['$super'] != undefined && schema['$super'] != null && this.domainSchemas != undefined && this.domainSchemas != null) {
                             var name = schema['$super'];

@@ -11,12 +11,12 @@ public class Configuration {
 
     private static final String OPTION_DIRECTORY = "-d";
     private static final String OPTION_FILENAME = "-f";
-    private static final String OPTION_STYLESHEET = "-stylesheet";
     private static final String OPTION_LINKPATH = "-linkpath";
+    private static final String OPTION_CRAWLER = "-crawler";
     private static final String DEFAULT_DIRECTORY = ".";
-    private static final String DEFAULT_FILENAME = "./spring-summary.html";
-    private static final String DEFAULT_STYLESHEET = "./spring-summary.css";
+    private static final String DEFAULT_FILENAME = "./microdocs.json";
     private static final String DEFAULT_LINKPATH = "./";
+    private static final String DEFAULT_CRAWLER = "spring";
 
     // List of ignored options
     // TODO: Implement support for these since they are considered standard options
@@ -37,12 +37,8 @@ public class Configuration {
         return getOption(OPTION_FILENAME) != null ? getOption(OPTION_FILENAME) : DEFAULT_FILENAME;
     }
 
-    public String getStyleSheet() {
-        return getOption(OPTION_STYLESHEET) != null ? getOption(OPTION_STYLESHEET) : DEFAULT_STYLESHEET;
-    }
-
-    public boolean isDefaultStyleSheet() {
-        return getStyleSheet().equals(DEFAULT_STYLESHEET);
+    public String getCrawler() {
+        return getOption(OPTION_CRAWLER) != null ? getOption(OPTION_CRAWLER) : DEFAULT_CRAWLER;
     }
 
     private String getOption(String optionName) {
@@ -55,17 +51,18 @@ public class Configuration {
     }
 
     public int getOptionLength(String option) {
-        if (option.equals(OPTION_DIRECTORY)) {
-            return 2;
-        } else if (option.equals(OPTION_FILENAME)) {
-            return 2;
-        } else if (option.equals(OPTION_STYLESHEET)) {
-            return 2;
-        } else if (option.equals(OPTION_LINKPATH)) {
-            return 2;
-        } else if (IGNORED_OPTIONS.containsKey(option)) {
-            return IGNORED_OPTIONS.get(option);
+        switch(option){
+            case OPTION_DIRECTORY:
+            case OPTION_FILENAME:
+            case OPTION_LINKPATH:
+            case OPTION_CRAWLER:
+                return 2;
+            default:
+                if(IGNORED_OPTIONS.containsKey(option)){
+                    return IGNORED_OPTIONS.get(option);
+                }else{
+                    return 0;
+                }
         }
-        return 0;
     }
 }
