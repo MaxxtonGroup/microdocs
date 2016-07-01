@@ -13,3 +13,5 @@
 /microdocs-crawler-doclet/.gradle
 /microdocs-crawler-gradle/build
 /microdocs-crawler-gradle/.gradle
+/microdocs-server/src/**/*.js
+/microdocs-server/src/**/*.map
