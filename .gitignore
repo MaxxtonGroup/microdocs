@@ -15,3 +15,4 @@
 /microdocs-crawler-gradle/.gradle
 /microdocs-server/src/**/*.js
 /microdocs-server/src/**/*.map
+/microdocs-server/data/reports

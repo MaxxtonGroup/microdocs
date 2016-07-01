@@ -1,7 +1,7 @@
-import {ProjectInfo} from "./project-info.model";
-import {Tag} from "./tag.model";
+import {ProjectInfo} from "./common/project-info.model";
+import {Tag} from "./common/tag.model";
 import {Schema} from "./schema/schema.model";
-import {ExternalDoc} from "./external-doc.model";
+import {ExternalDoc} from "./common/external-doc.model";
 
 export interface Project{
     swagger:string;

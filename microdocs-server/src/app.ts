@@ -5,6 +5,7 @@ import * as bodyParser from "body-parser";
 import * as express from "express";
 import * as helmet from "helmet";
 import * as path from "path";
+import * as logger from 'morgan';
 
 import {Config} from "./config";
 import {BaseRoute} from "./routes/route";
@@ -56,7 +57,7 @@ class Server {
      */
     private config() {
         //mount logger
-        //this.app.use(logger("dev"));
+        this.app.use(logger("logs/logfile.txt"));
 
         //mount helmet
         this.app.use(helmet());
