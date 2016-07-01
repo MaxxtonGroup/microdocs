@@ -5,6 +5,7 @@ import * as bodyParser from "body-parser";
 import * as express from "express";
 import * as helmet from "helmet";
 import * as path from "path";
+
 import {Config} from "./config";
 import * as projectsRoute from "./routes/projects.route";
 import {BaseRoute} from "./routes/route";
@@ -16,7 +17,7 @@ import {BaseRoute} from "./routes/route";
  */
 class Server {
 
-    public app: express.Application;
+    public app:express.Application;
 
     /**
      * Bootstrap the application.
@@ -26,7 +27,7 @@ class Server {
      * @static
      * @return {ng.auto.IInjectorService} Returns the newly created injector for this app.
      */
-    public static bootstrap(): Server {
+    public static bootstrap():Server {
         return new Server();
     }
 
@@ -63,14 +64,14 @@ class Server {
         this.app.use(bodyParser.json());
 
         //mount query string parser
-        this.app.use(bodyParser.urlencoded({ extended: true }));
+        this.app.use(bodyParser.urlencoded({extended: true}));
 
         //add static paths
         var staticFolder = "../microdocs-ui";
-        if(Config.has("staticFolder")){
+        if (Config.has("staticFolder")) {
             staticFolder = Config.get("staticFolder");
         }
-        console.info("static: " + __dirname + "../" + staticFolder);
+        console.info("static: " + __dirname + "/../" + staticFolder);
         this.app.use(express.static(path.join(__dirname, '../' + staticFolder)));
     }
 
@@ -83,17 +84,17 @@ class Server {
      */
     private routes() {
         //get router
-        let router: express.Router;
+        let router:express.Router;
         router = express.Router();
 
         //create routes
-        var routes : BaseRoute[] = [
+        var routes:BaseRoute[] = [
             new projectsRoute.ProjectsRoute()
         ];
 
         //define basePath
         var basePath = "";
-        if(Config.has('basePath')){
+        if (Config.has('basePath')) {
             basePath = Config.get('basePath');
         }
 
@@ -102,7 +103,7 @@ class Server {
             route.methods().forEach((method) => {
                 var requestMethod = method.toLowerCase();
                 var path = basePath + route.path();
-                if(router[requestMethod] == undefined){
+                if (router[requestMethod] == undefined) {
                     throw "unknown request method: " + requestMethod + " for path: " + path;
                 }
                 console.info("map route: [" + requestMethod + "] " + path);

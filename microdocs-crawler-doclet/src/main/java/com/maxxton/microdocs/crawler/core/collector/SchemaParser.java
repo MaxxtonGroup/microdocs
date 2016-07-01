@@ -13,6 +13,6 @@ public interface SchemaParser {
 
     public String getClassName();
 
-    public Schema parse(ReflectClass reflectClass, List<ReflectGenericClass> genericClasses);
+    public Schema parse(ReflectClass reflectClass, List<ReflectGenericClass> genericClasses, SchemaCollector collector);
 
 }

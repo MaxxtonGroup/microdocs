@@ -287,6 +287,10 @@ public class ProjectBuilder implements Builder<Project> {
         return this;
     }
 
+    public ProjectBuilder dependency(DependencyBuilder dependencyBuilder){
+        return dependency(dependencyBuilder.title(), dependencyBuilder.build());
+    }
+
     public ProjectBuilder dependency(String name, Dependency dependency){
         if(project.getDependencies() == null){
             project.setDependencies(new HashMap());

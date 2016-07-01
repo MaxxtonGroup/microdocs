@@ -39,14 +39,14 @@
       </span>
             <iron-icon class="icon" icon="icons:arrow-forward"></iron-icon>
             <span class="type">{{requestParam.type}}</span>
-            <span class="desc" hidden$="{{!showDescription}}"> - {{requestParam.description}}</span>
+            <span class="desc" hidden$="{{!showDescription}}"> - {{requestParam.text}}</span>
         </div>
     </template>
     <script>
         Polymer({
             is: 'http-param',
 
-            properties: {
+            declaredFields: {
                 requestParam: Object,
 
                 showDescription: Boolean
@@ -57,7 +57,7 @@
             ],
 
           _initData: function (requestParam) {
-                this.showDescription = requestParam.description != undefined && requestParam.description != null && requestParam.description != "";
+                this.showDescription = requestParam.text != undefined && requestParam.text != null && requestParam.text != "";
             }
 
         });

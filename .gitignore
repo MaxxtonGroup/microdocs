@@ -9,3 +9,7 @@
 /microdocs-server/.tscache
 /microdocs-server/typings
 /microdocs-server/.baseDir.js
+/microdocs-crawler-doclet/build
+/microdocs-crawler-doclet/.gradle
+/microdocs-crawler-gradle/build
+/microdocs-crawler-gradle/.gradle

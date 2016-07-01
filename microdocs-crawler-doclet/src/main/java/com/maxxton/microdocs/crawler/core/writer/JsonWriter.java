@@ -23,7 +23,7 @@ public class JsonWriter implements Writer{
      */
     public void write(Project project, File outputFile) throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 
         String json = objectMapper.writeValueAsString(project);
 

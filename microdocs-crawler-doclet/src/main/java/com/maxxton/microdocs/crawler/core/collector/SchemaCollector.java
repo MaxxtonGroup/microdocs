@@ -40,7 +40,7 @@ public class SchemaCollector {
             }
             schemas.put(reflectClass.getName(), schema);
         }
-        Schema schema = new SchemaObject();
+        Schema schema = new SchemaPrimitive();
         schema.setReference("#/definitions/" + reflectClass.getName());
         return schema;
     }
@@ -57,7 +57,7 @@ public class SchemaCollector {
     private Schema collectSchema(ReflectClass reflectClass, List<ReflectGenericClass> genericClasses) {
         for(SchemaParser schemaParser : schemaParsers){
             if(schemaParser.getClassName().equals(reflectClass.getName())){
-                return schemaParser.parse(reflectClass, genericClasses);
+                return schemaParser.parse(reflectClass, genericClasses, this);
             }
         }
 
@@ -140,7 +140,7 @@ public class SchemaCollector {
         SchemaObject schema = new SchemaObject();
         Map<String, Schema> properties = new HashMap();
         for(ReflectField field : reflectClass.getDeclaredFields()){
-            collectProperty(properties, field.getName(), field.getType(), field.getAnnotations(), field.getDescription());
+            collectProperty(properties, field.getSimpleName(), field.getType(), field.getAnnotations(), field.getDescription());
         }
         schema.setProperties(properties);
 

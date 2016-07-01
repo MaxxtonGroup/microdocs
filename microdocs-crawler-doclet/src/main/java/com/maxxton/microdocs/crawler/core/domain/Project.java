@@ -12,6 +12,7 @@ import com.maxxton.microdocs.crawler.core.domain.schema.Schema;
 import com.maxxton.microdocs.crawler.core.domain.common.ExternalDocs;
 import com.maxxton.microdocs.crawler.core.domain.path.Parameter;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,16 +29,16 @@ public class Project {
     private List<String> schemas;
     private List<Tag> tags;
     private List<ExternalDocs> externalDocs;
-    private Map<String, SecurityDefinition> securityDefinitions;
-    private Map<String, List<String>> security;
+    private Map<String, SecurityDefinition> securityDefinitions = new HashMap();
+    private Map<String, List<String>> security = new HashMap();
     private List<String> consumes;
     private List<String> produces;
-    private Map<String, Map<String, Path>> paths;
-    private Map<String, Schema> definitions;
-    private Map<String, Parameter> parameters;
-    private Map<String, Response> responses;
-    private Map<String, Component> components;
-    private Map<String, Dependency> dependencies;
+    private Map<String, Map<String, Path>> paths = new HashMap();
+    private Map<String, Schema> definitions = new HashMap();
+    private Map<String, Parameter> parameters = new HashMap();
+    private Map<String, Response> responses = new HashMap();
+    private Map<String, Component> components = new HashMap();
+    private Map<String, Dependency> dependencies = new HashMap();
     private List<Problem> problems;
 
     public String getSwagger() {

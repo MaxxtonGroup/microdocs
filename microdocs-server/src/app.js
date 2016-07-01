@@ -57,7 +57,7 @@ var Server = (function () {
         if (config_1.Config.has("staticFolder")) {
             staticFolder = config_1.Config.get("staticFolder");
         }
-        console.info("static: " + __dirname + "../" + staticFolder);
+        console.info("static: " + __dirname + "/../" + staticFolder);
         this.app.use(express.static(path.join(__dirname, '../' + staticFolder)));
     };
     /**

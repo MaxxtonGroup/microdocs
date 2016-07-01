@@ -46,23 +46,12 @@ public class DocletRunner extends Standard {
         // convert Doclet classes to reflect classes
         List<ReflectClass<?>> classes = DocletConverter.convert(root.classes());
 
-        // todo: remove this
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-//            objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-//            objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-            String json = objectMapper.writeValueAsString(classes);
-            System.out.println(json);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-
         // run crawler
         Project project = crawler.crawl(classes);
 
         // save result
         try {
-            Writer writer = new ConsoleWriter();
+            Writer writer = new JsonWriter();
             writer.write(project, new File(config.getOutputDirectory(), config.getOutputFileName()));
         } catch (Exception e) {
             throw new RuntimeException(e);

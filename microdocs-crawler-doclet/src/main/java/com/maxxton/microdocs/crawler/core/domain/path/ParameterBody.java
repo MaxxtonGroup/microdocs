@@ -1,5 +1,6 @@
 package com.maxxton.microdocs.crawler.core.domain.path;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.maxxton.microdocs.crawler.core.domain.JsonReference;
 import com.maxxton.microdocs.crawler.core.domain.schema.Schema;
 
@@ -11,6 +12,7 @@ public class ParameterBody extends JsonReference implements Parameter {
     private String name;
     private ParameterPlacing in;
     private String description;
+    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     private boolean required = false;
     private Schema schema;
 

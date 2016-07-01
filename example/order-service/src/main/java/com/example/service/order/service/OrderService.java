@@ -6,6 +6,8 @@ import com.example.service.order.domain.OrderInfo;
 import com.example.service.order.domain.OrderStatus;
 import com.example.service.order.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.netflix.feign.FeignClient;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;

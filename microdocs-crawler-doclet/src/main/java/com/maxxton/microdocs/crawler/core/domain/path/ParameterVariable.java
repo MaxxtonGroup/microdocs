@@ -1,5 +1,6 @@
 package com.maxxton.microdocs.crawler.core.domain.path;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.maxxton.microdocs.crawler.core.domain.schema.SchemaArray;
 
 /**
@@ -9,7 +10,8 @@ public class ParameterVariable extends SchemaArray implements Parameter {
 
     private String name;
     private ParameterPlacing in;
-    private boolean allowEmptyValue;
+    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
+    private boolean allowEmptyValue = false;
 
     @Override
     public String getName() {

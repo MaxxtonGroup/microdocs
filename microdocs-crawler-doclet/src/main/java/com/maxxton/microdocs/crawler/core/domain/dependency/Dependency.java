@@ -2,9 +2,11 @@ package com.maxxton.microdocs.crawler.core.domain.dependency;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.maxxton.microdocs.crawler.core.domain.common.ProjectType;
+import com.maxxton.microdocs.crawler.core.domain.component.Component;
 import com.maxxton.microdocs.crawler.core.domain.path.Path;
 import com.maxxton.microdocs.crawler.core.domain.JsonReference;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -14,11 +16,14 @@ public class Dependency extends JsonReference{
 
     private String description;
     private String group;
-    private ProjectType type;
+    private String version;
+    private String latestVersion;
+    private DependencyType type;
     private String protocol;
     @JsonProperty("import")
     private DependencyImport dependencyImport;
-    private Map<String, Map<String, Path>> paths;
+    private Map<String, Map<String, Path>> paths = new HashMap();
+    private Component component;
 
     public String getProtocol() {
         return protocol;
@@ -52,11 +57,11 @@ public class Dependency extends JsonReference{
         this.group = group;
     }
 
-    public ProjectType getType() {
+    public DependencyType getType() {
         return type;
     }
 
-    public void setType(ProjectType type) {
+    public void setType(DependencyType type) {
         this.type = type;
     }
 
@@ -66,5 +71,29 @@ public class Dependency extends JsonReference{
 
     public void setDependencyImport(DependencyImport dependencyImport) {
         this.dependencyImport = dependencyImport;
+    }
+
+    public String getLatestVersion() {
+        return latestVersion;
+    }
+
+    public void setLatestVersion(String latestVersion) {
+        this.latestVersion = latestVersion;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    public Component getComponent() {
+        return component;
+    }
+
+    public void setComponent(Component component) {
+        this.component = component;
     }
 }

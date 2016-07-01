@@ -1,5 +1,6 @@
 package com.maxxton.microdocs.crawler.core.domain.path;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.maxxton.microdocs.crawler.core.domain.component.Component;
 import com.maxxton.microdocs.crawler.core.domain.JsonReference;
 
@@ -21,7 +22,8 @@ public class Path extends JsonReference{
     private List<Parameter> parameters;
     private Map<String, Response> responses;
     private Map<String, List<String>> security;
-    private boolean deprecated;
+    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
+    private boolean deprecated = false;
 
     public Component getController() {
         return controller;

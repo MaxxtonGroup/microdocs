@@ -1,2198 +1,295 @@
-[
-  {
-    "name": "com.example.service.order.client.CustomerClient",
-    "simpleName": "CustomerClient",
-    "description": {
-      "text": "",
-      "tags": [
-        {
-          "tagName": "author",
-          "keyword": "Steven",
-          "description": "Hermans (s.hermans@maxxton.com)"
-        }
-      ]
+{
+  "swagger": "2.0",
+  "paths": {
+    "/api/v1/orders": {
+      "post": {
+        "controller": {
+          "$ref": "#/components/OrderController"
+        },
+        "description": "Create new order",
+        "operationId": "createOrder",
+        "parameters": [
+          {
+            "name": "orderInfo",
+            "in": "body",
+            "description": "order to be created",
+            "required": false,
+            "schema": {
+              "type": "object",
+              "required": false,
+              "$ref": "#/definitions/com.example.service.order.domain.OrderInfo"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "Created order",
+            "schema": {
+              "type": "object",
+              "required": false
+            }
+          }
+        },
+        "deprecated": false
+      },
+      "get": {
+        "controller": {
+          "$ref": "#/components/OrderController"
+        },
+        "description": "Get page of orders",
+        "operationId": "getOrder",
+        "responses": {
+          "default": {
+            "description": "List of orders",
+            "schema": {
+              "type": "object",
+              "required": false
+            }
+          }
+        },
+        "deprecated": false
+      }
     },
-    "packageName": "com.example.service.order.client",
-    "type": "INTERFACE",
-    "superClass": null,
-    "interfaces": [],
-    "annotations": [
-      {
-        "name": "org.springframework.cloud.netflix.feign.FeignClient",
-        "simpleName": "FeignClient",
-        "description": null,
-        "packageName": "org.springframework.cloud.netflix.feign",
-        "properties": {
-          "name": "\"customer-service\""
-        }
-      },
-      {
-        "name": "org.springframework.web.bind.annotation.RequestMapping",
-        "simpleName": "RequestMapping",
-        "description": null,
-        "packageName": "org.springframework.web.bind.annotation",
-        "properties": {
-          "value": "\"/api/v1/customers\""
-        }
-      }
-    ],
-    "declaredFields": [],
-    "classFields": [],
-    "enumFields": [],
-    "declaredMethods": [
-      {
-        "name": "com.example.service.order.client.CustomerClient.getCustomer",
-        "simpleName": "getCustomer",
-        "description": {
-          "text": "",
-          "tags": []
+    "/api/v1/orders/{orderId}/status": {
+      "put": {
+        "controller": {
+          "$ref": "#/components/OrderController"
         },
-        "annotations": [
-          {
-            "name": "org.springframework.web.bind.annotation.RequestMapping",
-            "simpleName": "RequestMapping",
-            "description": null,
-            "packageName": "org.springframework.web.bind.annotation",
-            "properties": {
-              "path": "\"/{customerId}\"",
-              "method": "org.springframework.web.bind.annotation.RequestMethod.GET"
-            }
-          }
-        ],
-        "returnType": {
-          "genericTypes": []
-        },
+        "description": "Update order status",
+        "operationId": "updateStatus",
         "parameters": [
           {
-            "annotations": [
-              {
-                "name": "org.springframework.web.bind.annotation.PathVariable",
-                "simpleName": "PathVariable",
-                "description": null,
-                "packageName": "org.springframework.web.bind.annotation",
-                "properties": {
-                  "value": "\"customerId\""
-                }
-              }
-            ],
-            "type": {
-              "genericTypes": []
-            },
-            "name": "customerId"
-          }
-        ],
-        "static": false,
-        "public": true
-      }
-    ],
-    "classMethods": [],
-    "abstract": true
-  },
-  {
-    "name": "com.example.service.order.controller.OrderController",
-    "simpleName": "OrderController",
-    "description": {
-      "text": "",
-      "tags": [
-        {
-          "tagName": "author",
-          "keyword": "Steven",
-          "description": "Hermans (s.hermans@maxxton.com)"
-        }
-      ]
-    },
-    "packageName": "com.example.service.order.controller",
-    "type": "CLASS",
-    "superClass": {
-      "genericTypes": []
-    },
-    "interfaces": [],
-    "annotations": [
-      {
-        "name": "org.springframework.web.bind.annotation.RestController",
-        "simpleName": "RestController",
-        "description": null,
-        "packageName": "org.springframework.web.bind.annotation",
-        "properties": {}
-      },
-      {
-        "name": "org.springframework.web.bind.annotation.RequestMapping",
-        "simpleName": "RequestMapping",
-        "description": null,
-        "packageName": "org.springframework.web.bind.annotation",
-        "properties": {
-          "value": "\"/api/v1/orders\""
-        }
-      }
-    ],
-    "declaredFields": [
-      {
-        "name": "com.example.service.order.controller.OrderController.orderService",
-        "simpleName": "orderService",
-        "description": {
-          "text": "",
-          "tags": []
-        },
-        "annotations": [
-          {
-            "name": "org.springframework.beans.factory.annotation.Autowired",
-            "simpleName": "Autowired",
-            "description": null,
-            "packageName": "org.springframework.beans.factory.annotation",
-            "properties": {}
-          }
-        ],
-        "type": {
-          "genericTypes": []
-        },
-        "defaultValue": null,
-        "static": false,
-        "public": false
-      }
-    ],
-    "classFields": [],
-    "enumFields": [],
-    "declaredMethods": [
-      {
-        "name": "com.example.service.order.controller.OrderController.getOrder",
-        "simpleName": "getOrder",
-        "description": {
-          "text": "Get page of orders",
-          "tags": [
-            {
-              "tagName": "param",
-              "keyword": "pageable",
-              "description": "define which page to request"
-            },
-            {
-              "tagName": "response",
-              "keyword": "200",
-              "description": null
-            },
-            {
-              "tagName": "return",
-              "keyword": "List",
-              "description": "of orders"
-            }
-          ]
-        },
-        "annotations": [
-          {
-            "name": "org.springframework.web.bind.annotation.RequestMapping",
-            "simpleName": "RequestMapping",
-            "description": null,
-            "packageName": "org.springframework.web.bind.annotation",
-            "properties": {
-              "path": "\"\"",
-              "method": "org.springframework.web.bind.annotation.RequestMethod.GET"
-            }
-          }
-        ],
-        "returnType": {
-          "genericTypes": [
-            {
-              "genericTypes": []
-            }
-          ]
-        },
-        "parameters": [
-          {
-            "annotations": [],
-            "type": {
-              "genericTypes": []
-            },
-            "name": "pageable"
-          }
-        ],
-        "static": false,
-        "public": true
-      },
-      {
-        "name": "com.example.service.order.controller.OrderController.getOrder",
-        "simpleName": "getOrder",
-        "description": {
-          "text": "Get order by id",
-          "tags": [
-            {
-              "tagName": "param",
-              "keyword": "orderId",
-              "description": "order id"
-            },
-            {
-              "tagName": "response",
-              "keyword": "200",
-              "description": null
-            },
-            {
-              "tagName": "response",
-              "keyword": "404",
-              "description": null
-            },
-            {
-              "tagName": "return",
-              "keyword": "Order",
-              "description": "or not found"
-            }
-          ]
-        },
-        "annotations": [
-          {
-            "name": "org.springframework.web.bind.annotation.RequestMapping",
-            "simpleName": "RequestMapping",
-            "description": null,
-            "packageName": "org.springframework.web.bind.annotation",
-            "properties": {
-              "path": "\"/{orderId}\"",
-              "method": "{org.springframework.web.bind.annotation.RequestMethod.GET, org.springframework.web.bind.annotation.RequestMethod.POST}"
-            }
-          }
-        ],
-        "returnType": {
-          "genericTypes": [
-            {
-              "genericTypes": []
-            }
-          ]
-        },
-        "parameters": [
-          {
-            "annotations": [
-              {
-                "name": "org.springframework.web.bind.annotation.PathVariable",
-                "simpleName": "PathVariable",
-                "description": null,
-                "packageName": "org.springframework.web.bind.annotation",
-                "properties": {
-                  "value": "\"orderId\""
-                }
-              }
-            ],
-            "type": {
-              "genericTypes": []
-            },
-            "name": "orderId"
-          }
-        ],
-        "static": false,
-        "public": true
-      },
-      {
-        "name": "com.example.service.order.controller.OrderController.createOrder",
-        "simpleName": "createOrder",
-        "description": {
-          "text": "Create new order",
-          "tags": [
-            {
-              "tagName": "param",
-              "keyword": "orderInfo",
-              "description": "order to be created"
-            },
-            {
-              "tagName": "response",
-              "keyword": "201",
-              "description": null
-            },
-            {
-              "tagName": "response",
-              "keyword": "400",
-              "description": null
-            },
-            {
-              "tagName": "return",
-              "keyword": "Created",
-              "description": "order"
-            }
-          ]
-        },
-        "annotations": [
-          {
-            "name": "org.springframework.web.bind.annotation.RequestMapping",
-            "simpleName": "RequestMapping",
-            "description": null,
-            "packageName": "org.springframework.web.bind.annotation",
-            "properties": {
-              "path": "\"\"",
-              "method": "org.springframework.web.bind.annotation.RequestMethod.POST"
-            }
-          }
-        ],
-        "returnType": {
-          "genericTypes": [
-            {
-              "genericTypes": []
-            }
-          ]
-        },
-        "parameters": [
-          {
-            "annotations": [
-              {
-                "name": "org.springframework.web.bind.annotation.RequestBody",
-                "simpleName": "RequestBody",
-                "description": null,
-                "packageName": "org.springframework.web.bind.annotation",
-                "properties": {}
-              }
-            ],
-            "type": {
-              "genericTypes": []
-            },
-            "name": "orderInfo"
-          }
-        ],
-        "static": false,
-        "public": true
-      },
-      {
-        "name": "com.example.service.order.controller.OrderController.updateStatus",
-        "simpleName": "updateStatus",
-        "description": {
-          "text": "Update order status",
-          "tags": [
-            {
-              "tagName": "param",
-              "keyword": "orderId",
-              "description": "id of the order"
-            },
-            {
-              "tagName": "param",
-              "keyword": "status",
-              "description": "new order status"
-            },
-            {
-              "tagName": "response",
-              "keyword": "200",
-              "description": null
-            },
-            {
-              "tagName": "response",
-              "keyword": "404",
-              "description": null
-            },
-            {
-              "tagName": "return",
-              "keyword": "Order",
-              "description": "with the new status"
-            }
-          ]
-        },
-        "annotations": [
-          {
-            "name": "org.springframework.web.bind.annotation.RequestMapping",
-            "simpleName": "RequestMapping",
-            "description": null,
-            "packageName": "org.springframework.web.bind.annotation",
-            "properties": {
-              "path": "\"/{orderId}/status\"",
-              "method": "org.springframework.web.bind.annotation.RequestMethod.PUT"
-            }
-          }
-        ],
-        "returnType": {
-          "genericTypes": [
-            {
-              "genericTypes": []
-            }
-          ]
-        },
-        "parameters": [
-          {
-            "annotations": [
-              {
-                "name": "org.springframework.web.bind.annotation.PathVariable",
-                "simpleName": "PathVariable",
-                "description": null,
-                "packageName": "org.springframework.web.bind.annotation",
-                "properties": {
-                  "value": "\"orderId\""
-                }
-              }
-            ],
-            "type": {
-              "genericTypes": []
-            },
-            "name": "orderId"
+            "type": "integer",
+            "description": "id of the order",
+            "required": true,
+            "name": "orderId",
+            "in": "path",
+            "allowEmptyValue": false
           },
           {
-            "annotations": [
-              {
-                "name": "org.springframework.web.bind.annotation.RequestParam",
-                "simpleName": "RequestParam",
-                "description": null,
-                "packageName": "org.springframework.web.bind.annotation",
-                "properties": {
-                  "value": "\"status\""
+            "type": "enum",
+            "description": "new order status",
+            "required": false,
+            "name": "status",
+            "in": "query",
+            "allowEmptyValue": false
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "Order with the new status",
+            "schema": {
+              "type": "object",
+              "required": false
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api/v1/orders/{orderId}": {
+      "get": {
+        "controller": {
+          "$ref": "#/components/OrderController"
+        },
+        "description": "Get order by id",
+        "operationId": "getOrder",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "order id",
+            "required": true,
+            "name": "orderId",
+            "in": "path",
+            "allowEmptyValue": false
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "Order or not found",
+            "schema": {
+              "type": "object",
+              "required": false
+            }
+          }
+        },
+        "deprecated": false
+      }
+    }
+  },
+  "definitions": {
+    "com.example.service.order.domain.OrderInfo": {
+      "type": "object",
+      "required": false,
+      "properties": {
+        "com.example.service.order.domain.OrderInfo.orderId": {
+          "type": "integer",
+          "required": false
+        },
+        "com.example.service.order.domain.OrderInfo.customerId": {
+          "type": "integer",
+          "required": false
+        },
+        "com.example.service.order.domain.OrderInfo.status": {
+          "type": "enum",
+          "required": false,
+          "name": "com.example.service.order.domain.OrderStatus",
+          "simpleName": "OrderStatus",
+          "enum": [
+            "PENDING",
+            "ACCEPTED",
+            "DELIVERED"
+          ]
+        },
+        "com.example.service.order.domain.OrderInfo.orderDate": {
+          "type": "date",
+          "required": false
+        },
+        "com.example.service.order.domain.OrderInfo.billId": {
+          "type": "integer",
+          "required": false
+        }
+      }
+    },
+    "com.example.service.order.domain.Order": {
+      "type": "object",
+      "required": false,
+      "properties": {
+        "com.example.service.order.domain.Order.customer": {
+          "type": "object",
+          "required": false,
+          "properties": {
+            "com.example.service.order.domain.Customer.customerId": {
+              "type": "integer",
+              "required": false
+            },
+            "com.example.service.order.domain.Customer.billAddress": {
+              "type": "object",
+              "required": false,
+              "properties": {
+                "com.example.service.order.domain.Address.addressId": {
+                  "type": "integer",
+                  "required": false
+                },
+                "com.example.service.order.domain.Address.zipCode": {
+                  "type": "string",
+                  "required": false
+                },
+                "com.example.service.order.domain.Address.address": {
+                  "type": "string",
+                  "required": false
+                },
+                "com.example.service.order.domain.Address.houseNumber": {
+                  "type": "string",
+                  "required": false
+                },
+                "com.example.service.order.domain.Address.city": {
+                  "type": "string",
+                  "required": false
                 }
               }
-            ],
-            "type": {
-              "genericTypes": []
             },
-            "name": "status"
+            "com.example.service.order.domain.Customer.lastName": {
+              "type": "string",
+              "required": false
+            },
+            "com.example.service.order.domain.Customer.deliverAddress": {
+              "type": "object",
+              "required": false,
+              "properties": {
+                "com.example.service.order.domain.Address.addressId": {
+                  "type": "integer",
+                  "required": false
+                },
+                "com.example.service.order.domain.Address.zipCode": {
+                  "type": "string",
+                  "required": false
+                },
+                "com.example.service.order.domain.Address.address": {
+                  "type": "string",
+                  "required": false
+                },
+                "com.example.service.order.domain.Address.houseNumber": {
+                  "type": "string",
+                  "required": false
+                },
+                "com.example.service.order.domain.Address.city": {
+                  "type": "string",
+                  "required": false
+                }
+              }
+            },
+            "com.example.service.order.domain.Customer.email": {
+              "type": "string",
+              "required": false
+            },
+            "com.example.service.order.domain.Customer.firstName": {
+              "type": "string",
+              "required": false
+            }
           }
-        ],
-        "static": false,
-        "public": true
+        },
+        "com.example.service.order.domain.Order.orderDate": {
+          "type": "date",
+          "required": false
+        },
+        "com.example.service.order.domain.Order.status": {
+          "type": "enum",
+          "required": false,
+          "name": "com.example.service.order.domain.OrderStatus",
+          "simpleName": "OrderStatus",
+          "enum": [
+            "PENDING",
+            "ACCEPTED",
+            "DELIVERED"
+          ]
+        },
+        "com.example.service.order.domain.Order.orderId": {
+          "type": "integer",
+          "required": false
+        }
       }
-    ],
-    "classMethods": [],
-    "abstract": false
+    },
+    "org.springframework.data.domain.Pageable": {
+      "type": "object",
+      "required": false
+    }
   },
-  {
-    "name": "com.example.service.order.domain.Address",
-    "simpleName": "Address",
-    "description": {
-      "text": "",
-      "tags": [
-        {
-          "tagName": "author",
-          "keyword": "Steven",
-          "description": "Hermans (s.hermans@maxxton.com)"
-        }
+  "components": {
+    "CustomerClient": {
+      "name": "com.example.service.order.client.CustomerClient",
+      "type": "client",
+      "authors": [
+        "Hermans (s.hermans@maxxton.com)"
       ]
     },
-    "packageName": "com.example.service.order.domain",
-    "type": "CLASS",
-    "superClass": {
-      "genericTypes": []
-    },
-    "interfaces": [
-      {
-        "genericTypes": []
-      }
-    ],
-    "annotations": [],
-    "declaredFields": [
-      {
-        "name": "com.example.service.order.domain.Address.addressId",
-        "simpleName": "addressId",
-        "description": {
-          "text": "",
-          "tags": [
-            {
-              "tagName": "dummy",
-              "keyword": "15",
-              "description": null
-            }
-          ]
-        },
-        "annotations": [],
-        "type": {
-          "genericTypes": []
-        },
-        "defaultValue": null,
-        "static": false,
-        "public": false
-      },
-      {
-        "name": "com.example.service.order.domain.Address.address",
-        "simpleName": "address",
-        "description": {
-          "text": "",
-          "tags": [
-            {
-              "tagName": "dummy",
-              "keyword": "dam",
-              "description": null
-            }
-          ]
-        },
-        "annotations": [],
-        "type": {
-          "genericTypes": []
-        },
-        "defaultValue": null,
-        "static": false,
-        "public": false
-      },
-      {
-        "name": "com.example.service.order.domain.Address.houseNumber",
-        "simpleName": "houseNumber",
-        "description": {
-          "text": "",
-          "tags": [
-            {
-              "tagName": "dummy",
-              "keyword": "6",
-              "description": null
-            }
-          ]
-        },
-        "annotations": [],
-        "type": {
-          "genericTypes": []
-        },
-        "defaultValue": null,
-        "static": false,
-        "public": false
-      },
-      {
-        "name": "com.example.service.order.domain.Address.city",
-        "simpleName": "city",
-        "description": {
-          "text": "",
-          "tags": [
-            {
-              "tagName": "dummy",
-              "keyword": "Middelburg",
-              "description": null
-            }
-          ]
-        },
-        "annotations": [],
-        "type": {
-          "genericTypes": []
-        },
-        "defaultValue": null,
-        "static": false,
-        "public": false
-      },
-      {
-        "name": "com.example.service.order.domain.Address.zipCode",
-        "simpleName": "zipCode",
-        "description": {
-          "text": "",
-          "tags": [
-            {
-              "tagName": "dummy",
-              "keyword": "4512CD",
-              "description": null
-            }
-          ]
-        },
-        "annotations": [],
-        "type": {
-          "genericTypes": []
-        },
-        "defaultValue": null,
-        "static": false,
-        "public": false
-      }
-    ],
-    "classFields": [],
-    "enumFields": [],
-    "declaredMethods": [
-      {
-        "name": "com.example.service.order.domain.Address.getAddressId",
-        "simpleName": "getAddressId",
-        "description": {
-          "text": "",
-          "tags": []
-        },
-        "annotations": [],
-        "returnType": {
-          "genericTypes": []
-        },
-        "parameters": [],
-        "static": false,
-        "public": true
-      },
-      {
-        "name": "com.example.service.order.domain.Address.setAddressId",
-        "simpleName": "setAddressId",
-        "description": {
-          "text": "",
-          "tags": []
-        },
-        "annotations": [],
-        "returnType": {
-          "genericTypes": []
-        },
-        "parameters": [
-          {
-            "annotations": [],
-            "type": {
-              "genericTypes": []
-            },
-            "name": "addressId"
-          }
-        ],
-        "static": false,
-        "public": true
-      },
-      {
-        "name": "com.example.service.order.domain.Address.getAddress",
-        "simpleName": "getAddress",
-        "description": {
-          "text": "",
-          "tags": []
-        },
-        "annotations": [],
-        "returnType": {
-          "genericTypes": []
-        },
-        "parameters": [],
-        "static": false,
-        "public": true
-      },
-      {
-        "name": "com.example.service.order.domain.Address.setAddress",
-        "simpleName": "setAddress",
-        "description": {
-          "text": "",
-          "tags": []
-        },
-        "annotations": [],
-        "returnType": {
-          "genericTypes": []
-        },
-        "parameters": [
-          {
-            "annotations": [],
-            "type": {
-              "genericTypes": []
-            },
-            "name": "address"
-          }
-        ],
-        "static": false,
-        "public": true
-      },
-      {
-        "name": "com.example.service.order.domain.Address.getHouseNumber",
-        "simpleName": "getHouseNumber",
-        "description": {
-          "text": "",
-          "tags": []
-        },
-        "annotations": [],
-        "returnType": {
-          "genericTypes": []
-        },
-        "parameters": [],
-        "static": false,
-        "public": true
-      },
-      {
-        "name": "com.example.service.order.domain.Address.setHouseNumber",
-        "simpleName": "setHouseNumber",
-        "description": {
-          "text": "",
-          "tags": []
-        },
-        "annotations": [],
-        "returnType": {
-          "genericTypes": []
-        },
-        "parameters": [
-          {
-            "annotations": [],
-            "type": {
-              "genericTypes": []
-            },
-            "name": "houseNumber"
-          }
-        ],
-        "static": false,
-        "public": true
-      },
-      {
-        "name": "com.example.service.order.domain.Address.getCity",
-        "simpleName": "getCity",
-        "description": {
-          "text": "",
-          "tags": []
-        },
-        "annotations": [],
-        "returnType": {
-          "genericTypes": []
-        },
-        "parameters": [],
-        "static": false,
-        "public": true
-      },
-      {
-        "name": "com.example.service.order.domain.Address.setCity",
-        "simpleName": "setCity",
-        "description": {
-          "text": "",
-          "tags": []
-        },
-        "annotations": [],
-        "returnType": {
-          "genericTypes": []
-        },
-        "parameters": [
-          {
-            "annotations": [],
-            "type": {
-              "genericTypes": []
-            },
-            "name": "city"
-          }
-        ],
-        "static": false,
-        "public": true
-      },
-      {
-        "name": "com.example.service.order.domain.Address.getZipCode",
-        "simpleName": "getZipCode",
-        "description": {
-          "text": "",
-          "tags": []
-        },
-        "annotations": [],
-        "returnType": {
-          "genericTypes": []
-        },
-        "parameters": [],
-        "static": false,
-        "public": true
-      },
-      {
-        "name": "com.example.service.order.domain.Address.setZipCode",
-        "simpleName": "setZipCode",
-        "description": {
-          "text": "",
-          "tags": []
-        },
-        "annotations": [],
-        "returnType": {
-          "genericTypes": []
-        },
-        "parameters": [
-          {
-            "annotations": [],
-            "type": {
-              "genericTypes": []
-            },
-            "name": "zipCode"
-          }
-        ],
-        "static": false,
-        "public": true
-      }
-    ],
-    "classMethods": [],
-    "abstract": false
-  },
-  {
-    "name": "com.example.service.order.domain.Customer",
-    "simpleName": "Customer",
-    "description": {
-      "text": "",
-      "tags": [
-        {
-          "tagName": "author",
-          "keyword": "Steven",
-          "description": "Hermans (s.hermans@maxxton.com)"
-        }
+    "OrderRepository": {
+      "name": "com.example.service.order.repository.OrderRepository",
+      "type": "repository",
+      "authors": [
+        "Hermans (s.hermans@maxxton.com)"
       ]
     },
-    "packageName": "com.example.service.order.domain",
-    "type": "CLASS",
-    "superClass": {
-      "genericTypes": []
-    },
-    "interfaces": [
-      {
-        "genericTypes": []
-      }
-    ],
-    "annotations": [],
-    "declaredFields": [
-      {
-        "name": "com.example.service.order.domain.Customer.customerId",
-        "simpleName": "customerId",
-        "description": {
-          "text": "",
-          "tags": [
-            {
-              "tagName": "dummy",
-              "keyword": "23",
-              "description": null
-            }
-          ]
-        },
-        "annotations": [],
-        "type": {
-          "genericTypes": []
-        },
-        "defaultValue": null,
-        "static": false,
-        "public": false
-      },
-      {
-        "name": "com.example.service.order.domain.Customer.firstName",
-        "simpleName": "firstName",
-        "description": {
-          "text": "",
-          "tags": [
-            {
-              "tagName": "dummy",
-              "keyword": "John",
-              "description": null
-            }
-          ]
-        },
-        "annotations": [],
-        "type": {
-          "genericTypes": []
-        },
-        "defaultValue": null,
-        "static": false,
-        "public": false
-      },
-      {
-        "name": "com.example.service.order.domain.Customer.lastName",
-        "simpleName": "lastName",
-        "description": {
-          "text": "",
-          "tags": [
-            {
-              "tagName": "dummy",
-              "keyword": "Snow",
-              "description": null
-            }
-          ]
-        },
-        "annotations": [],
-        "type": {
-          "genericTypes": []
-        },
-        "defaultValue": null,
-        "static": false,
-        "public": false
-      },
-      {
-        "name": "com.example.service.order.domain.Customer.email",
-        "simpleName": "email",
-        "description": {
-          "text": "",
-          "tags": [
-            {
-              "tagName": "dummy",
-              "keyword": "jonyy17@xxx.com",
-              "description": null
-            }
-          ]
-        },
-        "annotations": [],
-        "type": {
-          "genericTypes": []
-        },
-        "defaultValue": null,
-        "static": false,
-        "public": false
-      },
-      {
-        "name": "com.example.service.order.domain.Customer.deliverAddress",
-        "simpleName": "deliverAddress",
-        "description": {
-          "text": "",
-          "tags": []
-        },
-        "annotations": [],
-        "type": {
-          "genericTypes": []
-        },
-        "defaultValue": null,
-        "static": false,
-        "public": false
-      },
-      {
-        "name": "com.example.service.order.domain.Customer.billAddress",
-        "simpleName": "billAddress",
-        "description": {
-          "text": "",
-          "tags": []
-        },
-        "annotations": [],
-        "type": {
-          "genericTypes": []
-        },
-        "defaultValue": null,
-        "static": false,
-        "public": false
-      }
-    ],
-    "classFields": [],
-    "enumFields": [],
-    "declaredMethods": [
-      {
-        "name": "com.example.service.order.domain.Customer.getCustomerId",
-        "simpleName": "getCustomerId",
-        "description": {
-          "text": "",
-          "tags": []
-        },
-        "annotations": [],
-        "returnType": {
-          "genericTypes": []
-        },
-        "parameters": [],
-        "static": false,
-        "public": true
-      },
-      {
-        "name": "com.example.service.order.domain.Customer.setCustomerId",
-        "simpleName": "setCustomerId",
-        "description": {
-          "text": "",
-          "tags": []
-        },
-        "annotations": [],
-        "returnType": {
-          "genericTypes": []
-        },
-        "parameters": [
-          {
-            "annotations": [],
-            "type": {
-              "genericTypes": []
-            },
-            "name": "customerId"
-          }
-        ],
-        "static": false,
-        "public": true
-      },
-      {
-        "name": "com.example.service.order.domain.Customer.getFirstName",
-        "simpleName": "getFirstName",
-        "description": {
-          "text": "",
-          "tags": []
-        },
-        "annotations": [],
-        "returnType": {
-          "genericTypes": []
-        },
-        "parameters": [],
-        "static": false,
-        "public": true
-      },
-      {
-        "name": "com.example.service.order.domain.Customer.setFirstName",
-        "simpleName": "setFirstName",
-        "description": {
-          "text": "",
-          "tags": []
-        },
-        "annotations": [],
-        "returnType": {
-          "genericTypes": []
-        },
-        "parameters": [
-          {
-            "annotations": [],
-            "type": {
-              "genericTypes": []
-            },
-            "name": "firstName"
-          }
-        ],
-        "static": false,
-        "public": true
-      },
-      {
-        "name": "com.example.service.order.domain.Customer.getLastName",
-        "simpleName": "getLastName",
-        "description": {
-          "text": "",
-          "tags": []
-        },
-        "annotations": [],
-        "returnType": {
-          "genericTypes": []
-        },
-        "parameters": [],
-        "static": false,
-        "public": true
-      },
-      {
-        "name": "com.example.service.order.domain.Customer.setLastName",
-        "simpleName": "setLastName",
-        "description": {
-          "text": "",
-          "tags": []
-        },
-        "annotations": [],
-        "returnType": {
-          "genericTypes": []
-        },
-        "parameters": [
-          {
-            "annotations": [],
-            "type": {
-              "genericTypes": []
-            },
-            "name": "lastName"
-          }
-        ],
-        "static": false,
-        "public": true
-      },
-      {
-        "name": "com.example.service.order.domain.Customer.getDeliverAddress",
-        "simpleName": "getDeliverAddress",
-        "description": {
-          "text": "",
-          "tags": []
-        },
-        "annotations": [],
-        "returnType": {
-          "genericTypes": []
-        },
-        "parameters": [],
-        "static": false,
-        "public": true
-      },
-      {
-        "name": "com.example.service.order.domain.Customer.setDeliverAddress",
-        "simpleName": "setDeliverAddress",
-        "description": {
-          "text": "",
-          "tags": []
-        },
-        "annotations": [],
-        "returnType": {
-          "genericTypes": []
-        },
-        "parameters": [
-          {
-            "annotations": [],
-            "type": {
-              "genericTypes": []
-            },
-            "name": "deliverAddress"
-          }
-        ],
-        "static": false,
-        "public": true
-      },
-      {
-        "name": "com.example.service.order.domain.Customer.getBillAddress",
-        "simpleName": "getBillAddress",
-        "description": {
-          "text": "",
-          "tags": []
-        },
-        "annotations": [],
-        "returnType": {
-          "genericTypes": []
-        },
-        "parameters": [],
-        "static": false,
-        "public": true
-      },
-      {
-        "name": "com.example.service.order.domain.Customer.setBillAddress",
-        "simpleName": "setBillAddress",
-        "description": {
-          "text": "",
-          "tags": []
-        },
-        "annotations": [],
-        "returnType": {
-          "genericTypes": []
-        },
-        "parameters": [
-          {
-            "annotations": [],
-            "type": {
-              "genericTypes": []
-            },
-            "name": "billAddress"
-          }
-        ],
-        "static": false,
-        "public": true
-      },
-      {
-        "name": "com.example.service.order.domain.Customer.getEmail",
-        "simpleName": "getEmail",
-        "description": {
-          "text": "",
-          "tags": []
-        },
-        "annotations": [],
-        "returnType": {
-          "genericTypes": []
-        },
-        "parameters": [],
-        "static": false,
-        "public": true
-      },
-      {
-        "name": "com.example.service.order.domain.Customer.setEmail",
-        "simpleName": "setEmail",
-        "description": {
-          "text": "",
-          "tags": []
-        },
-        "annotations": [],
-        "returnType": {
-          "genericTypes": []
-        },
-        "parameters": [
-          {
-            "annotations": [],
-            "type": {
-              "genericTypes": []
-            },
-            "name": "email"
-          }
-        ],
-        "static": false,
-        "public": true
-      }
-    ],
-    "classMethods": [],
-    "abstract": false
-  },
-  {
-    "name": "com.example.service.order.domain.Order",
-    "simpleName": "Order",
-    "description": {
-      "text": "",
-      "tags": [
-        {
-          "tagName": "author",
-          "keyword": "Steven",
-          "description": "Hermans (s.hermans@maxxton.com)"
-        }
+    "OrderController": {
+      "name": "com.example.service.order.controller.OrderController",
+      "type": "controller",
+      "authors": [
+        "Hermans (s.hermans@maxxton.com)"
       ]
     },
-    "packageName": "com.example.service.order.domain",
-    "type": "CLASS",
-    "superClass": {
-      "genericTypes": []
-    },
-    "interfaces": [],
-    "annotations": [
-      {
-        "name": "javax.persistence.Entity",
-        "simpleName": "Entity",
-        "description": null,
-        "packageName": "javax.persistence",
-        "properties": {}
-      }
-    ],
-    "declaredFields": [
-      {
-        "name": "com.example.service.order.domain.Order.orderId",
-        "simpleName": "orderId",
-        "description": {
-          "text": "",
-          "tags": [
-            {
-              "tagName": "dummy",
-              "keyword": "54",
-              "description": null
-            }
-          ]
-        },
-        "annotations": [
-          {
-            "name": "javax.persistence.Id",
-            "simpleName": "Id",
-            "description": null,
-            "packageName": "javax.persistence",
-            "properties": {}
-          }
-        ],
-        "type": {
-          "genericTypes": []
-        },
-        "defaultValue": null,
-        "static": false,
-        "public": false
-      },
-      {
-        "name": "com.example.service.order.domain.Order.orderDate",
-        "simpleName": "orderDate",
-        "description": {
-          "text": "",
-          "tags": [
-            {
-              "tagName": "dummy",
-              "keyword": "25-5-2016",
-              "description": null
-            }
-          ]
-        },
-        "annotations": [],
-        "type": {
-          "genericTypes": []
-        },
-        "defaultValue": null,
-        "static": false,
-        "public": false
-      },
-      {
-        "name": "com.example.service.order.domain.Order.customer",
-        "simpleName": "customer",
-        "description": {
-          "text": "",
-          "tags": []
-        },
-        "annotations": [],
-        "type": {
-          "genericTypes": []
-        },
-        "defaultValue": null,
-        "static": false,
-        "public": false
-      },
-      {
-        "name": "com.example.service.order.domain.Order.status",
-        "simpleName": "status",
-        "description": {
-          "text": "",
-          "tags": []
-        },
-        "annotations": [
-          {
-            "name": "javax.persistence.Enumerated",
-            "simpleName": "Enumerated",
-            "description": null,
-            "packageName": "javax.persistence",
-            "properties": {}
-          }
-        ],
-        "type": {
-          "genericTypes": []
-        },
-        "defaultValue": null,
-        "static": false,
-        "public": false
-      }
-    ],
-    "classFields": [],
-    "enumFields": [],
-    "declaredMethods": [
-      {
-        "name": "com.example.service.order.domain.Order.getOrderId",
-        "simpleName": "getOrderId",
-        "description": {
-          "text": "",
-          "tags": []
-        },
-        "annotations": [],
-        "returnType": {
-          "genericTypes": []
-        },
-        "parameters": [],
-        "static": false,
-        "public": true
-      },
-      {
-        "name": "com.example.service.order.domain.Order.setOrderId",
-        "simpleName": "setOrderId",
-        "description": {
-          "text": "",
-          "tags": []
-        },
-        "annotations": [],
-        "returnType": {
-          "genericTypes": []
-        },
-        "parameters": [
-          {
-            "annotations": [],
-            "type": {
-              "genericTypes": []
-            },
-            "name": "orderId"
-          }
-        ],
-        "static": false,
-        "public": true
-      },
-      {
-        "name": "com.example.service.order.domain.Order.getOrderDate",
-        "simpleName": "getOrderDate",
-        "description": {
-          "text": "",
-          "tags": []
-        },
-        "annotations": [],
-        "returnType": {
-          "genericTypes": []
-        },
-        "parameters": [],
-        "static": false,
-        "public": true
-      },
-      {
-        "name": "com.example.service.order.domain.Order.setOrderDate",
-        "simpleName": "setOrderDate",
-        "description": {
-          "text": "",
-          "tags": []
-        },
-        "annotations": [],
-        "returnType": {
-          "genericTypes": []
-        },
-        "parameters": [
-          {
-            "annotations": [],
-            "type": {
-              "genericTypes": []
-            },
-            "name": "orderDate"
-          }
-        ],
-        "static": false,
-        "public": true
-      },
-      {
-        "name": "com.example.service.order.domain.Order.getCustomer",
-        "simpleName": "getCustomer",
-        "description": {
-          "text": "",
-          "tags": []
-        },
-        "annotations": [],
-        "returnType": {
-          "genericTypes": []
-        },
-        "parameters": [],
-        "static": false,
-        "public": true
-      },
-      {
-        "name": "com.example.service.order.domain.Order.setCustomer",
-        "simpleName": "setCustomer",
-        "description": {
-          "text": "",
-          "tags": []
-        },
-        "annotations": [],
-        "returnType": {
-          "genericTypes": []
-        },
-        "parameters": [
-          {
-            "annotations": [],
-            "type": {
-              "genericTypes": []
-            },
-            "name": "customer"
-          }
-        ],
-        "static": false,
-        "public": true
-      },
-      {
-        "name": "com.example.service.order.domain.Order.getStatus",
-        "simpleName": "getStatus",
-        "description": {
-          "text": "",
-          "tags": []
-        },
-        "annotations": [],
-        "returnType": {
-          "genericTypes": []
-        },
-        "parameters": [],
-        "static": false,
-        "public": true
-      },
-      {
-        "name": "com.example.service.order.domain.Order.setStatus",
-        "simpleName": "setStatus",
-        "description": {
-          "text": "",
-          "tags": []
-        },
-        "annotations": [],
-        "returnType": {
-          "genericTypes": []
-        },
-        "parameters": [
-          {
-            "annotations": [],
-            "type": {
-              "genericTypes": []
-            },
-            "name": "status"
-          }
-        ],
-        "static": false,
-        "public": true
-      }
-    ],
-    "classMethods": [],
-    "abstract": false
-  },
-  {
-    "name": "com.example.service.order.domain.OrderInfo",
-    "simpleName": "OrderInfo",
-    "description": {
-      "text": "",
-      "tags": [
-        {
-          "tagName": "author",
-          "keyword": "Steven",
-          "description": "Hermans (s.hermans@maxxton.com)"
-        }
+    "OrderService": {
+      "name": "com.example.service.order.service.OrderService",
+      "type": "client",
+      "authors": [
+        "Hermans (s.hermans@maxxton.com)"
       ]
     },
-    "packageName": "com.example.service.order.domain",
-    "type": "CLASS",
-    "superClass": {
-      "genericTypes": []
-    },
-    "interfaces": [],
-    "annotations": [
-      {
-        "name": "javax.persistence.Entity",
-        "simpleName": "Entity",
-        "description": null,
-        "packageName": "javax.persistence",
-        "properties": {}
-      }
-    ],
-    "declaredFields": [
-      {
-        "name": "com.example.service.order.domain.OrderInfo.orderId",
-        "simpleName": "orderId",
-        "description": {
-          "text": "",
-          "tags": [
-            {
-              "tagName": "dummy",
-              "keyword": "54",
-              "description": null
-            }
-          ]
-        },
-        "annotations": [
-          {
-            "name": "javax.persistence.Id",
-            "simpleName": "Id",
-            "description": null,
-            "packageName": "javax.persistence",
-            "properties": {}
-          }
-        ],
-        "type": {
-          "genericTypes": []
-        },
-        "defaultValue": null,
-        "static": false,
-        "public": false
-      },
-      {
-        "name": "com.example.service.order.domain.OrderInfo.orderDate",
-        "simpleName": "orderDate",
-        "description": {
-          "text": "",
-          "tags": [
-            {
-              "tagName": "dummy",
-              "keyword": "25-5-2016",
-              "description": null
-            }
-          ]
-        },
-        "annotations": [],
-        "type": {
-          "genericTypes": []
-        },
-        "defaultValue": null,
-        "static": false,
-        "public": false
-      },
-      {
-        "name": "com.example.service.order.domain.OrderInfo.customerId",
-        "simpleName": "customerId",
-        "description": {
-          "text": "",
-          "tags": [
-            {
-              "tagName": "dummy",
-              "keyword": "56",
-              "description": null
-            }
-          ]
-        },
-        "annotations": [],
-        "type": {
-          "genericTypes": []
-        },
-        "defaultValue": null,
-        "static": false,
-        "public": false
-      },
-      {
-        "name": "com.example.service.order.domain.OrderInfo.billId",
-        "simpleName": "billId",
-        "description": {
-          "text": "",
-          "tags": [
-            {
-              "tagName": "dummy",
-              "keyword": "94",
-              "description": null
-            }
-          ]
-        },
-        "annotations": [],
-        "type": {
-          "genericTypes": []
-        },
-        "defaultValue": null,
-        "static": false,
-        "public": false
-      },
-      {
-        "name": "com.example.service.order.domain.OrderInfo.status",
-        "simpleName": "status",
-        "description": {
-          "text": "",
-          "tags": []
-        },
-        "annotations": [
-          {
-            "name": "javax.persistence.Enumerated",
-            "simpleName": "Enumerated",
-            "description": null,
-            "packageName": "javax.persistence",
-            "properties": {}
-          }
-        ],
-        "type": {
-          "genericTypes": []
-        },
-        "defaultValue": null,
-        "static": false,
-        "public": false
-      }
-    ],
-    "classFields": [],
-    "enumFields": [],
-    "declaredMethods": [
-      {
-        "name": "com.example.service.order.domain.OrderInfo.getOrderId",
-        "simpleName": "getOrderId",
-        "description": {
-          "text": "",
-          "tags": []
-        },
-        "annotations": [],
-        "returnType": {
-          "genericTypes": []
-        },
-        "parameters": [],
-        "static": false,
-        "public": true
-      },
-      {
-        "name": "com.example.service.order.domain.OrderInfo.setOrderId",
-        "simpleName": "setOrderId",
-        "description": {
-          "text": "",
-          "tags": []
-        },
-        "annotations": [],
-        "returnType": {
-          "genericTypes": []
-        },
-        "parameters": [
-          {
-            "annotations": [],
-            "type": {
-              "genericTypes": []
-            },
-            "name": "orderId"
-          }
-        ],
-        "static": false,
-        "public": true
-      },
-      {
-        "name": "com.example.service.order.domain.OrderInfo.getOrderDate",
-        "simpleName": "getOrderDate",
-        "description": {
-          "text": "",
-          "tags": []
-        },
-        "annotations": [],
-        "returnType": {
-          "genericTypes": []
-        },
-        "parameters": [],
-        "static": false,
-        "public": true
-      },
-      {
-        "name": "com.example.service.order.domain.OrderInfo.setOrderDate",
-        "simpleName": "setOrderDate",
-        "description": {
-          "text": "",
-          "tags": []
-        },
-        "annotations": [],
-        "returnType": {
-          "genericTypes": []
-        },
-        "parameters": [
-          {
-            "annotations": [],
-            "type": {
-              "genericTypes": []
-            },
-            "name": "orderDate"
-          }
-        ],
-        "static": false,
-        "public": true
-      },
-      {
-        "name": "com.example.service.order.domain.OrderInfo.getCustomerId",
-        "simpleName": "getCustomerId",
-        "description": {
-          "text": "",
-          "tags": []
-        },
-        "annotations": [],
-        "returnType": {
-          "genericTypes": []
-        },
-        "parameters": [],
-        "static": false,
-        "public": true
-      },
-      {
-        "name": "com.example.service.order.domain.OrderInfo.setCustomerId",
-        "simpleName": "setCustomerId",
-        "description": {
-          "text": "",
-          "tags": []
-        },
-        "annotations": [],
-        "returnType": {
-          "genericTypes": []
-        },
-        "parameters": [
-          {
-            "annotations": [],
-            "type": {
-              "genericTypes": []
-            },
-            "name": "customerId"
-          }
-        ],
-        "static": false,
-        "public": true
-      },
-      {
-        "name": "com.example.service.order.domain.OrderInfo.getBillId",
-        "simpleName": "getBillId",
-        "description": {
-          "text": "",
-          "tags": []
-        },
-        "annotations": [],
-        "returnType": {
-          "genericTypes": []
-        },
-        "parameters": [],
-        "static": false,
-        "public": true
-      },
-      {
-        "name": "com.example.service.order.domain.OrderInfo.setBillId",
-        "simpleName": "setBillId",
-        "description": {
-          "text": "",
-          "tags": []
-        },
-        "annotations": [],
-        "returnType": {
-          "genericTypes": []
-        },
-        "parameters": [
-          {
-            "annotations": [],
-            "type": {
-              "genericTypes": []
-            },
-            "name": "billId"
-          }
-        ],
-        "static": false,
-        "public": true
-      },
-      {
-        "name": "com.example.service.order.domain.OrderInfo.getStatus",
-        "simpleName": "getStatus",
-        "description": {
-          "text": "",
-          "tags": []
-        },
-        "annotations": [],
-        "returnType": {
-          "genericTypes": []
-        },
-        "parameters": [],
-        "static": false,
-        "public": true
-      },
-      {
-        "name": "com.example.service.order.domain.OrderInfo.setStatus",
-        "simpleName": "setStatus",
-        "description": {
-          "text": "",
-          "tags": []
-        },
-        "annotations": [],
-        "returnType": {
-          "genericTypes": []
-        },
-        "parameters": [
-          {
-            "annotations": [],
-            "type": {
-              "genericTypes": []
-            },
-            "name": "status"
-          }
-        ],
-        "static": false,
-        "public": true
-      }
-    ],
-    "classMethods": [],
-    "abstract": false
-  },
-  {
-    "name": "com.example.service.order.domain.OrderStatus",
-    "simpleName": "OrderStatus",
-    "description": {
-      "text": "",
-      "tags": [
-        {
-          "tagName": "author",
-          "keyword": "Steven",
-          "description": "Hermans (s.hermans@maxxton.com)"
-        }
+    "OrderServiceApplication": {
+      "name": "com.example.service.order.OrderServiceApplication",
+      "type": "application",
+      "authors": [
+        "Hermans (s.hermans@maxxton.com)"
       ]
-    },
-    "packageName": "com.example.service.order.domain",
-    "type": "ENUM",
-    "superClass": {
-      "genericTypes": [
-        {
-          "genericTypes": []
-        }
-      ]
-    },
-    "interfaces": [],
-    "annotations": [],
-    "declaredFields": [],
-    "classFields": [],
-    "enumFields": [
-      {
-        "name": "com.example.service.order.domain.OrderStatus.PENDING",
-        "simpleName": "PENDING",
-        "description": {
-          "text": "",
-          "tags": []
-        },
-        "annotations": [],
-        "type": {
-          "genericTypes": []
-        },
-        "defaultValue": null,
-        "static": true,
-        "public": true
-      },
-      {
-        "name": "com.example.service.order.domain.OrderStatus.ACCEPTED",
-        "simpleName": "ACCEPTED",
-        "description": {
-          "text": "",
-          "tags": []
-        },
-        "annotations": [],
-        "type": {
-          "genericTypes": []
-        },
-        "defaultValue": null,
-        "static": true,
-        "public": true
-      },
-      {
-        "name": "com.example.service.order.domain.OrderStatus.DELIVERED",
-        "simpleName": "DELIVERED",
-        "description": {
-          "text": "",
-          "tags": []
-        },
-        "annotations": [],
-        "type": {
-          "genericTypes": []
-        },
-        "defaultValue": null,
-        "static": true,
-        "public": true
-      }
-    ],
-    "declaredMethods": [],
-    "classMethods": [
-      {
-        "name": "com.example.service.order.domain.OrderStatus.values",
-        "simpleName": "values",
-        "description": {
-          "text": "",
-          "tags": []
-        },
-        "annotations": [],
-        "returnType": {
-          "genericTypes": []
-        },
-        "parameters": [],
-        "static": true,
-        "public": true
-      },
-      {
-        "name": "com.example.service.order.domain.OrderStatus.valueOf",
-        "simpleName": "valueOf",
-        "description": {
-          "text": "",
-          "tags": []
-        },
-        "annotations": [],
-        "returnType": {
-          "genericTypes": []
-        },
-        "parameters": [
-          {
-            "annotations": [],
-            "type": {
-              "genericTypes": []
-            },
-            "name": "name"
-          }
-        ],
-        "static": true,
-        "public": true
-      }
-    ],
-    "abstract": false
-  },
-  {
-    "name": "com.example.service.order.OrderServiceApplication",
-    "simpleName": "OrderServiceApplication",
-    "description": {
-      "text": "",
-      "tags": [
-        {
-          "tagName": "author",
-          "keyword": "Steven",
-          "description": "Hermans (s.hermans@maxxton.com)"
-        }
-      ]
-    },
-    "packageName": "com.example.service.order",
-    "type": "CLASS",
-    "superClass": {
-      "genericTypes": []
-    },
-    "interfaces": [],
-    "annotations": [
-      {
-        "name": "org.springframework.boot.autoconfigure.SpringBootApplication",
-        "simpleName": "SpringBootApplication",
-        "description": null,
-        "packageName": "org.springframework.boot.autoconfigure",
-        "properties": {}
-      }
-    ],
-    "declaredFields": [],
-    "classFields": [],
-    "enumFields": [],
-    "declaredMethods": [],
-    "classMethods": [
-      {
-        "name": "com.example.service.order.OrderServiceApplication.main",
-        "simpleName": "main",
-        "description": {
-          "text": "",
-          "tags": []
-        },
-        "annotations": [],
-        "returnType": {
-          "genericTypes": []
-        },
-        "parameters": [
-          {
-            "annotations": [],
-            "type": {
-              "genericTypes": []
-            },
-            "name": "args"
-          }
-        ],
-        "static": true,
-        "public": true
-      }
-    ],
-    "abstract": false
-  },
-  {
-    "name": "com.example.service.order.repository.OrderRepository",
-    "simpleName": "OrderRepository",
-    "description": {
-      "text": "",
-      "tags": [
-        {
-          "tagName": "author",
-          "keyword": "Steven",
-          "description": "Hermans (s.hermans@maxxton.com)"
-        }
-      ]
-    },
-    "packageName": "com.example.service.order.repository",
-    "type": "INTERFACE",
-    "superClass": null,
-    "interfaces": [
-      {
-        "genericTypes": [
-          {
-            "genericTypes": []
-          },
-          {
-            "genericTypes": []
-          }
-        ]
-      }
-    ],
-    "annotations": [
-      {
-        "name": "org.springframework.stereotype.Repository",
-        "simpleName": "Repository",
-        "description": null,
-        "packageName": "org.springframework.stereotype",
-        "properties": {}
-      }
-    ],
-    "declaredFields": [],
-    "classFields": [],
-    "enumFields": [],
-    "declaredMethods": [],
-    "classMethods": [],
-    "abstract": true
-  },
-  {
-    "name": "com.example.service.order.service.OrderService",
-    "simpleName": "OrderService",
-    "description": {
-      "text": "",
-      "tags": [
-        {
-          "tagName": "author",
-          "keyword": "Steven",
-          "description": "Hermans (s.hermans@maxxton.com)"
-        }
-      ]
-    },
-    "packageName": "com.example.service.order.service",
-    "type": "CLASS",
-    "superClass": {
-      "genericTypes": []
-    },
-    "interfaces": [],
-    "annotations": [
-      {
-        "name": "org.springframework.stereotype.Service",
-        "simpleName": "Service",
-        "description": null,
-        "packageName": "org.springframework.stereotype",
-        "properties": {}
-      },
-      {
-        "name": "org.springframework.cloud.netflix.feign.FeignClient",
-        "simpleName": "FeignClient",
-        "description": null,
-        "packageName": "org.springframework.cloud.netflix.feign",
-        "properties": {}
-      }
-    ],
-    "declaredFields": [
-      {
-        "name": "com.example.service.order.service.OrderService.customerClient",
-        "simpleName": "customerClient",
-        "description": {
-          "text": "",
-          "tags": []
-        },
-        "annotations": [
-          {
-            "name": "org.springframework.beans.factory.annotation.Autowired",
-            "simpleName": "Autowired",
-            "description": null,
-            "packageName": "org.springframework.beans.factory.annotation",
-            "properties": {}
-          }
-        ],
-        "type": {
-          "genericTypes": []
-        },
-        "defaultValue": null,
-        "static": false,
-        "public": false
-      },
-      {
-        "name": "com.example.service.order.service.OrderService.orderRepository",
-        "simpleName": "orderRepository",
-        "description": {
-          "text": "",
-          "tags": []
-        },
-        "annotations": [
-          {
-            "name": "org.springframework.beans.factory.annotation.Autowired",
-            "simpleName": "Autowired",
-            "description": null,
-            "packageName": "org.springframework.beans.factory.annotation",
-            "properties": {}
-          }
-        ],
-        "type": {
-          "genericTypes": []
-        },
-        "defaultValue": null,
-        "static": false,
-        "public": false
-      }
-    ],
-    "classFields": [],
-    "enumFields": [],
-    "declaredMethods": [
-      {
-        "name": "com.example.service.order.service.OrderService.getOrders",
-        "simpleName": "getOrders",
-        "description": {
-          "text": "",
-          "tags": []
-        },
-        "annotations": [],
-        "returnType": {
-          "genericTypes": [
-            {
-              "genericTypes": []
-            }
-          ]
-        },
-        "parameters": [
-          {
-            "annotations": [],
-            "type": {
-              "genericTypes": []
-            },
-            "name": "pageable"
-          }
-        ],
-        "static": false,
-        "public": true
-      },
-      {
-        "name": "com.example.service.order.service.OrderService.getOrder",
-        "simpleName": "getOrder",
-        "description": {
-          "text": "",
-          "tags": []
-        },
-        "annotations": [],
-        "returnType": {
-          "genericTypes": []
-        },
-        "parameters": [
-          {
-            "annotations": [],
-            "type": {
-              "genericTypes": []
-            },
-            "name": "orderId"
-          }
-        ],
-        "static": false,
-        "public": true
-      },
-      {
-        "name": "com.example.service.order.service.OrderService.getOrder",
-        "simpleName": "getOrder",
-        "description": {
-          "text": "",
-          "tags": []
-        },
-        "annotations": [],
-        "returnType": {
-          "genericTypes": []
-        },
-        "parameters": [
-          {
-            "annotations": [],
-            "type": {
-              "genericTypes": []
-            },
-            "name": "orderInfo"
-          }
-        ],
-        "static": false,
-        "public": false
-      },
-      {
-        "name": "com.example.service.order.service.OrderService.updateStatus",
-        "simpleName": "updateStatus",
-        "description": {
-          "text": "",
-          "tags": []
-        },
-        "annotations": [],
-        "returnType": {
-          "genericTypes": []
-        },
-        "parameters": [
-          {
-            "annotations": [],
-            "type": {
-              "genericTypes": []
-            },
-            "name": "orderId"
-          },
-          {
-            "annotations": [],
-            "type": {
-              "genericTypes": []
-            },
-            "name": "status"
-          }
-        ],
-        "static": false,
-        "public": true
-      },
-      {
-        "name": "com.example.service.order.service.OrderService.createOrder",
-        "simpleName": "createOrder",
-        "description": {
-          "text": "",
-          "tags": []
-        },
-        "annotations": [],
-        "returnType": {
-          "genericTypes": []
-        },
-        "parameters": [
-          {
-            "annotations": [],
-            "type": {
-              "genericTypes": []
-            },
-            "name": "orderInfo"
-          }
-        ],
-        "static": false,
-        "public": true
-      }
-    ],
-    "classMethods": [],
-    "abstract": false
+    }
   }
-]
+}

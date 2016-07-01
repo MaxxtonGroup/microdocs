@@ -1,5 +1,6 @@
 package com.maxxton.microdocs.crawler.core.domain.schema;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.maxxton.microdocs.crawler.core.domain.JsonReference;
 
@@ -11,8 +12,9 @@ public abstract class Schema extends JsonReference {
     private SchemaType type;
     private String format;
     @JsonProperty("default")
-    private String defaultValue;
+    private Object defaultValue;
     private String description;
+    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     private boolean required = false;
     private Number multipleOf;
     private Number maximum;
@@ -44,12 +46,13 @@ public abstract class Schema extends JsonReference {
         this.type = type;
     }
 
-    public String getDefaultValue() {
+    public Object getDefaultValue() {
         return defaultValue;
     }
 
-    public void setDefaultValue(String defaultValue) {
+    public Schema setDefaultValue(Object defaultValue) {
         this.defaultValue = defaultValue;
+        return this;
     }
 
     public String getDescription() {

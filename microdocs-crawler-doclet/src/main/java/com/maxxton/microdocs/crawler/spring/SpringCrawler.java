@@ -11,7 +11,10 @@ import com.maxxton.microdocs.crawler.core.domain.schema.Schema;
 import com.maxxton.microdocs.crawler.core.reflect.ReflectClass;
 import com.maxxton.microdocs.crawler.core.collector.ComponentCollector;
 import com.maxxton.microdocs.crawler.core.domain.component.ComponentType;
+import com.maxxton.microdocs.crawler.spring.collector.DependencyCollector;
 import com.maxxton.microdocs.crawler.spring.collector.PathCollector;
+import com.maxxton.microdocs.crawler.spring.parser.PageParser;
+import com.maxxton.microdocs.crawler.spring.parser.ResponseEntityParser;
 
 import java.util.HashMap;
 import java.util.List;
@@ -39,6 +42,7 @@ public class SpringCrawler extends Crawler {
     private final ComponentCollector componentCollector;
     private final SchemaCollector schemaCollector;
     private final PathCollector pathCollector;
+    private final DependencyCollector dependencyCollector;
 
     public SpringCrawler() {
         Map componentsMap = new HashMap();
@@ -52,8 +56,12 @@ public class SpringCrawler extends Crawler {
         componentsMap.put(TYPE_FEIGN_CLIENT, ComponentType.CLIENT);
         componentCollector = new ComponentCollector(componentsMap);
 
-        schemaCollector = new SchemaCollector(SCHEMA_TYPES, new SchemaParser[0]);
+        schemaCollector = new SchemaCollector(SCHEMA_TYPES, new SchemaParser[]{
+                new ResponseEntityParser(),
+                new PageParser()
+        });
         pathCollector = new PathCollector(schemaCollector, TYPE_REST_CONTROLLER, TYPE_REQUEST_MAPPING);
+        dependencyCollector = new DependencyCollector(schemaCollector, TYPE_FEIGN_CLIENT, TYPE_REQUEST_MAPPING);
     }
 
     @Override
@@ -64,6 +72,9 @@ public class SpringCrawler extends Crawler {
 
         // extract endpoint
         pathCollector.collect(classes).forEach(pathBuilder -> project.path(pathBuilder));
+
+        // extract depenencies
+        dependencyCollector.collect(classes).forEach(dependencyBuilder -> project.dependency(dependencyBuilder));
 
         // extract schemas
         Map<String, Schema> schemas = schemaCollector.collect(classes);

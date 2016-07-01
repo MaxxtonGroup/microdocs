@@ -10,7 +10,7 @@
             :host ::content .status{
                 color: #2196F3;
             }
-            :host ::content .description{
+            :host ::content .text{
                 color: #607D8B;
             }
         </style>
@@ -19,14 +19,14 @@
                 <span class="status">{{response.status}}</span>
                 <span class="status-name" hidden$="{{!showStatusName}}">{{response.statusName}}</span>
             </span>
-            <span class="description" hidden$="{{!showDescription}}">- {{response.description}}</span>
+            <span class="text" hidden$="{{!showDescription}}">- {{response.text}}</span>
         </div>
     </template>
     <script>
         Polymer({
             is: 'response-status',
 
-            properties: {
+            declaredFields: {
                 response: Object,
 
                 showDescription: Boolean,
@@ -38,7 +38,7 @@
             ],
 
           _initData: function(response){
-                this.showDescription = response.description != undefined && response.description != null;
+                this.showDescription = response.text != undefined && response.text != null;
                 this.showStatusName = response.statusName != undefined && response.statusName != null;
             }
         });

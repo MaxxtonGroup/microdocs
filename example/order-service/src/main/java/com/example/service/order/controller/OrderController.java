@@ -39,7 +39,7 @@ public class OrderController {
      * @response 404
      * @return Order or not found
      */
-    @RequestMapping(path = "/{orderId}", method = RequestMethod.GET)
+    @RequestMapping(path = "/{orderId}", method = {RequestMethod.GET, RequestMethod.POST})
     public ResponseEntity<Order> getOrder(@PathVariable("orderId") Long orderId) {
         Order order = orderService.getOrder(orderId);
         if(order != null){
