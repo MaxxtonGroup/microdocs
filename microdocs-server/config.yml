@@ -2,4 +2,5 @@ default:
   port: 3000
   basePath: /api/v1
   staticFolder: ../microdocs-ui
+  dataFolder: data
 

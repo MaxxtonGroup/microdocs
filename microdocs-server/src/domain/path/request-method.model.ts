@@ -1,0 +1,20 @@
+export enum RequestMethod{
+    GET,
+    POST,
+    PUT,
+    PATCH,
+    DELETE,
+    OPTIONS,
+    TRACE,
+    CONNECT,
+    HEAD,
+    PROPFIND,
+    PROPPATCH,
+    MKCOL,
+    COPY,
+    MOVE,
+    LOCK,
+    UNLOCK,
+    LINK,
+    UNLINK
+}

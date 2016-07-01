@@ -1,9 +1,17 @@
+import * as projectRepo from '../repositories/json/project-json.repo';
+import {ProjectInfo} from "../domain/project-info.model";
 
+class AggregationService {
 
-export class AggregationService{
+    public static bootstrap():AggregationService {
+        return new AggregationService();
+    }
 
-    public reindex(){
-
+    public reindex():ProjectInfo[] {
+        return projectRepo.getProjects();
     }
 
 }
+
+var aggregationService = AggregationService.bootstrap();
+export = aggregationService;

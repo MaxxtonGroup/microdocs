@@ -12,6 +12,8 @@ public class ProjectInfo {
     private String termsOfService;
     private Contact contact;
     private License license;
+    private String version;
+    private String latestVersion;
 
     public ProjectType getType() {
         return type;
@@ -67,5 +69,21 @@ public class ProjectInfo {
 
     public void setLicense(License license) {
         this.license = license;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    public String getLatestVersion() {
+        return latestVersion;
+    }
+
+    public void setLatestVersion(String latestVersion) {
+        this.latestVersion = latestVersion;
     }
 }

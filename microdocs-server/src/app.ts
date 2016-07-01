@@ -7,8 +7,9 @@ import * as helmet from "helmet";
 import * as path from "path";
 
 import {Config} from "./config";
-import * as projectsRoute from "./routes/projects.route";
 import {BaseRoute} from "./routes/route";
+import {ProjectsRoute} from "./routes/projects.route";
+import {ReindexRoute} from "./routes/reindex.route";
 
 /**
  * The server.
@@ -89,7 +90,8 @@ class Server {
 
         //create routes
         var routes:BaseRoute[] = [
-            new projectsRoute.ProjectsRoute()
+            new ProjectsRoute(),
+            new ReindexRoute()
         ];
 
         //define basePath

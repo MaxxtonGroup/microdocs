@@ -1,7 +1,7 @@
 /// <reference path="../_all.d.ts" />
-"use strict";
 
 import * as express from "express";
+
 import {BaseRoute} from "./route";
 
 export class ProjectsRoute extends BaseRoute {
