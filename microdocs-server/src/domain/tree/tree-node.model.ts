@@ -58,4 +58,9 @@ export class TreeNode {
         return node;
     }
 
+    public static link(unlinkedNode:{}):TreeNode{
+        //todo: link nodes
+        return null;
+    }
+
 }

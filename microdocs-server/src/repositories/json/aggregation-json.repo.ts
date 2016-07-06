@@ -13,13 +13,31 @@ class AggregationJsonResitory implements AggregationRepository{
         return new AggregationJsonResitory();
     }
 
-    // public getAggregatedProjects():TreeNode {
-    //
-    // }
-    //
-    // public getAggregatedProject(title:string,version:string):Project{
-    //
-    // }
+    public getAggregatedProjects():TreeNode {
+        console.info("Load metadata");
+        var dataFolder:string = __dirname + '/../../../' + Config.get("dataFolder") + "/database";
+        var metaFile:string = dataFolder + "/projects.json";
+        if(!fs.exists(metaFile)){
+            var string = fs.readFileSync(metaFile).toString();
+            var json = JSON.parse(string);
+            return new TreeNode(json);
+        }
+        return null;
+    }
+
+    public getAggregatedProject(title:string,version:string):Project{
+        console.info("Load project: " + title + ":" + version);
+        var dataFolder:string = __dirname + '/../../../' + Config.get("dataFolder") + "/database";
+        var projectFolder:string = dataFolder + "/" + title;
+        var storeFile:string = projectFolder + "/" + version + ".json";
+        if(!fs.exists(storeFile)){
+            var string = fs.readFileSync(storeFile).toString();
+            var json = JSON.parse(string);
+            var project : Project = json;
+            return project;
+        }
+        return null;
+    }
 
     public storeAggregatedProjects(node:TreeNode):void{
         console.info("Store metadata");

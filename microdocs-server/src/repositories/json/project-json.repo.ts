@@ -51,7 +51,7 @@ class ProjectJsonRepository implements ProjectRepository {
         var projectPath = projectInfo.group + "/" + projectInfo.title + "/" + projectInfo.version;
         var projectFolder = reportsFolder + "/" + projectPath;
         var project = this.loadProject(projectFolder + "/microdocs.json");
-
+        
         // merge project info
         if(project.info == undefined || project.info == null){
             project.info = projectInfo;

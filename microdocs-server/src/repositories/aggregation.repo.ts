@@ -7,9 +7,9 @@ import {TreeNode} from "../domain/tree/tree-node.model";
  */
 export interface AggregationRepository{
 
-    // getAggregatedProjects():TreeNode;
-    //
-    // getAggregatedProjects(title:string,version:string):Project;
+    getAggregatedProjects():TreeNode;
+
+    getAggregatedProjects(title:string,version:string):Project;
 
     storeAggregatedProjects(treeNode:TreeNode):void;
 
