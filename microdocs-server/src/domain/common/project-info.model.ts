@@ -5,7 +5,7 @@ export class ProjectInfo {
         public group:string,
         public version:string,
         public versions:string[],
-        public links : ProjectLink[],
+        public links ?: ProjectLink[],
         public description?:string){}
 
     /**

@@ -5,6 +5,7 @@ import {ExternalDoc} from "./common/external-doc.model";
 import {Dependency} from "./depenency/dependency.model";
 import {Component} from "./component/component.model";
 import {Path} from "./path/path.model";
+import {Problem} from "./problem/problem.model";
 
 export interface Project{
     swagger:string;
@@ -19,5 +20,5 @@ export interface Project{
     definitions?:{[key:string]:Schema},
     dependencies?:{[key:string]:Dependency};
     components?:{[key:string]:Component};
-    // problems?:Array<Problem>;
+    problems?:Array<Problem>;
 }

@@ -57,7 +57,7 @@ class Server {
      */
     private config() {
         //mount logger
-        this.app.use(logger("logs/logfile.txt"));
+        // this.app.use(logger("logs/logfile.txt"));
 
         //mount helmet
         this.app.use(helmet());

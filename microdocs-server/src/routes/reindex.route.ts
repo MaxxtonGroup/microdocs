@@ -12,7 +12,7 @@ export class ReindexRoute extends BaseRoute {
 
     mapping = {methods: ["put"], path: "/reindex", handler: this.reindex};
     public reindex(req:express.Request, res:express.Response, next:express.NextFunction) {
-        res.json(aggregationService.reindex());
+        res.json(aggregationService.reindex().unlink());
     }
 
 }

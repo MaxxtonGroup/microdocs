@@ -24,13 +24,18 @@ class ProjectJsonRepository implements ProjectRepository {
      */
     public getProjects():ProjectInfo[] {
         console.log("Load metadata");
-        var reportsFolder:string = Config.get("dataFolder") + "/reports";
+        var reportsFolder:string = __dirname + '/../../../' + Config.get("dataFolder") + "/reports";
         var projects = this.scanGroups(reportsFolder);
 
 
         return projects
     }
 
+    /**
+     * Load project
+     * @param projectInfo
+     * @returns {Project} loaded project or null
+     */
     public getProject(projectInfo:ProjectInfo):Project {
         // validate projectInfo
         if(projectInfo.group == null || projectInfo.group == "" ||
@@ -39,10 +44,10 @@ class ProjectJsonRepository implements ProjectRepository {
             console.warn("Empty project info: " + JSON.stringify(projectInfo));
             return null;
         }
-        console.log("Load project: " + projectInfo.title);
+        console.log("Load project: " + projectInfo.title + ":" + projectInfo.version);
 
         // load microdocs.json
-        var reportsFolder:string = Config.get("dataFolder") + "/reports";
+        var reportsFolder:string = __dirname + '/../../../' + Config.get("dataFolder") + "/reports";
         var projectPath = projectInfo.group + "/" + projectInfo.title + "/" + projectInfo.version;
         var projectFolder = reportsFolder + "/" + projectPath;
         var project = this.loadProject(projectFolder + "/microdocs.json");
@@ -76,9 +81,9 @@ class ProjectJsonRepository implements ProjectRepository {
      * @param srcpath directory
      * @return {string[]} list of folder names
      */
-    private getDirectories(srcpath):string[] {
-        return fs.readdirSync(srcpath).filter(function (file) {
-            return fs.statSync(path.join(srcpath, file)).isDirectory();
+    private getDirectories(dir):string[] {
+        return fs.readdirSync(dir).filter(function (file) {
+            return fs.statSync(path.join(dir, file)).isDirectory();
         });
     }
 
@@ -123,21 +128,17 @@ class ProjectJsonRepository implements ProjectRepository {
      * @return {ProjectInfo} Project information
      */
     private scanProject(group:string, title:string, folder:string):ProjectInfo {
-        var projectInfo = new ProjectInfo();
-        projectInfo.title = title;
-        projectInfo.group = group;
-
         var versions = this.getDirectories(folder + "/" + group + "/" + title);
-        projectInfo.versions = versions.sort();
+        var versions = versions.sort();
         if (versions.length > 0) {
-            projectInfo.version = projectInfo.versions[projectInfo.versions.length - 1];
+            var version = versions[versions.length - 1];
         }
 
-        return projectInfo;
+        return new ProjectInfo(title, group, version, versions);
     }
 
     private loadProject(projectFile:string):Project {
-        var string = fs.readFileSync(__dirname + '/../../../' + projectFile);
+        var string = fs.readFileSync(projectFile).toString();
         var json = JSON.parse(string);
         var project : Project = json;
         return project;
