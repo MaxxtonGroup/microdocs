@@ -1,4 +1,6 @@
 @echo off
+REM build doclet and copy it to the order service
+
 cd microdocs-crawler-doclet
 cmd.exe /c gradle fatjar
 

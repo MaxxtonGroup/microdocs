@@ -5,8 +5,8 @@ export class ProjectInfo {
         public group:string,
         public version:string,
         public versions:string[],
-        public description?:string,
-        public links : ProjectLink[]){}
+        public links : ProjectLink[],
+        public description?:string){}
 
     /**
      * Get the ProjectInfo of different version
@@ -17,7 +17,7 @@ export class ProjectInfo {
         if(this.versions.filter(v => v == version).length == 0){
             return null;
         }
-        return new ProjectInfo(this.title, this.group, version, this.versions, this.description, this.links);
+        return new ProjectInfo(this.title, this.group, version, this.versions, this.links, this.description);
     }
 
     /**

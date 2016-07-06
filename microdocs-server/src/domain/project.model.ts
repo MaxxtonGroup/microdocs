@@ -2,6 +2,9 @@ import {ProjectInfo} from "./common/project-info.model";
 import {Tag} from "./common/tag.model";
 import {Schema} from "./schema/schema.model";
 import {ExternalDoc} from "./common/external-doc.model";
+import {Dependency} from "./depenency/dependency.model";
+import {Component} from "./component/component.model";
+import {Path} from "./path/path.model";
 
 export interface Project{
     swagger:string;
@@ -16,5 +19,5 @@ export interface Project{
     definitions?:{[key:string]:Schema},
     dependencies?:{[key:string]:Dependency};
     components?:{[key:string]:Component};
-    problems?:Array<Problem>;
+    // problems?:Array<Problem>;
 }

@@ -1,5 +1,7 @@
 import {RequestMethod} from "./request-method.model";
 import {Component} from "../component/component.model";
+import {Parameter} from "./parameter.model";
+import {ResponseModel} from "./response.model";
 
 export interface Path {
     path?:string;
@@ -12,6 +14,7 @@ export interface Path {
     consumes?:Array<string>;
     produces?:Array<string>;
     parameters?:Array<Parameter>;
-    responses?:{[key:string]:Response}
+    responses?:{[key:string]:ResponseModel};
+    deprecated?:boolean;
     security?:{};//todo: security
 }

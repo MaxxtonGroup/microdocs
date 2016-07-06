@@ -2,6 +2,7 @@ import * as projectRepo from '../repositories/json/project-json.repo';
 import {ProjectInfo} from "../domain/common/project-info.model";
 import {Project} from "../domain/project.model";
 import {TreeNode} from "../domain/tree/tree-node.model";
+import {Dependency} from "../domain/depenency/dependency.model";
 
 class AggregationService {
 
@@ -45,12 +46,12 @@ class AggregationService {
 
         // add of all projects the latest version
         projects.forEach(project => {
-            rootNode.children.[project.title] = new TreeNode({
-                group: project.info.group,
-                version: project.info.version,
-                versions: project.info.versions,
-                parent: rootNode
-            })
+            var node = new TreeNode();
+            node.parent = rootNode;
+            node.group = project.info.group;
+            node.version = project.info.version;
+            node.versions = project.info.versions;
+            rootNode.children[project.info.title] = node;
         });
 
         // resolve dependencies
@@ -72,13 +73,13 @@ class AggregationService {
     private resolveDependencies(project:Project, projects:Project[], parentNode:TreeNode) {
         if (project.dependencies != null) {
             for (var key in project.dependencies) {
+                //resolve dependency
                 var dependentProject = this.resolveDependency(key, null, project.dependencies[key], projects);
-                var node = new TreeNode({
-                    parent: parentNode,
-                    group: dependentProject.info.group,
-                    version: dependentProject.info.version,
-                    versions: dependentProject.info.versions
-                });
+                var node = new TreeNode();
+                node.parent = parentNode;
+                node.group = project.info.group;
+                node.version = project.info.version;
+                node.versions = project.info.versions;
                 parentNode.children[key] = node;
                 var path = parentNode.getRoot().findNodePath(key, dependentProject.info.version);
                 if (path == null) {
@@ -98,7 +99,7 @@ class AggregationService {
      * @param projects list of all projects
      * @return {null,Project} the dependent project or null
      */
-    private resolveDependency(title:string, version:string, dependency:Dependency, projects:Projects[]):Project {
+    private resolveDependency(title:string, version:string, dependency:Dependency, projects:Project[]):Project {
         //find dependent project
         var dependentProject:Project = null;
         projects.filter(project => project.info.title == title).forEach(project => dependentProject = project);

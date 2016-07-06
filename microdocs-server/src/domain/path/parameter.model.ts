@@ -1,11 +1,22 @@
-import {SchemaType} from "./schema-type.model";
-export interface Schema{
+import {Schema} from "../schema/schema.model";
+import {SchemaType} from "../schema/schema-type.model";
+import {ParameterPlacing} from "./parameter-placing.model";
+
+/**
+ * @author Steven Hermans
+ */
+export interface Parameter {
+
+    name?:string;
+    in?:ParameterPlacing;
+    description?:string;
+    required?:boolean;
+    schema?:Schema;
+    allowEmptyValue?:boolean;
 
     //all
     type:SchemaType;
     default?:any;
-    description?:string;
-    required?:boolean;
     multipleOf?:number;
     maximum?:number;
     minimum?:number;
@@ -19,20 +30,10 @@ export interface Schema{
     uniqueItems?:number;
     maxProperties?:number;
     minProperties?:number;
-    
+
     //array
     items?:Schema;
     collectionFormat?:string;
-    
-    //object
-    properties?:{[name:string]:Schema};
-    allOf?:Schema[];
-    name?:string;
-    simpleName?:string;
-    genericName?:string;
-    genericSimpleName?:string;
 
-    //enum
-    enum?:any[];
 
 }
