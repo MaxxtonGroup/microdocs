@@ -1,0 +1,35 @@
+<div class="grid-frame vertical main-container">
+  <div class="app-bar grid-block shrink vertical">
+    <div class="grid-block">
+      <div class="logo grid-block"></div>
+      <div class="app-name grid-block">
+        <breadcrumbs></breadcrumbs>
+      </div>
+    </div>
+    <hot-links class="grid-block" title="Price manager"></hot-links>
+  </div>
+
+
+  <div class="grid-block app-content">
+    <!-- sidebar html -->
+    <div class="grid-block sidebar vertical" [class.big]="showFullSideBar">
+      <a (click)="showFullSideBar = !showFullSideBar" class="change-width">
+        <span class="icon" [hidden]="!showFullSideBar">keyboard_arrow_left</span>
+        <span class="icon" [hidden]="showFullSideBar">keyboard_arrow_right</span>
+      </a>
+      <div class="grid-block">
+        <vertical-menu [menu]="menu"></vertical-menu>
+      </div>
+    </div>
+
+    <!--main content-->
+    <div class="grid-block page-content vertical" id="page-content">
+      <div class="grid-container" [hidden]="user.clientId == null">
+        <router-outlet></router-outlet>
+      </div>
+
+    </div>
+  </div>
+
+  <snackbar id="snackbar" class="snackbar"></snackbar>
+</div>
