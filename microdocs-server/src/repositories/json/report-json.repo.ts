@@ -12,10 +12,10 @@ import {ProjectInfo} from "../../domain/common/project-info.model";
  * The folder structure is: {groupName}/{projectName}/{version}/...
  * @author Steven Hermans
  */
-class ProjectJsonRepository implements ProjectRepository {
+class ReportJsonRepository implements ReportRepository {
 
-    public static bootstrap():ProjectJsonRepository {
-        return new ProjectJsonRepository();
+    public static bootstrap():ReportJsonRepository {
+        return new ReportJsonRepository();
     }
 
     /**
@@ -82,9 +82,12 @@ class ProjectJsonRepository implements ProjectRepository {
      * @return {string[]} list of folder names
      */
     private getDirectories(dir):string[] {
-        return fs.readdirSync(dir).filter(function (file) {
-            return fs.statSync(path.join(dir, file)).isDirectory();
-        });
+        if(fs.existsSync(dir)) {
+            return fs.readdirSync(dir).filter(function (file) {
+                return fs.statSync(path.join(dir, file)).isDirectory();
+            });
+        }
+        return [];
     }
 
     /**
@@ -146,5 +149,5 @@ class ProjectJsonRepository implements ProjectRepository {
 
 }
 
-var projectRepository = ProjectJsonRepository.bootstrap();
+var projectRepository = ReportJsonRepository.bootstrap();
 export = projectRepository;

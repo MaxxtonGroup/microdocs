@@ -1,4 +1,4 @@
-import * as projectRepo from '../repositories/json/project-json.repo';
+import * as reportRepo from '../repositories/json/report-json.repo';
 import * as aggregationRepo from '../repositories/json/aggregation-json.repo';
 import {Project} from "../domain/project.model";
 import {TreeNode} from "../domain/tree/tree-node.model";
@@ -28,10 +28,10 @@ class AggregationService {
         // Find all projects
         var projectCache:{[title:string]:{[version:string]:Project}} = {};
         // var projects:Project[] = [];
-        var projectInfos = projectRepo.getProjects();
+        var projectInfos = reportRepo.getProjects();
         projectInfos.forEach(projectInfo => {
             try {
-                var project = projectRepo.getProject(projectInfo);
+                var project = reportRepo.getProject(projectInfo);
                 if (project != null) {
                     if (projectCache[project.info.title] == null || projectCache[project.info.title] == undefined) {
                         projectCache[project.info.title] = {};
@@ -142,6 +142,7 @@ class AggregationService {
                         var endpointProblemReports = this.checkEndpoints(title, dependency, dependentProject);
 
                         if (endpointProblemReports.length > 0) {
+                            //find last compatible if contains problems
                             var previousProject = this.previousProject(dependentProject);
                             while (previousProject != null) {
                                 var reports = this.checkEndpoints(title, dependency, previousProject);
@@ -234,7 +235,7 @@ class AggregationService {
             return null;
         }
         try {
-            project = projectRepo.getProject(prevProjectInfo);
+            project = reportRepo.getProject(prevProjectInfo);
             return project;
         } catch (e) {
             console.warn("Failed to load project: " + project.info.title);

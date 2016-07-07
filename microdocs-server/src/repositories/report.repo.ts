@@ -5,7 +5,7 @@ import {ProjectInfo} from "../domain/common/project-info.model";
 /**
  * @author Steven Hermans
  */
-export interface ProjectRepository{
+export interface ReportRepository{
 
     getProjects():ProjectInfo[];
 

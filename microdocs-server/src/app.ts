@@ -10,6 +10,7 @@ import * as logger from 'morgan';
 import {Config} from "./config";
 import {BaseRoute} from "./routes/route";
 import {ProjectsRoute} from "./routes/projects.route";
+import {ProjectRoute} from "./routes/project.route";
 import {ReindexRoute} from "./routes/reindex.route";
 
 /**
@@ -92,6 +93,7 @@ class Server {
         //create routes
         var routes:BaseRoute[] = [
             new ProjectsRoute(),
+            new ProjectRoute(),
             new ReindexRoute()
         ];
 

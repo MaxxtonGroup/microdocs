@@ -8,8 +8,9 @@
   },
   "main": "index.js",
   "scripts": {
+    "deps": "npm link microdocs-core-ts",
     "start": "node index.js",
-    "debug": "nodemon --legacy-watch index.js",
+    "debug": "nodemon --debug-brk index.js",
     "test": "echo \"Error: no test specified\"",
     "grunt": "grunt"
   },
@@ -25,6 +26,7 @@
     "grunt-ts": "^5.5.1",
     "grunt-tslint": "^3.1.0",
     "helmet": "^2.1.1",
+    "mkdir-p": "0.0.7",
     "morgan": "^1.7.0",
     "node-yaml-config": "0.0.4",
     "tslint": "^3.11.0",

@@ -1,6 +1,7 @@
 /// <reference path="../../_all.d.ts" />
 import * as fs from 'fs';
 import * as path from 'path';
+import * as mkdir from 'mkdir-p';
 
 import {Config} from "../../config";
 import {AggregationRepository} from "../aggregation.repo";
@@ -20,7 +21,7 @@ class AggregationJsonResitory implements AggregationRepository{
         if(!fs.exists(metaFile)){
             var string = fs.readFileSync(metaFile).toString();
             var json = JSON.parse(string);
-            return new TreeNode(json);
+            return TreeNode.link(json);
         }
         return null;
     }
@@ -44,8 +45,7 @@ class AggregationJsonResitory implements AggregationRepository{
         var dataFolder:string = __dirname + '/../../../' + Config.get("dataFolder") + "/database";
         var metaFile:string = dataFolder + "/projects.json";
 
-        if(!fs.exists(dataFolder))
-            fs.mkdirSync(dataFolder);
+        mkdir.sync(dataFolder);
 
         var json = JSON.stringify(node.unlink());
         fs.writeFileSync(metaFile, json);
@@ -57,10 +57,7 @@ class AggregationJsonResitory implements AggregationRepository{
         var projectFolder:string = dataFolder + "/" + project.info.title;
         var storeFile:string = projectFolder + "/" + project.info.version + ".json";
 
-        if(!fs.exists(dataFolder))
-            fs.mkdirSync(dataFolder);
-        if(!fs.exists(projectFolder))
-            fs.mkdirSync(projectFolder);
+        mkdir.sync(projectFolder);
 
         var json = JSON.stringify(project);
         fs.writeFileSync(storeFile, json);
