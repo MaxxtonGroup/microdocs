@@ -11,9 +11,9 @@ var clean = require('gulp-rimraf');
 var rename = require('gulp-rename');
 var replace = require('gulp-replace');
 var runSequence = require('run-sequence');
-var SystemBuilder = require('systemjs-builder');
 var plumber = require('gulp-plumber');
 var fs = require("fs");
+var nodemon = require('gulp-nodemon');
 const tscConfig = require('./src/tsconfig.json');
 
 var settings = {
@@ -21,21 +21,15 @@ var settings = {
   distFolder: 'dist'
 };
 
-var builder = new SystemBuilder({
-  "baseURL": 'dist',
-});
-
 var tsProjectConf = typescript.createProject('./src/tsconfig.json');
 
 gulp.task('default', function (done) {
-  runSequence('clean', 'compile', 'config-development', 'compile-sourcemaps', 'run', 'watch', done);
+  runSequence('clean', 'compile', 'config-development', 'run', 'watch', done);
 });
 
-gulp.task('compile', ['compile-sass', 'compile-typescript', 'compile-assets', 'compile-html']);
+gulp.task('compile', ['compile-typescript']);
 
 gulp.task('compile-typescript', [], function () {
-  gulp.src('src/systemjs.config.js').pipe(gulp.dest(settings.distFolder));
-
   // copy all compiled typescript code
   var result = gulp
       .src(['typings/index.d.ts', 'src/**/*.ts'])
@@ -46,47 +40,6 @@ gulp.task('compile-typescript', [], function () {
     result.dts.pipe(gulp.dest(settings.distFolder)),
     result.js.pipe(embedTemplates({sourceType: 'js'})).pipe(gulp.dest(settings.distFolder))
   ]);
-});
-
-
-gulp.task('bundle-libs', [], function () {
-  return builder.loadConfig('./src/systemjs.config.js')
-      .then(function () {
-        return builder.bundle(
-            'app - [app/**/*] - [angular-frontend-mxt/**/*] - [microdocs-core-ts/**/*]', // build app and remove the app code - this leaves only 3rd party dependencies
-            'dist/libs-bundle.js',
-            {minify: true, sourceMaps: true}
-        );
-      })
-      .then(function () {
-        console.log('library bundles built successfully!');
-      });
-});
-
-gulp.task('compile-sass', [], function () {
-  return gulp.src('src/assets/scss/**/*.scss')
-      .pipe(sass().on('error', sass.logError))
-      .pipe(gulp.dest('dist/assets/css'));
-});
-
-gulp.task('compile-assets', [], function () {
-  gulp.src('src/assets/fonts/**/**').pipe(gulp.dest('dist/assets/fonts'));
-  gulp.src('src/assets/i18n/**/**').pipe(gulp.dest('dist/assets/i18n'));
-  return gulp.src('src/assets/images/**/**').pipe(gulp.dest('dist/assets/images'));
-});
-gulp.task('compile-html', [], function () {
-
-  return fs.readFile("src/config/config-" + settings.env + ".ts", {
-    encoding: 'utf-8',
-    flag: 'rs'
-  }, function (e, data) {
-    var basePath = data.toString().match("basepath.+=.+\"(.+)\";");
-    return gulp.src('src/index.html')
-        .pipe(replace('<base mxt/>', '<base href="' + basePath[1] + '"></base>'))
-        .pipe(gulp.dest(settings.distFolder));
-  });
-
-
 });
 
 gulp.task('compile-sourcemaps', [], function (done) {
@@ -107,6 +60,21 @@ gulp.task('compile-sourcemaps', [], function (done) {
       .on('finish', function () {
         done();
       });
+});
+
+gulp.task('run', [], function () {
+  var started = false;
+
+  return nodemon({
+    script: "index.js"
+  }).on('start', function () {
+    // to avoid nodemon being started multiple times
+    // thanks @matthisk
+    if (!started) {
+      cb();
+      started = true;
+    }
+  });
 });
 
 /**
@@ -133,22 +101,6 @@ gulp.task('config', function () {
 
 gulp.task('watch', function () {
   gulp.watch(['src/**/*.ts', 'src/**/*.html'], ['compile-typescript']);
-  gulp.watch('src/assets/scss/**/*.scss', ['compile-sass']);
-  gulp.watch(['src/assets/fonts/**/**', 'src/assets/images/**/**'], ['compile-assets']);
-  gulp.watch('src/index.html', ['compile-html']);
-});
-
-gulp.task('run', [], function () {
-  liveserver.server({
-    root: [settings.distFolder, 'node_modules'],
-    port: 8000,
-    livereload: true,
-    fallback: settings.distFolder + '/index.html'
-  });
-
-  gulp.watch('dist/**/**', function (file) {
-    liveserver.reload();
-  });
 });
 
 gulp.task('clean', [], function () {

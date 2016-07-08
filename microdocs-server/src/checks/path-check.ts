@@ -1,9 +1,8 @@
-import {ProblemReport} from "../domain/problem/problem-report.model";
-import {Path} from "../domain/path/path.model";
+import {ProblemReport, Path} from "microdocs-core-ts/dist/domain";
 
 export interface PathCheck {
 
     getName():string;
-    check(clientEndpoint:Path, producerEndpoint:Path, problemReport:ProblemReport);
+    check(clientEndpoint:Path, producerEndpoint:Path, problemReport:ProblemReport):void;
 
 }

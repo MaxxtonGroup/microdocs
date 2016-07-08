@@ -6,8 +6,8 @@
  */
 
 //module dependencies
-var config = require("./src/config");
-var app = require("./src/app");
+var config = require("./dist/config");
+var app = require("./dist/app");
 var debug = require("debug")("express:server");
 var http = require("http");
 

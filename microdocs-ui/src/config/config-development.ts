@@ -8,5 +8,5 @@ export class NewyseConfig {
   public static applicationName:string = "MicroDocs";
   public static profile:string = 'development';
   public static basepath:string = "/";
-  public static apipath:string = "http://localhost:3000/api/v1";
+  public static apipath:string = "http://192.168.252.170:3000/api/v1";
 }

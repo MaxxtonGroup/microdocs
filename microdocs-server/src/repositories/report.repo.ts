@@ -1,6 +1,5 @@
 
-import {Project} from "../domain/project.model";
-import {ProjectInfo} from "../domain/common/project-info.model";
+import {Project, ProjectInfo} from "microdocs-core-ts/dist/domain";
 
 /**
  * @author Steven Hermans

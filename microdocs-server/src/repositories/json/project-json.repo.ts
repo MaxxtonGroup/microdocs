@@ -4,14 +4,13 @@ import * as path from 'path';
 import * as mkdir from 'mkdir-p';
 
 import {Config} from "../../config";
-import {AggregationRepository} from "../aggregation.repo";
-import {Project} from "../../domain/project.model";
-import {TreeNode} from "../../domain/tree/tree-node.model";
+import {ProjectRepository} from "../project.repo";
+import {Project, TreeNode} from "microdocs-core-ts/dist/domain";
 
-class AggregationJsonResitory implements AggregationRepository{
+export class ProjectJsonRepository implements ProjectRepository{
 
-    public static bootstrap():AggregationJsonResitory {
-        return new AggregationJsonResitory();
+    public static bootstrap():ProjectJsonRepository {
+        return new ProjectJsonRepository();
     }
 
     public getAggregatedProjects():TreeNode {
@@ -64,6 +63,3 @@ class AggregationJsonResitory implements AggregationRepository{
     }
 
 }
-
-var aggregationRepository = AggregationJsonResitory.bootstrap();
-export = aggregationRepository;

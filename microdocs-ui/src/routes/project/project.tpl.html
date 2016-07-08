@@ -1,0 +1,25 @@
+<card [title]="title" [sectionClass]="'card-section content'" [canHide]="true" [loading]="loading">
+    <div *ngIf="project.dependencies | notEmpty">
+        <h5>Dependencies</h5>
+        <ul class="link">
+            <li *ngFor="let dependency of project.dependencies | objectIterator">
+                <span class="icon">keyboard_arrow_right</span>
+                <a [routerLink]="'/projects/' + dependency.group + '/' + dependency._id">{{dependency._id}}</a>
+            </li>
+        </ul>
+    </div>
+    <div *ngIf="project | notEmpty:'info.links'">
+        <h5>Links</h5>
+        <ul>
+            <li *ngFor="let link of project.info.links" class="link">
+                <span class="icon">keyboard_arrow_right</span>
+                <a href="{{link.href}}">{{link.rel}}</a>
+            </li>
+        </ul>
+    </div>
+</card>
+<card title="Endpoints" [sectionClass]="'card-section content'" [canHide]="true" *ngIf="project.paths | notEmpty">
+    <div *ngFor="let path of project.paths | objectIterator">
+        <endpoint [path]="path._id" [endpoint]="endpoint" [schemaList]="project.definitions" *ngFor="let endpoint of path | objectIterator"></endpoint>
+    </div>
+</card>

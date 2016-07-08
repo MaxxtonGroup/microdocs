@@ -1,9 +1,9 @@
 import {Injectable} from "@angular/core";
 import { Http, Headers, RequestOptionsArgs, URLSearchParams, Response } from "@angular/http";
 import { Observable } from "rxjs/Rx";
-import { TreeNode } from "microdocs-core-ts/dist/domain/tree/tree-node.model";
-import { NewyseConfig as config } from "../config/config";
 
+import { TreeNode, Project } from "microdocs-core-ts/dist/domain";
+import { NewyseConfig as config } from "../config/config";
 @Injectable()
 export class ProjectService{
 
@@ -14,6 +14,11 @@ export class ProjectService{
             var json = resp.json();
             return TreeNode.link(json);
         });
+    }
+
+    public getProject(name:string, version?:string) : Observable<Project>{
+        var versionParam = (version != undefined ? "?version=" + version : "");
+        return this.http.get(config.apipath + '/projects/' + name + versionParam).map(resp => resp.json() as Project);
     }
 
 

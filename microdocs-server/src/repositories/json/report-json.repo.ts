@@ -3,16 +3,15 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 import {Config} from "../../config";
-import {ProjectRepository} from "../project.repo";
-import {Project} from "../../domain/project.model";
-import {ProjectInfo} from "../../domain/common/project-info.model";
+import {ReportRepository} from "../report.repo";
+import {Project, ProjectInfo} from "microdocs-core-ts/dist/domain";
 
 /**
  * Json file based repository.
  * The folder structure is: {groupName}/{projectName}/{version}/...
  * @author Steven Hermans
  */
-class ReportJsonRepository implements ReportRepository {
+export class ReportJsonRepository implements ReportRepository {
 
     public static bootstrap():ReportJsonRepository {
         return new ReportJsonRepository();
@@ -81,7 +80,7 @@ class ReportJsonRepository implements ReportRepository {
      * @param srcpath directory
      * @return {string[]} list of folder names
      */
-    private getDirectories(dir):string[] {
+    private getDirectories(dir : string):string[] {
         if(fs.existsSync(dir)) {
             return fs.readdirSync(dir).filter(function (file) {
                 return fs.statSync(path.join(dir, file)).isDirectory();
@@ -148,6 +147,3 @@ class ReportJsonRepository implements ReportRepository {
     }
 
 }
-
-var projectRepository = ReportJsonRepository.bootstrap();
-export = projectRepository;

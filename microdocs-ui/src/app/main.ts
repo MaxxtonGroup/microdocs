@@ -1,7 +1,7 @@
 import { provide, enableProdMode, PLATFORM_PIPES } from "@angular/core";
 import { Http, HTTP_PROVIDERS } from "@angular/http";
 import { provideRouter } from "@angular/router";
-import { APP_WIDE_SERVICES} from "angular-frontend-mxt/dist/services";
+import { APP_WIDE_SERVICES, PreferenceService} from "angular-frontend-mxt/dist/services";
 import { bootstrap } from "@angular/platform-browser-dynamic";
 import { APP_BASE_HREF } from "@angular/common";
 import { TranslateService, TranslateLoader, TranslateStaticLoader, TranslatePipe } from "ng2-translate/ng2-translate";
@@ -11,7 +11,7 @@ import { MXT_HELPERS } from "angular-frontend-mxt/dist/helpers";
 import { App } from "./app";
 import { NewyseConfig } from "./../config/config";
 import { MicrodocsRoutes } from "../routes/micrdocs.routes";
-import { ProjectService } from "../sservices/project.service";
+import { ProjectService } from "../services/project.service";
 
 if ( NewyseConfig.isProduction ) {
   enableProdMode();
@@ -23,6 +23,7 @@ bootstrap( App, [
   APP_WIDE_SERVICES,
   TranslateService,
   ProjectService,
+  PreferenceService,
   provide( PLATFORM_PIPES, { useValue: [ TranslatePipe ], multi: true } ),
   provide( TranslateLoader, {
     useFactory: ( http:Http ) => new TranslateStaticLoader( http, 'assets/i18n', '.json' ),

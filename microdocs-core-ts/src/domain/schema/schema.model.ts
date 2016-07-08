@@ -35,4 +35,7 @@ export interface Schema{
     //enum
     enum?:any[];
 
+    //reference
+    $ref?:string;
+
 }

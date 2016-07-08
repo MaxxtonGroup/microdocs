@@ -1,8 +1,9 @@
 export enum SchemaType{
-    OBJECT,
-    ARRAY,
-    STRING,
-    NUMBER,
-    INTEGER, 
-    BOOLEAN
+  OBJECT,
+  ARRAY,
+  STRING,
+  NUMBER,
+  INTEGER,
+  BOOLEAN,
+  ENUM
 }

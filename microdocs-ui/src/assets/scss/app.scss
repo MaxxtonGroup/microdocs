@@ -337,5 +337,63 @@ prices {
   }
 }
 
+.block-list li ul {
+  display: block;
+}
 
+.link{
+  list-style: none;
+  color: $primary-color;
+  cursor: pointer;
+}
 
+.link:hover{
+  text-decoration: underline;
+}
+
+.link .icon{
+  position: relative;
+  top: 6px;
+}
+
+.http-method .card{
+  margin-bottom: 10px;
+}
+
+.http-method .title{
+  display: inline-block;
+  min-width: 60px;
+}
+
+.http-method .action::before{
+  content: " ";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+}
+
+.http-method.get .card > .header{
+  background-color: #4CAF50;
+}
+
+.http-method.post .card > .header{
+  background-color: #2196F3;
+}
+
+.http-method.put .card > .header{
+  background-color: #FB8C00;
+}
+
+.http-method.delete .card > .header{
+  background-color: #F44336;
+}
+
+.http-method.patch .card > .header{
+  background-color: #616161;
+}
+
+.parameter-table td:nth-child(odd){
+
+}

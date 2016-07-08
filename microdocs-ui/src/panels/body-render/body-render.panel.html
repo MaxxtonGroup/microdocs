@@ -1,0 +1,7 @@
+<div class="body-render-header">
+    <template [ngIf]="example | notEmpty">
+        <textarea readonly="true">
+            {{example | json:2}}
+        </textarea>
+    </template>
+</div>
