@@ -59,7 +59,6 @@ export class TreeNode {
     }
 
     public static link(unlinkedNode:{}):TreeNode{
-        console.info("link: " + unlinkedNode);
         var node : TreeNode = new TreeNode();
         if(unlinkedNode['dependencies'] != undefined){
             for(var key in unlinkedNode['dependencies']){

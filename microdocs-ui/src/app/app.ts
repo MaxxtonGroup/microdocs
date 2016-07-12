@@ -33,18 +33,18 @@ export class App {
 
   private initMenu(node:TreeNode){
     var pathPrefix = "projects/";
-    var groups : Array<any> = [];
+    var menus : Array<any> = [{path: 'dashboard', component: DashboardRoute, name: 'Overview'}];
     for(var title in node.dependencies){
       var groupName = node.dependencies[title].group;
       if(groupName == undefined){
         groupName = "default";
       }
-      if(groups.filter(group => group.path == pathPrefix + groupName).length == 0){
-        groups.push({ path: pathPrefix + groupName, name: groupName, inactive: true, children: []});
+      if(menus.filter(group => group.path == pathPrefix + groupName).length == 0){
+        menus.push({ path: pathPrefix + groupName, name: groupName, inactive: true, children: []});
       }
-      groups.filter(group => group.name == groupName)[0]
+      menus.filter(group => group.name == groupName)[0]
           .children.push({ path: title, name: title});
     }
-    this.menu = groups;
+    this.menu = menus;
   }
 }

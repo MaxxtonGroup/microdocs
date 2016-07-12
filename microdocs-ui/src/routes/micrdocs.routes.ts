@@ -7,8 +7,8 @@ import {ProjectRoute} from "./project/project.route";
  */
 
 export const MicrodocsRoutes:Array<{path:string, component?:any, pathMatch?:"full" | "prefix", redirectTo?:string, hidden?:boolean, name?:string, children?:Array<{}>}> = [
-    {path: '', pathMatch: 'full', redirectTo: 'dashboard', name: 'Price manager', hidden: true},
-    {path: 'dashboard', component: DashboardRoute, name: 'Price manager', hidden: true},
+    {path: '', pathMatch: 'full', redirectTo: 'dashboard', name: 'MicroDocs', hidden: true},
+    {path: 'dashboard', component: DashboardRoute, name: 'MicroDocs', hidden: true},
     {path: 'projects/:group', component: GroupRoute, name: 'Group', hidden: true, children: [
         {path: ':project', component: ProjectRoute, name: 'Project', hidden: true}
     ]},

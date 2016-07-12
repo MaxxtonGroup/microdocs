@@ -13,11 +13,12 @@ import {
 } from "microdocs-core-ts/dist/domain";
 
 import {PathCheck} from "../checks/path-check";
-import {RequestParamsCheck} from "../checks/request-params.check";
+import {QueryParamsCheck} from "../checks/query-params.check";
+import {BodyParamsCheck} from "../checks/body-params.check";
 
 export class AggregationService {
 
-  private endpointChecks:PathCheck[] = [new RequestParamsCheck()];
+  private endpointChecks:PathCheck[] = [new QueryParamsCheck(), new BodyParamsCheck()];
   private reportRepo : ReportRepository;
   private projectRepo : ProjectRepository;
 

@@ -1,19 +1,17 @@
 import {Component, Input} from '@angular/core';
 import {ROUTER_DIRECTIVES, ActivatedRoute, Router} from "@angular/router";
 
-import {COMPONENTS, ModalComponent} from "angular-frontend-mxt/dist/components";
+import {COMPONENTS} from "angular-frontend-mxt/dist/components";
+import {FILTERS} from "angular-frontend-mxt/dist/filters";
 import {Path, Schema} from 'microdocs-core-ts/dist/domain';
 
-import {NotEmptyPipe} from '../../filters/not-empty.pipe';
-import {ObjectIteratorPipe} from '../../filters/object-iterator.pipe';
-import {FilterByFieldPipe} from '../../filters/filter-by-field.pipe';
 import {BodyRenderPanel} from '../body-render/body-render.panel';
 
 @Component({
   selector: 'endpoint',
   templateUrl: 'endpoint.panel.html',
   directives: [ROUTER_DIRECTIVES, COMPONENTS, BodyRenderPanel],
-  pipes: [NotEmptyPipe, ObjectIteratorPipe, FilterByFieldPipe]
+  pipes: [FILTERS]
 })
 export class EndpointPanel {
 

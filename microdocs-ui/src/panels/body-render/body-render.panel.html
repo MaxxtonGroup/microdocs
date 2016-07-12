@@ -1,7 +1,16 @@
 <div class="body-render-header">
     <template [ngIf]="example | notEmpty">
-        <textarea readonly="true">
-            {{example | json:2}}
-        </textarea>
+        <h5>
+            Body
+            <template [ngIf]="mimes | notEmpty">
+                (
+                        <span class="mime" *ngFor="let mime of mimes">
+                            {{mime}}
+                            <template [ngIf]="!last">,</template>
+                        </span>
+                )
+            </template>
+        </h5>
+        <textarea readonly="true" class="json-preview">{{example | json:2}} </textarea>
     </template>
 </div>

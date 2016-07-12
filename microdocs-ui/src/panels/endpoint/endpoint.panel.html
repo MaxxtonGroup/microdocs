@@ -5,32 +5,45 @@
       [canFullscreen]="false"
       [hidden]="true">
 
-    <div class="description">{{endpoint.description}}</div>
+    <div class="description">
+        <span *ngIf="endpoint.operationId | notEmpty"><a class="link">{{endpoint.operationId}}()</a> -  </span>
+        {{endpoint.description}}
+    </div>
     <template [ngIf]="endpoint.parameters | notEmpty">
         <h4>Request</h4>
-        <template [ngIf]="endpoint.parameters | filterByField:'in':['query','path'] | notEmpty">
-            <h6>Parameters</h6>
-            <ul>
-                <table class="parameter-table">
-                    <tr *ngFor="let parameter of endpoint.parameters | filterByField:'in':['query','path']">
-                        <th>{{parameter.name}}</th>
-                        <td>{{parameter.type}}</td>
-                        <td>{{parameter.description}}</td>
-                    </tr>
-                </table>
-            </ul>
-        </template>
-        <template [ngIf]="endpoint.parameters | filterByField:'in':'body' | notEmpty">
-            <h6>Body</h6>
-            <div *ngFor="let body of endpoint.parameters | filterByField:'in':'body'">
-                <body-render [schema]="body.schema" [schemaList]="schemaList"></body-render>
-            </div>
-        </template>
+        <div class="request">
+            <template [ngIf]="endpoint.parameters | filterByField:'in':['query','path'] | notEmpty">
+                <h5>Parameters</h5>
+                <ul>
+                    <table class="parameter-table">
+                        <tr *ngFor="let parameter of endpoint.parameters | filterByField:'in':['query','path']">
+                            <th>{{parameter.name}}</th>
+                            <td>{{parameter.type}}</td>
+                            <td><span *ngIf="parameter.default | notEmpty">{{parameter.default}}</span></td>
+                            <td><span *ngIf="parameter.required">(required)</span></td>
+                            <td class="description">{{parameter.description}}</td>
+                        </tr>
+                    </table>
+                </ul>
+            </template>
+            <template [ngIf]="endpoint.parameters | filterByField:'in':'body' | notEmpty">
+                <div *ngFor="let body of endpoint.parameters | filterByField:'in':'body'">
+                    <body-render [schema]="body.schema" [schemaList]="schemaList" [mimes]="endpoint.consumes"></body-render>
+                </div>
+            </template>
+        </div>
     </template>
     <template [ngIf]="endpoint.responses | notEmpty">
         <h4>Response</h4>
-        <div *ngFor="let response of endpoint.responses | objectIterator">
-            Todo: display response
+        <div class="response">
+            <div *ngFor="let response of endpoint.responses | objectIterator">
+                <div class="description">
+                    <span *ngIf="response._id != 'default'" class="blue">{{response._id}} - </span>{{response.description}}
+                </div>
+                <template [ngIf]="response.schema | notEmpty">
+                    <body-render [schema]="response.schema" [schemaList]="schemaList" [mimes]="endpoint.produces"></body-render>
+                </template>
+            </div>
         </div>
     </template>
 </card>
