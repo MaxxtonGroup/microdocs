@@ -9,6 +9,7 @@ import com.maxxton.microdocs.crawler.core.reflect.ReflectClass;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Steven Hermans
@@ -122,6 +123,14 @@ public class PathBuilder implements Builder<Path> {
             endpoint.setResponses(new HashMap());
         }
         endpoint.getResponses().put("default", response);
+        return this;
+    }
+
+    public PathBuilder responses(Map<String, Response> responses){
+        if(endpoint.getResponses() == null){
+            endpoint.setResponses(new HashMap());
+        }
+        responses.entrySet().forEach(entry -> endpoint.getResponses().put(entry.getKey(), entry.getValue()));
         return this;
     }
 }

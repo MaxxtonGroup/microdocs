@@ -10,6 +10,7 @@ import com.maxxton.microdocs.crawler.doclet.ErrorReporter;
 import com.maxxton.microdocs.crawler.spring.parser.PageableParser;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Steven Hermans
@@ -89,10 +90,10 @@ public class PathCollector implements Collector<PathBuilder> {
 
         Set<String> consumes = new HashSet();
         for (String mime : defaultConsumes) {
-            produces.add(mime);
+            consumes.add(mime);
         }
-        produces.addAll(getProduces(controllerRequestMapping));
-        produces.addAll(getProduces(methodRequestMapping));
+        consumes.addAll(getCondumes(controllerRequestMapping));
+        consumes.addAll(getCondumes(methodRequestMapping));
 
         List<Parameter> parameters = new ArrayList();
 
@@ -162,18 +163,28 @@ public class PathCollector implements Collector<PathBuilder> {
                 param.setType(schema != null ? schema.getType() : null);
                 parameters.add(param);
             }
-        };
+        }
 
-        Response response = null;
+        Map<String, Response> responses = new HashMap();
         if(method.getReturnType() != null && method.getReturnType().getClassType() != null && !method.getReturnType().getClassType().getSimpleName().equalsIgnoreCase("void")){
-            response = new Response();
+            Response response = new Response();
             for(ReflectDescriptionTag tag : method.getDescription().getTags("return")){
                 response.setDescription(tag.getKeyword() + " " + tag.getDescription());
                 break;
             }
             Schema schema = schemaCollector.collect(method.getReturnType());
             response.setSchema(schema);
+            responses.put("default", response);
         }
+
+        // collect response codes
+        List<ReflectDescriptionTag> responseTags = method.getDescription().getTags("response");
+        responseTags.forEach(tag -> {
+            String responseCode = tag.getKeyword();
+            Response response = new Response();
+            response.setDescription( tag.getDescription());
+            responses.put(responseCode, response);
+        });
 
 
         // create builders
@@ -186,7 +197,9 @@ public class PathCollector implements Collector<PathBuilder> {
             builder.description(method.getDescription().getText());
             builder.operationId(method.getSimpleName());
             builder.parameters(parameters);
-            builder.response(response);
+            builder.responses(responses);
+            builder.consumes(consumes.stream().collect(Collectors.toList()));
+            builder.produces(produces.stream().collect(Collectors.toList()));
 
             pathBuilders.add(builder);
         }

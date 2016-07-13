@@ -465,6 +465,15 @@ endpoint .mime{
   margin-bottom: 15px;
 }
 
+.response-description{
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.response-status{
+  color: #2196F3;
+}
+
 dependency-graph svg{
   width: 100%;
   height: 75vh;

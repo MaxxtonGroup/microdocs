@@ -17,6 +17,7 @@
 /microdocs-server/src/**/*.js
 /microdocs-server/src/**/*.map
 /microdocs-server/data
+/microdocs-server/dist
 /microdocs-ui/node_modules
 /microdocs-ui/dist
 /microdocs-ui/typings

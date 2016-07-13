@@ -21,7 +21,7 @@
                             <td>{{parameter.type}}</td>
                             <td><span *ngIf="parameter.default | notEmpty">{{parameter.default}}</span></td>
                             <td><span *ngIf="parameter.required">(required)</span></td>
-                            <td class="description">{{parameter.description}}</td>
+                            <td class="description" *ngIf="parameter.description | notEmpty">{{parameter.description}}</td>
                         </tr>
                     </table>
                 </ul>
@@ -35,15 +35,21 @@
     </template>
     <template [ngIf]="endpoint.responses | notEmpty">
         <h4>Response</h4>
-        <div class="response">
-            <div *ngFor="let response of endpoint.responses | objectIterator">
-                <div class="description">
-                    <span *ngIf="response._id != 'default'" class="blue">{{response._id}} - </span>{{response.description}}
-                </div>
-                <template [ngIf]="response.schema | notEmpty">
-                    <body-render [schema]="response.schema" [schemaList]="schemaList" [mimes]="endpoint.produces"></body-render>
+        <div *ngFor="let response of endpoint.responses | objectIterator | filterByField:'_id':'default'">
+            <div class="description response-description">
+                {{response.description}}
+            </div>
+        </div>
+        <div *ngFor="let response of endpoint.responses | objectIterator | sortByKey:'_id'" class="response">
+            <div class="description response-description">
+                <template [ngIf]="response._id != 'default'">
+                    <span class="response-status">{{response._id + ' ' + getStatusName(response._id)}}</span>
+                    <template [ngIf]="response.description | notEmpty"> - {{response.description}}</template>
                 </template>
             </div>
+            <template [ngIf]="response.schema | notEmpty">
+                <body-render [schema]="response.schema" [schemaList]="schemaList" [mimes]="endpoint.produces"></body-render>
+            </template>
         </div>
     </template>
 </card>
