@@ -1,5 +1,5 @@
 import {PathCheck} from "./path-check";
-import {Path, ProblemReport, ProblemLevel} from "microdocs-core-ts/dist/domain";
+import {Path, ProblemReport, ProblemLevel, Project} from "microdocs-core-ts/dist/domain";
 
 export class QueryParamsCheck implements PathCheck {
 
@@ -7,7 +7,7 @@ export class QueryParamsCheck implements PathCheck {
     return "query-param";
   }
 
-  public check(clientEndpoint:Path, producerEndpoint:Path, problemReport:ProblemReport):void {
+  public check(clientEndpoint:Path, producerEndpoint:Path, project:Project, problemReport:ProblemReport):void {
     var producerParams = producerEndpoint.parameters;
     var clientParams = clientEndpoint.parameters;
     if (producerParams == undefined || producerParams == null) {

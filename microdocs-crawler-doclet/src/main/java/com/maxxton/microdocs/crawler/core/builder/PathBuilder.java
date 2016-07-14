@@ -1,10 +1,13 @@
 package com.maxxton.microdocs.crawler.core.builder;
 
 import com.maxxton.microdocs.crawler.core.domain.component.Component;
+import com.maxxton.microdocs.crawler.core.domain.component.Method;
 import com.maxxton.microdocs.crawler.core.domain.path.Parameter;
 import com.maxxton.microdocs.crawler.core.domain.path.Path;
 import com.maxxton.microdocs.crawler.core.domain.path.Response;
 import com.maxxton.microdocs.crawler.core.reflect.ReflectClass;
+import com.maxxton.microdocs.crawler.core.reflect.ReflectMethod;
+import com.maxxton.microdocs.crawler.core.reflect.ReflectParameter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,12 +37,12 @@ public class PathBuilder implements Builder<Path> {
         return path;
     }
 
-    public PathBuilder method(String method) {
+    public PathBuilder requestMethod(String method) {
         this.method = method;
         return this;
     }
 
-    public String method() {
+    public String requestMethod() {
         return this.method;
     }
 
@@ -51,6 +54,24 @@ public class PathBuilder implements Builder<Path> {
         Component component = new Component();
         component.setReference("#/components/" + controllerName);
         endpoint.setController(component);
+        return this;
+    }
+
+    public PathBuilder method(ReflectMethod method) {
+        String methodName = method.getSimpleName() + "(";
+        if (!method.getParameters().isEmpty()) {
+            for (ReflectParameter parameter : method.getParameters()) {
+                methodName += parameter.getType().getClassType().getSimpleName() + ",";
+            }
+            methodName = methodName.substring(0, methodName.length() - 1);
+        }
+        return method(methodName + ")");
+    }
+
+    public PathBuilder method(String methodName) {
+        Method method = new Method();
+        method.setReference(endpoint.getController().getReference() + "/methods/" + methodName);
+        endpoint.setMethod(method);
         return this;
     }
 
@@ -119,15 +140,15 @@ public class PathBuilder implements Builder<Path> {
     }
 
     public PathBuilder response(Response response) {
-        if(endpoint.getResponses() == null){
+        if (endpoint.getResponses() == null) {
             endpoint.setResponses(new HashMap());
         }
         endpoint.getResponses().put("default", response);
         return this;
     }
 
-    public PathBuilder responses(Map<String, Response> responses){
-        if(endpoint.getResponses() == null){
+    public PathBuilder responses(Map<String, Response> responses) {
+        if (endpoint.getResponses() == null) {
             endpoint.setResponses(new HashMap());
         }
         responses.entrySet().forEach(entry -> endpoint.getResponses().put(entry.getKey(), entry.getValue()));

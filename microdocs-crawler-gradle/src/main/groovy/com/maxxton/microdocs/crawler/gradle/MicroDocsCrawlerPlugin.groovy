@@ -15,9 +15,9 @@ class MicroDocsCrawlerPlugin implements Plugin<Project>{
         project.task('extractDoclet', group: 'microdocs') <<{
             File tmpDir = new File("$project.buildDir/tmp")
             File jarFile = new File(tmpDir, jarName)
-            if(jarFile.exists()){
-                return;
-            }
+//            if(jarFile.exists()){
+//                return;
+//            }
             InputStream inputStream
             FileOutputStream fileOut
             try{

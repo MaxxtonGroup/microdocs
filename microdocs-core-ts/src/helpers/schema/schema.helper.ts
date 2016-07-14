@@ -14,7 +14,10 @@ export class SchemaHelper {
   public static resolve(schema:Schema, schemaList:{[key:string]:Schema}, fieldName?:string):any {
     if (schema != undefined && schema != null) {
       schema = this.collect(schema, schemaList);
-      if (schema.type == 'enum') {
+      if(schema.default != undefined){
+        return schema.default;
+      }
+      if (schema.type == 'enum' && schema.enum != undefined && schema.enum != null) {
         var random = Math.floor((Math.random() * schema.enum.length));
         return schema.enum[random];
       } else if (schema.type == 'boolean') {
@@ -41,12 +44,11 @@ export class SchemaHelper {
           schema.allOf.forEach(superSchema => {
             if (superSchema.type == 'object') {
               var superObject = SchemaHelper.resolve(superSchema, schemaList, fieldName);
-              for (var field in superSchema) {
-                object[field] = superSchema[field];
+              for (var field in superObject) {
+                object[field] = superObject[field];
               }
             }
           });
-          return schema;
         }
         for (var field in schema.properties) {
           object[field] = SchemaHelper.resolve(schema.properties[field], schemaList, field);
@@ -89,7 +91,7 @@ export class SchemaHelper {
         });
       }
       if(schema.properties != undefined && schema.properties != null) {
-        for (var key in schema) {
+        for (var key in schema.properties) {
           //todo: combine instead of override
           fullSchema.properties[key] = SchemaHelper.collect(schema.properties[key], schemaList);
         }
@@ -98,6 +100,72 @@ export class SchemaHelper {
     } else {
       return schema;
     }
+  }
+
+  /**
+   * Search for the reference in the object
+   * @param reference href (eg. #/foo/bar) or path (eg. foo.bar)
+   * @param object object where to search in
+   * @returns {any} object or null
+   */
+  public static resolveReference(reference:string, object:{}):any{
+    if(reference != undefined || reference == null){
+      var currentObject = object;
+      var segments : string[] = [];
+      if(reference.indexOf("#/") == 0){
+        // href
+        segments = reference.substring(2).split("/");
+      }else{
+        // path
+        segments = reference.split(".");
+      }
+      segments.forEach((segment) => {
+        if(currentObject != undefined && currentObject != null){
+          currentObject = currentObject[segment];
+        }
+      });
+      if(currentObject != undefined){
+        currentObject == null;
+      }
+      return currentObject;
+    }
+    return null;
+  }
+
+  /**
+   * Resolve string which contains references (eg. "hello {foo.bar}")
+   * @param string string to be resolved
+   * @param object object where to search in
+   * @returns {string} resolved string
+   */
+  public static resolveString(string:string, object:{}):string{
+    var newString = '';
+    var insideString = '';
+    var inside:boolean = false;
+    for(var i = 0; i < string.length; i++){
+      var char = string.substring(i,i+1);
+      if(char == '{'){
+        inside = true;
+        insideString = '';
+      }else if(char == '}'){
+        inside = false;
+        var resolvedString = this.resolveReference(insideString, object);
+        if(resolvedString == null){
+          newString += "{" + insideString + "}";
+        }else{
+          newString += resolvedString;
+        }
+        insideString = '';
+      }else if(inside){
+        insideString += char;
+      }else{
+        newString += char;
+      }
+    }
+    if(insideString.length > 0){
+      newString += "{" + insideString;
+    }
+    return newString;
   }
 
 }

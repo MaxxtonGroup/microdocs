@@ -6,6 +6,7 @@ import com.maxxton.microdocs.crawler.core.domain.component.ComponentType;
 import com.maxxton.microdocs.crawler.core.domain.component.Method;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -70,11 +71,16 @@ public class ComponentBuilder implements Builder<Component> {
     public ComponentBuilder method(Method method){
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(method.getName() + "(");
-        for(String param : method.getParameters()){
-            stringBuilder.append(param + ",");
+        if(method.getParameters() != null) {
+            for (String param : method.getParameters()) {
+                stringBuilder.append(param + ",");
+            }
+            stringBuilder.deleteCharAt(stringBuilder.length() - 1);
         }
-        stringBuilder.deleteCharAt(stringBuilder.length()-1);
         stringBuilder.append(")");
+        if(component.getMethods() == null){
+            component.setMethods(new HashMap());
+        }
         component.getMethods().put(stringBuilder.toString(), method);
         return this;
     }

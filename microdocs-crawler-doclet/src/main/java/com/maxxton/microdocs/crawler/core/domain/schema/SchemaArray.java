@@ -14,6 +14,7 @@ public class SchemaArray extends Schema{
 
     public SchemaArray(Schema items) {
         super();
+        setType(SchemaType.ARRAY);
         this.items = items;
     }
 

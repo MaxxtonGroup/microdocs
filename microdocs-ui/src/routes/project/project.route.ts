@@ -4,17 +4,18 @@ import {ROUTER_DIRECTIVES, ActivatedRoute, Router, Params} from "@angular/router
 import {COMPONENTS} from "angular-frontend-mxt/dist/components";
 import {FILTERS} from "angular-frontend-mxt/dist/filters";
 import {Project} from "microdocs-core-ts/dist/domain";
+import {SchemaHelper} from "microdocs-core-ts/dist/helpers/schema/schema.helper";
 
 import {ProjectService} from "../../services/project.service";
 import {EndpointPanel} from "../../panels/endpoint/endpoint.panel";
-import {Observable} from "rxjs/Rx";
+import {SortByHttpMethod} from "../../pipes/sort-by-http-method.pipe";
 
 
 @Component({
   selector: 'project-route',
   templateUrl: 'project.tpl.html',
   directives: [ROUTER_DIRECTIVES, COMPONENTS, EndpointPanel],
-  pipes: [FILTERS]
+  pipes: [FILTERS, SortByHttpMethod]
 })
 export class ProjectRoute {
 
@@ -85,6 +86,10 @@ export class ProjectRoute {
 
   onChangeVersion(version:string){
     this.router.navigateByUrl('/projects/' + this.project.info.group + "/" + this.title + "?version=" + version);
+  }
+
+  resolveString(string:string):string{
+    return SchemaHelper.resolveString(string, this.project);
   }
 
 }

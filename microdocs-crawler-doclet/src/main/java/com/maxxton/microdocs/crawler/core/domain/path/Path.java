@@ -3,6 +3,7 @@ package com.maxxton.microdocs.crawler.core.domain.path;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.maxxton.microdocs.crawler.core.domain.component.Component;
 import com.maxxton.microdocs.crawler.core.domain.JsonReference;
+import com.maxxton.microdocs.crawler.core.domain.component.Method;
 
 import java.util.List;
 import java.util.Map;
@@ -13,6 +14,7 @@ import java.util.Map;
 public class Path extends JsonReference{
 
     private Component controller;
+    private Method method;
     private List<String> tags;
     private String summary;
     private String description;
@@ -111,5 +113,13 @@ public class Path extends JsonReference{
 
     public void setDeprecated(boolean deprecated) {
         this.deprecated = deprecated;
+    }
+
+    public Method getMethod() {
+        return method;
+    }
+
+    public void setMethod(Method method) {
+        this.method = method;
     }
 }

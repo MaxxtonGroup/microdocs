@@ -21,12 +21,12 @@ public class DependencyBuilder implements Builder<Dependency> {
     }
 
     public DependencyBuilder title(String title){
-        this.title = title;
+        this.title = title.toLowerCase();
         return this;
     }
 
     public DependencyBuilder path(PathBuilder pathBuilder){
-        path(pathBuilder.path(), pathBuilder.method(), pathBuilder.build());
+        path(pathBuilder.path(), pathBuilder.requestMethod(), pathBuilder.build());
         return this;
     }
 

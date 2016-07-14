@@ -1,6 +1,6 @@
 
 import {Component, Input} from "@angular/core";
-import {SafeJsonPipe} from 'angular2-prettyjson';
+import {PrettyJsonComponent} from 'angular2-prettyjson';
 
 import { SchemaHelper } from 'microdocs-core-ts/dist/helpers/schema/schema.helper';
 import { Schema } from 'microdocs-core-ts/dist/domain';
@@ -9,7 +9,8 @@ import {FILTERS} from "angular-frontend-mxt/dist/filters";
 @Component({
   selector: 'body-render',
   templateUrl: 'body-render.panel.html',
-  pipes: [SafeJsonPipe, FILTERS]
+  directives: [PrettyJsonComponent],
+  pipes: [FILTERS]
 })
 export class BodyRenderPanel{
 

@@ -10,7 +10,7 @@
         <ul class="link">
             <li *ngFor="let dependency of project.dependencies | objectIterator">
                 <span class="icon">keyboard_arrow_right</span>
-                <a [routerLink]="'/projects/' + dependency.group + '/' + dependency._id">{{dependency._id}}</a>
+                <a [routerLink]="'/projects/' + dependency.group + '/' + dependency._id" target="_blank">{{dependency._id}}</a>
             </li>
         </ul>
     </div>
@@ -19,24 +19,24 @@
         <ul>
             <li *ngFor="let link of project.info.links" class="link">
                 <span class="icon">keyboard_arrow_right</span>
-                <a href="{{link.href}}">{{link.rel}}</a>
+                <a href="{{resolveString(link.href, project)}}">{{link.rel}}</a>
             </li>
         </ul>
     </div>
 </card>
 <card title="Endpoints" [sectionClass]="'card-section content'" [canHide]="true" *ngIf="project.paths | notEmpty">
-    <div *ngFor="let path of project.paths | objectIterator">
-        <endpoint [path]="path._id" [endpoint]="endpoint" [schemaList]="project.definitions" *ngFor="let endpoint of path | objectIterator"></endpoint>
+    <div *ngFor="let path of project.paths | objectIterator | sortByKey:'_id'">
+        <endpoint [project]="project" [path]="path._id" [endpoint]="endpoint" [schemaList]="project.definitions" *ngFor="let endpoint of path | objectIterator | sortByHttpMethod:'_id'"></endpoint>
     </div>
 </card>
 <card title="Clients" [sectionClass]="'card-section content'" [canHide]="true" *ngIf="project.dependencies | filterByField:'type':'REST' | notEmpty">
-    <div *ngFor="let client of project.dependencies | filterByField:'type':'REST' | objectIterator">
+    <div *ngFor="let client of project.dependencies | filterByField:'type':'REST' | objectIterator | sortByKey:'_id'">
         <div class="link client-header">
             <span class="icon">keyboard_arrow_right</span>
             <a [routerLink]="'/projects/' + client.group + '/' + client._id">{{client._id}}</a>
         </div>
-        <div *ngFor="let path of client.paths | objectIterator">
-            <endpoint [path]="path._id" [endpoint]="endpoint" [schemaList]="project.definitions" *ngFor="let endpoint of path | objectIterator"></endpoint>
+        <div *ngFor="let path of client.paths | objectIterator | sortByHttpMethod:'_id'">
+            <endpoint [project]="project" [path]="path._id" [endpoint]="endpoint" [schemaList]="project.definitions" *ngFor="let endpoint of path | objectIterator"></endpoint>
         </div>
     </div>
 </card>

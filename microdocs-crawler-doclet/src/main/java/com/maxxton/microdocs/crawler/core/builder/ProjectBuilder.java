@@ -240,7 +240,7 @@ public class ProjectBuilder implements Builder<Project> {
     }
 
     public ProjectBuilder path(PathBuilder pathBuilder){
-        path(pathBuilder.path(), pathBuilder.method(), pathBuilder.build());
+        path(pathBuilder.path(), pathBuilder.requestMethod(), pathBuilder.build());
         return this;
     }
 

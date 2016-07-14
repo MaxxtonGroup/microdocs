@@ -192,8 +192,9 @@ public class PathCollector implements Collector<PathBuilder> {
         for (String requestMethod : methods) {
             PathBuilder builder = new PathBuilder();
             builder.path(path);
-            builder.method(requestMethod);
+            builder.requestMethod(requestMethod);
             builder.component(controller);
+            builder.method(method);
             builder.description(method.getDescription().getText());
             builder.operationId(method.getSimpleName());
             builder.parameters(parameters);

@@ -89,6 +89,7 @@ public class DocletConverter {
         method.setStatic(methodDoc.isStatic());
         method.setDescription(convertDoc(methodDoc));
         method.setReturnType(convertGenericClass(methodDoc.returnType(), reflectClasses));
+        method.setLineNumber(methodDoc.position().line());
         //find parameters
         for(Parameter parameter : methodDoc.parameters()){
             method.getParameters().add(convertParameter(parameter, reflectClasses));

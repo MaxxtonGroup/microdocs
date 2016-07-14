@@ -1,6 +1,7 @@
 package com.maxxton.microdocs.crawler.core.collector;
 
 import com.maxxton.microdocs.crawler.core.builder.ComponentBuilder;
+import com.maxxton.microdocs.crawler.core.builder.MethodBuilder;
 import com.maxxton.microdocs.crawler.core.collector.Collector;
 import com.maxxton.microdocs.crawler.core.domain.component.ComponentType;
 import com.maxxton.microdocs.crawler.core.reflect.ReflectAnnotation;
@@ -44,6 +45,18 @@ public class ComponentCollector implements Collector<ComponentBuilder> {
                         .authors(authors)
                         .type(type)
                         .description(reflectClass.getDescription().getText());
+
+                reflectClass.getDeclaredMethods().forEach(method -> {
+                    MethodBuilder methodBuilder = new MethodBuilder();
+                    methodBuilder.name(method.getSimpleName())
+                            .description(method.getDescription().getText())
+                            .lineNumber(method.getLineNumber());
+                    method.getParameters().forEach(parameter -> {
+                        String paramName = parameter.getType().getClassType().getSimpleName();
+                        methodBuilder.parameter(paramName);
+                    });
+                    componentBuilder.method(methodBuilder);
+                });
                 //todo: check methods, dependencies and annotations
                 componentBuilders.add(componentBuilder);
             }

@@ -9,6 +9,6 @@
                 </span>)
             </template>
         </h5>
-        <textarea readonly="true" class="json-preview">{{example | json:2}} </textarea>
+        <prettyjson [obj]="example"></prettyjson>
     </template>
 </div>

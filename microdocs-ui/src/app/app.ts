@@ -45,6 +45,7 @@ export class App {
       menus.filter(group => group.name == groupName)[0]
           .children.push({ path: title, name: title});
     }
+    console.info(menus);
     this.menu = menus;
   }
 }

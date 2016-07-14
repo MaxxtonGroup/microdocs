@@ -13,6 +13,7 @@ public class ReflectMethod extends ReflectDoc {
     private List<ReflectParameter> parameters = new ArrayList();
     private boolean isStatic;
     private boolean isPublic;
+    private int lineNumber;
 
     public List<ReflectAnnotation> getAnnotations() {
         return annotations;
@@ -52,6 +53,14 @@ public class ReflectMethod extends ReflectDoc {
 
     public void setPublic(boolean aPublic) {
         isPublic = aPublic;
+    }
+
+    public int getLineNumber() {
+        return lineNumber;
+    }
+
+    public void setLineNumber(int lineNumber) {
+        this.lineNumber = lineNumber;
     }
 
     public boolean hasAnnotation(String... names) {
