@@ -16,7 +16,8 @@
 /microdocs-crawler-gradle/.gradle
 /microdocs-server/src/**/*.js
 /microdocs-server/src/**/*.map
-/microdocs-server/data
+/microdocs-server/data/reports
+/microdocs-server/data/database
 /microdocs-server/dist
 /microdocs-ui/node_modules
 /microdocs-ui/dist

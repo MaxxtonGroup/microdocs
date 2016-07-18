@@ -4,6 +4,7 @@ import com.maxxton.microdocs.crawler.core.collector.SchemaCollector;
 import com.maxxton.microdocs.crawler.core.collector.SchemaParser;
 import com.maxxton.microdocs.crawler.core.domain.schema.Schema;
 import com.maxxton.microdocs.crawler.core.domain.schema.SchemaObject;
+import com.maxxton.microdocs.crawler.core.domain.schema.SchemaType;
 import com.maxxton.microdocs.crawler.core.reflect.ReflectClass;
 import com.maxxton.microdocs.crawler.core.reflect.ReflectGenericClass;
 
@@ -22,7 +23,9 @@ public class ResponseEntityParser implements SchemaParser {
     @Override
     public Schema parse(ReflectClass reflectClass, List<ReflectGenericClass> genericClasses, SchemaCollector collector) {
         if(genericClasses.isEmpty()){
-            return new SchemaObject();
+            SchemaObject schemaObject = new SchemaObject();
+            schemaObject.setType(SchemaType.OBJECT);
+            return schemaObject;
         }
         return collector.collect(genericClasses.get(0));
     }

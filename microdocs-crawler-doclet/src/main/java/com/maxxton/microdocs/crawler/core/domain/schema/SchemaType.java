@@ -15,7 +15,8 @@ public enum SchemaType {
     NUMBER,
     INTEGER,
     BOOLEAN,
-    DATE;
+    DATE,
+    DUMMY;
 
     @JsonCreator
     public static SchemaType fromString(String key) {

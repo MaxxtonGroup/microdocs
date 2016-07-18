@@ -36,7 +36,7 @@ public class SchemaCollector {
     }
 
     public Schema collect(ReflectClass reflectClass) {
-        if (!schemas.containsKey(reflectClass.getName())) {
+        if(!schemas.containsKey(reflectClass.getName())) {
             Schema schema = collectSchema(reflectClass, new ArrayList());
             if (schema.getType() != SchemaType.OBJECT) {
                 return schema;
@@ -57,7 +57,7 @@ public class SchemaCollector {
         }
     }
 
-    protected Schema collectSchema(ReflectClass reflectClass, List<ReflectGenericClass> genericClasses) {
+    private Schema collectSchema(ReflectClass reflectClass, List<ReflectGenericClass> genericClasses) {
         ErrorReporter.printNotice("Collect Schema: " + reflectClass.getName());
         for (SchemaParser schemaParser : schemaParsers) {
             if (schemaParser.getClassName().equals(reflectClass.getName())) {
@@ -93,7 +93,7 @@ public class SchemaCollector {
                     reflectClass.getName().equals(LocalDate.class.getCanonicalName()) ||
                     reflectClass.getName().equals(LocalDateTime.class.getCanonicalName())) {
                 return collectDateSchema(reflectClass);
-            } else if (reflectClass.hasParent(List.class.getCanonicalName(), Iterator.class.getCanonicalName())) {
+            } else if (reflectClass.hasParent(List.class.getCanonicalName(), Iterator.class.getCanonicalName(), Set.class.getCanonicalName())) {
                 return collectArraySchema(reflectClass, genericClasses);
             } else {
                 return collectObjectSchema(reflectClass, genericClasses);
@@ -144,10 +144,14 @@ public class SchemaCollector {
 
     protected Schema collectObjectSchema(ReflectClass<?> reflectClass, List<ReflectGenericClass> genericClasses) {
         // Set placeholder to prevent circular references
-        schemas.put(reflectClass.getName(), new SchemaObject());
+        Schema dummy = new SchemaDummy();
+        dummy.setType(SchemaType.DUMMY);
+        schemas.put(reflectClass.getName(), dummy);
 
         SchemaObject schema = new SchemaObject();
         schema.setType(SchemaType.OBJECT);
+        schema.setName(reflectClass.getSimpleName());
+        schema.setGeneric(collectGeneric(genericClasses));
         Map<String, Schema> properties = new HashMap();
         for (ReflectField field : reflectClass.getDeclaredFields()) {
             String name = field.getSimpleName();
@@ -165,6 +169,21 @@ public class SchemaCollector {
         schema.setProperties(properties);
 
         return schema;
+    }
+
+    private List<SchemaGenericObject> collectGeneric(List<ReflectGenericClass> genericClasses) {
+        if(genericClasses.isEmpty()){
+            return null;
+        }
+        List<SchemaGenericObject> generics = new ArrayList();
+        for(ReflectGenericClass clazz : genericClasses){
+            SchemaGenericObject generic = new SchemaGenericObject();
+            generic.setName(clazz.getClassType().getName());
+            generic.setSimpleName(clazz.getClassType().getSimpleName());
+            generic.setGeneric(collectGeneric(clazz.getGenericTypes()));
+            generics.add(generic);
+        }
+        return generics;
     }
 
     protected void collectProperty(Map<String, Schema> properties, String name, ReflectGenericClass type, List<ReflectAnnotation> annotations, ReflectDescription docs) {

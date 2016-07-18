@@ -25,14 +25,18 @@ public class PageParser implements SchemaParser {
         Schema content;
         if(genericClasses.isEmpty()){
             content = new SchemaObject();
+            content.setType(SchemaType.OBJECT);
         }else{
             content = collector.collect(genericClasses.get(0));
         }
 
         SchemaObject schemaObject = new SchemaObject();
+        schemaObject.setType(SchemaType.OBJECT);
         Map<String, Schema> properties = new HashMap();
 
-        properties.put("content", new SchemaArray(content));
+        SchemaArray contentList = new SchemaArray(content);
+        contentList.setType(SchemaType.ARRAY);
+        properties.put("content", contentList);
         properties.put("last", new SchemaPrimitive(SchemaType.BOOLEAN).setDefaultValue(false));
         properties.put("first", new SchemaPrimitive(SchemaType.BOOLEAN).setDefaultValue(true));
         properties.put("totalPages", new SchemaPrimitive(SchemaType.NUMBER).setDefaultValue(20));

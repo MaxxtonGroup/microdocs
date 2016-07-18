@@ -69,7 +69,7 @@ public class SpringSchemaCollector extends SchemaCollector {
 
     @Override
     protected void collectProperty(Map<String, Schema> properties, String name, ReflectGenericClass type, List<ReflectAnnotation> annotations, ReflectDescription docs) {
-        Schema fieldSchema = this.collectSchema(type.getClassType(), type.getGenericTypes());
+        Schema fieldSchema = this.collect(type);
         SchemaMappingsBuilder mappingsBuilder = new SchemaMappingsBuilder();
 
         // RELATIONAL

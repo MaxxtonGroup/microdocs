@@ -11,9 +11,7 @@ public class SchemaObject extends Schema {
     private Map<String, Schema> properties;
     private List<Schema> allOf;
     private String name;
-    private String simpleName;
-    private String genericName;
-    private String genericSimpleName;
+    private List<SchemaGenericObject> generic;
 
     public SchemaObject() {
 
@@ -43,27 +41,11 @@ public class SchemaObject extends Schema {
         this.name = name;
     }
 
-    public String getSimpleName() {
-        return simpleName;
+    public List<SchemaGenericObject> getGeneric() {
+        return generic;
     }
 
-    public void setSimpleName(String simpleName) {
-        this.simpleName = simpleName;
-    }
-
-    public String getGenericName() {
-        return genericName;
-    }
-
-    public void setGenericName(String genericName) {
-        this.genericName = genericName;
-    }
-
-    public String getGenericSimpleName() {
-        return genericSimpleName;
-    }
-
-    public void setGenericSimpleName(String genericSimpleName) {
-        this.genericSimpleName = genericSimpleName;
+    public void setGeneric(List<SchemaGenericObject> generic) {
+        this.generic = generic;
     }
 }
