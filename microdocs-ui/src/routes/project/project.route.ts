@@ -3,18 +3,19 @@ import {ROUTER_DIRECTIVES, ActivatedRoute, Router, Params} from "@angular/router
 
 import {COMPONENTS} from "angular-frontend-mxt/dist/components";
 import {FILTERS} from "angular-frontend-mxt/dist/filters";
-import {Project} from "microdocs-core-ts/dist/domain";
+import {Project, Path, Method} from "microdocs-core-ts/dist/domain";
 import {SchemaHelper} from "microdocs-core-ts/dist/helpers/schema/schema.helper";
 
 import {ProjectService} from "../../services/project.service";
-import {EndpointPanel} from "../../panels/endpoint/endpoint.panel";
+import {EndpointPanel} from "../../panels/endpoint-panel/endpoint.panel";
+import {ModelPanel} from "../../panels/model-panel/model.panel";
 import {SortByHttpMethod} from "../../pipes/sort-by-http-method.pipe";
 
 
 @Component({
   selector: 'project-route',
   templateUrl: 'project.tpl.html',
-  directives: [ROUTER_DIRECTIVES, COMPONENTS, EndpointPanel],
+  directives: [ROUTER_DIRECTIVES, COMPONENTS, EndpointPanel, ModelPanel],
   pipes: [FILTERS, SortByHttpMethod]
 })
 export class ProjectRoute {
@@ -74,6 +75,7 @@ export class ProjectRoute {
 
   loadProject(title:string, version:string) {
     this.projectService.getProject(title, version).subscribe(project => {
+      console.info(project);
       this.project = project;
       this.loading = false;
     });
@@ -88,8 +90,30 @@ export class ProjectRoute {
     this.router.navigateByUrl('/projects/' + this.project.info.group + "/" + this.title + "?version=" + version);
   }
 
-  resolveString(string:string):string{
-    return SchemaHelper.resolveString(string, this.project);
+  getSourceLink(sourceLink:string, endpoint:Path){
+    if(sourceLink != null && sourceLink != undefined){
+      if(endpoint.controller != undefined){
+        var controller = endpoint.controller;
+        var method : Method = endpoint.method;
+        if(controller != undefined) {
+          var controllerSettings = {};
+          if(controller != undefined && controller != null){
+            controllerSettings['component'] = {
+              type: controller.type,
+              name: controller.name,
+              path: controller.name.replace(new RegExp('\\.', 'g'), '/')
+            };
+          }
+          if(method != undefined && method != null) {
+            controllerSettings['method'] = {
+              lineNumber: method.lineNumber
+            }
+          }
+          sourceLink = SchemaHelper.resolveString(sourceLink, controllerSettings);
+        }
+      }
+    }
+    return sourceLink;
   }
 
 }

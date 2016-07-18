@@ -19,8 +19,6 @@ export class BodyRenderPanel{
   @Input()
   private schema:Schema;
   @Input()
-  private schemaList:{[key:string]:Schema};
-  @Input()
   private mimes:string[];
 
   private example : string;

@@ -19,14 +19,14 @@
         <ul>
             <li *ngFor="let link of project.info.links" class="link">
                 <span class="icon">keyboard_arrow_right</span>
-                <a href="{{resolveString(link.href, project)}}">{{link.rel}}</a>
+                <a [href]="link.href" target="_blank">{{link.rel}}</a>
             </li>
         </ul>
     </div>
 </card>
 <card title="Endpoints" [sectionClass]="'card-section content'" [canHide]="true" *ngIf="project.paths | notEmpty">
     <div *ngFor="let path of project.paths | objectIterator | sortByKey:'_id'">
-        <endpoint [project]="project" [path]="path._id" [endpoint]="endpoint" [schemaList]="project.definitions" *ngFor="let endpoint of path | objectIterator | sortByHttpMethod:'_id'"></endpoint>
+        <endpoint [path]="path._id" [endpoint]="endpoint" [sourceLink]="getSourceLink(project.info.sourceLink, endpoint)" *ngFor="let endpoint of path | objectIterator | sortByHttpMethod:'_id'"></endpoint>
     </div>
 </card>
 <card title="Clients" [sectionClass]="'card-section content'" [canHide]="true" *ngIf="project.dependencies | filterByField:'type':'REST' | notEmpty">
@@ -36,7 +36,10 @@
             <a [routerLink]="'/projects/' + client.group + '/' + client._id">{{client._id}}</a>
         </div>
         <div *ngFor="let path of client.paths | objectIterator | sortByHttpMethod:'_id'">
-            <endpoint [project]="project" [path]="path._id" [endpoint]="endpoint" [schemaList]="project.definitions" *ngFor="let endpoint of path | objectIterator"></endpoint>
+            <endpoint [path]="path._id" [endpoint]="endpoint" [sourceLink]="getSourceLink(project.info.sourceLink, endpoint)" *ngFor="let endpoint of path | objectIterator"></endpoint>
         </div>
     </div>
+</card>
+<card title="Models" [sectionClass]="'card-section content'" [canHide]="true" *ngIf="project.definitions | notEmpty">
+    <model-panel [schema]="schema" *ngFor="let schema of project.definitions | objectIterator | sortByKey:'_id'"></model-panel>
 </card>

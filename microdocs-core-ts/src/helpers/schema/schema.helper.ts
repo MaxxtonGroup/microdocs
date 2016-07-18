@@ -51,7 +51,16 @@ export class SchemaHelper {
           });
         }
         for (var field in schema.properties) {
-          object[field] = SchemaHelper.resolve(schema.properties[field], schemaList, field);
+          var property = schema.properties[field];
+          var name = field;
+          var jsonName = SchemaHelper.resolveReference('mappings.json.name', property);
+          var jsonIgnore = SchemaHelper.resolveReference('mappings.json.ignore', property);
+          if(jsonIgnore != true) {
+            if (jsonName != null) {
+              name = jsonName;
+            }
+            object[name] = SchemaHelper.resolve(property, schemaList, field);
+          }
         }
         return object;
       }
@@ -166,6 +175,38 @@ export class SchemaHelper {
       newString += "{" + insideString;
     }
     return newString;
+  }
+
+  /**
+   * Resolve references in a object
+   * @param object
+   * @param rootObject
+   * @returns {{}}
+   */
+  public static resolveObject(object:{}, rootObject?:{}):{}{
+    if(rootObject == undefined){
+      rootObject = object;
+    }
+    for(var key in object){
+      var childObject = object[key];
+      if(typeof(childObject) == 'object'){
+        SchemaHelper.resolveObject(childObject, rootObject);
+      }else if(typeof(childObject) == 'string' && key != '$ref'){
+        object[key] = SchemaHelper.resolveString(childObject, rootObject);
+      }
+    }
+    if(object['$ref'] != undefined){
+      var refObject = SchemaHelper.resolveReference(object['$ref'], rootObject);
+      if(refObject != null){
+        for(var key in refObject){
+          if(object[key] == undefined) {
+            object[key] = refObject[key];
+          }
+        }
+      }
+      delete object['$ref'];
+    }
+    return object;
   }
 
 }

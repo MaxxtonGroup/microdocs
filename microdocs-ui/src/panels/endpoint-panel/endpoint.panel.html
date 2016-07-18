@@ -6,7 +6,7 @@
       [hidden]="true">
 
     <div class="description">
-        <span *ngIf="endpoint.operationId | notEmpty"><a class="link" href="{{getSourceLink(endpoint)}}" target="_blank">{{endpoint.operationId}}()</a> -  </span>
+        <span *ngIf="endpoint.operationId | notEmpty"><a class="link" [href]="sourceLink" target="_blank">{{endpoint.operationId}}()</a> -  </span>
         {{endpoint.description}}
     </div>
     <template [ngIf]="endpoint.parameters | notEmpty">
@@ -52,7 +52,7 @@
                     </template>
                 </div>
                 <template [ngIf]="response.schema | notEmpty">
-                    <body-render [schema]="response.schema" [schemaList]="schemaList" [mimes]="endpoint.produces"></body-render>
+                    <body-render [schema]="response.schema" [mimes]="endpoint.produces"></body-render>
                 </template>
             </template>
         </div>

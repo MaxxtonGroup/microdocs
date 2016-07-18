@@ -1,0 +1,13 @@
+prettyjson{
+  font-size: 14px;
+  span{
+    padding-top: 1px;
+    padding-bottom: 1px;
+    display: inline-block;
+  }
+  .string { color: green; }
+  .number { color: darkorange; }
+  .boolean { color: blue; }
+  .null { color: magenta; }
+  .key { color: red; }
+}
