@@ -17,8 +17,8 @@ import java.util.stream.Collectors;
  */
 public class PathCollector implements Collector<PathBuilder> {
 
-    private final String[] defaultConsumes = new String[]{"application/json", "application/xml"};
-    private final String[] defaultProduces = new String[]{"application/json", "application/xml"};
+    private final String[] defaultConsumes = new String[]{"application/json"};
+    private final String[] defaultProduces = new String[]{"application/json"};
 
     private static final String TYPE_REQUEST_BODY = "org.springframework.web.bind.annotation.RequestBody";
     private static final String TYPE_REQUEST_PARAM = "org.springframework.web.bind.annotation.RequestParam";

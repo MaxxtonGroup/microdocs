@@ -4,12 +4,14 @@ import com.maxxton.microdocs.crawler.core.domain.component.Annotation;
 import com.maxxton.microdocs.crawler.core.domain.component.Component;
 import com.maxxton.microdocs.crawler.core.domain.component.ComponentType;
 import com.maxxton.microdocs.crawler.core.domain.component.Method;
+import com.maxxton.microdocs.crawler.doclet.ErrorReporter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 /**
+ * Build component
  * @author Steven Hermans
  */
 public class ComponentBuilder implements Builder<Component> {
@@ -55,11 +57,18 @@ public class ComponentBuilder implements Builder<Component> {
     }
 
     public ComponentBuilder annotation(AnnotationBuilder annotationBuilder){
-        return annotation(annotationBuilder.build());
+        return annotation(annotationBuilder.name(), annotationBuilder.build());
     }
 
-    public ComponentBuilder annotation(Annotation annotation){
-        component.getAnnotations().put(annotation.getName(), annotation);
+    public ComponentBuilder annotation(String name, Annotation annotation){
+        if(component.getAnnotations() == null){
+            component.setAnnotations(new HashMap());
+        }
+        if(name != null){
+            component.getAnnotations().put(name, annotation);
+        }else{
+            ErrorReporter.printWarning("Name annotation on " + component.getName() + " is empty");
+        }
         return this;
     }
 

@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- *
+ * Build project
  * @author Steven Hermans
  */
 public class ProjectBuilder implements Builder<Project> {

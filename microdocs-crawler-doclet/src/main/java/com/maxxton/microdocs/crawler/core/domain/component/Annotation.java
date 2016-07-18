@@ -9,16 +9,7 @@ import java.util.Map;
  */
 public class Annotation extends JsonReference {
 
-    private String name;
     private Map<String, Object> properties;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public Map<String, Object> getProperties() {
         return properties;

@@ -1,12 +1,11 @@
 package com.maxxton.microdocs.crawler.core.writer;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.maxxton.microdocs.crawler.core.domain.Project;
 
-import java.io.*;
-import java.util.Map;
+import java.io.File;
+import java.io.FileOutputStream;
 
 /**
  * Writer project to json file
@@ -23,7 +22,7 @@ public class JsonWriter implements Writer{
      */
     public void write(Project project, File outputFile) throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_DEFAULT);
 
         String json = objectMapper.writeValueAsString(project);
 

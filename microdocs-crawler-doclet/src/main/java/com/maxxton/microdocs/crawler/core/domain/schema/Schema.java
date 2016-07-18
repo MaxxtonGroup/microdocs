@@ -29,6 +29,7 @@ public abstract class Schema extends JsonReference {
     private Integer uniqueItems;
     private Integer maxProperties;
     private Integer minProperties;
+    private SchemaMappings mappings;
 
     public String getFormat() {
         return format;
@@ -173,5 +174,13 @@ public abstract class Schema extends JsonReference {
 
     public void setMinProperties(Integer minProperties) {
         this.minProperties = minProperties;
+    }
+
+    public SchemaMappings getMappings() {
+        return mappings;
+    }
+
+    public void setMappings(SchemaMappings mappings) {
+        this.mappings = mappings;
     }
 }

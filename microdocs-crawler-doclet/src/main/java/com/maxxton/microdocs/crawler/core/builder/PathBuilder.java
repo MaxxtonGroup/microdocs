@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Build path
  * @author Steven Hermans
  */
 public class PathBuilder implements Builder<Path> {

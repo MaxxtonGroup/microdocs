@@ -9,12 +9,10 @@ public class SchemaArray extends Schema{
     private String collectionFormat;
 
     public SchemaArray(){
-        setType(SchemaType.ARRAY);
     }
 
     public SchemaArray(Schema items) {
         super();
-        setType(SchemaType.ARRAY);
         this.items = items;
     }
 

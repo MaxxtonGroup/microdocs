@@ -6,6 +6,7 @@ import com.maxxton.microdocs.crawler.core.domain.common.ProjectInfo;
 import com.maxxton.microdocs.crawler.core.domain.common.ProjectType;
 
 /**
+ * Build project info
  * @author Steven Hermans
  */
 public class ProjectInfoBuilder implements Builder<ProjectInfo>{

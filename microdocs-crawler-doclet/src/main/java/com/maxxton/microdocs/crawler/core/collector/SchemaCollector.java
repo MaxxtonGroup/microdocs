@@ -2,12 +2,15 @@ package com.maxxton.microdocs.crawler.core.collector;
 
 import com.maxxton.microdocs.crawler.core.domain.schema.*;
 import com.maxxton.microdocs.crawler.core.reflect.*;
+import com.maxxton.microdocs.crawler.doclet.ErrorReporter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
+ * Collect Schemas
  * @author Steven Hermans
  */
 public class SchemaCollector {
@@ -33,9 +36,9 @@ public class SchemaCollector {
     }
 
     public Schema collect(ReflectClass reflectClass) {
-        if(!schemas.containsKey(reflectClass.getName())){
+        if (!schemas.containsKey(reflectClass.getName())) {
             Schema schema = collectSchema(reflectClass, new ArrayList());
-            if(schema.getType() != SchemaType.OBJECT){
+            if (schema.getType() != SchemaType.OBJECT) {
                 return schema;
             }
             schemas.put(reflectClass.getName(), schema);
@@ -54,9 +57,10 @@ public class SchemaCollector {
         }
     }
 
-    private Schema collectSchema(ReflectClass reflectClass, List<ReflectGenericClass> genericClasses) {
-        for(SchemaParser schemaParser : schemaParsers){
-            if(schemaParser.getClassName().equals(reflectClass.getName())){
+    protected Schema collectSchema(ReflectClass reflectClass, List<ReflectGenericClass> genericClasses) {
+        ErrorReporter.printNotice("Collect Schema: " + reflectClass.getName());
+        for (SchemaParser schemaParser : schemaParsers) {
+            if (schemaParser.getClassName().equals(reflectClass.getName())) {
                 return schemaParser.parse(reflectClass, genericClasses, this);
             }
         }
@@ -99,6 +103,7 @@ public class SchemaCollector {
 
     private Schema collectEnumSchema(ReflectClass<?> reflectClass) {
         SchemaEnum schema = new SchemaEnum();
+        schema.setType(SchemaType.ENUM);
         schema.setName(reflectClass.getName());
         schema.setSimpleName(reflectClass.getSimpleName());
         schema.setDescription(reflectClass.getDescription().getText());
@@ -129,29 +134,41 @@ public class SchemaCollector {
     }
 
     private Schema collectArraySchema(ReflectClass reflectClass, List<ReflectGenericClass> genericClasses) {
-        if(genericClasses.isEmpty()){
-            return new SchemaArray();
-        }else{
-            return new SchemaArray(collectSchema(genericClasses.get(0).getClassType(), genericClasses.get(0).getGenericTypes()));
+        SchemaArray schema = new SchemaArray();
+        schema.setType(SchemaType.ARRAY);
+        if (!genericClasses.isEmpty()) {
+            schema.setItems(collect(genericClasses.get(0)));
         }
+        return schema;
     }
 
-    private Schema collectObjectSchema(ReflectClass<?> reflectClass, List<ReflectGenericClass> genericClasses) {
+    protected Schema collectObjectSchema(ReflectClass<?> reflectClass, List<ReflectGenericClass> genericClasses) {
+        // Set placeholder to prevent circular references
+        schemas.put(reflectClass.getName(), new SchemaObject());
+
         SchemaObject schema = new SchemaObject();
+        schema.setType(SchemaType.OBJECT);
         Map<String, Schema> properties = new HashMap();
-        for(ReflectField field : reflectClass.getDeclaredFields()){
-            collectProperty(properties, field.getSimpleName(), field.getType(), field.getAnnotations(), field.getDescription());
+        for (ReflectField field : reflectClass.getDeclaredFields()) {
+            String name = field.getSimpleName();
+            List<ReflectAnnotation> reflectAnnotations = field.getAnnotations().stream().collect(Collectors.toList());
+            reflectClass.getDeclaredMethods().stream()
+                    .filter(method ->
+                            name.equalsIgnoreCase("is" + method.getSimpleName()) ||
+                                    name.equalsIgnoreCase("has" + method.getSimpleName()) ||
+                                    name.equalsIgnoreCase("get" + method.getSimpleName()) ||
+                                    name.equalsIgnoreCase("set" + method.getSimpleName()))
+                    .forEach(method -> reflectAnnotations.addAll(method.getAnnotations()));
+
+            collectProperty(properties, name, field.getType(), field.getAnnotations(), field.getDescription());
         }
         schema.setProperties(properties);
 
         return schema;
     }
 
-    private void collectProperty(Map<String, Schema> properties, String name, ReflectGenericClass type, List<ReflectAnnotation> annotations, ReflectDescription docs){
-        Schema fieldSchema = collectSchema(type.getClassType(), type.getGenericTypes());
-
-        //todo: parse @json and @dummy
-
+    protected void collectProperty(Map<String, Schema> properties, String name, ReflectGenericClass type, List<ReflectAnnotation> annotations, ReflectDescription docs) {
+        Schema fieldSchema = collect(type);
         properties.put(name, fieldSchema);
     }
 

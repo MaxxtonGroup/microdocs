@@ -16,7 +16,7 @@ public class SchemaObject extends Schema {
     private String genericSimpleName;
 
     public SchemaObject() {
-        setType(SchemaType.OBJECT);
+
     }
 
     public Map<String, Schema> getProperties() {

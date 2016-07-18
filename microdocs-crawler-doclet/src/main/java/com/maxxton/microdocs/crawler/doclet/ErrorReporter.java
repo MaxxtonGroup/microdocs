@@ -4,7 +4,7 @@ import com.sun.javadoc.DocErrorReporter;
 
 /**
  *
- * @author hermans.s
+ * @author Steven Hermans
  */
 public class ErrorReporter {
 

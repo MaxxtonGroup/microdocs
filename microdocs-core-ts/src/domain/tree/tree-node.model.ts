@@ -59,7 +59,7 @@ export class TreeNode {
       node['problems'] = this.problems;
     }
     if (this.reference != null || this.reference != undefined) {
-      node['$ref'] = this.reference;
+      node['$ref'] = "#" + this.reference.substring("#/dependencies".length);
     }
     return node;
   }
@@ -88,7 +88,7 @@ export class TreeNode {
         node.problems = unlinkedNode['problems'];
       }
       if (unlinkedNode['$ref'] != undefined) {
-        node.reference = unlinkedNode['$ref'];
+        node.reference = "#/dependencies" + unlinkedNode['$ref'].substring(1);
       }
     }
     return node;

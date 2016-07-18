@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
- * @author hermans.s
+ * Command line configurations for JavaDoc
+ * @author Steven Hermans
  */
 public class Configuration {
 

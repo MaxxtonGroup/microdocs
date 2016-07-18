@@ -5,6 +5,7 @@ import com.maxxton.microdocs.crawler.core.domain.component.Method;
 import java.util.ArrayList;
 
 /**
+ * Build method
  * @author Steven Hermans
  */
 public class MethodBuilder implements Builder<Method>{

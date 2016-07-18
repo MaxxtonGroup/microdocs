@@ -1,8 +1,8 @@
 package com.maxxton.microdocs.crawler.core.collector;
 
+import com.maxxton.microdocs.crawler.core.builder.AnnotationBuilder;
 import com.maxxton.microdocs.crawler.core.builder.ComponentBuilder;
 import com.maxxton.microdocs.crawler.core.builder.MethodBuilder;
-import com.maxxton.microdocs.crawler.core.collector.Collector;
 import com.maxxton.microdocs.crawler.core.domain.component.ComponentType;
 import com.maxxton.microdocs.crawler.core.reflect.ReflectAnnotation;
 import com.maxxton.microdocs.crawler.core.reflect.ReflectClass;
@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Collect components
  * @author Steven Hermans
  */
 public class ComponentCollector implements Collector<ComponentBuilder> {
@@ -57,7 +58,13 @@ public class ComponentCollector implements Collector<ComponentBuilder> {
                     });
                     componentBuilder.method(methodBuilder);
                 });
-                //todo: check methods, dependencies and annotations
+                reflectClass.getAnnotations().forEach(compAnnotation -> {
+                    AnnotationBuilder annotationBuilder = new AnnotationBuilder();
+                    annotationBuilder.name(compAnnotation.getSimpleName());
+                    compAnnotation.getProperties().entrySet().forEach(entry -> annotationBuilder.property(entry.getKey(), entry.getValue()));
+                    componentBuilder.annotation(annotationBuilder);
+                });
+                //todo: check dependencies
                 componentBuilders.add(componentBuilder);
             }
 

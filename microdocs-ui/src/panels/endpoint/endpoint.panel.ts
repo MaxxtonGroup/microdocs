@@ -43,14 +43,17 @@ export class EndpointPanel {
   }
 
   getSourceLink(endpoint:Path){
-    var link : string = null;
     var sourceLink = SchemaHelper.resolveReference("info.sourceLink", this.project);
     if(sourceLink != null){
       sourceLink = SchemaHelper.resolveString(sourceLink, this.project);
       if(endpoint.controller != undefined){
         var controller = endpoint.controller;
-        if(controller['$ref'] != undefined){
+        if(controller != undefined && controller['$ref'] != undefined){
           controller = SchemaHelper.resolveReference(controller['$ref'], this.project);
+        }
+        var method = endpoint.method;
+        if(method != undefined && method['$ref'] != undefined){
+          method = SchemaHelper.resolveReference(method['$ref'], this.project);
         }
         if(controller != undefined) {
           var controllerSettings = {
@@ -58,6 +61,9 @@ export class EndpointPanel {
               type: controller.type,
               name: controller.name,
               path: controller.name.replace(new RegExp('\\.', 'g'), '/')
+            },
+            method:{
+              lineNumber: method.lineNumber
             }
           };
           sourceLink = SchemaHelper.resolveString(sourceLink, controllerSettings);

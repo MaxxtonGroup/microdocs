@@ -2,19 +2,16 @@ package com.maxxton.microdocs.crawler.spring;
 
 import com.maxxton.microdocs.crawler.core.Crawler;
 import com.maxxton.microdocs.crawler.core.builder.ComponentBuilder;
-import com.maxxton.microdocs.crawler.core.builder.PathBuilder;
 import com.maxxton.microdocs.crawler.core.builder.ProjectBuilder;
+import com.maxxton.microdocs.crawler.core.collector.ComponentCollector;
 import com.maxxton.microdocs.crawler.core.collector.SchemaCollector;
-import com.maxxton.microdocs.crawler.core.collector.SchemaParser;
 import com.maxxton.microdocs.crawler.core.domain.Project;
+import com.maxxton.microdocs.crawler.core.domain.component.ComponentType;
 import com.maxxton.microdocs.crawler.core.domain.schema.Schema;
 import com.maxxton.microdocs.crawler.core.reflect.ReflectClass;
-import com.maxxton.microdocs.crawler.core.collector.ComponentCollector;
-import com.maxxton.microdocs.crawler.core.domain.component.ComponentType;
 import com.maxxton.microdocs.crawler.spring.collector.DependencyCollector;
 import com.maxxton.microdocs.crawler.spring.collector.PathCollector;
-import com.maxxton.microdocs.crawler.spring.parser.PageParser;
-import com.maxxton.microdocs.crawler.spring.parser.ResponseEntityParser;
+import com.maxxton.microdocs.crawler.spring.collector.SpringSchemaCollector;
 
 import java.util.HashMap;
 import java.util.List;
@@ -36,8 +33,6 @@ public class SpringCrawler extends Crawler {
 
     private static final String TYPE_REQUEST_MAPPING = "org.springframework.web.bind.annotation.RequestMapping";
 
-    private static final String TYPE_ENTITY = "javax.persistence.Entity";
-    private static final String[] SCHEMA_TYPES = new String[]{ TYPE_ENTITY };
 
     private final ComponentCollector componentCollector;
     private final SchemaCollector schemaCollector;
@@ -56,10 +51,7 @@ public class SpringCrawler extends Crawler {
         componentsMap.put(TYPE_FEIGN_CLIENT, ComponentType.CLIENT);
         componentCollector = new ComponentCollector(componentsMap);
 
-        schemaCollector = new SchemaCollector(SCHEMA_TYPES, new SchemaParser[]{
-                new ResponseEntityParser(),
-                new PageParser()
-        });
+        schemaCollector = new SpringSchemaCollector();
         pathCollector = new PathCollector(schemaCollector, TYPE_REST_CONTROLLER, TYPE_REQUEST_MAPPING);
         dependencyCollector = new DependencyCollector(schemaCollector, TYPE_FEIGN_CLIENT, TYPE_REQUEST_MAPPING);
     }

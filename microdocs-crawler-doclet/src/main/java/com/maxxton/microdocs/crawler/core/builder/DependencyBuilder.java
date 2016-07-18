@@ -9,6 +9,7 @@ import com.maxxton.microdocs.crawler.core.reflect.ReflectClass;
 import java.util.HashMap;
 
 /**
+ * Build dependency
  * @author Steven Hermans
  */
 public class DependencyBuilder implements Builder<Dependency> {
