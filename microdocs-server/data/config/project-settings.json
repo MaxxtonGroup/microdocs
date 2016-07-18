@@ -1,0 +1,30 @@
+{
+  "global": {
+  },
+  "groups": {
+    "services": {
+      "info": {
+        "links": [
+          {
+            "rel": "repository",
+            "href": "https://stash.maxxton.com/projects/MXTS/repos/{info.title}/browse?at=refs%2Ftags%2Fv{info.version}"
+          }
+        ],
+        "sourceLink": "https://stash.maxxton.com/projects/MXTS/repos/{info.title}/browse/src/main/java/{component.path}.java?at=refs%2Ftags%2Fv{info.version}#{method.lineNumber}"
+      }
+    },
+    "frontend": {
+      "info": {
+        "links": [
+          {
+            "rel": "repository",
+            "href": "https://stash.maxxton.com/projects/MXTF/repos/{info.title}/browse?at=refs%2Ftags%2Fv{info.version}"
+          }
+        ],
+        "sourceLink": "https://stash.maxxton.com/projects/MXTF/repos/{info.title}/browse/{component.path}?at=refs%2Ftags%2Fv{info.version}#{method.lineNumber}"
+      }
+    }
+  },
+  "projects": {
+  }
+}
