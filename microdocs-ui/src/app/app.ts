@@ -2,9 +2,9 @@ import { Component, Injectable } from "@angular/core";
 import { COMMON_DIRECTIVES } from "@angular/common";
 import { ROUTER_DIRECTIVES } from "@angular/router";
 
-import { COMPONENTS } from "angular-frontend-mxt/dist/components";
-import { MenuItemModel } from "angular-frontend-mxt/dist/components/vertical-menu/vertical-menu-item.model";
-import { ImageHelperService } from "angular-frontend-mxt/dist/helpers";
+import { COMPONENTS } from " @maxxton/components/dist/components";
+import { MenuItemModel } from " @maxxton/components/dist/components/vertical-menu/vertical-menu-item.model";
+import { ImageHelperService } from " @maxxton/components/dist/helpers";
 import { TreeNode } from "microdocs-core-ts/dist/domain";
 
 import { DashboardRoute } from "./../routes/dashboard/dashboard";
@@ -45,7 +45,6 @@ export class App {
       menus.filter(group => group.name == groupName)[0]
           .children.push({ path: title, name: title});
     }
-    console.info(menus);
     this.menu = menus;
   }
 }

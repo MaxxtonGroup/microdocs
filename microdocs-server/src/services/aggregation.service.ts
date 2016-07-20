@@ -15,11 +15,13 @@ import {
 import {PathCheck} from "../checks/path-check";
 import {QueryParamsCheck} from "../checks/query-params.check";
 import {BodyParamsCheck} from "../checks/body-params.check";
+import {PathParamsCheck} from "../checks/path-params.check";
+import {ResponseCheck} from "../checks/response.check";
 import {ProjectService} from "./project.service";
 
 export class AggregationService {
 
-  private endpointChecks:PathCheck[] = [new QueryParamsCheck(), new BodyParamsCheck()];
+  private endpointChecks:PathCheck[] = [new QueryParamsCheck(), new BodyParamsCheck(), new PathParamsCheck(), new ResponseCheck()];
   private reportRepo:ReportRepository;
   private projectSettingsRepo:ProjectSettingsRepository;
   private projectService:ProjectService;
@@ -238,6 +240,8 @@ export class AggregationService {
         for (var method in dependency.paths[path]) {
           var problemReport = new ProblemReport("#/dependencies/" + title + "/paths/" + path.replace(new RegExp("/", 'g'), "%2F") + "/" + method);
           var clientEndpoint = dependency.paths[path][method];
+          clientEndpoint.path = path;
+          clientEndpoint.requestMethod = method;
           var producerEndpoint = this.findEndpoint(dependentProject, path, method, problemReport);
           if (producerEndpoint != null) {
             // execute checks on the endpoint
@@ -296,13 +300,17 @@ export class AggregationService {
           var clientSegment:string = clientSegments[i];
           var producerSegment:string = producerSegments[i];
 
-          if (!this.isSegmentOptional(producerSegment) && !this.isSegmentOptional(clientSegment) && clientSegment != producerSegment) {
+          if (!this.isSegmentVariable(producerSegment) && !this.isSegmentVariable(clientSegment) && clientSegment != producerSegment) {
+            // segment is not equals
             equals = false;
             almostEquals = false;
             break;
-          } else if (this.isSegmentOptional(producerSegment) != this.isSegmentOptional(clientSegment)) {
+          } else if (this.isSegmentVariable(producerSegment) != this.isSegmentVariable(clientSegment)) {
+            // segment on the producer or client is a variable. Hard to check
             equals = false;
             almostEquals = true;
+          }else{
+            // segments are both on the producer and client variable
           }
         }
         if (almostEquals || equals) {
@@ -310,9 +318,11 @@ export class AggregationService {
             if (method.toLowerCase() == clientMethod.toLowerCase()) {
               if (!equals) {
                 problemReport.report(ProblemLevel.WARNING, "Path variable(s) do not match");
-                //show problem
               }
-              return project.paths[producerPath][method];
+              var endpoint = project.paths[producerPath][method];
+              endpoint.path = producerPath;
+              endpoint.requestMethod = method;
+              return endpoint;
             }
           }
         }
@@ -321,7 +331,7 @@ export class AggregationService {
     return null;
   }
 
-  private isSegmentOptional(segment:string):boolean {
+  private isSegmentVariable(segment:string):boolean {
     return segment.indexOf("{") == 0 && segment.lastIndexOf("}") == segment.length - 1;
   }
 

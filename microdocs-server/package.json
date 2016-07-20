@@ -8,11 +8,13 @@
   },
   "main": "index.js",
   "scripts": {
-    "deps": "npm link microdocs-core-ts",
+    "linkDevelopment": "npm link microdocs-core-ts",
+    "unlinkDevelopment": "npm unlink microdocs-core-ts",
     "start": "node index.js",
     "debug": "nodemon --debug-brk index.js",
     "test": "echo \"Error: no test specified\"",
-    "grunt": "grunt"
+    "grunt": "grunt",
+    "postinstall": "typings install"
   },
   "author": "Steven Hermans (s.hermans@maxxton.com",
   "license": "MIT",

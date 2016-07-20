@@ -3,7 +3,7 @@ import {PrettyJsonComponent} from 'angular2-prettyjson';
 
 import {SchemaHelper} from 'microdocs-core-ts/dist/helpers/schema/schema.helper';
 import {Schema} from 'microdocs-core-ts/dist/domain';
-import {FILTERS} from "angular-frontend-mxt/dist/filters";
+import {FILTERS} from "@maxxton/components/dist/filters";
 
 @Component({
   selector: 'body-render',
@@ -23,7 +23,7 @@ export class BodyRenderPanel {
   private example:string;
 
   ngOnInit() {
-    this.example = SchemaHelper.resolve(this.schema);
+    this.example = SchemaHelper.generateExample(this.schema);
   }
 
 }

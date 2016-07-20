@@ -1,7 +1,7 @@
-import {Schema} from "../../domain/schema/schema.model";
+import {Schema, Project} from "../../domain";
 
 /**
- * Generate fake data using Faker.js
+ * Helper class for generation example data based on schema and resolve references
  */
 export class SchemaHelper {
 
@@ -11,10 +11,20 @@ export class SchemaHelper {
    * @param fieldName
    * @return example object
    */
-  public static generateExample(schema:Schema, fieldName?:string):any {
+  public static generateExample(schema:Schema, fieldName?:string, objectStack:string[] = [], rootObject?:{}):any {
     if (schema != undefined && schema != null) {
-      schema = this.collect(schema);
-      if(schema.default != undefined){
+      if (schema.type == 'object') {
+        if (schema.name != undefined && schema.name != null) {
+          var sameObjects:[] = objectStack.filter((object) => object == schema.name);
+          // console.info('has equals: ' + sameObjects.length + " - " + schema.name);
+          if (sameObjects.length > 0) {
+            return 'recursive';
+          }
+          objectStack.push(schema.name);
+        }
+      }
+      schema = SchemaHelper.collect(schema, objectStack, rootObject);
+      if (schema.default != undefined) {
         return schema.default;
       }
       if (schema.type == 'enum' && schema.enum != undefined && schema.enum != null) {
@@ -32,18 +42,15 @@ export class SchemaHelper {
       } else if (schema.type == 'string') {
         return "Extended kindness trifling";
       } else if (schema.type == 'array') {
-        var random = Math.floor((Math.random() * 5));
         var array:Array<any> = [];
-        for (var i = 0; i < random; i++) {
-          array.push(SchemaHelper.generateExample(schema.items));
-        }
+        array.push(SchemaHelper.generateExample(schema.items, undefined, objectStack, rootObject));
         return array;
       } else if (schema.type == 'object') {
         var object:{} = {};
         if (schema.allOf != undefined) {
           schema.allOf.forEach(superSchema => {
             if (superSchema.type == 'object') {
-              var superObject = SchemaHelper.generateExample(superSchema, fieldName);
+              var superObject = SchemaHelper.generateExample(superSchema, fieldName, objectStack, rootObject);
               for (var field in superObject) {
                 object[field] = superObject[field];
               }
@@ -55,11 +62,12 @@ export class SchemaHelper {
           var name = field;
           var jsonName = SchemaHelper.resolveReference('mappings.json.name', property);
           var jsonIgnore = SchemaHelper.resolveReference('mappings.json.ignore', property);
-          if(jsonIgnore != true) {
+          if (jsonIgnore != true) {
             if (jsonName != null) {
               name = jsonName;
             }
-            object[name] = SchemaHelper.generateExample(property, field);
+
+            object[name] = SchemaHelper.generateExample(property, name, objectStack, rootObject);
           }
         }
         return object;
@@ -68,26 +76,40 @@ export class SchemaHelper {
     return null;
   }
 
-  public static collect(schema:Schema):Schema {
+  public static collect(schema:Schema, objectStack:string[] = [], rootObject?:{}):Schema {
     if (schema == undefined || schema == null) {
       return schema;
     }
+    if(schema.$ref != undefined){
+      var result = SchemaHelper.resolveReference(schema.$ref, rootObject);
+      if(result != null){
+        schema = result;
+      }
+    }
     if (schema.type == 'object') {
+      if (schema.name != undefined && schema.name != null) {
+        var sameObjects:[] = objectStack.filter((object) => object == schema.name);
+        // console.info('has equals: ' + sameObjects.length + " - " + schema.name);
+        if (sameObjects.length > 0) {
+          return schema;
+        }
+        objectStack.push(schema.name);
+      }
       var fullSchema = schema;
       if (schema.allOf != undefined && schema.allOf != null) {
         schema.allOf.forEach(superSchema => {
           if (superSchema != undefined && superSchema != null && superSchema.properties != null && superSchema.properties != undefined) {
             for (var key in superSchema.properties) {
               //todo: combine instead of override
-              fullSchema.properties[key] = SchemaHelper.collect(superSchema.properties[key]);
+              fullSchema.properties[key] = SchemaHelper.collect(superSchema.properties[key], objectStack, rootObject);
             }
           }
         });
       }
-      if(schema.properties != undefined && schema.properties != null) {
+      if (schema.properties != undefined && schema.properties != null) {
         for (var key in schema.properties) {
           //todo: combine instead of override
-          fullSchema.properties[key] = SchemaHelper.collect(schema.properties[key]);
+          fullSchema.properties[key] = SchemaHelper.collect(schema.properties[key], objectStack, rootObject);
         }
       }
       return fullSchema;
@@ -102,23 +124,23 @@ export class SchemaHelper {
    * @param object object where to search in
    * @returns {any} object or null
    */
-  public static resolveReference(reference:string, object:{}):any{
-    if(reference != undefined || reference == null){
+  public static resolveReference(reference:string, object:{}):any {
+    if (reference != undefined || reference == null) {
       var currentObject = object;
-      var segments : string[] = [];
-      if(reference.indexOf("#/") == 0){
+      var segments:string[] = [];
+      if (reference.indexOf("#/") == 0) {
         // href
         segments = reference.substring(2).split("/");
-      }else{
+      } else {
         // path
         segments = reference.split(".");
       }
       segments.forEach((segment) => {
-        if(currentObject != undefined && currentObject != null){
+        if (currentObject != undefined && currentObject != null) {
           currentObject = currentObject[segment];
         }
       });
-      if(currentObject != undefined){
+      if (currentObject != undefined) {
         currentObject == null;
       }
       return currentObject;
@@ -132,31 +154,31 @@ export class SchemaHelper {
    * @param object object where to search in
    * @returns {string} resolved string
    */
-  public static resolveString(string:string, object:{}):string{
+  public static resolveString(string:string, object:{}):string {
     var newString = '';
     var insideString = '';
     var inside:boolean = false;
-    for(var i = 0; i < string.length; i++){
-      var char = string.substring(i,i+1);
-      if(char == '{'){
+    for (var i = 0; i < string.length; i++) {
+      var char = string.substring(i, i + 1);
+      if (char == '{') {
         inside = true;
         insideString = '';
-      }else if(char == '}'){
+      } else if (char == '}') {
         inside = false;
-        var resolvedString = this.resolveReference(insideString, object);
-        if(resolvedString == null){
+        var resolvedString = SchemaHelper.resolveReference(insideString, object);
+        if (resolvedString == null) {
           newString += "{" + insideString + "}";
-        }else{
+        } else {
           newString += resolvedString;
         }
         insideString = '';
-      }else if(inside){
+      } else if (inside) {
         insideString += char;
-      }else{
+      } else {
         newString += char;
       }
     }
-    if(insideString.length > 0){
+    if (insideString.length > 0) {
       newString += "{" + insideString;
     }
     return newString;
@@ -168,28 +190,30 @@ export class SchemaHelper {
    * @param rootObject
    * @returns {{}}
    */
-  public static resolveObject(object:{}, rootObject?:{}):{}{
-    if(rootObject == undefined){
-      rootObject = object;
-    }
-    for(var key in object){
-      var childObject = object[key];
-      if(typeof(childObject) == 'object'){
-        SchemaHelper.resolveObject(childObject, rootObject);
-      }else if(typeof(childObject) == 'string' && key != '$ref'){
-        object[key] = SchemaHelper.resolveString(childObject, rootObject);
+  public static resolveObject(object:{}, rootObject?:{}):{} {
+    if (object != null && object != undefined) {
+      if (rootObject == undefined) {
+        rootObject = object;
       }
-    }
-    if(object['$ref'] != undefined){
-      var refObject = SchemaHelper.resolveReference(object['$ref'], rootObject);
-      if(refObject != null){
-        for(var key in refObject){
-          if(object[key] == undefined) {
-            object[key] = refObject[key];
-          }
+      for (var key in object) {
+        var childObject = object[key];
+        if (typeof(childObject) == 'object') {
+          SchemaHelper.resolveObject(childObject, rootObject);
+        } else if (typeof(childObject) == 'string' && key != '$ref') {
+          object[key] = SchemaHelper.resolveString(childObject, rootObject);
         }
       }
-      delete object['$ref'];
+      if (object['$ref'] != undefined) {
+        var refObject = SchemaHelper.resolveReference(object['$ref'], rootObject);
+        if (refObject != null) {
+          for (var key in refObject) {
+            if (object[key] == undefined) {
+              object[key] = refObject[key];
+            }
+          }
+        }
+        delete object['$ref'];
+      }
     }
     return object;
   }

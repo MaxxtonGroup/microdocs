@@ -1,12 +1,14 @@
 import {RequestMethod} from "./request-method.model";
 import {Component} from "../component/component.model";
+import {Method} from "../component/method.model";
 import {Parameter} from "./parameter.model";
 import {ResponseModel} from "./response.model";
 
 export interface Path {
     path?:string;
-    method?:RequestMethod;
+    requestMethod?:RequestMethod;
     controller?:Component;
+    method?:Method;
     tags?:Array<string>;
     summary?:string;
     description?:string;

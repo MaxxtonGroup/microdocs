@@ -9,7 +9,6 @@ import com.maxxton.microdocs.crawler.doclet_old.domain_old.Schema;
 import com.maxxton.microdocs.crawler.doclet_old.domain_old.Field;
 import com.maxxton.microdocs.crawler.doclet_old.domain_old.Endpoint;
 import com.maxxton.microdocs.crawler.doclet_old.domain_old.Response;
-import com.googlecode.jatl.MarkupBuilder;
 import com.sun.javadoc.*;
 import com.maxxton.microdocs.crawler.doclet_old.Annotations;
 import com.maxxton.microdocs.crawler.doclet_old.Collector;
@@ -297,129 +296,6 @@ public class RequestMappingCollector implements Collector {
         mapping.put("clients", clients);
         mapping.put("endpoints", endpoints);
         return mapping;
-    }
-
-    //    private void addMapping(classDoc, methodDoc, result, path, httpMethod, params, body) {
-//        def httpMethodName = httpMethod.toString() - REQUEST_METHOD
-//        mappings << [path: path,
-//            httpMethodName: httpMethodName,
-//            className: classDoc.qualifiedTypeName(),
-//            position: (methodDoc.position() != null ? methodDoc.position().line() : null),
-//            text: TextUtils.getFirstSentence(methodDoc.commentText()),
-//            params: params,
-//            body: body,
-//            result: result]
-//    }
-    public void writeOutput(MarkupBuilder builder, PathBuilder paths) {
-//        builder.div(id:'request-mappings') {
-//            h2 'Request Mappings'
-//            table {
-//                def sortedMappings = mappings.sort { it.path }
-//                tr {
-//                    th 'Method'
-//                    th 'Path'
-//                    th 'Parameters'
-//                    th 'Request Body'
-//                    th 'Response Body'
-//                    th 'Description'
-//                }
-//                for (mapping in sortedMappings) {
-//                    tr {
-//                        td class: mapping.httpMethodName.toLowerCase(), mapping.httpMethodName
-//                        td {
-//                            a(href: paths.buildFilePath(mapping.className) + (mapping.position != null ? "#" + mapping.position : ""), mapping.path)
-//                        }
-//                        td {
-//                            for(param in mapping.params){
-//                                if(param.name != null && !"".equals(param.name)){
-//                                    div {
-//                                        if(param.name != null){
-//                                            if(param.required != false){
-//                                                b param.name.replaceAll("\"\"", "/").replaceAll("//", "/").replaceAll("\"", "")
-//                                            }else{
-//                                                span param.name.replaceAll("\"\"", "/").replaceAll("//", "/").replaceAll("\"", "")
-//                                            }
-//                                        }
-//                                        if(param.type instanceof String){
-//                                            span " : " + param.type
-//                                        }else if(param.type instanceof ParameterizedTypeImpl){
-//                                            def string = param.type.simpleTypeName()
-//                                            if(param.type.typeArguments().length > 0){
-//                                                string += "<"
-//                                            }
-//                                            def first = true
-//                                            for(type in param.type.typeArguments()){
-//                                                if(!first){
-//                                                    string += ","
-//                                                }
-//                                                string += type.simpleTypeName()
-//                                                first = false
-//                                            }
-//                                            if(param.type.typeArguments().length > 0){
-//                                                string += ">"
-//                                            }
-//                                            span " : " + string
-//                                        }
-//                                        if(param.defaultValue != null){
-//                                            def defaultValue = String.valueOf(param.defaultValue).replaceAll("\"\"", "/").replaceAll("//", "/").replaceAll("\"", "")
-//                                            if(defaultValue != 0 && !defaultValue.equals("0"))
-//                                            span " = " + String.valueOf(param.defaultValue)
-//                                        }
-//                                        if(param.desc != null)
-//                                        span class: 'comment', "// " + param.desc
-//                                    }
-//                                }
-//                            }
-//                        }
-//                        td {
-//                            if(mapping.body != null){
-//                                a(href: paths.buildFilePath(mapping.body.qualifiedTypeName()), mapping.body.simpleTypeName())
-//                                if(mapping.body instanceof ParameterizedTypeImpl){
-//                                    if(mapping.body.typeArguments().length > 0){
-//                                        span "<"
-//                                    }
-//                                    def first = true
-//                                    for(type in mapping.body.typeArguments()){
-//                                        if(!first){
-//                                            span ","
-//                                        }
-//                                        a(href: paths.buildFilePath(type.qualifiedTypeName()), type.simpleTypeName())
-//                                        first = false
-//                                    }
-//                                    if(mapping.body.typeArguments().length > 0){
-//                                        span ">"
-//                                    }
-//                                }
-//                    
-//                            }
-//                        }
-//                        td {
-//                            if(mapping.result != null && !mapping.result.simpleTypeName().equals("void")){
-//                                a(href: paths.buildFilePath(mapping.result.qualifiedTypeName()), mapping.result.simpleTypeName())
-//                                if(mapping.result instanceof ParameterizedTypeImpl){
-//                                    if(mapping.result.typeArguments().length > 0){
-//                                        span "<"
-//                                    }
-//                                    def first = true
-//                                    for(type in mapping.result.typeArguments()){
-//                                        if(!first){
-//                                            span ","
-//                                        }
-//                                        a(href: paths.buildFilePath(type.qualifiedTypeName()), type.simpleTypeName())
-//                                        first = false
-//                                    }
-//                                    if(mapping.result.typeArguments().length > 0){
-//                                        span ">"
-//                                    }
-//                                }
-//                    
-//                            }
-//                        }
-//                        td { code { mkp.yieldUnescaped(mapping.text ?: ' ') } }
-//                    }
-//                }
-//            }
-//        }
     }
 
     public List<Type> getViewModels() {

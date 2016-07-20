@@ -7,10 +7,10 @@
         "links": [
           {
             "rel": "repository",
-            "href": "https://stash.maxxton.com/projects/MXTS/repos/{info.title}/browse?at=refs%2Ftags%2Fv{info.version}"
+            "href": "https://stash.maxxton.com/projects/MXTS/repos/{info.title}/browse?at=refs/tags/v{info.version}"
           }
         ],
-        "sourceLink": "https://stash.maxxton.com/projects/MXTS/repos/{info.title}/browse/src/main/java/{component.path}.java?at=refs%2Ftags%2Fv{info.version}#{method.lineNumber}"
+        "sourceLink": "https://stash.maxxton.com/projects/MXTS/repos/{info.title}/browse/src/main/java/{class.path}.java?at=refs/tags/v{info.version}#{class.lineNumber}"
       }
     },
     "frontend": {
@@ -21,7 +21,7 @@
             "href": "https://stash.maxxton.com/projects/MXTF/repos/{info.title}/browse?at=refs%2Ftags%2Fv{info.version}"
           }
         ],
-        "sourceLink": "https://stash.maxxton.com/projects/MXTF/repos/{info.title}/browse/{component.path}?at=refs%2Ftags%2Fv{info.version}#{method.lineNumber}"
+        "sourceLink": "https://stash.maxxton.com/projects/MXTF/repos/{info.title}/browse/{class.path}?at=refs%2Ftags%2Fv{info.version}#{class.lineNumber}"
       }
     }
   },

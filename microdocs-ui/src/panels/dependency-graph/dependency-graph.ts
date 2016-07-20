@@ -26,7 +26,6 @@ export class DependencyGraph {
 
   onResize() {
     if (this.force != undefined) {
-      console.info('resize');
       this.force.size([this.containerRef.element.nativeElement.getBoundingClientRect().width/2,this.containerRef.element.nativeElement.getBoundingClientRect().height/2]);
       // this.force.restart();
       // this.force.force('size', [this.containerRef.element.nativeElement.getBoundingClientRect().width, this.containerRef.element.nativeElement.getBoundingClientRect().height]);
@@ -69,8 +68,6 @@ export class DependencyGraph {
   }
 
   chartData(data:{}):void {
-    console.info("chart");
-    console.warn(data);
     if (data == null) {
       //handle
       return;

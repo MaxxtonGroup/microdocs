@@ -1,6 +1,5 @@
 package com.maxxton.microdocs.crawler.doclet_old.collectors;
 
-import com.googlecode.jatl.MarkupBuilder;
 import com.sun.javadoc.AnnotationDesc;
 import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.Tag;
@@ -51,41 +50,6 @@ public class ComponentCollector implements Collector {
 
     public Set<String> getAuthors() {
         return authors;
-    }
-
-    public void writeOutput(MarkupBuilder builder, PathBuilder paths) {
-//        builder.div(id: 'components'
-//        ) {
-//      h2 'Components'
-//            for (entry in  componentsByType.sort()) {
-//                h3 entry
-//                .key table
-//                (id:
-//                entry.key
-//                
-//                    ) {
-///*
-//          tr {
-//            th 'Class'
-//            th 'Description'
-//          }
-//*/
-//          def sortedComponents = entry.value.sort {it.className }
-//                    for (component in  sortedComponents) {
-//                        tr {
-//                            td {
-//                                a(href
-//                                : paths.buildFilePath(component.className), component.className
-//                            )
-//              }
-//              td {code {
-//                                mkp.yieldUnescaped(component.text ?  : ' ') }
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
     }
     
     private class Component{

@@ -1,8 +1,8 @@
 import {Component, Input} from '@angular/core';
 import {ROUTER_DIRECTIVES, ActivatedRoute, Router} from "@angular/router";
 
-import {COMPONENTS} from "angular-frontend-mxt/dist/components";
-import {FILTERS} from "angular-frontend-mxt/dist/filters";
+import {COMPONENTS} from "@maxxton/components/dist/components";
+import {FILTERS} from "@maxxton/components/dist/filters";
 import {Path, Schema, Project, Method} from 'microdocs-core-ts/dist/domain';
 import {SchemaHelper} from "microdocs-core-ts/dist/helpers/schema/schema.helper";
 

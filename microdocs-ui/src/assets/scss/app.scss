@@ -1,7 +1,7 @@
 /* local settings and functions */
 @import "settings";
 @import "partials/json-view";
-@import "../../../node_modules/angular-frontend-mxt/src/assets/scss/mxt-components";
+@import "../../../node_modules/@maxxton/components/src/assets/scss/mxt-components";
 
 .no-margin {
   margin: 0 !important;
@@ -357,7 +357,7 @@ prices {
   top: 6px;
 }
 
-.http-method .card{
+.child-card{
   margin-bottom: 10px;
 }
 
@@ -366,7 +366,7 @@ prices {
   min-width: 60px;
 }
 
-.http-method .action::before{
+.child-card .action::before{
   content: " ";
   position: absolute;
   left: 0;

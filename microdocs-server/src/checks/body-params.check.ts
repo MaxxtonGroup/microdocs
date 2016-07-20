@@ -42,7 +42,7 @@ export class BodyParamsCheck implements PathCheck {
 
   private checkSchema(clientSchema:Schema, producerSchema:Schema, problemReport:ProblemReport, path:string):void {
     if(producerSchema != null && producerSchema != undefined){
-      if(clientSchema != null && producerSchema != undefined){
+      if(clientSchema != null && clientSchema != undefined){
         if(producerSchema.type != clientSchema.type){
           problemReport.report(ProblemLevel.WARNING, "Type mismatches in request body at " + path + ", expected: " + producerSchema.type + ", found: " + clientSchema.type);
         }else{

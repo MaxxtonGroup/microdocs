@@ -6,7 +6,6 @@ import com.maxxton.microdocs.crawler.doclet_old.domain_old.SchemaArray;
 import com.maxxton.microdocs.crawler.doclet_old.domain_old.SchemaReference;
 import com.maxxton.microdocs.crawler.doclet_old.domain_old.SchemaEnum;
 import com.maxxton.microdocs.crawler.doclet_old.domain_old.Schema;
-import com.googlecode.jatl.MarkupBuilder;
 import com.sun.javadoc.*;
 import com.maxxton.microdocs.crawler.doclet_old.Annotations;
 import com.maxxton.microdocs.crawler.doclet_old.Collector;
@@ -32,10 +31,6 @@ public class ModelCollector implements Collector {
         if (entity != null) {
             parseSchema(classDoc);
         }
-    }
-
-    @Override
-    public void writeOutput(MarkupBuilder builder, PathBuilder paths) {
     }
 
     public Map<String, Schema> getSchemas() {

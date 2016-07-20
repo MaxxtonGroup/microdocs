@@ -9,8 +9,8 @@
   },
   "license": "MIT",
   "scripts": {
-    "linkDevelopment": "npm link @maxxton/components",
-    "unlinkDevelopment": "npm unlink @maxxton/components",
+    "linkDevelopment": "npm link @maxxton/components && npm link microdocs-core-ts",
+    "unlinkDevelopment": "npm unlink @maxxton/components && npm unlink microdocs-core-ts",
     "postinstall": "typings install"
   },
   "dependencies": {

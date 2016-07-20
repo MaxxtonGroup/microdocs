@@ -2,7 +2,7 @@
 import {ProjectRepository} from '../repositories/project.repo';
 import {ProjectJsonRepository} from '../repositories/json/project-json.repo';
 import {SchemaHelper} from "microdocs-core-ts/dist/helpers/schema/schema.helper";
-import {TreeNode, Project} from "microdocs-core-ts/dist/domain";
+import {TreeNode, Project, Schema} from "microdocs-core-ts/dist/domain";
 
 export class ProjectService{
 
@@ -27,6 +27,7 @@ export class ProjectService{
   }
 
   private addResponseExamples(project:Project){
+    project.swagger = "2.0";
     if(project.paths != undefined){
       for(var path in project.paths){
         for(var method in project.paths[path]){
@@ -34,15 +35,13 @@ export class ProjectService{
           if(endpoint.responses != undefined && endpoint.responses['default'] != undefined && endpoint.responses['default'].schema != undefined){
             var response = endpoint.responses['default'];
             var schema = response.schema;
-            var example = SchemaHelper.generateExample(schema);
+            var example = SchemaHelper.generateExample(schema, undefined, [], project);
             schema.default = example;
           }
         }
       }
     }
   }
-
-
 
 
 }

@@ -1,7 +1,6 @@
 
 package com.maxxton.microdocs.crawler.doclet_old;
 
-import com.googlecode.jatl.MarkupBuilder;
 import com.sun.javadoc.AnnotationDesc;
 import com.sun.javadoc.ClassDoc;
 
@@ -13,7 +12,5 @@ public interface Collector {
     public default void postProcess(){}
 
     public void processClass(ClassDoc classDoc, AnnotationDesc[] annotations);
-
-    public void writeOutput(MarkupBuilder builder, PathBuilder paths);
 
 }
