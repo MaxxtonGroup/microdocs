@@ -2,5 +2,7 @@
       [private]="true"
       [canFullscreen]="false"
       [hidden]="true">
-
+    <template [ngIf="example | notEmpty">
+        <prettyjson [obj]="example"></prettyjson>
+    </template>
 </card>

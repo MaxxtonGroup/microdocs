@@ -1,9 +1,8 @@
-
 import {Component, Input} from "@angular/core";
 import {PrettyJsonComponent} from 'angular2-prettyjson';
 
-import { SchemaHelper } from 'microdocs-core-ts/dist/helpers/schema/schema.helper';
-import { Schema } from 'microdocs-core-ts/dist/domain';
+import {SchemaHelper} from 'microdocs-core-ts/dist/helpers/schema/schema.helper';
+import {Schema} from 'microdocs-core-ts/dist/domain';
 import {FILTERS} from "angular-frontend-mxt/dist/filters";
 
 @Component({
@@ -12,7 +11,7 @@ import {FILTERS} from "angular-frontend-mxt/dist/filters";
   directives: [PrettyJsonComponent],
   pipes: [FILTERS]
 })
-export class BodyRenderPanel{
+export class BodyRenderPanel {
 
   @Input()
   private contentTypes:string[];
@@ -21,10 +20,10 @@ export class BodyRenderPanel{
   @Input()
   private mimes:string[];
 
-  private example : string;
+  private example:string;
 
-  ngOnInit(){
-    this.example = SchemaHelper.resolve(this.schema, this.schemaList);
+  ngOnInit() {
+    this.example = SchemaHelper.resolve(this.schema);
   }
 
 }

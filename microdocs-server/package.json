@@ -25,6 +25,7 @@
     "mkdir-p": "0.0.7",
     "morgan": "^1.7.0",
     "node-yaml-config": "0.0.4",
+    "swagger-express-middleware": "^1.0.0-alpha.12",
     "tslint": "^3.11.0",
     "typescript": "^1.8.10",
     "typings": "^1.3.0"

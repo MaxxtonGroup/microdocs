@@ -9,7 +9,8 @@
   },
   "license": "MIT",
   "scripts": {
-    "deps": "npm link angular-frontend-mxt & npm link microdocs-core-ts",
+    "linkDevelopment": "npm link @maxxton/components",
+    "unlinkDevelopment": "npm unlink @maxxton/components",
     "postinstall": "typings install"
   },
   "dependencies": {
@@ -24,6 +25,7 @@
     "angular2-prettyjson": "^1.0.4",
     "core-js": "^2.4.0",
     "d3": "3.5.17",
+    "express": "^4.14.0",
     "foundation-apps": "^1.2.0",
     "ng2-translate": "^2.1.0",
     "reflect-metadata": "0.1.3",

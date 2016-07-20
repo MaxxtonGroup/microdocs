@@ -1,8 +1,6 @@
 import {ReportJsonRepository} from '../repositories/json/report-json.repo';
-import {ProjectJsonRepository} from '../repositories/json/project-json.repo';
 import {ProjectSettingsJsonRepository} from "../../dist/repositories/json/project-settings-json.repo";
 import {ReportRepository} from '../repositories/report.repo';
-import {ProjectRepository} from '../repositories/project.repo';
 import {ProjectSettingsRepository} from "../repositories/project-settings.repo";
 import {
   Project,
@@ -17,18 +15,19 @@ import {
 import {PathCheck} from "../checks/path-check";
 import {QueryParamsCheck} from "../checks/query-params.check";
 import {BodyParamsCheck} from "../checks/body-params.check";
+import {ProjectService} from "./project.service";
 
 export class AggregationService {
 
   private endpointChecks:PathCheck[] = [new QueryParamsCheck(), new BodyParamsCheck()];
   private reportRepo:ReportRepository;
-  private projectRepo:ProjectRepository;
   private projectSettingsRepo:ProjectSettingsRepository;
+  private projectService:ProjectService;
 
   constructor() {
     this.reportRepo = ReportJsonRepository.bootstrap();
-    this.projectRepo = ProjectJsonRepository.bootstrap();
     this.projectSettingsRepo = ProjectSettingsJsonRepository.bootstrap();
+    this.projectService = ProjectService.bootstrap();
   }
 
   public static bootstrap():AggregationService {
@@ -69,10 +68,10 @@ export class AggregationService {
     for (var title in projectCache) {
       for (var version in projectCache[title]) {
         var project = projectCache[title][version];
-        this.projectRepo.storeAggregatedProject(project);
+        this.projectService.storeAggregatedProject(project);
       }
     }
-    this.projectRepo.storeAggregatedProjects(tree);
+    this.projectService.storeAggregatedProjects(tree);
 
     console.info("Finish reindex");
 

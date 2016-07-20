@@ -11,9 +11,9 @@ export class SchemaHelper {
    * @param fieldName
    * @return example object
    */
-  public static resolve(schema:Schema, schemaList:{[key:string]:Schema}, fieldName?:string):any {
+  public static generateExample(schema:Schema, fieldName?:string):any {
     if (schema != undefined && schema != null) {
-      schema = this.collect(schema, schemaList);
+      schema = this.collect(schema);
       if(schema.default != undefined){
         return schema.default;
       }
@@ -35,7 +35,7 @@ export class SchemaHelper {
         var random = Math.floor((Math.random() * 5));
         var array:Array<any> = [];
         for (var i = 0; i < random; i++) {
-          array.push(SchemaHelper.resolve(schema.items, schemaList));
+          array.push(SchemaHelper.generateExample(schema.items));
         }
         return array;
       } else if (schema.type == 'object') {
@@ -43,7 +43,7 @@ export class SchemaHelper {
         if (schema.allOf != undefined) {
           schema.allOf.forEach(superSchema => {
             if (superSchema.type == 'object') {
-              var superObject = SchemaHelper.resolve(superSchema, schemaList, fieldName);
+              var superObject = SchemaHelper.generateExample(superSchema, fieldName);
               for (var field in superObject) {
                 object[field] = superObject[field];
               }
@@ -59,7 +59,7 @@ export class SchemaHelper {
             if (jsonName != null) {
               name = jsonName;
             }
-            object[name] = SchemaHelper.resolve(property, schemaList, field);
+            object[name] = SchemaHelper.generateExample(property, field);
           }
         }
         return object;
@@ -68,33 +68,18 @@ export class SchemaHelper {
     return null;
   }
 
-  public static collect(schema:Schema, schemaList:{[key:string]:Schema}):Schema {
+  public static collect(schema:Schema):Schema {
     if (schema == undefined || schema == null) {
       return schema;
-    }
-    if (schema.$ref != undefined && schema.$ref.indexOf("#/definitions/" == 0)) {
-      var schemaName = schema.$ref.substring("#/definitions/".length);
-      var refObject = schemaList[schemaName];
-      if (refObject != undefined) {
-        return SchemaHelper.collect(refObject, schemaList);
-      }
     }
     if (schema.type == 'object') {
       var fullSchema = schema;
       if (schema.allOf != undefined && schema.allOf != null) {
-        schema.allOf.forEach(ref => {
-          var reference : string;
-          if (typeof(ref) == 'string') {
-            reference = <string> ref;
-          } else if (typeof(ref) == 'object' && typeof(ref.$ref) == 'string') {
-            reference = ref.$ref;
-          }
-          var schemaName = reference.substring("#/definitions/".length);
-          var superSchema = SchemaHelper.collect(schemaList[schemaName], schemaList);
+        schema.allOf.forEach(superSchema => {
           if (superSchema != undefined && superSchema != null && superSchema.properties != null && superSchema.properties != undefined) {
             for (var key in superSchema.properties) {
               //todo: combine instead of override
-              fullSchema.properties[key] = SchemaHelper.collect(superSchema.properties[key], schemaList);
+              fullSchema.properties[key] = SchemaHelper.collect(superSchema.properties[key]);
             }
           }
         });
@@ -102,7 +87,7 @@ export class SchemaHelper {
       if(schema.properties != undefined && schema.properties != null) {
         for (var key in schema.properties) {
           //todo: combine instead of override
-          fullSchema.properties[key] = SchemaHelper.collect(schema.properties[key], schemaList);
+          fullSchema.properties[key] = SchemaHelper.collect(schema.properties[key]);
         }
       }
       return fullSchema;
