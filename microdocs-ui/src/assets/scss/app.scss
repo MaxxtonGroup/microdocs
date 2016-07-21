@@ -357,6 +357,17 @@ prices {
   top: 6px;
 }
 
+.problem-box{
+  color: #F44336;
+  margin-bottom: 10px;
+}
+
+.problem-box .problem{
+  font-weight: bold;
+  position: relative;
+  top: -5px;
+}
+
 .child-card .card{
   margin-bottom: 10px;
 }

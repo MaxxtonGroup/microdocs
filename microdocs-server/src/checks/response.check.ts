@@ -1,6 +1,8 @@
 
 import {PathCheck} from "./path-check";
-import {Path, Project, ProblemReport, Schema, ProblemLevel} from 'microdocs-core-ts/dist/domain';
+import {Path, Project, Schema} from 'microdocs-core-ts/dist/domain';
+import {WARNING} from "microdocs-core-ts/dist/domain/problem/problem-level.model";
+import {ProblemReporter}  from 'microdocs-core-ts/dist/helpers';
 
 export class ResponseCheck implements PathCheck{
 
@@ -8,7 +10,7 @@ export class ResponseCheck implements PathCheck{
     return "response-check";
   }
 
-  check(clientEndpoint:Path, producerEndpoint:Path, project:Project, problemReport:ProblemReport):void {
+  check(clientEndpoint:Path, producerEndpoint:Path, project:Project, problemReport:ProblemReporter):void {
     if(clientEndpoint.responses != undefined && clientEndpoint.responses != null &&
         clientEndpoint.responses['default'] != undefined && clientEndpoint.responses['default'] != null &&
         clientEndpoint.responses['default'].schema != undefined && clientEndpoint.responses['default'].schema != null){
@@ -21,16 +23,16 @@ export class ResponseCheck implements PathCheck{
         var clientSchema = clientEndpoint.responses['default'].schema;
         this.checkSchema(producerSchema, clientSchema, problemReport, 'response');
       }else{
-        problemReport.report(ProblemLevel.WARNING, "There is no response body");
+        problemReport.report(WARNING, "There is no response body");
       }
     }
   }
 
-  private checkSchema(producerSchema:Schema, clientSchema:Schema, problemReport:ProblemReport, path:string):void {
+  private checkSchema(producerSchema:Schema, clientSchema:Schema, problemReport:ProblemReporter, path:string):void {
     if (clientSchema != null && clientSchema != undefined) {
       if (producerSchema != null && producerSchema != undefined) {
         if (clientSchema.type != producerSchema.type) {
-          problemReport.report(ProblemLevel.WARNING, "Type mismatches in request body at " + path + ", expected: " + clientSchema.type + ", found: " + producerSchema.type);
+          problemReport.report(WARNING, "Type mismatches in request body at " + path + ", expected: " + clientSchema.type + ", found: " + producerSchema.type);
         } else {
           if (clientSchema.type == "object") {
             var producerProperties = clientSchema.properties;
@@ -45,7 +47,7 @@ export class ResponseCheck implements PathCheck{
           }
         }
       } else if (clientSchema.required) {
-        problemReport.report(ProblemLevel.WARNING, "Missing required value at " + path);
+        problemReport.report(WARNING, "Missing required value at " + path);
       }
     }
   }

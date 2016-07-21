@@ -1,9 +1,8 @@
-export enum SchemaType{
-  OBJECT,
-  ARRAY,
-  STRING,
-  NUMBER,
-  INTEGER,
-  BOOLEAN,
-  ENUM
-}
+export const
+  OBJECT = 'object',
+  ARRAY = 'array',
+  STRING = 'string',
+  NUMBER = 'number',
+  INTEGER = 'integer',
+  BOOLEAN = 'boolean',
+  ENUM = 'enum';

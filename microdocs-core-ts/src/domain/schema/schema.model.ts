@@ -1,8 +1,8 @@
-import {SchemaType} from "./schema-type.model";
+
 export interface Schema{
 
     //all
-    type:SchemaType;
+    type:string;
     default?:any;
     description?:string;
     required?:boolean;

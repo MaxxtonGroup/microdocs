@@ -1,16 +1,17 @@
 import {ReportJsonRepository} from '../repositories/json/report-json.repo';
-import {ProjectSettingsJsonRepository} from "../../dist/repositories/json/project-settings-json.repo";
+import {ProjectSettingsJsonRepository} from "../repositories/json/project-settings-json.repo";
 import {ReportRepository} from '../repositories/report.repo';
 import {ProjectSettingsRepository} from "../repositories/project-settings.repo";
 import {
   Project,
   TreeNode,
   Dependency,
-  DependencyType,
-  Path,
-  ProblemReport,
-  ProblemLevel
+  Path
 } from "microdocs-core-ts/dist/domain";
+import {NOTICE, ERROR} from "microdocs-core-ts/dist/domain/problem/problem-level.model";
+import {REST} from "microdocs-core-ts/dist/domain/dependency/dependency-type.model";
+
+import {ProblemReporter} from "microdocs-core-ts/dist/helpers";
 
 import {PathCheck} from "../checks/path-check";
 import {QueryParamsCheck} from "../checks/query-params.check";
@@ -131,28 +132,26 @@ export class AggregationService {
    * @param parentNode the parent node
    */
   private resolveDependencies(project:Project, projectCache:{[title:string]:{[version:string]:Project}}, parentNode:TreeNode):Project {
+    console.info('resolve project: ' + project.info.title + ":" + project.info.version);
     if (project.dependencies != null && project.dependencies != undefined) {
       var dependencies = {};
       for (var title in project.dependencies) {
         dependencies[title] = project.dependencies[title];
       }
-      var problemCount:number = 0;
       for (var title in dependencies) {
         var node = new TreeNode();
         node.parent = parentNode;
 
         //resolve dependency
         var dependency = dependencies[title];
-        var problemReport:ProblemReport = new ProblemReport("#/dependencies/" + title);
-        var problemReports:ProblemReport[] = [problemReport];
+        var dependencyProblems : ProblemReporter = new ProblemReporter();
 
         //find dependent project
         var dependentProject:Project = null;
         for (var name in projectCache) {
           for (var version in projectCache[name]) {
-            var project = projectCache[name][version];
-            if (project.info.title == title) {
-              dependentProject = project;
+            if (projectCache[name][version].info.title == title) {
+              dependentProject = projectCache[name][version];
             }
           }
         }
@@ -162,23 +161,24 @@ export class AggregationService {
           dependency.group = dependentProject.info.group;
 
           // check endpoint
-          if (dependency.type == "REST") {
-            var endpointProblemReports = this.checkEndpoints(title, dependency, dependentProject, project);
+          if (dependency.type == REST) {
+            var compatible = this.checkEndpoints(title, dependency, dependentProject, project);
+            console.info(project.info.title + ":" + project.info.version + ' -> ' + dependentProject.info.title + ":" + dependentProject.info.version + " = compatible: " + compatible);
 
-            if (endpointProblemReports.length > 0) {
+            if (!compatible) {
               //find last compatible if contains problems
               var previousProject = this.previousProject(dependentProject);
               while (previousProject != null) {
-                var reports = this.checkEndpoints(title, dependency, previousProject, project);
-                if (reports.length == 0) {
+                var prevCompatible = this.checkEndpoints(title, dependency, previousProject, project);
+                console.info(project.info.title + ":" + project.info.version + ' -> ' + previousProject.info.title + ":" + previousProject.info.version + " = compatible: " + prevCompatible);
+
+                if (prevCompatible) {
                   dependency.version = previousProject.info.version;
                   break;
                 }
                 previousProject = this.previousProject(previousProject);
               }
               if (previousProject != null) {
-                endpointProblemReports.forEach(report => problemReports.push(report));
-
                 // scan previous project
                 projectCache[previousProject.info.title][previousProject.info.version] = previousProject;
                 this.resolveDependencies(dependentProject, projectCache, node);
@@ -188,15 +188,11 @@ export class AggregationService {
           //todo: check other dependency types
         } else {
           // project not found
-          problemReport.report(ProblemLevel.ERROR, "Missing project: " + title);
+          dependencyProblems.report(ERROR, "Unknown project: " + title, dependency.component);
         }
-        if (project.problems == undefined || project.problems == null) {
-          project.problems = [];
-        }
-        for (var i = 0; i < problemReports.length; i++) {
-          for (var j = 0; j < problemReports[i].getProblems().length; j++) {
-            project.problems.push(problemReports[i].getProblems()[j]);
-          }
+        if(dependencyProblems.hasProblems()){
+          // log problems
+          dependencyProblems.publish(dependency, project);
         }
 
         // create node
@@ -214,13 +210,7 @@ export class AggregationService {
           node.reference = "#" + path;
         }
         parentNode.dependencies[title] = node;
-        if (project.problems != undefined) {
-          if (parentNode.problems == undefined) {
-            parentNode.problems == project.problems.length;
-          } else {
-            parentNode.problems += project.problems.length;
-          }
-        }
+        parentNode.problems = project.problemCount;
       }
     }
     return project;
@@ -231,32 +221,35 @@ export class AggregationService {
    * @param title name of the project
    * @param dependency
    * @param dependentProject
-   * @returns {ProblemReport[]} reports of each endpoint
+   * @returns {boolean} true if compatible, otherwise false
    */
-  private checkEndpoints(title:string, dependency:Dependency, dependentProject:Project, currentProject:Project):ProblemReport[] {
-    var problemReports:ProblemReport[] = [];
+  private checkEndpoints(title:string, dependency:Dependency, dependentProject:Project, currentProject:Project):boolean{
+    var compatible = true;
     if (dependency.paths != undefined) {
       for (var path in dependency.paths) {
         for (var method in dependency.paths[path]) {
-          var problemReport = new ProblemReport("#/dependencies/" + title + "/paths/" + path.replace(new RegExp("/", 'g'), "%2F") + "/" + method);
+          var problemReport = new ProblemReporter(currentProject);
           var clientEndpoint = dependency.paths[path][method];
           clientEndpoint.path = path;
           clientEndpoint.requestMethod = method;
-          var producerEndpoint = this.findEndpoint(dependentProject, path, method, problemReport);
+          var producerEndpoint = this.findEndpoint(title, clientEndpoint, path, method, dependentProject, problemReport);
           if (producerEndpoint != null) {
             // execute checks on the endpoint
             this.endpointChecks.forEach(check => check.check(clientEndpoint, producerEndpoint, currentProject, problemReport));
           } else {
             // endpoint does not exists
-            problemReport.report(ProblemLevel.ERROR, "Missing endpoint: " + method + " " + path);
+            problemReport.report(ERROR, "No mapping for '" + method + " " + path + "' on " + title, clientEndpoint.controller, clientEndpoint.method);
           }
-          if (problemReport.getProblems().length > 0) {
-            problemReports.push(problemReport);
+
+          // log problems
+          if(problemReport.hasProblems()) {
+            compatible = false;
+            problemReport.publish(clientEndpoint, currentProject);
           }
         }
       }
     }
-    return problemReports;
+    return compatible;
   }
 
   /**
@@ -289,7 +282,7 @@ export class AggregationService {
    * @param method request method of the endpoint
    * @returns {null,Path} returns Path or null if it does not exists
    */
-  private findEndpoint(project:Project, clientPath:string, clientMethod:string, problemReport:ProblemReport):Path {
+  private findEndpoint(title:string, clientEndpoint:Path, clientPath:string, clientMethod:string, project:Project, problemReport:ProblemReporter):Path {
     var clientSegments:string[] = clientPath.split('/');
     for (var producerPath in project.paths) {
       var producerSegments:string[] = producerPath.split('/');
@@ -317,7 +310,7 @@ export class AggregationService {
           for (var method in project.paths[producerPath]) {
             if (method.toLowerCase() == clientMethod.toLowerCase()) {
               if (!equals) {
-                problemReport.report(ProblemLevel.WARNING, "Path variable(s) do not match");
+                problemReport.report(NOTICE, "Path variable(s) do not match for '" + method + " " + clientPath + "' on " + title, clientEndpoint.controller, clientEndpoint.method);
               }
               var endpoint = project.paths[producerPath][method];
               endpoint.path = producerPath;

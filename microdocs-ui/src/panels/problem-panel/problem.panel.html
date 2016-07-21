@@ -1,0 +1,4 @@
+<div class="problem-box " *ngFor="let problem of problems | filterByField:'level':'error'">
+    <span class="icon">error</span>
+    <span class="problem">{{problem.message}}</span>
+</div>

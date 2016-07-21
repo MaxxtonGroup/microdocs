@@ -1,6 +1,4 @@
 import {Schema} from "../schema/schema.model";
-import {SchemaType} from "../schema/schema-type.model";
-import {ParameterPlacing} from "./parameter-placing.model";
 
 /**
  * @author Steven Hermans
@@ -8,14 +6,14 @@ import {ParameterPlacing} from "./parameter-placing.model";
 export interface Parameter {
 
     name?:string;
-    in?:ParameterPlacing;
+    in?:string;
     description?:string;
     required?:boolean;
     schema?:Schema;
     allowEmptyValue?:boolean;
 
     //all
-    type:SchemaType;
+    type:string;
     default?:any;
     multipleOf?:number;
     maximum?:number;

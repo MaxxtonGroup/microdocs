@@ -97,8 +97,7 @@ class Server {
    * @method routes
    * @return void
    */
-  private
-  routes() {
+  private routes() {
     //get router
     let router:express.Router;
     router = express.Router();

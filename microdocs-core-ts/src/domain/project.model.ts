@@ -2,14 +2,14 @@ import {ProjectInfo} from "./common/project-info.model";
 import {Tag} from "./common/tag.model";
 import {Schema} from "./schema/schema.model";
 import {ExternalDoc} from "./common/external-doc.model";
-import {Dependency} from "./depenency/dependency.model";
+import {Dependency} from "./dependency/dependency.model";
 import {Component} from "./component/component.model";
 import {Path} from "./path/path.model";
 import {Problem} from "./problem/problem.model";
 
 export interface Project{
-    swagger:string;
-    info:ProjectInfo;
+    swagger?:string;
+    info?:ProjectInfo;
     host?:string;
     basePath?:string;
     schemas?:Array<string>;
@@ -21,4 +21,5 @@ export interface Project{
     dependencies?:{[key:string]:Dependency};
     components?:{[key:string]:Component};
     problems?:Array<Problem>;
+    problemCount?:number;
 }

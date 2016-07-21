@@ -1,8 +1,10 @@
 /**
  * @author Steven Hermans
  */
-export enum ParameterPlacing{
+export const
 
-    QUERY, HEADER, PATH, FORMDATA, BODY
-
-}
+  QUERY = 'query',
+  HEADER = 'header',
+  PATH = 'path',
+  FORMDATA = 'formdata',
+  BODY = 'body';

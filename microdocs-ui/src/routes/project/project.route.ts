@@ -9,13 +9,14 @@ import {SchemaHelper} from "microdocs-core-ts/dist/helpers/schema/schema.helper"
 import {ProjectService} from "../../services/project.service";
 import {EndpointPanel} from "../../panels/endpoint-panel/endpoint.panel";
 import {ModelPanel} from "../../panels/model-panel/model.panel";
-import {SortByHttpMethod} from "../../pipes/sort-by-http-method.pipe";
+import {ProblemPanel} from "../../panels/problem-panel/problem.panel";
+import {SortByHttpMethod} from "../../pipes/sort-by-http-method.pipe"
 
 
 @Component({
   selector: 'project-route',
   templateUrl: 'project.tpl.html',
-  directives: [ROUTER_DIRECTIVES, COMPONENTS, EndpointPanel, ModelPanel],
+  directives: [ROUTER_DIRECTIVES, COMPONENTS, EndpointPanel, ModelPanel, ProblemPanel],
   pipes: [FILTERS, SortByHttpMethod]
 })
 export class ProjectRoute {

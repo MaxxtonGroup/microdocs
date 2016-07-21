@@ -1,5 +1,7 @@
 import {PathCheck} from "./path-check";
-import {Path, ProblemReport, ProblemLevel, Project, Parameter} from "microdocs-core-ts/dist/domain";
+import {Path, Project, Parameter} from "microdocs-core-ts/dist/domain";
+import {WARNING} from "microdocs-core-ts/dist/domain/problem/problem-level.model";
+import {ProblemReporter}  from 'microdocs-core-ts/dist/helpers';
 
 export class PathParamsCheck implements PathCheck {
 
@@ -7,7 +9,7 @@ export class PathParamsCheck implements PathCheck {
     return "path-param";
   }
 
-  public check(clientEndpoint:Path, producerEndpoint:Path, project:Project, problemReport:ProblemReport):void {
+  public check(clientEndpoint:Path, producerEndpoint:Path, project:Project, problemReport:ProblemReporter):void {
     var clientSegments = clientEndpoint.path.split('/');
     var producerSegments = producerEndpoint.path.split('/');
     for(var i = 0; i < clientSegments.length; i++){
@@ -20,14 +22,14 @@ export class PathParamsCheck implements PathCheck {
         var clientParam = this.getPathVariable(clientParamName, clientEndpoint);
         var producerParam = this.getPathVariable(producerParamName, producerEndpoint);
         if(clientParam == null){
-          problemReport.report(ProblemLevel.WARNING, "path variable '" + clientParamName + " is missing");
+          problemReport.report(WARNING, "path variable '" + clientParamName + " is missing");
         }
         if(producerParam == null){
-          problemReport.report(ProblemLevel.WARNING, "path variable '" + producerParam + " is missing on the controller");
+          problemReport.report(WARNING, "path variable '" + producerParam + " is missing on the controller");
         }
         if(clientParam != null && producerParam != null){
           if(clientParam.type != producerParam.type){
-            problemReport.report(ProblemLevel.WARNING, "Type mismatches path variable at segment " + i + ", expected: " + producerParam.type + ", found: " + clientParam.type);
+            problemReport.report(WARNING, "Type mismatches path variable at segment " + i + ", expected: " + producerParam.type + ", found: " + clientParam.type);
           }
         }
       }

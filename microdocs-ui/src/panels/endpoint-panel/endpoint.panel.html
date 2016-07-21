@@ -5,6 +5,9 @@
       [canFullscreen]="false"
       [hidden]="true">
 
+    <template [ngIf]="endpoint.problems | notEmpty">
+        <problem-panel [problems]="endpoint.problems"></problem-panel>
+    </template>
     <div class="description">
         <span *ngIf="endpoint.operationId | notEmpty"><a class="link" [href]="sourceLink" target="_blank">{{endpoint.operationId}}()</a> -  </span>
         {{endpoint.description}}
@@ -29,7 +32,8 @@
             </template>
             <template [ngIf]="endpoint.parameters | filterByField:'in':'body' | notEmpty">
                 <div *ngFor="let body of endpoint.parameters | filterByField:'in':'body'">
-                    <body-render [schema]="body.schema" [schemaList]="schemaList" [mimes]="endpoint.consumes"></body-render>
+                    <body-render [schema]="body.schema" [schemaList]="schemaList"
+                                 [mimes]="endpoint.consumes"></body-render>
                 </div>
             </template>
         </div>

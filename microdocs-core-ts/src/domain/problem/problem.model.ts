@@ -1,12 +1,10 @@
 
-import {ProblemLevel} from "./problem-level.model";
+export interface Problem {
 
-export interface Problem{
-    
-    level:ProblemLevel;
-    description:string;
-    
-    $ref:string;
-    
-    
+  level:string;
+  message:string;
+  package?:string;
+  className?:string;
+  lineNumber?:number;
+
 }

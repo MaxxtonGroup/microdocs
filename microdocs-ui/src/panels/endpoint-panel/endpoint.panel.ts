@@ -7,11 +7,12 @@ import {Path, Schema, Project, Method} from 'microdocs-core-ts/dist/domain';
 import {SchemaHelper} from "microdocs-core-ts/dist/helpers/schema/schema.helper";
 
 import {BodyRenderPanel} from '../body-render/body-render.panel';
+import {ProblemPanel} from "../problem-panel/problem.panel";
 
 @Component({
   selector: 'endpoint',
   templateUrl: 'endpoint.panel.html',
-  directives: [ROUTER_DIRECTIVES, COMPONENTS, BodyRenderPanel],
+  directives: [ROUTER_DIRECTIVES, COMPONENTS, BodyRenderPanel, ProblemPanel],
   pipes: [FILTERS]
 })
 export class EndpointPanel {

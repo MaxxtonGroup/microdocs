@@ -1,4 +1,5 @@
-import {Schema, Project} from "../../domain";
+import {Schema} from "../../domain";
+import {OBJECT, ARRAY, BOOLEAN, ENUM, INTEGER, NUMBER, STRING} from "../../domain/schema/schema-type.model";
 
 /**
  * Helper class for generation example data based on schema and resolve references
@@ -13,7 +14,7 @@ export class SchemaHelper {
    */
   public static generateExample(schema:Schema, fieldName?:string, objectStack:string[] = [], rootObject?:{}):any {
     if (schema != undefined && schema != null) {
-      if (schema.type == 'object') {
+      if (schema.type == OBJECT) {
         if (schema.name != undefined && schema.name != null) {
           var sameObjects:string[] = objectStack.filter((object) => object == schema.name);
           // console.info('has equals: ' + sameObjects.length + " - " + schema.name);
@@ -27,29 +28,29 @@ export class SchemaHelper {
       if (schema.default != undefined) {
         return schema.default;
       }
-      if (schema.type == 'enum' && schema.enum != undefined && schema.enum != null) {
+      if (schema.type == ENUM && schema.enum != undefined && schema.enum != null) {
         var random = Math.floor((Math.random() * schema.enum.length));
         return schema.enum[random];
-      } else if (schema.type == 'boolean') {
+      } else if (schema.type == BOOLEAN) {
         var random = Math.floor((Math.random() * 2));
         return random == 1;
-      } else if (schema.type == 'integer') {
+      } else if (schema.type == INTEGER) {
         var random = Math.floor((Math.random() * 99) + 1);
         return random;
-      } else if (schema.type == 'number') {
+      } else if (schema.type == NUMBER) {
         var random = (Math.random() * 99) + 1;
         return random;
-      } else if (schema.type == 'string') {
+      } else if (schema.type == STRING) {
         return "Extended kindness trifling";
-      } else if (schema.type == 'array') {
+      } else if (schema.type == ARRAY) {
         var array:Array<any> = [];
         array.push(SchemaHelper.generateExample(schema.items, undefined, objectStack, rootObject));
         return array;
-      } else if (schema.type == 'object') {
+      } else if (schema.type == OBJECT) {
         var object:{} = {};
         if (schema.allOf != undefined) {
           schema.allOf.forEach(superSchema => {
-            if (superSchema.type == 'object') {
+            if (superSchema.type == OBJECT) {
               var superObject = SchemaHelper.generateExample(superSchema, fieldName, objectStack, rootObject);
               for (var field in superObject) {
                 object[field] = superObject[field];
@@ -86,7 +87,7 @@ export class SchemaHelper {
         schema = result;
       }
     }
-    if (schema.type == 'object') {
+    if (schema.type == OBJECT) {
       if (schema.name != undefined && schema.name != null) {
         var sameObjects:string[] = objectStack.filter((object) => object == schema.name);
         // console.info('has equals: ' + sameObjects.length + " - " + schema.name);
@@ -138,6 +139,9 @@ export class SchemaHelper {
       segments.forEach((segment) => {
         if (currentObject != undefined && currentObject != null) {
           currentObject = currentObject[segment];
+          if(currentObject != undefined && currentObject != null && currentObject['_id'] != undefined){
+            currentObject['_id'] = segment;
+          }
         }
       });
       if (currentObject != undefined) {
@@ -197,9 +201,9 @@ export class SchemaHelper {
       }
       for (var key in object) {
         var childObject = object[key];
-        if (typeof(childObject) == 'object') {
+        if (typeof(childObject) == OBJECT) {
           SchemaHelper.resolveObject(childObject, rootObject);
-        } else if (typeof(childObject) == 'string' && key != '$ref') {
+        } else if (typeof(childObject) == STRING && key != '$ref') {
           object[key] = SchemaHelper.resolveString(childObject, rootObject);
         }
       }
