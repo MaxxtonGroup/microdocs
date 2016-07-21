@@ -17,9 +17,6 @@ import {DependencyGraph} from '../../panels/dependency-graph/dependency-graph';
   directives: [COMPONENTS, DependencyGraph]
 })
 
-export class DashboardRoute { 
-  constructor() {
+export class DashboardRoute {
 
-
-  }
 }

@@ -28,6 +28,9 @@ export class ProjectRoute {
   private project:Project = {};
   private loading:boolean = true;
 
+  private queryParams:Params;
+  private pathParams:Params;
+
   constructor(private projectService:ProjectService,
               private route:ActivatedRoute,
               private router:Router) {
@@ -35,23 +38,22 @@ export class ProjectRoute {
 
   ngOnInit() {
     this.querySub = this.router.routerState.queryParams.subscribe(params => {
-      this.version = params['version'];
-      if (typeof this.version == 'undefined') {
-        this.version = null;
-      }
-      if (typeof this.title != 'undefined') {
+      this.queryParams = params;
+      if(this.pathParams != undefined){
         this.init();
       }
     });
     this.pathSub = this.route.params.subscribe(params => {
-      this.title = params['project'];
-      if (typeof this.version != 'undefined') {
+      this.pathParams = params;
+      if(this.queryParams != undefined){
         this.init();
       }
     });
   }
 
   init() {
+    this.version = this.queryParams['version'];
+    this.title = this.pathParams['project'];
     //load metadata
     var wait = this.version == undefined;
     this.projectService.getProjects().subscribe(node => {

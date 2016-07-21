@@ -14,7 +14,8 @@ export class ProjectRoute extends BaseRoute {
     res.header("Access-Control-Allow-Origin", "*");
 
     var title = req.params.title;
-    var version = req.params.version;
+    var version = req.query.version;
+    console.info(version);
 
 
     // load latest version if not specified
