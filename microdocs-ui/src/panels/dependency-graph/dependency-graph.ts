@@ -85,7 +85,7 @@ export class DependencyGraph {
       .nodes(d3.values(nodes))
       .links(links)
       .size([this.containerRef.element.nativeElement.getBoundingClientRect().width, this.containerRef.element.nativeElement.getBoundingClientRect().height])
-      .linkDistance(150)
+      .linkStrength(0.1)
       .charge(-300)
       .on("tick", tick)
       .start();

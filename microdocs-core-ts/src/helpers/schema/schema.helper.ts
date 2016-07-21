@@ -15,7 +15,7 @@ export class SchemaHelper {
     if (schema != undefined && schema != null) {
       if (schema.type == 'object') {
         if (schema.name != undefined && schema.name != null) {
-          var sameObjects:[] = objectStack.filter((object) => object == schema.name);
+          var sameObjects:string[] = objectStack.filter((object) => object == schema.name);
           // console.info('has equals: ' + sameObjects.length + " - " + schema.name);
           if (sameObjects.length > 0) {
             return 'recursive';
@@ -88,7 +88,7 @@ export class SchemaHelper {
     }
     if (schema.type == 'object') {
       if (schema.name != undefined && schema.name != null) {
-        var sameObjects:[] = objectStack.filter((object) => object == schema.name);
+        var sameObjects:string[] = objectStack.filter((object) => object == schema.name);
         // console.info('has equals: ' + sameObjects.length + " - " + schema.name);
         if (sameObjects.length > 0) {
           return schema;

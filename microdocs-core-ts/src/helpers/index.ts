@@ -1,2 +1,2 @@
 
-export {SchemaHelper} from 'schema/schema.helper';
+export {SchemaHelper} from './schema/schema.helper';
