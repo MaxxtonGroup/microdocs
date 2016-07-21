@@ -26,7 +26,7 @@ export class DependencyGraph {
 
   onResize() {
     if (this.force != undefined) {
-      this.force.size([this.containerRef.element.nativeElement.getBoundingClientRect().width/2,this.containerRef.element.nativeElement.getBoundingClientRect().height/2]);
+      this.force.size([this.containerRef.element.nativeElement.getBoundingClientRect().width,this.containerRef.element.nativeElement.getBoundingClientRect().height]);
       // this.force.restart();
       // this.force.force('size', [this.containerRef.element.nativeElement.getBoundingClientRect().width, this.containerRef.element.nativeElement.getBoundingClientRect().height]);
     }
@@ -115,7 +115,7 @@ export class DependencyGraph {
         return "overview-link " + d.type;
       })
       .attr("marker-end", function (d) {
-        return "url(#marker-" + d.type + ")";
+        return "url(/dashboard#marker-" + d.type + ")";
       });
 
     var circle = svg.append("g").selectAll("circle")

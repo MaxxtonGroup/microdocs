@@ -38,7 +38,7 @@ export class AggregationService {
 
   /**
    * Start the reindex process
-   * @return {Project[]}
+   * @return {TreeNode}
    */
   public reindex():TreeNode {
     console.info("Start reindex");
