@@ -26,5 +26,29 @@
     }
   },
   "projects": {
+    "authorization-server": {
+      "paths": {
+         "/uaa/oauth/token": {
+           "post": {
+             "consumes": ["application/json"],
+             "produces": ["application/json"],
+             "parameters": [
+               {
+                 "in": "query",
+                 "name": "grant_type",
+                 "type": "string"
+               }
+             ],
+              "responses": {
+                "default": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              }
+           }
+         }
+      }
+    }
   }
 }

@@ -14,10 +14,14 @@ export class ProblemReporter {
 
     if(component != undefined){
       component = SchemaHelper.resolveObject(component, this.rootObject);
-    }
-    if(component != null){
-      problem.package = component.name;
-      problem.className = component['_id'];
+      if(component != null && component != undefined && component.name != undefined && component.name != null){
+        var fullName = component.name;
+        var segments = fullName.split('.');
+        if(segments.length > 0){
+          problem.package = fullName.substring(0, fullName.length - segments[segments.length-1].length-1);
+          problem.className = segments[segments.length-1];
+        }
+      }
     }
 
     if(method != undefined){

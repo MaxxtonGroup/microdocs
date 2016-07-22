@@ -6,12 +6,14 @@ import {
   Project,
   TreeNode,
   Dependency,
-  Path
+  Path,
+  Problem
 } from "microdocs-core-ts/dist/domain";
 import {NOTICE, ERROR} from "microdocs-core-ts/dist/domain/problem/problem-level.model";
 import {REST} from "microdocs-core-ts/dist/domain/dependency/dependency-type.model";
 
 import {ProblemReporter} from "microdocs-core-ts/dist/helpers";
+import {getProblemsInProject} from "microdocs-core-ts/dist/helpers";
 
 import {PathCheck} from "../checks/path-check";
 import {QueryParamsCheck} from "../checks/query-params.check";
@@ -38,31 +40,32 @@ export class AggregationService {
   }
 
   /**
+   * Check new project for breaking changes
+   * @param project
+   * @returns {Problem[]}
+   */
+  public checkProject(project:Project) : Problem[] {
+    // Load all projects
+    var projectCache = this.loadProjects();
+
+    // resolve project
+    var node = new TreeNode();
+    this.resolveDependencies(project, projectCache, node);
+
+    // collect problems
+    var problems = getProblemsInProject(project);
+    return problems;
+  }
+
+  /**
    * Start the reindex process
    * @return {TreeNode}
    */
   public reindex():TreeNode {
     console.info("Start reindex");
 
-    // Find all projects
-    var projectCache:{[title:string]:{[version:string]:Project}} = {};
-    // var projects:Project[] = [];
-    var projectInfos = this.reportRepo.getProjects();
-    projectInfos.forEach(projectInfo => {
-      try {
-        var project = this.reportRepo.getProject(projectInfo);
-        if (project != null) {
-          project = this.mergeProjectSettings(project);
-          if (projectCache[project.info.title] == null || projectCache[project.info.title] == undefined) {
-            projectCache[project.info.title] = {};
-          }
-          projectCache[project.info.title][project.info.version] = project;
-        }
-      } catch (e) {
-        console.error("Failed to load project: " + projectInfo.title);
-        console.error(e);
-      }
-    });
+    // Load all projects
+    var projectCache = this.loadProjects();
 
     console.info("Build dependency tree");
     var tree = this.buildDependencyTree(projectCache);
@@ -125,6 +128,32 @@ export class AggregationService {
   }
 
   /**
+   * Load all projects
+   * @return all project structured as [name].[version].[project]
+   */
+  private loadProjects():{[title:string]:{[version:string]:Project}}{
+    var projectCache:{[title:string]:{[version:string]:Project}} = {};
+    // var projects:Project[] = [];
+    var projectInfos = this.reportRepo.getProjects();
+    projectInfos.forEach(projectInfo => {
+      try {
+        var project = this.reportRepo.getProject(projectInfo);
+        if (project != null) {
+          project = this.mergeProjectSettings(project);
+          if (projectCache[project.info.title] == null || projectCache[project.info.title] == undefined) {
+            projectCache[project.info.title] = {};
+          }
+          projectCache[project.info.title][project.info.version] = project;
+        }
+      } catch (e) {
+        console.error("Failed to load project: " + projectInfo.title);
+        console.error(e);
+      }
+    });
+    return projectCache;
+  }
+
+  /**
    * Recursively follow each dependency.
    * Check if a project version is already in the tree
    * @param project project of which the dependencies should be resolved
@@ -144,7 +173,7 @@ export class AggregationService {
 
         //resolve dependency
         var dependency = dependencies[title];
-        var dependencyProblems : ProblemReporter = new ProblemReporter();
+        var dependencyProblems : ProblemReporter = new ProblemReporter(project);
 
         //find dependent project
         var dependentProject:Project = null;
@@ -377,5 +406,4 @@ export class AggregationService {
     }
     return obj1;
   }
-
 }

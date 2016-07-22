@@ -13,6 +13,7 @@ import {BaseRoute} from "./routes/route";
 import {ProjectsRoute} from "./routes/projects.route";
 import {ProjectRoute} from "./routes/project.route";
 import {ReindexRoute} from "./routes/reindex.route";
+import {CheckRoute} from "./routes/check.route";
 
 /**
  * The server.
@@ -106,7 +107,8 @@ class Server {
     var routes:BaseRoute[] = [
       new ProjectsRoute(),
       new ProjectRoute(),
-      new ReindexRoute()
+      new ReindexRoute(),
+      new CheckRoute()
     ];
 
     //define basePath

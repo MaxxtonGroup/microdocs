@@ -139,13 +139,10 @@ export class SchemaHelper {
       segments.forEach((segment) => {
         if (currentObject != undefined && currentObject != null) {
           currentObject = currentObject[segment];
-          if(currentObject != undefined && currentObject != null && currentObject['_id'] != undefined){
-            currentObject['_id'] = segment;
-          }
         }
       });
-      if (currentObject != undefined) {
-        currentObject == null;
+      if (currentObject == undefined) {
+        currentObject = null;
       }
       return currentObject;
     }
