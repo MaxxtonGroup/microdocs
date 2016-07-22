@@ -1,5 +1,6 @@
 import {PathCheck} from "./path-check";
 import {Path, Project, Parameter} from "microdocs-core-ts/dist/domain";
+import {PATH} from "microdocs-core-ts/dist/domain/path/parameter-placing.model";
 import {WARNING} from "microdocs-core-ts/dist/domain/problem/problem-level.model";
 import {ProblemReporter}  from 'microdocs-core-ts/dist/helpers';
 
@@ -22,14 +23,14 @@ export class PathParamsCheck implements PathCheck {
         var clientParam = this.getPathVariable(clientParamName, clientEndpoint);
         var producerParam = this.getPathVariable(producerParamName, producerEndpoint);
         if(clientParam == null){
-          problemReport.report(WARNING, "path variable '" + clientParamName + " is missing");
+          problemReport.report(WARNING, "path variable '" + clientParamName + "' is missing");
         }
         if(producerParam == null){
-          problemReport.report(WARNING, "path variable '" + producerParam + " is missing on the controller");
+          problemReport.report(WARNING, "path variable '" + producerParamName + "' is missing on the controller");
         }
         if(clientParam != null && producerParam != null){
           if(clientParam.type != producerParam.type){
-            problemReport.report(WARNING, "Type mismatches path variable at segment " + i + ", expected: " + producerParam.type + ", found: " + clientParam.type);
+            problemReport.report(WARNING, "Type mismatches path variable " + clientParamName + ", expected: " + producerParam.type + ", found: " + clientParam.type);
           }
         }
       }
@@ -44,7 +45,7 @@ export class PathParamsCheck implements PathCheck {
     if(path.parameters != undefined && path.parameters != null){
       for(var i = 0; i < path.parameters.length; i++){
         var param = path.parameters[i];
-        if(param.name == name && param.type == 'path'){
+        if(param.name == name && param.in == PATH){
           return param;
         }
       }

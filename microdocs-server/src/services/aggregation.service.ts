@@ -232,7 +232,7 @@ export class AggregationService {
           var clientEndpoint = dependency.paths[path][method];
           clientEndpoint.path = path;
           clientEndpoint.requestMethod = method;
-          var producerEndpoint = this.findEndpoint(title, clientEndpoint, path, method, dependentProject, problemReport);
+          var producerEndpoint = this.findEndpoint(title, clientEndpoint, path, method, false, dependentProject, problemReport);
           if (producerEndpoint != null) {
             // execute checks on the endpoint
             this.endpointChecks.forEach(check => check.check(clientEndpoint, producerEndpoint, currentProject, problemReport));
@@ -282,7 +282,7 @@ export class AggregationService {
    * @param method request method of the endpoint
    * @returns {null,Path} returns Path or null if it does not exists
    */
-  private findEndpoint(title:string, clientEndpoint:Path, clientPath:string, clientMethod:string, project:Project, problemReport:ProblemReporter):Path {
+  private findEndpoint(title:string, clientEndpoint:Path, clientPath:string, clientMethod:string, checkAlmostEquals:boolean, project:Project, problemReport:ProblemReporter):Path {
     var clientSegments:string[] = clientPath.split('/');
     for (var producerPath in project.paths) {
       var producerSegments:string[] = producerPath.split('/');
@@ -306,11 +306,11 @@ export class AggregationService {
             // segments are both on the producer and client variable
           }
         }
-        if (almostEquals || equals) {
+        if ((almostEquals && checkAlmostEquals) || equals) {
           for (var method in project.paths[producerPath]) {
             if (method.toLowerCase() == clientMethod.toLowerCase()) {
               if (!equals) {
-                problemReport.report(NOTICE, "Path variable(s) do not match for '" + method + " " + clientPath + "' on " + title, clientEndpoint.controller, clientEndpoint.method);
+                problemReport.report(NOTICE, "Path variable(s) might not match for '" + method + " " + clientPath + "' on " + title, clientEndpoint.controller, clientEndpoint.method);
               }
               var endpoint = project.paths[producerPath][method];
               endpoint.path = producerPath;
@@ -320,6 +320,9 @@ export class AggregationService {
           }
         }
       }
+    }
+    if(checkAlmostEquals == false){
+      return this.findEndpoint(title, clientEndpoint, clientPath, clientMethod, true, project, problemReport);
     }
     return null;
   }

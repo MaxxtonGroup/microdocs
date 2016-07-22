@@ -1,5 +1,7 @@
 package com.maxxton.microdocs.crawler.core.domain.schema;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.List;
 import java.util.Map;
 
@@ -12,6 +14,8 @@ public class SchemaObject extends Schema {
     private List<Schema> allOf;
     private String name;
     private List<SchemaGenericObject> generic;
+    @JsonIgnore
+    private boolean ignore;
 
     public SchemaObject() {
 
@@ -47,5 +51,13 @@ public class SchemaObject extends Schema {
 
     public void setGeneric(List<SchemaGenericObject> generic) {
         this.generic = generic;
+    }
+
+    public boolean isIgnore() {
+        return ignore;
+    }
+
+    public void setIgnore(boolean ignore) {
+        this.ignore = ignore;
     }
 }

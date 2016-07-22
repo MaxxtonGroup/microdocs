@@ -14,18 +14,22 @@
     <div *ngIf="project.dependencies | notEmpty">
         <h4>Dependencies</h4>
         <ul>
-            <li *ngFor="let dependency of project.dependencies | objectIterator" class="link">
-                <span class="icon">keyboard_arrow_right</span>
-                <a [routerLink]="'/projects/' + dependency.group + '/' + dependency._id" target="_blank">{{dependency._id}}</a>
+            <li *ngFor="let dependency of project.dependencies | objectIterator">
+                <span class="link">
+                    <span class="icon">keyboard_arrow_right</span>
+                    <a [routerLink]="getDependencyLink(dependency)">{{dependency._id}}</a>
+                </span>
             </li>
         </ul>
     </div>
     <div *ngIf="project | notEmpty:'info.links'">
         <h4>Links</h4>
         <ul>
-            <li *ngFor="let link of project.info.links" class="link">
-                <span class="icon">keyboard_arrow_right</span>
-                <a [href]="link.href" target="_blank">{{link.rel}}</a>
+            <li *ngFor="let link of project.info.links">
+                <span class="link">
+                    <span class="icon">keyboard_arrow_right</span>
+                    <a [href]="link.href" target="_blank">{{link.rel}}</a>
+                </span>
             </li>
         </ul>
     </div>
@@ -38,11 +42,13 @@
     </div>
 </card>
 <card title="Clients" [sectionClass]="'card-section content'" [canHide]="true"
-      *ngIf="project.dependencies | filterByField:'type':'REST' | notEmpty">
-    <div *ngFor="let client of project.dependencies | filterByField:'type':'REST' | objectIterator | sortByKey:'_id'">
-        <div class="link client-header">
-            <span class="icon">keyboard_arrow_right</span>
-            <a [routerLink]="'/projects/' + client.group + '/' + client._id">{{client._id}}</a>
+      *ngIf="project.dependencies | filterByField:'type':rest | notEmpty">
+    <div *ngFor="let client of project.dependencies | filterByField:'type':rest | objectIterator | sortByKey:'_id'">
+        <div class="client-header">
+            <span class="link">
+                <span class="icon">keyboard_arrow_right</span>
+                <a [routerLink]="getDependencyLink(client)">{{client._id}}</a>
+            </span>
         </div>
         <template [ngIf]="client.problems | notEmpty">
             <problem-panel [problems]="client.problems"></problem-panel>

@@ -21,7 +21,7 @@ export class ResponseCheck implements PathCheck{
 
         var producerSchema = producerEndpoint.responses['default'].schema;
         var clientSchema = clientEndpoint.responses['default'].schema;
-        this.checkSchema(producerSchema, clientSchema, problemReport, 'response');
+        this.checkSchema(producerSchema, clientSchema, problemReport, '');
       }else{
         problemReport.report(WARNING, "There is no response body");
       }
@@ -32,18 +32,22 @@ export class ResponseCheck implements PathCheck{
     if (clientSchema != null && clientSchema != undefined) {
       if (producerSchema != null && producerSchema != undefined) {
         if (clientSchema.type != producerSchema.type) {
-          problemReport.report(WARNING, "Type mismatches in request body at " + path + ", expected: " + clientSchema.type + ", found: " + producerSchema.type);
+          var position = "";
+          if(path != ''){
+            position = ' at ' + path;
+          }
+          problemReport.report(WARNING, "Type mismatches in response body" + position + ", expected: " + clientSchema.type + ", found: " + producerSchema.type);
         } else {
           if (clientSchema.type == "object") {
             var producerProperties = clientSchema.properties;
             var clientProperties = producerSchema.properties;
             for (var key in producerProperties) {
-              this.checkSchema(clientProperties[key], producerProperties[key], problemReport, path + "." + key);
+              this.checkSchema(clientProperties[key], producerProperties[key], problemReport, path + (path == '' ? '' : '.') + key);
             }
           } else if (clientSchema.type == "array") {
             var producerItems = clientSchema.items;
             var clientItems = producerSchema.items;
-            this.checkSchema(clientItems, producerItems, problemReport, path + ".0");
+            this.checkSchema(clientItems, producerItems, problemReport, path + (path == '' ? '' : '.') + "0");
           }
         }
       } else if (clientSchema.required) {

@@ -8,6 +8,7 @@ import com.maxxton.microdocs.crawler.core.domain.schema.Schema;
 import com.maxxton.microdocs.crawler.core.reflect.*;
 import com.maxxton.microdocs.crawler.doclet.ErrorReporter;
 import com.maxxton.microdocs.crawler.spring.parser.PageableParser;
+import com.maxxton.microdocs.crawler.spring.parser.SpecificationsParser;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -25,23 +26,24 @@ public class PathCollector implements Collector<PathBuilder> {
     private static final String TYPE_PATH_VARIABLE = "org.springframework.web.bind.annotation.PathVariable";
 
     private SchemaCollector schemaCollector;
-    private final String restController;
+    private final String[] controllers;
     private final String requestMapping;
 
     private final RequestParser[] requestParsers = new RequestParser[]{
-            new PageableParser()
+            new PageableParser(),
+            new SpecificationsParser()
     };
 
-    public PathCollector(SchemaCollector schemaCollector, String restController, String requestMapping) {
+    public PathCollector(SchemaCollector schemaCollector, String[] controllers, String requestMapping) {
         this.schemaCollector = schemaCollector;
-        this.restController = restController;
+        this.controllers = controllers;
         this.requestMapping = requestMapping;
     }
 
     @Override
     public List<PathBuilder> collect(List<ReflectClass<?>> classes) {
         List<PathBuilder> pathBuilders = new ArrayList();
-        classes.stream().filter(reflectClass -> reflectClass.hasAnnotation(restController)).forEach(controller -> {
+        classes.stream().filter(reflectClass -> reflectClass.hasAnnotation(controllers)).forEach(controller -> {
             ErrorReporter.printNotice("Crawl controller: " + controller.getSimpleName());
             controller.getDeclaredMethods().stream().filter(method -> method.hasAnnotation(requestMapping)).forEach(method -> {
                 ErrorReporter.printNotice("Crawl controller method: " + method.getSimpleName());
@@ -58,7 +60,13 @@ public class PathCollector implements Collector<PathBuilder> {
         // find uri
         String controllerPath = getPath(controllerRequestMapping);
         String methodPath = getPath(methodRequestMapping);
-        String fullPath = (controllerPath + methodPath).replace("\\\\", "\\");
+        String fullPath = (controllerPath + "/" + methodPath).replace("\\\\", "/").replace("//", "/");
+        if(!fullPath.startsWith("/")){
+            fullPath = "/" + fullPath;
+        }
+        if(fullPath.endsWith("/")){
+            fullPath = fullPath.substring(0, fullPath.length()-1);
+        }
         String path;
         if (fullPath.contains("?")) {
             path = fullPath.split("\\?")[0];

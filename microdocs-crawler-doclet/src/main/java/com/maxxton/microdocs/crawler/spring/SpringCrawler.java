@@ -52,7 +52,7 @@ public class SpringCrawler extends Crawler {
         componentCollector = new ComponentCollector(componentsMap);
 
         schemaCollector = new SpringSchemaCollector();
-        pathCollector = new PathCollector(schemaCollector, TYPE_REST_CONTROLLER, TYPE_REQUEST_MAPPING);
+        pathCollector = new PathCollector(schemaCollector, new String[]{TYPE_REST_CONTROLLER}, TYPE_REQUEST_MAPPING);
         dependencyCollector = new DependencyCollector(schemaCollector, TYPE_FEIGN_CLIENT, TYPE_REQUEST_MAPPING);
     }
 

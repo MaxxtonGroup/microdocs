@@ -28,7 +28,7 @@ export class BodyParamsCheck implements PathCheck {
             exists = true;
             var producerSchema:Schema = SchemaHelper.collect(producerParam.schema, [], project);
             var clientSchema = SchemaHelper.collect(clientParam.schema, [], project);
-            this.checkSchema(clientSchema, producerSchema, problemReport, "body");
+            this.checkSchema(clientSchema, producerSchema, problemReport, "");
 
             if (producerParam.type != clientParam.type) {
               problemReport.report(WARNING, "Type mismatches query parameter " + producerParam.name + ", expected: " + producerParam.type + ", found: " + clientParam.type);
@@ -47,18 +47,22 @@ export class BodyParamsCheck implements PathCheck {
     if(producerSchema != null && producerSchema != undefined){
       if(clientSchema != null && clientSchema != undefined){
         if(producerSchema.type != clientSchema.type){
-          problemReport.report(WARNING, "Type mismatches in request body at " + path + ", expected: " + producerSchema.type + ", found: " + clientSchema.type);
+          var position = "";
+          if(path != ''){
+            position = ' at ' + path;
+          }
+          problemReport.report(WARNING, "Type mismatches in request body" + position + ", expected: " + producerSchema.type + ", found: " + clientSchema.type);
         }else{
           if(producerSchema.type == OBJECT){
             var producerProperties = producerSchema.properties;
             var clientProperties = clientSchema.properties;
             for(var key in producerProperties){
-              this.checkSchema(clientProperties[key], producerProperties[key], problemReport, path + "." + key);
+              this.checkSchema(clientProperties[key], producerProperties[key], problemReport, path + (path == '' ? '' : '.') + key);
             }
           }else if(producerSchema.type == ARRAY){
             var producerItems = producerSchema.items;
             var clientItems = clientSchema.items;
-            this.checkSchema(clientItems, producerItems, problemReport, path + ".0");
+            this.checkSchema(clientItems, producerItems, problemReport, path + (path == '' ? '' : '.') + "0");
           }
         }
       }else if(producerSchema.required){

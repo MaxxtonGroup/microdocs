@@ -3,7 +3,8 @@ import {ROUTER_DIRECTIVES, ActivatedRoute, Router, Params} from "@angular/router
 
 import {COMPONENTS} from "@maxxton/components/dist/components";
 import {FILTERS} from "@maxxton/components/dist/filters";
-import {Project, Path, Method, Schema} from "microdocs-core-ts/dist/domain";
+import {Project, Path, Method, Schema, Dependency} from "microdocs-core-ts/dist/domain";
+import {REST, DATABASE, USES, INCLUDES} from "microdocs-core-ts/dist/domain/dependency/dependency-type.model";
 import {SchemaHelper} from "microdocs-core-ts/dist/helpers/schema/schema.helper";
 
 import {ProjectService} from "../../services/project.service";
@@ -32,6 +33,11 @@ export class ProjectRoute {
   private queryParams:Params;
   private pathParams:Params;
 
+  private rest = REST;
+  private database = DATABASE;
+  private uses = USES;
+  private ioncludes = INCLUDES;
+
   constructor(private projectService:ProjectService,
               private route:ActivatedRoute,
               private router:Router) {
@@ -40,13 +46,13 @@ export class ProjectRoute {
   ngOnInit() {
     this.querySub = this.router.routerState.queryParams.subscribe(params => {
       this.queryParams = params;
-      if(this.pathParams != undefined){
+      if (this.pathParams != undefined) {
         this.init();
       }
     });
     this.pathSub = this.route.params.subscribe(params => {
       this.pathParams = params;
-      if(this.queryParams != undefined){
+      if (this.queryParams != undefined) {
         this.init();
       }
     });
@@ -132,6 +138,10 @@ export class ProjectRoute {
       }
     }
     return sourceLink;
+  }
+
+  getDependencyLink(dependency:Dependency):string {
+    return '/projects/' + (dependency.group != undefined ? dependency.group : 'default') + '/' + dependency['_id'];
   }
 
 }

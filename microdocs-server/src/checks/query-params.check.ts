@@ -25,7 +25,7 @@ export class QueryParamsCheck implements PathCheck {
           if(producerParam.name == clientParam.name && producerParam.in == clientParam.in){
             exists = true;
             if(producerParam.type != clientParam.type){
-              problemReport.report(WARNING, "Wrong type query parameter " + producerParam.name + ", expected: " + producerParam.type + ", found: " + clientParam.type);
+              problemReport.report(WARNING, "Type mismatches query parameter " + producerParam.name + ", expected: " + producerParam.type + ", found: " + clientParam.type);
             }
             return true;
           }

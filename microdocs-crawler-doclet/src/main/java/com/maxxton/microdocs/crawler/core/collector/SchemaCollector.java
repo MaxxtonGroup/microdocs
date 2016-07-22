@@ -32,13 +32,13 @@ public class SchemaCollector {
 
         // collect schemas of their models
         models.entrySet().forEach(entry -> schemas.put(entry.getKey(), collectSchema(entry.getValue(), new ArrayList())));
-        return schemas;
+        return schemas.entrySet().stream().filter(entry -> !entry.getValue().getType().equals(SchemaType.DUMMY)).collect(Collectors.toMap(p -> p.getKey(), p -> p.getValue()));
     }
 
     public Schema collect(ReflectClass reflectClass) {
         if(!schemas.containsKey(reflectClass.getName())) {
             Schema schema = collectSchema(reflectClass, new ArrayList());
-            if (schema.getType() != SchemaType.OBJECT) {
+            if (schema.getType() != SchemaType.OBJECT || (schema instanceof SchemaObject && ((SchemaObject)schema).isIgnore())){
                 return schema;
             }
             schemas.put(reflectClass.getName(), schema);
@@ -143,6 +143,15 @@ public class SchemaCollector {
     }
 
     protected Schema collectObjectSchema(ReflectClass<?> reflectClass, List<ReflectGenericClass> genericClasses) {
+        // collect Map as empty object
+        if(reflectClass.hasParent(Map.class.getCanonicalName()) || reflectClass.getName().equals(Object.class.getCanonicalName())){
+            SchemaObject schema = new SchemaObject();
+            schema.setType(SchemaType.OBJECT);
+            schema.setName(reflectClass.getSimpleName());
+            schema.setIgnore(true);
+            return schema;
+        }
+
         // Set placeholder to prevent circular references
         Schema dummy = new SchemaDummy();
         dummy.setType(SchemaType.DUMMY);

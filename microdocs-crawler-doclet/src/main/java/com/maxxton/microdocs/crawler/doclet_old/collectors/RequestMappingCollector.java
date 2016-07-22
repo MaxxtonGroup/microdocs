@@ -178,8 +178,6 @@ public class RequestMappingCollector implements Collector {
             } else if (CollectorUtils.getAnnotation(parameter.annotations(), REQUEST_PARAM) != null) {
                 AnnotationDesc requestParam = CollectorUtils.getAnnotation(parameter.annotations(), REQUEST_PARAM);
                 AnnotationValue name = getElement(requestParam.elementValues(), "name");
-                System.out.println(parameter.name() + " - " + name);
-                System.out.println(parameter.type().typeName());
                 String nameString = parameter.name();
                 if (name != null) {
                     nameString = name.toString();

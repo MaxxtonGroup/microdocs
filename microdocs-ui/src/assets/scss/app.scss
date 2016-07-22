@@ -3,6 +3,25 @@
 @import "partials/json-view";
 @import "../../../node_modules/@maxxton/components/src/assets/scss/mxt-components";
 
+//@font-face {
+//  font-family: 'Roboto';
+//  font-style: normal;
+//  font-weight: 400;
+//  src: local('Roboto'), local('Roboto-Regular'), url(https://fonts.gstatic.com/s/roboto/v15/CWB0XYA8bzo0kSThX0UTuA.woff2) format('woff2');
+//  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+//}
+//@font-face {
+//  font-family: 'Roboto';
+//  font-style: normal;
+//  font-weight: 700;
+//  src: local('Roboto Bold'), local('Roboto-Bold'), url(https://fonts.gstatic.com/s/roboto/v15/d-6IYplOFocCacKzxwXSOFtXRa8TVwTICgirnJhmVJw.woff2) format('woff2');
+//  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+//}
+//
+//body{
+//  font-family: "Roboto", "Open Sans", "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
+//}
+
 .no-margin {
   margin: 0 !important;
 }
@@ -338,12 +357,35 @@ prices {
   }
 }
 
+.logo{
+  padding: 15px 60px;
+  font-weight: bold;
+  font-size: 23px;
+}
+
+.logo-image{
+  background-image: url("../images/microdocs.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.blue{
+  color: #2196F3;
+}
+
+.orange{
+  color: #FF9800;
+}
+
+ul{
+  list-style: none;
+}
+
 .block-list li ul {
   display: block;
 }
 
 .link{
-  list-style: none;
   color: $primary-color;
   cursor: pointer;
 }
@@ -358,8 +400,16 @@ prices {
 }
 
 .problem-box{
-  color: #F44336;
   margin-bottom: 10px;
+  color: #F44336;
+}
+
+.problem-box.warning{
+  color: #FF9800;
+}
+
+.problem-box.notice{
+  color: #2196F3;
 }
 
 .problem-box .problem{

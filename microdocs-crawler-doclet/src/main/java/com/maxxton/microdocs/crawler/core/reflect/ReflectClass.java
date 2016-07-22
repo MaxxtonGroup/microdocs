@@ -134,9 +134,26 @@ public class ReflectClass<T> extends ReflectDoc {
 
     public boolean hasParent(String... classNames) {
         for(String className : classNames){
-            if(this.getName().equals(className)){
+            if(this.getName().equals(className) || className.equals(this.getSimpleName())){
                 return true;
             }
+        }
+
+        if(superClass == null && this.interfaces.isEmpty()){
+            // try to load the real class
+            try {
+                Class clazz = Class.forName(this.getName());
+                Class superClazz = clazz.getSuperclass();
+                if(superClazz != null){
+                    this.superClass = loadJavaClass(superClazz);
+                }
+                Class[] interfaceClazzes = clazz.getInterfaces();
+                if(interfaceClazzes != null){
+                    for(Class interfaceClazz : interfaceClazzes){
+                        this.interfaces.add(loadJavaClass(interfaceClazz));
+                    }
+                }
+            } catch (Exception e) {}
         }
 
         if(superClass != null && superClass.getClassType() != null && superClass.getClassType().hasParent(classNames)){
@@ -150,6 +167,15 @@ public class ReflectClass<T> extends ReflectDoc {
         }
 
         return false;
+    }
+
+    private ReflectGenericClass loadJavaClass(Class clazz){
+        ReflectClass reflectClass = new ReflectClass();
+        reflectClass.setSimpleName(clazz.getSimpleName());
+        reflectClass.setName(clazz.getName());
+        ReflectGenericClass reflectGenericClass = new ReflectGenericClass();
+        reflectGenericClass.setClassType(reflectClass);
+        return reflectGenericClass;
     }
 
     public ReflectAnnotation getAnnotation(String name) {

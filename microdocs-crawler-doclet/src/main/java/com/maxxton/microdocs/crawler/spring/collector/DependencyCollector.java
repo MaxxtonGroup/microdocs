@@ -28,7 +28,7 @@ public class DependencyCollector implements Collector<DependencyBuilder> {
         this.schemaCollector = schemaCollector;
         this.feignClient = feignClient;
         this.requestMapping = requestMapping;
-        pathCollector = new PathCollector(schemaCollector, feignClient, requestMapping);
+        pathCollector = new PathCollector(schemaCollector, new String[]{feignClient}, requestMapping);
     }
 
     @Override
