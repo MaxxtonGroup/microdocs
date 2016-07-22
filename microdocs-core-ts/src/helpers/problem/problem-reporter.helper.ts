@@ -54,5 +54,9 @@ export class ProblemReporter {
       project.problemCount += this.problems.length;
     }
   }
+  
+  public getProblems():Problem[]{
+    return this.problems;
+  }
 
 }

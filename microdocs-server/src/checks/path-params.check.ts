@@ -23,14 +23,14 @@ export class PathParamsCheck implements PathCheck {
         var clientParam = this.getPathVariable(clientParamName, clientEndpoint);
         var producerParam = this.getPathVariable(producerParamName, producerEndpoint);
         if(clientParam == null){
-          problemReport.report(WARNING, "path variable '" + clientParamName + "' is missing");
+          problemReport.report(WARNING, "path variable '" + clientParamName + "' is missing", clientEndpoint.controller, clientEndpoint.method);
         }
         if(producerParam == null){
-          problemReport.report(WARNING, "path variable '" + producerParamName + "' is missing on the controller");
+          problemReport.report(WARNING, "path variable '" + producerParamName + "' is missing on the controller", clientEndpoint.controller, clientEndpoint.method);
         }
         if(clientParam != null && producerParam != null){
           if(clientParam.type != producerParam.type){
-            problemReport.report(WARNING, "Type mismatches path variable " + clientParamName + ", expected: " + producerParam.type + ", found: " + clientParam.type);
+            problemReport.report(WARNING, "Type mismatches path variable " + clientParamName + ", expected: " + producerParam.type + ", found: " + clientParam.type, clientEndpoint.controller, clientEndpoint.method);
           }
         }
       }

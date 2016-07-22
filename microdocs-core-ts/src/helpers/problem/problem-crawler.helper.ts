@@ -1,5 +1,6 @@
 import {Problem, Project} from "../../domain";
 import {Path} from "../../domain/path/path.model";
+import {Dependency} from "../../domain/dependency/dependency.model";
 
 export function getProblemsInProject(project:Project):Problem[] {
   var problems:Problem[] = [];
@@ -17,12 +18,7 @@ export function getProblemsInProject(project:Project):Problem[] {
   if (project.dependencies != undefined && project.dependencies != undefined) {
     for (var title in project.dependencies) {
       var dependency = project.dependencies[title];
-      if (dependency.problems != undefined && dependency.problems != null) {
-        dependency.problems.forEach(problem => problems.push(problem));
-      }
-      if (dependency.paths != undefined && dependency.paths != undefined) {
-        getProblemsInPaths(dependency.paths).forEach(problem => problems.push(problem));
-      }
+      getProblemsInDependency(dependency).forEach(problem => problems.push(problem));
     }
   }
 
@@ -39,7 +35,18 @@ export function getProblemsInProject(project:Project):Problem[] {
   return problems;
 }
 
-function getProblemsInPaths(paths:{[key:string]:{[key:string]:Path}}):Problem[]{
+export function getProblemsInDependency(dependency:Dependency):Problem[]{
+  var problems:Problem[] = [];
+  if (dependency.problems != undefined && dependency.problems != null) {
+    dependency.problems.forEach(problem => problems.push(problem));
+  }
+  if (dependency.paths != undefined && dependency.paths != undefined) {
+    getProblemsInPaths(dependency.paths).forEach(problem => problems.push(problem));
+  }
+  return problems;
+}
+
+export function getProblemsInPaths(paths:{[key:string]:{[key:string]:Path}}):Problem[]{
   var problems:Problem[] = [];
   for (var path in paths) {
     for (var method in paths[path]) {

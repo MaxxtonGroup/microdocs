@@ -12,8 +12,8 @@ import {
 import {NOTICE, ERROR} from "microdocs-core-ts/dist/domain/problem/problem-level.model";
 import {REST} from "microdocs-core-ts/dist/domain/dependency/dependency-type.model";
 
-import {ProblemReporter} from "microdocs-core-ts/dist/helpers";
-import {getProblemsInProject} from "microdocs-core-ts/dist/helpers";
+import {ProblemReporter, SchemaHelper} from "microdocs-core-ts/dist/helpers";
+import {getProblemsInProject, getProblemsInDependency} from "microdocs-core-ts/dist/helpers";
 
 import {PathCheck} from "../checks/path-check";
 import {QueryParamsCheck} from "../checks/query-params.check";
@@ -44,16 +44,21 @@ export class AggregationService {
    * @param project
    * @returns {Problem[]}
    */
-  public checkProject(project:Project) : Problem[] {
+  public checkProject(project:Project):Problem[] {
     // Load all projects
     var projectCache = this.loadProjects();
 
-    // resolve project
+    // check dependencies
     var node = new TreeNode();
     this.resolveDependencies(project, projectCache, node);
 
+    // check other projects for breaking changes
+    var clientProblems = this.reverseCheckDependencies(project, projectCache, node);
+
     // collect problems
     var problems = getProblemsInProject(project);
+    clientProblems.forEach(problem => problems.push(problem));
+
     return problems;
   }
 
@@ -131,7 +136,7 @@ export class AggregationService {
    * Load all projects
    * @return all project structured as [name].[version].[project]
    */
-  private loadProjects():{[title:string]:{[version:string]:Project}}{
+  private loadProjects():{[title:string]:{[version:string]:Project}} {
     var projectCache:{[title:string]:{[version:string]:Project}} = {};
     // var projects:Project[] = [];
     var projectInfos = this.reportRepo.getProjects();
@@ -154,11 +159,51 @@ export class AggregationService {
   }
 
   /**
-   * Recursively follow each dependency.
-   * Check if a project version is already in the tree
-   * @param project project of which the dependencies should be resolved
-   * @param projects list of all projects
-   * @param parentNode the parent node
+   *
+   * @param project
+   * @param projectCache
+   * @param parentNode
+   */
+  private reverseCheckDependencies(project:Project, projectCache:{[title:string]:{[version:string]:Project}}, parentNode:TreeNode):Problem[] {
+    var problems:Problem[] = [];
+    for (var title in projectCache) {
+      for (var version in projectCache[title]) {
+        var clientProject = projectCache[title][version];
+        if (clientProject.dependencies != null && clientProject.definitions != undefined) {
+          if (clientProject.dependencies[project.info.title] != undefined) {
+            var dependency = clientProject.dependencies[project.info.title];
+            this.resolveDependency(clientProject, project.info.title, dependency, projectCache, parentNode);
+
+            // map problems to the produces endpoints
+            var problemReport = new ProblemReporter(project);
+            if(dependency.paths != undefined && dependency.paths != null){
+              for(var path in dependency.paths){
+                for( var method in dependency.paths[path]){
+                  var endpoint = dependency.paths[path][method];
+                  if(endpoint.problems != undefined && endpoint.problems != null){
+                    var producerEndpoint = SchemaHelper.resolveReference('paths.' + path + "." + method, project);
+                    endpoint.problems.forEach(problem => {
+                      problemReport.report(problem.level, problem.message, producerEndpoint.controller, producerEndpoint.method);
+                    });
+                  }
+                }
+              }
+            }
+
+            problemReport.getProblems().forEach(problem => problems.push(problem));
+          }
+        }
+      }
+    }
+    return problems;
+  }
+
+  /**
+   * Resolve all dependencies
+   * @param project
+   * @param projectCache
+   * @param parentNode
+   * @returns {Project}
    */
   private resolveDependencies(project:Project, projectCache:{[title:string]:{[version:string]:Project}}, parentNode:TreeNode):Project {
     console.info('resolve project: ' + project.info.title + ":" + project.info.version);
@@ -168,81 +213,92 @@ export class AggregationService {
         dependencies[title] = project.dependencies[title];
       }
       for (var title in dependencies) {
-        var node = new TreeNode();
-        node.parent = parentNode;
-
-        //resolve dependency
         var dependency = dependencies[title];
-        var dependencyProblems : ProblemReporter = new ProblemReporter(project);
-
-        //find dependent project
-        var dependentProject:Project = null;
-        for (var name in projectCache) {
-          for (var version in projectCache[name]) {
-            if (projectCache[name][version].info.title == title) {
-              dependentProject = projectCache[name][version];
-            }
-          }
-        }
-        if (dependentProject != null) {
-          dependency.latestVersion = dependentProject.info.version;
-          dependency.version = dependentProject.info.version;
-          dependency.group = dependentProject.info.group;
-
-          // check endpoint
-          if (dependency.type == REST) {
-            var compatible = this.checkEndpoints(title, dependency, dependentProject, project);
-            console.info(project.info.title + ":" + project.info.version + ' -> ' + dependentProject.info.title + ":" + dependentProject.info.version + " = compatible: " + compatible);
-
-            if (!compatible) {
-              //find last compatible if contains problems
-              var previousProject = this.previousProject(dependentProject);
-              while (previousProject != null) {
-                var prevCompatible = this.checkEndpoints(title, dependency, previousProject, project);
-                console.info(project.info.title + ":" + project.info.version + ' -> ' + previousProject.info.title + ":" + previousProject.info.version + " = compatible: " + prevCompatible);
-
-                if (prevCompatible) {
-                  dependency.version = previousProject.info.version;
-                  break;
-                }
-                previousProject = this.previousProject(previousProject);
-              }
-              if (previousProject != null) {
-                // scan previous project
-                projectCache[previousProject.info.title][previousProject.info.version] = previousProject;
-                this.resolveDependencies(dependentProject, projectCache, node);
-              }
-            }
-          }
-          //todo: check other dependency types
-        } else {
-          // project not found
-          dependencyProblems.report(ERROR, "Unknown project: " + title, dependency.component);
-        }
-        if(dependencyProblems.hasProblems()){
-          // log problems
-          dependencyProblems.publish(dependency, project);
-        }
-
-        // create node
-        var path = parentNode.getRoot().findNodePath(title, dependency.version);
-        if (path == null) {
-          if (dependency != null) {
-            node.version = dependency.version;
-          }
-          if (dependentProject != null) {
-            node.group = dependentProject.info.group;
-            node.versions = dependentProject.info.versions;
-            this.resolveDependencies(dependentProject, projectCache, node);
-          }
-        } else {
-          node.reference = "#" + path;
-        }
-        parentNode.dependencies[title] = node;
-        parentNode.problems = project.problemCount;
+        this.resolveDependency(project, title, dependency, projectCache, parentNode);
       }
     }
     return project;
+  }
+
+  /**
+   * Recursively follow each dependency.
+   * Check if a project version is already in the tree
+   * @param project project of which the dependencies should be resolved
+   * @param projects list of all projects
+   * @param parentNode the parent node
+   */
+  private resolveDependency(project:Project, title:string, dependency:Dependency, projectCache:{[title:string]:{[version:string]:Project}}, parentNode:TreeNode) {
+    var node = new TreeNode();
+    node.parent = parentNode;
+
+    //resolve dependency
+    var dependencyProblems:ProblemReporter = new ProblemReporter(project);
+
+    //find dependent project
+    var dependentProject:Project = null;
+    for (var name in projectCache) {
+      for (var version in projectCache[name]) {
+        if (projectCache[name][version].info.title == title) {
+          dependentProject = projectCache[name][version];
+        }
+      }
+    }
+    if (dependentProject != null) {
+      dependency.latestVersion = dependentProject.info.version;
+      dependency.version = dependentProject.info.version;
+      dependency.group = dependentProject.info.group;
+
+      // check endpoint
+      if (dependency.type == REST) {
+        var compatible = this.checkEndpoints(title, dependency, dependentProject, project);
+        console.info(project.info.title + ":" + project.info.version + ' -> ' + dependentProject.info.title + ":" + dependentProject.info.version + " = compatible: " + compatible);
+
+        if (!compatible) {
+          //find last compatible if contains problems
+          var previousProject = this.previousProject(dependentProject);
+          while (previousProject != null) {
+            var prevCompatible = this.checkEndpoints(title, dependency, previousProject, project);
+            console.info(project.info.title + ":" + project.info.version + ' -> ' + previousProject.info.title + ":" + previousProject.info.version + " = compatible: " + prevCompatible);
+
+            if (prevCompatible) {
+              dependency.version = previousProject.info.version;
+              break;
+            }
+            previousProject = this.previousProject(previousProject);
+          }
+          if (previousProject != null) {
+            // scan previous project
+            projectCache[previousProject.info.title][previousProject.info.version] = previousProject;
+            this.resolveDependencies(dependentProject, projectCache, node);
+          }
+        }
+      }
+      //todo: check other dependency types
+    } else {
+      // project not found
+      dependencyProblems.report(ERROR, "Unknown project: " + title, dependency.component);
+    }
+    if (dependencyProblems.hasProblems()) {
+      // log problems
+      dependencyProblems.publish(dependency, project);
+    }
+
+    // create node
+    var path = parentNode.getRoot().findNodePath(title, dependency.version);
+    if (path == null) {
+      if (dependency != null) {
+        node.version = dependency.version;
+      }
+      if (dependentProject != null) {
+        node.group = dependentProject.info.group;
+        node.versions = dependentProject.info.versions;
+        this.resolveDependencies(dependentProject, projectCache, node);
+      }
+    } else {
+      node.reference = "#" + path;
+    }
+    parentNode.dependencies[title] = node;
+    parentNode.problems = project.problemCount;
   }
 
   /**
@@ -252,7 +308,7 @@ export class AggregationService {
    * @param dependentProject
    * @returns {boolean} true if compatible, otherwise false
    */
-  private checkEndpoints(title:string, dependency:Dependency, dependentProject:Project, currentProject:Project):boolean{
+  private checkEndpoints(title:string, dependency:Dependency, dependentProject:Project, currentProject:Project):boolean {
     var compatible = true;
     if (dependency.paths != undefined) {
       for (var path in dependency.paths) {
@@ -271,7 +327,7 @@ export class AggregationService {
           }
 
           // log problems
-          if(problemReport.hasProblems()) {
+          if (problemReport.hasProblems()) {
             compatible = false;
             problemReport.publish(clientEndpoint, currentProject);
           }
@@ -331,7 +387,7 @@ export class AggregationService {
             // segment on the producer or client is a variable. Hard to check
             equals = false;
             almostEquals = true;
-          }else{
+          } else {
             // segments are both on the producer and client variable
           }
         }
@@ -350,7 +406,7 @@ export class AggregationService {
         }
       }
     }
-    if(checkAlmostEquals == false){
+    if (checkAlmostEquals == false) {
       return this.findEndpoint(title, clientEndpoint, clientPath, clientMethod, true, project, problemReport);
     }
     return null;
@@ -367,22 +423,22 @@ export class AggregationService {
    */
   private mergeProjectSettings(project:Project):Project {
     var settings = this.projectSettingsRepo.getSettings();
-    if(settings['global'] != undefined && settings['global'] != null){
+    if (settings['global'] != undefined && settings['global'] != null) {
       project = <Project> this.mergeObjects(project, settings['global']);
     }
 
     if (project.info != undefined && project.info != null) {
       if (project.info.group != undefined && project.info.group != null) {
         if (settings['groups'] != undefined && settings['groups'] != null &&
-            settings['groups'][project.info.group] != undefined && settings['groups'][project.info.group] != null) {
-          project = <Project> this.mergeObjects(project,settings['groups'][project.info.group]);
+          settings['groups'][project.info.group] != undefined && settings['groups'][project.info.group] != null) {
+          project = <Project> this.mergeObjects(project, settings['groups'][project.info.group]);
         }
       }
 
       if (project.info.title != undefined && project.info.title != null) {
         if (settings['projects'] != undefined && settings['projects'] != null &&
           settings['projects'][project.info.title] != undefined && settings['projects'][project.info.title] != null) {
-          project = <Project> this.mergeObjects(project,settings['projects'][project.info.title]);
+          project = <Project> this.mergeObjects(project, settings['projects'][project.info.title]);
         }
       }
     }
@@ -397,10 +453,10 @@ export class AggregationService {
    * @returns {{}} return merged object
    */
   private mergeObjects(obj1:{}, obj2:{}):{} {
-    for(var key in obj2){
-      if(obj1[key] != undefined && typeof(obj1[key]) == 'object'){
+    for (var key in obj2) {
+      if (obj1[key] != undefined && typeof(obj1[key]) == 'object') {
         obj1[key] = this.mergeObjects(obj1[key], obj2[key]);
-      }else{
+      } else {
         obj1[key] = obj2[key];
       }
     }
