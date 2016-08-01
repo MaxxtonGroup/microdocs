@@ -1,6 +1,8 @@
 'use strict';
 
 var gulp = require('gulp');
+var gutil = require('gulp-util');
+var async   = require( 'async' );
 var typescript = require('gulp-typescript');
 var sourcemaps = require('gulp-sourcemaps');
 var liveserver = require('gulp-connect');
@@ -62,19 +64,19 @@ gulp.task('compile-sourcemaps', [], function (done) {
       });
 });
 
-gulp.task('run', [], function () {
-  var started = false;
-
-  return nodemon({
-    script: "index.js"
-  }).on('start', function () {
-    // to avoid nodemon being started multiple times
-    // thanks @matthisk
-    if (!started) {
-      cb();
-      started = true;
+gulp.task('run', function () {
+  nodemon({
+    script: 'index.js',
+    ext: 'js',
+    env: {
+      'NODE_ENV': 'development'
     }
-  });
+  })
+      .on('start', ['watch'])
+      .on('change', ['watch'])
+      .on('restart', function () {
+        console.log('restarted!');
+      });
 });
 
 /**

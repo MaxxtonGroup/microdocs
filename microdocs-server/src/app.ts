@@ -80,15 +80,15 @@ class Server {
     this.app.use(express.static(path.join(__dirname, '../' + staticFolder)));
 
     // swagger mock server
-    var self = this;
-    middleware('data/database/address-service/0.1.0.json', this.app, function (err, middleware) {
-      self.app.use("/mock",
-        middleware.metadata(),
-        middleware.parseRequest(),
-        middleware.validateRequest(),
-        middleware.mock()
-      );
-    });
+    // var self = this;
+    // middleware('data/database/address-service/0.1.0.json', this.app, function (err, middleware) {
+    //   self.app.use("/mock",
+    //     middleware.metadata(),
+    //     middleware.parseRequest(),
+    //     middleware.validateRequest(),
+    //     middleware.mock()
+    //   );
+    // });
   }
 
   /**
