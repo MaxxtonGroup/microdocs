@@ -1,0 +1,13 @@
+group 'com.maxxton.microdocs'
+version '1.0'
+
+apply plugin: 'java'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.7.5'
+    testCompile("junit:junit:4.12")
+}

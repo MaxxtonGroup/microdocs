@@ -1,1 +1,4 @@
 rootProject.name = 'microdocs-crawler-doclet'
+
+include ':microdocs-core-java'
+project(':microdocs-core-java').projectDir = new File(settingsDir, '../microdocs-core-java')
