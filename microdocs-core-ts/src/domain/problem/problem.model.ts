@@ -5,6 +5,7 @@ export interface Problem {
   message:string;
   package?:string;
   className?:string;
+  file?:string;
   lineNumber?:number;
 
 }

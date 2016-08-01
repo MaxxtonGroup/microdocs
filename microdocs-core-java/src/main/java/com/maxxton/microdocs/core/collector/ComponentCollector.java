@@ -42,6 +42,7 @@ public class ComponentCollector implements Collector<ComponentBuilder> {
                 reflectClass.getDescription().getTags("author").forEach(tag -> authors.add(tag.getDescription()));
                 ComponentBuilder componentBuilder = new ComponentBuilder()
                         .name(reflectClass.getName())
+                        .file(reflectClass.getFile())
                         .simpleName(reflectClass.getSimpleName())
                         .authors(authors)
                         .type(type)

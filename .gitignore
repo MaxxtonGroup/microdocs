@@ -1,9 +1,6 @@
 /.idea
 /**/.idea
 /**/.gradle
-/**/gradle
-/**/gradlew
-/**/gradlew.bat
 /**/build
 /**/.nb-gradle
 /**/node_modules

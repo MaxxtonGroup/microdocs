@@ -2,28 +2,25 @@
 apply plugin: 'groovy'
 apply plugin: 'java'
 apply plugin: 'maven'
-apply plugin: 'jxr'
 
 buildscript {
     repositories {
-        maven{
-            name 'Bintray'
-            url 'http://jcenter.bintray.com'
-        }
         mavenCentral()
     }
     dependencies {
-        classpath 'net.davidecavestro:gradle-jxr-plugin:0.1'
     }
 }
 
 repositories {
     mavenCentral()
+    mavenLocal()
 }
 
 dependencies {
     compile gradleApi()
+    compile ("com.fasterxml.jackson.core:jackson-databind:2.7.5")
     compile 'org.codehaus.groovy:groovy-all:2.4.4'
+    compile ("com.maxxton.microdocs:microdocs-core-java:1.0")
 }
 
 group='com.maxxton.microdocs'

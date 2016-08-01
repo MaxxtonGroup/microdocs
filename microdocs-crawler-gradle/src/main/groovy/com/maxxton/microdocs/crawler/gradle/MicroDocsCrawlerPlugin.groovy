@@ -1,7 +1,8 @@
-package com.maxxton.microdocs.crawler.gradle;
+package com.maxxton.microdocs.crawler.gradle
 
+import com.maxxton.microdocs.crawler.ErrorReporter
 import org.gradle.api.*
-import org.gradle.api.tasks.Copy
+import org.gradle.api.artifacts.*;
 import org.gradle.api.tasks.bundling.Zip
 import org.gradle.api.tasks.javadoc.Javadoc
 
@@ -11,7 +12,9 @@ class MicroDocsCrawlerPlugin implements Plugin<Project> {
 
     void apply(Project project) {
 
-        project.task('extractDoclet', group: 'microdocs') << {
+        ErrorReporter.set(new GradleErrorReporter(project.logger));
+
+        project.task('extractMicroDocsDoclet', group: 'microdocs') << {
             File tmpDir = new File("$project.buildDir/tmp")
             File jarFile = new File(tmpDir, jarName)
 //            if(jarFile.exists()){
@@ -45,7 +48,7 @@ class MicroDocsCrawlerPlugin implements Plugin<Project> {
             }
         }
 
-        project.task('buildMicroDoc', type: Javadoc, dependsOn: ['buildJxrDoc', 'extractDoclet'], group: 'microdocs') {
+        project.task('buildMicroDoc', type: Javadoc, dependsOn: ['extractMicroDocsDoclet'], group: 'microdocs') {
             title = ""
             source = project.sourceSets.main.allJava
             classpath = project.configurations.compile
@@ -63,14 +66,9 @@ class MicroDocsCrawlerPlugin implements Plugin<Project> {
             options.tags = ['response', 'dummy']
         }
 
-        project.task('buildJxrDoc', type: Copy, dependsOn: ['jxr'], group: 'microdocs') {
-            from new File(project.buildDir, 'jxr')
-            into project.reporting.file("source")
-        }
-
-        project.task('microDocs', type: Zip, dependsOn: ['buildMicroDoc', 'buildJavadoc', 'buildJxrDoc'], group: 'microdocs') {
+        project.task('microDocs', type: Zip, dependsOn: ['buildMicroDoc', 'buildJavadoc'], group: 'microdocs') {
             from project.reporting.file("./")
-            baseName = "microdoc"
+            baseName = "microdocs"
             version = "latest";
         }
 
@@ -92,6 +90,12 @@ class MicroDocsCrawlerPlugin implements Plugin<Project> {
                     writer.close();
                 }
             }
+        }
+
+        project.task('checkMicroDocs', type: MicroDocsCheckProjectTask, group: 'microdocs', dependsOn: ['buildMicroDoc']) {
+            println(project.reporting.file('./microdocs.json'))
+            reportFile = project.reporting.file('./microdocs.json');
+            url = "http://localhost:3000";
         }
     }
 }

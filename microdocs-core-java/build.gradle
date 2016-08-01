@@ -2,12 +2,30 @@ group 'com.maxxton.microdocs'
 version '1.0'
 
 apply plugin: 'java'
+apply plugin: 'maven'
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    compile 'com.fasterxml.jackson.core:jackson-databind:2.7.5'
+    compile ("com.fasterxml.jackson.core:jackson-databind:2.7.5")
+    compile ("com.mashape.unirest:unirest-java:1.4.9")
     testCompile("junit:junit:4.12")
+}
+
+uploadArchives {
+    repositories {
+        mavenLocal()
+//        mavenDeployer {
+//        }
+//        maven {
+//            name 'Maxxton Private repository'
+//            url 'http://mxt-maven01.newyse.maxxton/repository/internal'
+//            credentials {
+//                username 'microservices'
+//                password 'M1cr053rv1c35!'
+//            }
+//        }
+    }
 }

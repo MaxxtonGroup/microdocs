@@ -12,6 +12,7 @@ public class ReflectClass<T> extends ReflectDoc {
 
     private String packageName;
     private ClassType type;
+    private String file;
     private boolean isAbstract;
 
     private ReflectGenericClass superClass;
@@ -185,5 +186,13 @@ public class ReflectClass<T> extends ReflectDoc {
             }
         }
         return null;
+    }
+
+    public String getFile() {
+        return file;
+    }
+
+    public void setFile(String file) {
+        this.file = file;
     }
 }

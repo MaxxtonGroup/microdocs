@@ -15,6 +15,7 @@ export class ProblemReporter {
     if(component != undefined){
       component = SchemaHelper.resolveObject(component, this.rootObject);
       if(component != null && component != undefined && component.name != undefined && component.name != null){
+        problem.file = component.file;
         var fullName = component.name;
         var segments = fullName.split('.');
         if(segments.length > 0){

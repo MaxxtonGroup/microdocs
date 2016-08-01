@@ -5,6 +5,7 @@ import {Problem} from "../problem/problem.model";
 export interface Component{
 
     name?:string;
+    file?:string;
     type?:string;
     description?:string;
     authors?:string[];

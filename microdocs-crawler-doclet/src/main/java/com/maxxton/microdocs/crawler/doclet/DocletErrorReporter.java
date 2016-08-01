@@ -20,6 +20,11 @@ public class DocletErrorReporter extends ErrorReporter {
         delegate.printError(msg);
     }
 
+    public void printError(String msg, Throwable e) {
+        super.printError(msg, e);
+        delegate.printError(msg);
+    }
+
     public void printNotice(String msg) {
         super.printNotice(msg);
         delegate.printNotice(msg);

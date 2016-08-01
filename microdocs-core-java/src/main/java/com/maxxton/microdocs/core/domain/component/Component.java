@@ -12,6 +12,7 @@ public class Component extends JsonReference {
 
     private String name;
     private ComponentType type;
+    private String file;
     private String description;
     private List<String> authors;
     private Map<String, Annotation> annotations;
@@ -72,5 +73,13 @@ public class Component extends JsonReference {
 
     public void setDependencies(List<Component> dependencies) {
         this.dependencies = dependencies;
+    }
+
+    public String getFile() {
+        return file;
+    }
+
+    public void setFile(String file) {
+        this.file = file;
     }
 }

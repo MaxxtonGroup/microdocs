@@ -33,6 +33,11 @@ public class ComponentBuilder implements Builder<Component> {
         return this;
     }
 
+    public ComponentBuilder file(String file){
+        component.setFile(file);
+        return this;
+    }
+
     public ComponentBuilder type(ComponentType type){
         component.setType(type);
         return this;
