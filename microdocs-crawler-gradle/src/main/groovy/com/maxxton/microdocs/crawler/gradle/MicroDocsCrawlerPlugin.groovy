@@ -1,6 +1,9 @@
 package com.maxxton.microdocs.crawler.gradle
 
 import com.maxxton.microdocs.crawler.ErrorReporter
+import com.maxxton.microdocs.crawler.gradle.tasks.MicroDocs
+import com.maxxton.microdocs.crawler.gradle.tasks.MicroDocsCheckProjectTask
+import com.maxxton.microdocs.crawler.gradle.tasks.MicroDocsPublishProjectTask
 import org.gradle.api.*
 import org.gradle.api.tasks.bundling.Zip
 import org.gradle.api.tasks.javadoc.Javadoc
@@ -47,14 +50,13 @@ class MicroDocsCrawlerPlugin implements Plugin<Project> {
             }
         }
 
-        project.task('buildMicroDoc', type: Javadoc, dependsOn: ['extractMicroDocsDoclet'], group: 'microdocs') {
+        project.task('buildMicroDocs', type: MicroDocs, dependsOn: ['extractMicroDocsDoclet'], group: 'microdocs') {
             title = ""
             source = project.sourceSets.main.allJava
             classpath = project.configurations.compile
             destinationDir = project.reporting.file('./')
             options.docletpath = [new File("$project.buildDir/tmp/" + jarName)]
             options.doclet = 'com.maxxton.microdocs.crawler.doclet.DocletRunner'
-            options.addStringOption("linkpath", "../jxr/");
         }
 
         project.task('buildJavadoc', type: Javadoc, group: 'microdocs') {
@@ -65,7 +67,7 @@ class MicroDocsCrawlerPlugin implements Plugin<Project> {
             options.tags = ['response', 'dummy']
         }
 
-        project.task('microDocs', type: Zip, dependsOn: ['buildMicroDoc', 'buildJavadoc'], group: 'microdocs') {
+        project.task('microDocs', type: Zip, dependsOn: ['buildMicroDocs', 'buildJavadoc', 'exportVersion'], group: 'microdocs') {
             from project.reporting.file("./")
             baseName = "microdocs"
             version = "latest";
@@ -73,18 +75,11 @@ class MicroDocsCrawlerPlugin implements Plugin<Project> {
 
         project.task('exportVersion', group: 'microdocs') {
             doLast {
-                Object version = project.properties.version;
+                String version = VersionUtil.getVersion(project);
                 System.out.println("Export version: " + version);
                 if (version != null) {
-                    String versionString = String.valueOf(project.properties.version.toString());
-                    if (versionString.contains('-')) {
-                        versionString = versionString.substring(0, versionString.indexOf('-'));
-                    }
-                    if (versionString.contains('+')) {
-                        versionString = versionString.substring(0, versionString.indexOf('+'));
-                    }
-                    FileWriter writer = new FileWriter(new File("${project.buildDir}/version"));
-                    writer.write(versionString);
+                    FileWriter writer = new FileWriter(project.reporting.file("version"));
+                    writer.write(version);
                     writer.flush();
                     writer.close();
                 }
@@ -92,9 +87,14 @@ class MicroDocsCrawlerPlugin implements Plugin<Project> {
         }
 
         project.task('checkMicroDocs', type: MicroDocsCheckProjectTask, group: 'microdocs', dependsOn: ['buildMicroDoc']) {
-            println(project.reporting.file('./microdocs.json'))
             reportFile = project.reporting.file('./microdocs.json');
             url = "http://localhost:3000";
+        }
+
+        project.task('publishMicroDocs', type: MicroDocsPublishProjectTask, group: 'microdocs', dependsOn: ['buildMicroDoc']) {
+            reportFile = project.reporting.file('./microdocs.json');
+            url = "http://localhost:3000";
+            groupName = "default";
         }
     }
 }

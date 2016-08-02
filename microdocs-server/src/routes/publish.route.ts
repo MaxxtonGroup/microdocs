@@ -5,6 +5,7 @@ import * as express from "express";
 import {BaseRoute} from "./route";
 import {AggregationService} from '../services/aggregation.service';
 import {Project, ProjectInfo, Problem} from "microdocs-core-ts/dist/domain";
+import {ERROR,WARNING} from "microdocs-core-ts/dist/domain/problem/problem-level.model";
 import {SchemaHelper} from "microdocs-core-ts/dist/helpers/schema/schema.helper";
 import {ReportJsonRepository} from "../repositories/json/report-json.repo";
 
@@ -19,6 +20,10 @@ export class PublishRoute extends BaseRoute {
     var title = req.params.title;
     var version = req.query.version;
     var group = req.query.group;
+    var failOnProblems:boolean = true;
+    if(req.query.failOnProblems == 'false'){
+      failOnProblems = false;
+    }
 
     //check request body
     if (req.get("content-type") == "application/json") {
@@ -56,15 +61,19 @@ export class PublishRoute extends BaseRoute {
         // check report
         var problems:Problem[] = AggregationService.bootstrap().checkProject(report);
 
-        // save report
-        ReportJsonRepository.bootstrap().storeProject(report);
+        if(!(failOnProblems && problems.filter(problem => problem.level == ERROR || problem.level == WARNING).length > 0)){
+          // save report
+          ReportJsonRepository.bootstrap().storeProject(report);
 
-        // run reindex
-        var treeNode = AggregationService.bootstrap().reindex();
+          // run reindex
+          var treeNode = AggregationService.bootstrap().reindex();
+        }else{
+          console.warn("Fail publishing due to problems");
+        }
 
         // return check result
         res.contentType("application/json");
-        if (problems.length == 0) {
+        if (problems.filter(problem => problem.level == ERROR || problem.level == WARNING).length == 0) {
           res.json({status: 'ok', message: 'No problems found'});
         } else {
           res.json({

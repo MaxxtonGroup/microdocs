@@ -5,6 +5,9 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.ObjectMapper;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import com.mashape.unirest.http.utils.URLParamEncoder;
+import com.mashape.unirest.request.HttpRequestWithBody;
+import com.mashape.unirest.request.body.RequestBodyEntity;
 import com.maxxton.microdocs.core.domain.check.CheckResponse;
 import com.maxxton.microdocs.crawler.ErrorReporter;
 
@@ -21,13 +24,54 @@ import java.nio.file.Paths;
 public class MicroDocsPublisher {
 
     /**
+     * Publish report on the MicroDocs server
+     * @param microDocsReport
+     * @param projectName
+     * @param groupName
+     * @param version
+     * @param configuration
+     * @return check response
+     * @throws IOException
+     */
+    public static CheckResponse publishProject(ServerConfiguration configuration, File microDocsReport, String projectName, String groupName, String version, boolean failOnProblems) throws IOException {
+        String report = loadReport(microDocsReport);
+
+        String url = configuration.getUrl() + "/api/v1/projects/" + URLParamEncoder.encode(projectName);
+        ErrorReporter.get().printNotice("PUT " + url);
+        initObjectMapper();
+        HttpResponse<CheckResponse> response = null;
+        try {
+            HttpRequestWithBody request = Unirest.put(configuration.getUrl() + "/api/v1/projects/" + URLParamEncoder.encode(projectName))
+                    .queryString("failOnProblems", failOnProblems)
+                    .header("content-type", "application/json")
+                    .header("accept", "application/json");
+            if(groupName != null && !groupName.trim().isEmpty()){
+                request = request.queryString("group", groupName);
+            }
+            if(version != null && !version.trim().isEmpty()){
+                request = request.queryString("version", version);
+            }
+
+            response = request
+                    .body(report)
+                    .asObject(CheckResponse.class);
+            if (response.getStatus() != 200) {
+                throw new IOException("Wrong response status " + response.getStatus() + ", expected 200");
+            }
+        } catch (UnirestException e) {
+            throw new IOException("Failed to send http request: POST " + url, e);
+        }
+        return response.getBody();
+    }
+
+    /**
      * Check report at the MicroDocs server for problems
      *
      * @param microDocsReport
      * @param configuration
      * @return check response
      */
-    public static CheckResponse checkProject(File microDocsReport, String projectName, ServerConfiguration configuration) throws IOException {
+    public static CheckResponse checkProject(ServerConfiguration configuration, File microDocsReport, String projectName) throws IOException {
         String report = loadReport(microDocsReport);
 
         String url = configuration.getUrl() + "/api/v1/check";

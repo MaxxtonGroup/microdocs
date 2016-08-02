@@ -1,4 +1,4 @@
-package com.maxxton.microdocs.crawler.gradle
+package com.maxxton.microdocs.crawler.gradle.tasks
 
 import com.maxxton.microdocs.core.domain.check.CheckProblem
 import com.maxxton.microdocs.core.domain.check.CheckResponse
@@ -18,7 +18,7 @@ class MicroDocsCheckProjectTask  extends DefaultTask {
 
     @TaskAction
     def checkProject(){
-        CheckResponse response = MicroDocsPublisher.checkProject(new File(reportFile), project.name, new ServerConfiguration(url));
+        CheckResponse response = MicroDocsPublisher.checkProject(new ServerConfiguration(url), new File(reportFile), project.name);
         if("ok" == response.status){
             ErrorReporter.get().printNotice('No problems found')
         }else if(response.problems == null) {

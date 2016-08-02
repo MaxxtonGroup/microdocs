@@ -1,5 +1,6 @@
 package com.maxxton.microdocs.crawler.doclet;
 
+import com.maxxton.microdocs.core.domain.common.ProjectInfo;
 import com.maxxton.microdocs.core.writer.Writer;
 import com.maxxton.microdocs.crawler.Crawler;
 import com.maxxton.microdocs.crawler.ErrorReporter;
@@ -43,6 +44,28 @@ public class DocletRunner extends Standard {
 
         // run crawler
         Project project = crawler.crawl(classes);
+
+        // add projectName if present
+        if(config.getProjectName() != null){
+            if(project.getInfo() == null){
+                project.setInfo(new ProjectInfo());
+            }
+            project.getInfo().setTitle(config.getProjectName());
+        }
+        // add version if present
+        if(config.getVersion() != null){
+            if(project.getInfo() == null){
+                project.setInfo(new ProjectInfo());
+            }
+            project.getInfo().setVersion(config.getVersion());
+        }
+        // add group if present
+        if(config.getGroup() != null){
+            if(project.getInfo() == null){
+                project.setInfo(new ProjectInfo());
+            }
+            project.getInfo().setGroup(config.getGroup());
+        }
 
         // save result
         try {

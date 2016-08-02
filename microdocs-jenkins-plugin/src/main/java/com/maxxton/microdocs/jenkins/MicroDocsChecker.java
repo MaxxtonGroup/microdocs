@@ -31,14 +31,20 @@ public class MicroDocsChecker extends Builder {
     private final String task;
     private final String microDocsReportFile;
     private final String microDocsProjectName;
+    private final String microDocsGroupName;
     private final boolean microDocsFailBuild;
+    private final boolean microDocsPublish;
+    private final String microDocsSourceFolder;
 
     @DataBoundConstructor
-    public MicroDocsChecker(String task, String microDocsReportFile, String microDocsProjectName, boolean microDocsFailBuild) {
+    public MicroDocsChecker(String task, String microDocsReportFile, String microDocsProjectName, String microDocsGroupName, boolean microDocsFailBuild, boolean microDocsPublish, String microDocsSourceFolder) {
         this.task = task;
         this.microDocsReportFile = microDocsReportFile;
         this.microDocsProjectName = microDocsProjectName;
+        this.microDocsGroupName = microDocsGroupName;
         this.microDocsFailBuild = microDocsFailBuild;
+        this.microDocsPublish = microDocsPublish;
+        this.microDocsSourceFolder = microDocsSourceFolder;
     }
 
     public String getTask() {
@@ -53,8 +59,20 @@ public class MicroDocsChecker extends Builder {
         return microDocsProjectName;
     }
 
+    public String getMicroDocsGroupName() {
+        return microDocsGroupName;
+    }
+
     public boolean isMicroDocsFailBuild() {
         return microDocsFailBuild;
+    }
+
+    public boolean isMicroDocsPublish() {
+        return microDocsPublish;
+    }
+
+    public String getMicroDocsSourceFolder() {
+        return microDocsSourceFolder;
     }
 
     @Extension
@@ -82,7 +100,7 @@ public class MicroDocsChecker extends Builder {
 
         @Override
         public String getDisplayName() {
-            return "MicroDocs Check for problems";
+            return "MicroDocs Integration";
         }
 
         @Override
@@ -139,23 +157,61 @@ public class MicroDocsChecker extends Builder {
             return false;
         }
 
-        CheckResponse response = MicroDocsPublisher.checkProject(reportFile, microDocsProjectName, new ServerConfiguration(descriptor.getMicroDocsServerUrl()));
-
-        boolean isOk = "ok".equals(response.getStatus());
-        if(isOk){
-            ErrorReporter.get().printNotice("\nNo problems found");
-        }else if(response.getProblems() == null) {
-            ErrorReporter.get().printError("\nProject contains problems");
+        CheckResponse response = null;
+        if(microDocsPublish){
+            response = MicroDocsPublisher.publishProject(new ServerConfiguration(descriptor.getMicroDocsServerUrl()), reportFile, microDocsProjectName, microDocsGroupName, null, microDocsFailBuild);
         }else{
-            ErrorReporter.get().printError("\n" + String.valueOf(response.getProblems().size()) + " problem" + (response.getProblems().size() > 1 ? "s":"") + " found");
+            response = MicroDocsPublisher.checkProject( new ServerConfiguration(descriptor.getMicroDocsServerUrl()), reportFile, microDocsProjectName);
+        }
+
+        boolean hasProblems = !"ok".equalsIgnoreCase(response.getStatus());
+        int errorCount = 0;
+        int warningCount = 0;
+        int noticeCount = 0;
+        if(response.getProblems() != null){
             for(CheckProblem problem : response.getProblems()){
-                String sourceFile = new File("src/main/java/" + problem.getFile() + ":" + String.valueOf(problem.getLineNumber())).getPath();
-                ErrorReporter.get().printError(sourceFile + ": " + problem.getLevel() + ": " + problem.getMessage());
+                switch(problem.getLevel().toLowerCase()){
+                    case "error": errorCount++; break;
+                    case "warning": warningCount++; break;
+                    case "notice": noticeCount++; break;
+                }
             }
         }
-        logger.println();
+        String message = "\n";
+        if(errorCount + warningCount + noticeCount > 0){
+            message += "Project contains problems: ";
+            if(errorCount > 0)
+                message += String.valueOf(errorCount) + " error" + (errorCount > 1 ? "s" : "") + ",";
+            if(warningCount > 0)
+                message += String.valueOf(warningCount) + " warning" + (warningCount > 1 ? "s" : "") + ",";
+            if(noticeCount > 0)
+                message += String.valueOf(noticeCount) + " notice" + (noticeCount > 1 ? "s" : "") + ",";
+            if(message.endsWith(","))
+                message = message.substring(0, message.length()-1);
+        }else{
+            message += "No problems found";
+        }
+        message += "\n";
+        if(hasProblems){
+            ErrorReporter.get().printError(message);
+        }else{
+            ErrorReporter.get().printNotice(message);
+        }
 
-        if(!isOk && microDocsFailBuild){
+        if(response.getProblems() != null) {
+            for (CheckProblem problem : response.getProblems()) {
+                String sourceFile = new File(microDocsSourceFolder, problem.getFile() + ":" + String.valueOf(problem.getLineNumber())).getPath();
+                String msg = sourceFile + ": " + problem.getLevel() + ": " + problem.getMessage();
+                if(hasProblems) {
+                    ErrorReporter.get().printError(msg);
+                }else{
+                    ErrorReporter.get().printNotice(msg);
+                }
+            }
+        }
+        ErrorReporter.get().printError("");
+
+        if(hasProblems && this.microDocsFailBuild){
             return false;
         }
 
