@@ -2,7 +2,6 @@ package com.maxxton.microdocs.crawler.gradle
 
 import com.maxxton.microdocs.crawler.ErrorReporter
 import org.gradle.api.*
-import org.gradle.api.artifacts.*;
 import org.gradle.api.tasks.bundling.Zip
 import org.gradle.api.tasks.javadoc.Javadoc
 

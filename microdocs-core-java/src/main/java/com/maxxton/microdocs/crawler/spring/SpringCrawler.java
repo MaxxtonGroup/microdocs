@@ -1,17 +1,17 @@
 package com.maxxton.microdocs.crawler.spring;
 
-import com.maxxton.microdocs.crawler.Crawler;
 import com.maxxton.microdocs.core.builder.ComponentBuilder;
-import com.maxxton.microdocs.core.builder.ProjectBuilder;
 import com.maxxton.microdocs.core.collector.ComponentCollector;
 import com.maxxton.microdocs.core.collector.SchemaCollector;
-import com.maxxton.microdocs.core.domain.Project;
 import com.maxxton.microdocs.core.domain.component.ComponentType;
+import com.maxxton.microdocs.crawler.Crawler;
+import com.maxxton.microdocs.crawler.spring.collector.PathCollector;
+import com.maxxton.microdocs.crawler.spring.collector.SpringSchemaCollector;
+import com.maxxton.microdocs.core.builder.ProjectBuilder;
+import com.maxxton.microdocs.core.domain.Project;
 import com.maxxton.microdocs.core.domain.schema.Schema;
 import com.maxxton.microdocs.core.reflect.ReflectClass;
 import com.maxxton.microdocs.crawler.spring.collector.DependencyCollector;
-import com.maxxton.microdocs.crawler.spring.collector.PathCollector;
-import com.maxxton.microdocs.crawler.spring.collector.SpringSchemaCollector;
 
 import java.util.HashMap;
 import java.util.List;

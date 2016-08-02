@@ -1,12 +1,10 @@
 package com.maxxton.microdocs.core.writer;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.maxxton.microdocs.core.domain.Project;
 
 import java.io.File;
-import java.io.FileOutputStream;
 
 /**
  * Write project as json to the console

@@ -1,12 +1,11 @@
 package com.maxxton.microdocs.crawler.doclet;
 
+import com.maxxton.microdocs.core.writer.Writer;
 import com.maxxton.microdocs.crawler.Crawler;
+import com.maxxton.microdocs.crawler.ErrorReporter;
 import com.maxxton.microdocs.core.domain.Project;
 import com.maxxton.microdocs.core.reflect.ReflectClass;
-import com.maxxton.microdocs.core.writer.ConsoleWriter;
 import com.maxxton.microdocs.core.writer.JsonWriter;
-import com.maxxton.microdocs.core.writer.Writer;
-import com.maxxton.microdocs.crawler.ErrorReporter;
 import com.maxxton.microdocs.crawler.spring.SpringCrawler;
 import com.sun.javadoc.RootDoc;
 import com.sun.tools.doclets.standard.Standard;

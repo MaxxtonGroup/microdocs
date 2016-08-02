@@ -8,6 +8,8 @@
 /**/typings
 /**/dist
 /**/*.iml
+/out
+/microdocs-jenkins-plugin/work
 
 /microdocs-server/data/reports
 /microdocs-server/data/database

@@ -1,7 +1,7 @@
 package com.maxxton.microdocs.crawler.doclet;
 
-import com.sun.javadoc.DocErrorReporter;
 import com.maxxton.microdocs.crawler.ErrorReporter;
+import com.sun.javadoc.DocErrorReporter;
 
 /**
  *

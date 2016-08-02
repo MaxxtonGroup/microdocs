@@ -1,13 +1,13 @@
 package com.maxxton.microdocs.core.builder;
 
-import com.maxxton.microdocs.core.domain.component.Component;
-import com.maxxton.microdocs.core.domain.component.Method;
 import com.maxxton.microdocs.core.domain.path.Parameter;
-import com.maxxton.microdocs.core.domain.path.Path;
 import com.maxxton.microdocs.core.domain.path.Response;
-import com.maxxton.microdocs.core.reflect.ReflectClass;
 import com.maxxton.microdocs.core.reflect.ReflectMethod;
 import com.maxxton.microdocs.core.reflect.ReflectParameter;
+import com.maxxton.microdocs.core.domain.component.Component;
+import com.maxxton.microdocs.core.domain.component.Method;
+import com.maxxton.microdocs.core.domain.path.Path;
+import com.maxxton.microdocs.core.reflect.ReflectClass;
 
 import java.util.ArrayList;
 import java.util.HashMap;

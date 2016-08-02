@@ -1,8 +1,8 @@
 package com.maxxton.microdocs.core.collector;
 
+import com.maxxton.microdocs.core.builder.MethodBuilder;
 import com.maxxton.microdocs.core.builder.AnnotationBuilder;
 import com.maxxton.microdocs.core.builder.ComponentBuilder;
-import com.maxxton.microdocs.core.builder.MethodBuilder;
 import com.maxxton.microdocs.core.domain.component.ComponentType;
 import com.maxxton.microdocs.core.reflect.ReflectAnnotation;
 import com.maxxton.microdocs.core.reflect.ReflectClass;

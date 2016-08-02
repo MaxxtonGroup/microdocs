@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  * @author Steven Hermans
  */
-public class Method extends JsonReference{
+public class Method extends JsonReference {
 
     private String name;
     private String description;

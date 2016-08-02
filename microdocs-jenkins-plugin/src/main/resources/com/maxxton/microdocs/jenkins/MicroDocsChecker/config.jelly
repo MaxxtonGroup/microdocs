@@ -1,0 +1,16 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
+         xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:c="/lib/credentials">
+
+  <f:entry title="Project name" field="microDocsProjectName" description="Add the project name">
+    <f:textbox/>
+  </f:entry>
+
+  <f:entry title="MicroDocs Report file" field="microDocsReportFile" description="Add MicroDocs report file (eg. /build/reports/microdocs.json)">
+    <f:textbox/>
+  </f:entry>
+
+  <f:entry title="Fail build" field="microDocsFailBuild" description="Let the build fail when there are problems">
+    <f:checkbox />
+  </f:entry>
+
+</j:jelly>

@@ -3,12 +3,12 @@ package com.maxxton.microdocs.crawler.spring.parser;
 import com.maxxton.microdocs.core.collector.SchemaCollector;
 import com.maxxton.microdocs.core.domain.path.Parameter;
 import com.maxxton.microdocs.core.domain.path.ParameterPlacing;
-import com.maxxton.microdocs.core.domain.path.ParameterVariable;
 import com.maxxton.microdocs.core.domain.schema.SchemaType;
-import com.maxxton.microdocs.core.reflect.ReflectClass;
 import com.maxxton.microdocs.core.reflect.ReflectMethod;
 import com.maxxton.microdocs.core.reflect.ReflectParameter;
 import com.maxxton.microdocs.crawler.spring.collector.RequestParser;
+import com.maxxton.microdocs.core.domain.path.ParameterVariable;
+import com.maxxton.microdocs.core.reflect.ReflectClass;
 
 import java.util.ArrayList;
 import java.util.List;

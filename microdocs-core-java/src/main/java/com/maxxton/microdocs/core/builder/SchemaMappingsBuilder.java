@@ -1,7 +1,7 @@
 package com.maxxton.microdocs.core.builder;
 
-import com.maxxton.microdocs.core.domain.schema.SchemaMapping;
 import com.maxxton.microdocs.core.domain.schema.SchemaMappings;
+import com.maxxton.microdocs.core.domain.schema.SchemaMapping;
 
 import java.util.List;
 

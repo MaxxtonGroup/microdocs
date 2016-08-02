@@ -1,10 +1,10 @@
 package com.maxxton.microdocs.core.builder;
 
+import com.maxxton.microdocs.core.domain.component.ComponentType;
+import com.maxxton.microdocs.crawler.ErrorReporter;
 import com.maxxton.microdocs.core.domain.component.Annotation;
 import com.maxxton.microdocs.core.domain.component.Component;
-import com.maxxton.microdocs.core.domain.component.ComponentType;
 import com.maxxton.microdocs.core.domain.component.Method;
-import com.maxxton.microdocs.crawler.ErrorReporter;
 
 import java.util.ArrayList;
 import java.util.HashMap;

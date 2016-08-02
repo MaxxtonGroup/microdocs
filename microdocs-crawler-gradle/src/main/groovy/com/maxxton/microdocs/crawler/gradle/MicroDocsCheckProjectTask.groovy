@@ -19,14 +19,14 @@ class MicroDocsCheckProjectTask  extends DefaultTask {
     @TaskAction
     def checkProject(){
         CheckResponse response = MicroDocsPublisher.checkProject(new File(reportFile), project.name, new ServerConfiguration(url));
-        if(response.status == "ok"){
+        if("ok" == response.status){
             ErrorReporter.get().printNotice('No problems found')
         }else if(response.problems == null) {
             ErrorReporter.get().printError('\nproject contains problems\n');
         }else{
             ErrorReporter.get().printError("\n" + String.valueOf(response.problems.size()) + ' problem' + (response.problems.size() > 1 ? 's':'') + ' found');
             for(CheckProblem problem : response.problems){
-                String sourceFile = new File(project.rootDir, "src/main/java/" + problem.getFile() + ":" + String.valueOf(problem.getLineNumber()));
+                String sourceFile = new File(project.rootDir, "src/main/java/" + problem.getFile() + ":" + String.valueOf(problem.getLineNumber())).getPath();
                 ErrorReporter.get().printError(sourceFile + ": " + problem.getLevel() + ": " + problem.getMessage());
             }
             ErrorReporter.get().printError("");

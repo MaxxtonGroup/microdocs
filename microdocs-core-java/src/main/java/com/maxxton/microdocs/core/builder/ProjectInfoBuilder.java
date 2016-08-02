@@ -1,7 +1,7 @@
 package com.maxxton.microdocs.core.builder;
 
-import com.maxxton.microdocs.core.domain.common.License;
 import com.maxxton.microdocs.core.domain.common.Contact;
+import com.maxxton.microdocs.core.domain.common.License;
 import com.maxxton.microdocs.core.domain.common.ProjectInfo;
 import com.maxxton.microdocs.core.domain.common.ProjectType;
 

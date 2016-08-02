@@ -5,10 +5,10 @@ import com.maxxton.microdocs.core.builder.PathBuilder;
 import com.maxxton.microdocs.core.collector.Collector;
 import com.maxxton.microdocs.core.collector.SchemaCollector;
 import com.maxxton.microdocs.core.domain.dependency.DependencyType;
-import com.maxxton.microdocs.core.domain.path.Path;
 import com.maxxton.microdocs.core.reflect.ReflectAnnotation;
-import com.maxxton.microdocs.core.reflect.ReflectClass;
 import com.maxxton.microdocs.crawler.ErrorReporter;
+import com.maxxton.microdocs.core.domain.path.Path;
+import com.maxxton.microdocs.core.reflect.ReflectClass;
 
 import java.util.ArrayList;
 import java.util.List;

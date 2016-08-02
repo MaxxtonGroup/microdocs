@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.ObjectMapper;
 import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import com.maxxton.microdocs.core.domain.check.CheckResponse;
 import com.maxxton.microdocs.crawler.ErrorReporter;
 
@@ -26,20 +27,25 @@ public class MicroDocsPublisher {
      * @param configuration
      * @return check response
      */
-    public static CheckResponse checkProject(File microDocsReport, String projectName, ServerConfiguration configuration) throws Exception {
+    public static CheckResponse checkProject(File microDocsReport, String projectName, ServerConfiguration configuration) throws IOException {
         String report = loadReport(microDocsReport);
 
         String url = configuration.getUrl() + "/api/v1/check";
         ErrorReporter.get().printNotice("POST " + url);
         initObjectMapper();
-        HttpResponse<CheckResponse> response = Unirest.post(configuration.getUrl() + "/api/v1/check")
-                .queryString("project", projectName)
-                .header("content-type", "application/json")
-                .header("accept", "application/json")
-                .body(report)
-                .asObject(CheckResponse.class);
-        if (response.getStatus() != 200) {
-            throw new Exception("Wrong response status " + response.getStatus() + ", expected 200");
+        HttpResponse<CheckResponse> response = null;
+        try {
+            response = Unirest.post(configuration.getUrl() + "/api/v1/check")
+                    .queryString("project", projectName)
+                    .header("content-type", "application/json")
+                    .header("accept", "application/json")
+                    .body(report)
+                    .asObject(CheckResponse.class);
+            if (response.getStatus() != 200) {
+                throw new IOException("Wrong response status " + response.getStatus() + ", expected 200");
+            }
+        } catch (UnirestException e) {
+            throw new IOException("Failed to send http request: POST " + url, e);
         }
         return response.getBody();
     }

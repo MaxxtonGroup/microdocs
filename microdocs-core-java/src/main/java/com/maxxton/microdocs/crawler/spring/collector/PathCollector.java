@@ -1,12 +1,12 @@
 package com.maxxton.microdocs.crawler.spring.collector;
 
+import com.maxxton.microdocs.core.domain.path.*;
+import com.maxxton.microdocs.core.reflect.*;
+import com.maxxton.microdocs.crawler.ErrorReporter;
 import com.maxxton.microdocs.core.builder.PathBuilder;
 import com.maxxton.microdocs.core.collector.Collector;
 import com.maxxton.microdocs.core.collector.SchemaCollector;
-import com.maxxton.microdocs.core.domain.path.*;
 import com.maxxton.microdocs.core.domain.schema.Schema;
-import com.maxxton.microdocs.core.reflect.*;
-import com.maxxton.microdocs.crawler.ErrorReporter;
 import com.maxxton.microdocs.crawler.spring.parser.PageableParser;
 import com.maxxton.microdocs.crawler.spring.parser.SpecificationsParser;
 

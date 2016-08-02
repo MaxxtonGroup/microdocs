@@ -1,17 +1,17 @@
 package com.maxxton.microdocs.core.builder;
 
-import com.maxxton.microdocs.core.domain.common.SecurityDefinition;
-import com.maxxton.microdocs.core.domain.component.Component;
-import com.maxxton.microdocs.core.domain.schema.Schema;
 import com.maxxton.microdocs.core.domain.Project;
 import com.maxxton.microdocs.core.domain.common.ExternalDocs;
 import com.maxxton.microdocs.core.domain.common.ProjectInfo;
+import com.maxxton.microdocs.core.domain.common.SecurityDefinition;
 import com.maxxton.microdocs.core.domain.common.Tag;
 import com.maxxton.microdocs.core.domain.dependency.Dependency;
 import com.maxxton.microdocs.core.domain.path.Parameter;
-import com.maxxton.microdocs.core.domain.path.Path;
 import com.maxxton.microdocs.core.domain.path.Response;
 import com.maxxton.microdocs.core.domain.problem.Problem;
+import com.maxxton.microdocs.core.domain.component.Component;
+import com.maxxton.microdocs.core.domain.schema.Schema;
+import com.maxxton.microdocs.core.domain.path.Path;
 
 import java.util.ArrayList;
 import java.util.HashMap;

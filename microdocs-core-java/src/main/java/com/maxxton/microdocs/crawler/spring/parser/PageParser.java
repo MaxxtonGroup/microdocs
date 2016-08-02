@@ -1,8 +1,8 @@
 package com.maxxton.microdocs.crawler.spring.parser;
 
-import com.maxxton.microdocs.core.collector.SchemaCollector;
 import com.maxxton.microdocs.core.collector.SchemaParser;
 import com.maxxton.microdocs.core.domain.schema.*;
+import com.maxxton.microdocs.core.collector.SchemaCollector;
 import com.maxxton.microdocs.core.reflect.ReflectClass;
 import com.maxxton.microdocs.core.reflect.ReflectGenericClass;
 

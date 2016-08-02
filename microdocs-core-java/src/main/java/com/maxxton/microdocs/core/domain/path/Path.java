@@ -1,9 +1,9 @@
 package com.maxxton.microdocs.core.domain.path;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.maxxton.microdocs.core.domain.component.Component;
 import com.maxxton.microdocs.core.domain.JsonReference;
 import com.maxxton.microdocs.core.domain.component.Method;
+import com.maxxton.microdocs.core.domain.component.Component;
 
 import java.util.List;
 import java.util.Map;
@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * @author Steven Hermans
  */
-public class Path extends JsonReference{
+public class Path extends JsonReference {
 
     private Component controller;
     private Method method;

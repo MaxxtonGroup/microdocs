@@ -1,7 +1,7 @@
 package com.maxxton.microdocs.core.domain.path;
 
-import com.maxxton.microdocs.core.domain.schema.Schema;
 import com.maxxton.microdocs.core.domain.schema.SchemaArray;
+import com.maxxton.microdocs.core.domain.schema.Schema;
 import com.maxxton.microdocs.core.domain.JsonReference;
 
 import java.util.Map;
