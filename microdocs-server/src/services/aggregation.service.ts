@@ -7,7 +7,8 @@ import {
   TreeNode,
   Dependency,
   Path,
-  Problem
+  Problem,
+  ProjectInfo
 } from "microdocs-core-ts/dist/domain";
 import {NOTICE, ERROR} from "microdocs-core-ts/dist/domain/problem/problem-level.model";
 import {REST} from "microdocs-core-ts/dist/domain/dependency/dependency-type.model";
@@ -183,7 +184,7 @@ export class AggregationService {
                   if(endpoint.problems != undefined && endpoint.problems != null){
                     var producerEndpoint = SchemaHelper.resolveReference('paths.' + path + "." + method, project);
                     endpoint.problems.forEach(problem => {
-                      problemReport.report(problem.level, problem.message, producerEndpoint.controller, producerEndpoint.method);
+                      problemReport.report(problem.level, problem.message, producerEndpoint ? producerEndpoint.controller : undefined, producerEndpoint ? producerEndpoint.method : undefined);
                     });
                   }
                 }
@@ -344,7 +345,19 @@ export class AggregationService {
    */
   private previousProject(project:Project):Project {
     // load older version if so requested
-    var prevProjectInfo = project.info.getPrevVersion();
+    var prevProjectInfo = null;
+
+    var sortedVersions = project.info.versions.sort();
+    var index = sortedVersions.indexOf(project.info.version);
+    index--;
+    if(index >= 0 && sortedVersions[index] != undefined){
+      var version = sortedVersions[index];
+      if(project.info.versions.filter(v => v == version).length == 0){
+        return null;
+      }
+      prevProjectInfo = new ProjectInfo(project.info.title, project.info.group, version, project.info.versions);
+    }
+
     if (prevProjectInfo == null) {
       // no previous project
       return null;

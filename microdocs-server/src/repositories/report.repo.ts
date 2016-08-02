@@ -10,4 +10,6 @@ export interface ReportRepository{
 
     getProject(projectInfo:ProjectInfo):Project;
 
+    storeProject(project:Project):void;
+
 }

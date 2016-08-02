@@ -15,7 +15,6 @@ export class ProjectRoute extends BaseRoute {
 
     var title = req.params.title;
     var version = req.query.version;
-    console.info(version);
 
 
     // load latest version if not specified
