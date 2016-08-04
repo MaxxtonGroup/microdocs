@@ -168,8 +168,10 @@ export class AggregationService {
   private reverseCheckDependencies(project:Project, projectCache:{[title:string]:{[version:string]:Project}}, parentNode:TreeNode):Problem[] {
     var problems:Problem[] = [];
     for (var title in projectCache) {
-      for (var version in projectCache[title]) {
-        var clientProject = projectCache[title][version];
+      var versions = Object.keys(projectCache[title]).sort();
+      if(versions.length > 0){
+        var latestVersion = versions[versions.length-1];
+        var clientProject = projectCache[title][latestVersion];
         if (clientProject.dependencies != null && clientProject.definitions != undefined) {
           if (clientProject.dependencies[project.info.title] != undefined) {
             var dependency = clientProject.dependencies[project.info.title];
@@ -184,7 +186,16 @@ export class AggregationService {
                   if(endpoint.problems != undefined && endpoint.problems != null){
                     var producerEndpoint = SchemaHelper.resolveReference('paths.' + path + "." + method, project);
                     endpoint.problems.forEach(problem => {
-                      problemReport.report(problem.level, problem.message, producerEndpoint ? producerEndpoint.controller : undefined, producerEndpoint ? producerEndpoint.method : undefined);
+                      problemReport.report(
+                        problem.level,
+                        problem.message,
+                        producerEndpoint ? producerEndpoint.controller : undefined,
+                        producerEndpoint ? producerEndpoint.method : undefined,
+                        clientProject,
+                        title,
+                        latestVersion,
+                        endpoint ? endpoint.controller : undefined,
+                        endpoint ? endpoint.method : undefined);
                     });
                   }
                 }

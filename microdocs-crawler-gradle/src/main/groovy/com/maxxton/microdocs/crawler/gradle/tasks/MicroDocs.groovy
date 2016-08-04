@@ -1,6 +1,6 @@
 package com.maxxton.microdocs.crawler.gradle.tasks
 
-import com.maxxton.microdocs.crawler.gradle.VersionUtil
+import com.maxxton.microdocs.crawler.gradle.MicroDocsUtils
 import org.gradle.api.tasks.javadoc.Javadoc
 
 /**
@@ -10,7 +10,7 @@ class MicroDocs extends Javadoc{
 
     @Override
     protected void generate() {
-        String version = VersionUtil.getVersion(project);
+        String version = MicroDocsUtils.getVersion(project);
         if(project.name != null)
             options.addStringOption("projectName", project.name);
         if(version != null)

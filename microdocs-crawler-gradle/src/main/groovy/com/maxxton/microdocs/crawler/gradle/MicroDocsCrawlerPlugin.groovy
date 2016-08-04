@@ -75,7 +75,7 @@ class MicroDocsCrawlerPlugin implements Plugin<Project> {
 
         project.task('exportVersion', group: 'microdocs') {
             doLast {
-                String version = VersionUtil.getVersion(project);
+                String version = MicroDocsUtils.getVersion(project);
                 System.out.println("Export version: " + version);
                 if (version != null) {
                     FileWriter writer = new FileWriter(project.reporting.file("version"));
@@ -86,12 +86,12 @@ class MicroDocsCrawlerPlugin implements Plugin<Project> {
             }
         }
 
-        project.task('checkMicroDocs', type: MicroDocsCheckProjectTask, group: 'microdocs', dependsOn: ['buildMicroDoc']) {
+        project.task('checkMicroDocs', type: MicroDocsCheckProjectTask, group: 'microdocs', dependsOn: ['buildMicroDocs']) {
             reportFile = project.reporting.file('./microdocs.json');
             url = "http://localhost:3000";
         }
 
-        project.task('publishMicroDocs', type: MicroDocsPublishProjectTask, group: 'microdocs', dependsOn: ['buildMicroDoc']) {
+        project.task('publishMicroDocs', type: MicroDocsPublishProjectTask, group: 'microdocs', dependsOn: ['buildMicroDocs']) {
             reportFile = project.reporting.file('./microdocs.json');
             url = "http://localhost:3000";
             groupName = "default";

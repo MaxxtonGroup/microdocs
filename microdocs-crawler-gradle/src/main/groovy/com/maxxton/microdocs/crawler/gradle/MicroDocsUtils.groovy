@@ -1,9 +1,13 @@
 package com.maxxton.microdocs.crawler.gradle
 
+import com.maxxton.microdocs.core.domain.check.CheckProblem
+import com.maxxton.microdocs.core.domain.check.CheckResponse
+import com.maxxton.microdocs.crawler.ErrorReporter
+
 /**
  * @author Steven Hermans
  */
-class VersionUtil {
+class MicroDocsUtils {
 
     public static String getVersion(project){
         Object version = project.properties.version;

@@ -15,7 +15,7 @@ export {Parameter} from './path/parameter.model';
 export {ResponseModel} from './path/response.model';
 
 export {ProblemReporter} from '../helpers/problem/problem-reporter.helper';
-export {Problem} from "../domain/problem/problem.model";
+export {Problem, ProblemClient} from "../domain/problem/problem.model";
 
 export {Schema} from '../domain/schema/schema.model';
 

@@ -5,7 +5,20 @@ export interface Problem {
   message:string;
   package?:string;
   className?:string;
-  file?:string;
+  path?:string;
   lineNumber?:number;
+  client?:ProblemClient;
+
+}
+
+export interface ProblemClient{
+
+  title:string;
+  version:string;
+  package?:string;
+  className?:string;
+  path?:string;
+  lineNumber?:number;
+  sourceLink?:string;
 
 }

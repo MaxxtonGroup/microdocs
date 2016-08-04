@@ -15,6 +15,7 @@ buildscript {
 apply plugin: 'org.jenkins-ci.jpi'
 
 repositories {
+    mavenLocal()
     mavenCentral()
 }
 
@@ -22,11 +23,15 @@ dependencies {
     compile ("com.maxxton.microdocs:microdocs-core-java:1.0")
     compile ("com.fasterxml.jackson.core:jackson-databind:2.7.5")
     compile ("com.mashape.unirest:unirest-java:1.4.9")
+
+    jenkinsPlugins  ("org.jenkins-ci.plugins:credentials:2.1.4@jar")
+
     testCompile group: 'junit', name: 'junit', version: '4.11'
 }
 
 jenkinsPlugin {
-    coreVersion = "1.498"
+//    coreVersion = "1.498"
+    coreVersion = "1.609"
     displayName = "MicroDocs Jenkins integration"
     url = "http://wiki.jenkins-ci.org/display/JENKINS/SomePluginPage"
     gitHubUrl = "https://github.com/MaxxtonGroup/microservice-documentation-tool"

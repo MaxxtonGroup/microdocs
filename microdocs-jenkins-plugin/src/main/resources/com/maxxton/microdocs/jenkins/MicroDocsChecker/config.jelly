@@ -25,4 +25,8 @@
     <f:checkbox />
   </f:entry>
 
+  <f:entry title="	Post comments into pull request" field="microDocsNotifyPullRequest" description="Post a comment into the corresponding pull request">
+    <f:checkbox />
+  </f:entry>
+
 </j:jelly>
