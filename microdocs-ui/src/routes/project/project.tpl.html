@@ -1,0 +1,67 @@
+<card [title]="title" [sectionClass]="'card-section content'" [canHide]="true" [loading]="loading">
+    <template [ngIf]="project.problemCount | notEmpty">
+        <div class="problem-box">
+            <span class="icon">error</span>
+            <span class="problem">This project contains {{project.problemCount}} problem{{project.problemCount > 1 ? 's' : ''}}</span>
+        </div>
+    </template>
+    <h5 class="version-box" *ngIf="versions | notEmpty">
+        Version:
+        <select [ngModel]="version" (change)="onChangeVersion($event.target.value)">
+            <option *ngFor="let v of versions" [value]="v">{{v}}</option>
+        </select>
+    </h5>
+    <div *ngIf="project.dependencies | notEmpty">
+        <h4>Dependencies</h4>
+        <ul>
+            <li *ngFor="let dependency of project.dependencies | objectIterator">
+                <span class="link">
+                    <span class="icon">keyboard_arrow_right</span>
+                    <a [routerLink]="getDependencyLink(dependency)">{{dependency._id}}</a>
+                </span>
+            </li>
+        </ul>
+    </div>
+    <div *ngIf="project | notEmpty:'info.links'">
+        <h4>Links</h4>
+        <ul>
+            <li *ngFor="let link of project.info.links">
+                <span class="link">
+                    <span class="icon">keyboard_arrow_right</span>
+                    <a [href]="link.href" target="_blank">{{link.rel}}</a>
+                </span>
+            </li>
+        </ul>
+    </div>
+</card>
+<card title="Endpoints" [sectionClass]="'card-section content'" [canHide]="true" *ngIf="project.paths | notEmpty">
+    <div *ngFor="let path of project.paths | objectIterator | sortByKey:'_id'">
+        <endpoint [path]="path._id" [endpoint]="endpoint"
+                  [sourceLink]="getControllerSourceLink(project.info.sourceLink, endpoint)"
+                  *ngFor="let endpoint of path | objectIterator | sortByHttpMethod:'_id'"></endpoint>
+    </div>
+</card>
+<card title="Clients" [sectionClass]="'card-section content'" [canHide]="true"
+      *ngIf="project.dependencies | filterByField:'type':rest | notEmpty">
+    <div *ngFor="let client of project.dependencies | filterByField:'type':rest | objectIterator | sortByKey:'_id'">
+        <div class="client-header">
+            <span class="link">
+                <span class="icon">keyboard_arrow_right</span>
+                <a [routerLink]="getDependencyLink(client)">{{client._id}}</a>
+            </span>
+        </div>
+        <template [ngIf]="client.problems | notEmpty">
+            <problem-panel [problems]="client.problems"></problem-panel>
+        </template>
+        <div *ngFor="let path of client.paths | objectIterator | sortByHttpMethod:'_id'">
+            <endpoint [path]="path._id" [endpoint]="endpoint"
+                      [sourceLink]="getControllerSourceLink(project.info.sourceLink, endpoint)"
+                      *ngFor="let endpoint of path | objectIterator"></endpoint>
+        </div>
+    </div>
+</card>
+<card title="Models" [sectionClass]="'card-section content'" [canHide]="true"
+      *ngIf="project.definitions | filterByField:'type':'object' | notEmpty">
+    <model-panel [schema]="schema" [sourceLink]="getModelSourceLink(project.info.sourceLink, schema._id, schema)"
+                 *ngFor="let schema of project.definitions | objectIterator | sortByKey:'_id'"></model-panel>
+</card>

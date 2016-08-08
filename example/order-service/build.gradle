@@ -13,7 +13,7 @@ buildscript {
 	dependencies {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
 		classpath("net.davidecavestro:gradle-jxr-plugin:0.1")
-		classpath("com.maxxton.gradle:gradle-documentation-plugin:0.5")
+		classpath("com.maxxton.microdocs:microdocs-crawler-gradle:0.81")
 	}
 }
 
@@ -21,7 +21,7 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'spring-boot'
 apply plugin: 'jxr'
-apply plugin: 'mxtdoc'
+apply plugin: 'microdocs'
 
 jar {
 	baseName = 'orderservice'

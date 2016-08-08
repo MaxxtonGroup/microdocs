@@ -6,12 +6,14 @@
  */
 
 //module dependencies
-var app = require(".//app");
+var config = require("./dist/config");
+var app = require("./dist/app");
 var debug = require("debug")("express:server");
 var http = require("http");
 
 //get port from environment and store in Express.
-var port = normalizePort(process.env.PORT || 8080);
+var port = normalizePort(process.env.PORT || config.port || 3000);
+console.info("Start server on port " + port);
 app.set("port", port);
 
 //create http server

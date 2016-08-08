@@ -1,0 +1,6 @@
+dea/**
+dist/**
+*.scssc
+npm-debug.log
+node_modules
+typings
