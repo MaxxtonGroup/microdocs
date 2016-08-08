@@ -1,6 +1,6 @@
 default:
   port: 3000
   basePath: /api/v1
-  staticFolder: ../microdocs-ui/dist
+  staticFolder: ../microdocs-ui/dist;../microdocs-ui/node_modules
   dataFolder: data
 

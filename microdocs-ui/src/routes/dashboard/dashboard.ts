@@ -1,6 +1,6 @@
 import {Component} from "@angular/core";
 
-import {COMPONENTS} from "@maxxton/components/dist/components";
+import {COMPONENTS} from "@maxxton/components/components";
 
 import {DependencyGraph} from '../../panels/dependency-graph/dependency-graph';
 

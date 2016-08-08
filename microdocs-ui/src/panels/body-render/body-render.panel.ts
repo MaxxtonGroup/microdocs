@@ -3,7 +3,7 @@ import {PrettyJsonComponent} from 'angular2-prettyjson';
 
 import {SchemaHelper} from 'microdocs-core-ts/dist/helpers/schema/schema.helper';
 import {Schema} from 'microdocs-core-ts/dist/domain';
-import {FILTERS} from "@maxxton/components/dist/filters";
+import {FILTERS} from "@maxxton/components/filters";
 
 @Component({
   selector: 'body-render',

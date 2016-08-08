@@ -1,6 +1,7 @@
 'use strict';
 
 var gulp = require('gulp');
+var gutil = require('gulp-util');
 var typescript = require('gulp-typescript');
 var embedTemplates = require('gulp-angular-embed-templates');
 var clean = require('gulp-clean');
@@ -10,6 +11,7 @@ var uglify = require('gulp-uglify');
 var runSequence = require('run-sequence');
 var plumber = require('gulp-plumber');
 var tscConfig = require('./src/tsconfig.json');
+var fs = require('fs');
 
 var settings = {
   distFolder: 'dist'
@@ -49,4 +51,39 @@ gulp.task('clean', [], function () {
 
 gulp.task('test', [], function () {
 
+});
+
+/**
+ * Cleans, moves, and compiles the code
+ */
+gulp.task('prepublish', function (done) {
+  runSequence('clean', 'prepublish-package', 'compile-typescript', done);
+});
+
+/**
+ * Copy part of the package.json to the dist folder for publishing.
+ */
+gulp.task('prepublish-package', function () {
+  var json = JSON.parse(fs.readFileSync('./package.json'));
+  var publishJson = {
+    name: json.name,
+    version: json.version,
+    description: json.description,
+    author: json.author,
+    license: json.license,
+    publishConfig: json.publishConfig,
+    peerDependencies: json.dependencies
+  };
+
+  var src = require('stream').Readable({objectMode: true})
+  src._read = function () {
+    this.push(new gutil.File({
+      cwd: "",
+      base: "",
+      path: "package.json",
+      contents: new Buffer(JSON.stringify(publishJson, null, 2))
+    }))
+    this.push(null)
+  }
+  src.pipe(gulp.dest('dist/'));
 });

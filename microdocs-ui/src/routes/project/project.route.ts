@@ -1,8 +1,8 @@
 import {Component} from "@angular/core";
 import {ROUTER_DIRECTIVES, ActivatedRoute, Router, Params} from "@angular/router";
 
-import {COMPONENTS} from "@maxxton/components/dist/components";
-import {FILTERS} from "@maxxton/components/dist/filters";
+import {COMPONENTS} from "@maxxton/components/components";
+import {FILTERS} from "@maxxton/components/filters";
 import {Project, Path, Method, Schema, Dependency} from "microdocs-core-ts/dist/domain";
 import {REST, DATABASE, USES, INCLUDES} from "microdocs-core-ts/dist/domain/dependency/dependency-type.model";
 import {SchemaHelper} from "microdocs-core-ts/dist/helpers/schema/schema.helper";

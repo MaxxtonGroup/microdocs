@@ -5,7 +5,8 @@
  */
 export class NewyseConfig {
   public static isProduction:boolean = true;
-  public static applicationName:string = "prices";
+  public static applicationName:string = "MicroDocs";
   public static profile:string = 'production';
-  public static basepath:string = "/pricemanager/";
+  public static basepath:string = "/";
+  public static apipath:string = "/api/v1";
 }

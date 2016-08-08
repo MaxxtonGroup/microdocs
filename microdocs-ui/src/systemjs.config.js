@@ -23,10 +23,10 @@
         'pipes': {defaultExtension: 'js'},
 
         '@maxxton/components': {defaultExtension: 'js'},
-        '@maxxton/components/dist/helpers': {main: 'index.js', defaultExtension: 'js'},
-        '@maxxton/components/dist/components': {main: 'index.js', defaultExtension: 'js'},
-        '@maxxton/components/dist/services': {main: 'index.js', defaultExtension: 'js'},
-        '@maxxton/components/dist/filters': {main: 'index.js', defaultExtension: 'js'},
+        '@maxxton/components/helpers': {main: 'index.js', defaultExtension: 'js'},
+        '@maxxton/components/components': {main: 'index.js', defaultExtension: 'js'},
+        '@maxxton/components/services': {main: 'index.js', defaultExtension: 'js'},
+        '@maxxton/components/filters': {main: 'index.js', defaultExtension: 'js'},
 
         'microdocs-core-ts': {defaultExtension: 'js'},
         'microdocs-core-ts/dist/domain': {main: 'index.js', defaultExtension: 'js'},

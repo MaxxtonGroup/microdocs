@@ -115,7 +115,7 @@ export class DependencyGraph {
         return "overview-link " + d.type;
       })
       .attr("marker-end", function (d) {
-        return "url(/dashboard#marker-" + d.type + ")";
+        return "url(#marker-" + d.type + ")";
       });
 
     var circle = svg.append("g").selectAll("circle")

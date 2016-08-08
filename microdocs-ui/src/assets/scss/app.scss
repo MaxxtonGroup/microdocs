@@ -1,7 +1,8 @@
 /* local settings and functions */
 @import "settings";
 @import "partials/json-view";
-@import "../../../node_modules/@maxxton/components/src/assets/scss/mxt-components";
+@import "../../../node_modules/@maxxton/components/assets/scss/mxt-components";
+@import "../../panels/sidebar-panel/_sidebar.panel";
 
 //@font-face {
 //  font-family: 'Roboto';
@@ -21,6 +22,24 @@
 //body{
 //  font-family: "Roboto", "Open Sans", "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
 //}
+
+.page-content.grid-container {
+  width: 70%;
+  max-width: 70%;
+  padding: 2rem 0;
+  overflow: visible;
+  @include breakpoint(large) {
+    margin: 2rem auto 0 8rem;
+  }
+  > * {
+    display: block;
+    width: 100%;
+  }
+
+  router-outlet {
+    display: none;
+  }
+}
 
 .no-margin {
   margin: 0 !important;
@@ -420,6 +439,18 @@ ul{
 
 .child-card .card{
   margin-bottom: 10px;
+}
+
+.child-card .card .header {
+  padding: 10px 20px;
+}
+
+.child-card .card .header .title{
+  font-size: 1.2rem;
+}
+
+.http-method .header .title, .http-method .header .subtitle{
+  color: white;
 }
 
 .http-method .title{

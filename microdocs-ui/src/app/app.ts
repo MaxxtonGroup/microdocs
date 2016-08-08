@@ -2,18 +2,19 @@ import { Component, Injectable } from "@angular/core";
 import { COMMON_DIRECTIVES } from "@angular/common";
 import { ROUTER_DIRECTIVES } from "@angular/router";
 
-import { COMPONENTS } from "@maxxton/components/dist/components";
-import { MenuItemModel } from "@maxxton/components/dist/components/vertical-menu/vertical-menu-item.model";
-import { ImageHelperService } from "@maxxton/components/dist/helpers";
+import { COMPONENTS} from "@maxxton/components/components";
+import { MenuItemModel } from "@maxxton/components/components/vertical-menu/vertical-menu-item.model";
+import { ImageHelperService } from "@maxxton/components/helpers";
 import { TreeNode } from "microdocs-core-ts/dist/domain";
 
 import { DashboardRoute } from "./../routes/dashboard/dashboard";
 import { ProjectService } from "./../services/project.service";
+import {SidebarComponent} from "../panels/sidebar-panel/sidebar.panel";
 
 @Component( {
   selector: 'app',
   providers: [],
-  directives: [ COMMON_DIRECTIVES, ROUTER_DIRECTIVES, COMPONENTS, DashboardRoute ],
+  directives: [ COMMON_DIRECTIVES, ROUTER_DIRECTIVES, COMPONENTS, DashboardRoute, SidebarComponent ],
   templateUrl: 'app.tpl.html',
 } )
 @Injectable()

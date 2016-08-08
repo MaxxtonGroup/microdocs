@@ -1,38 +1,11 @@
-<div class="grid-frame vertical main-container">
-  <div class="app-bar grid-block shrink vertical">
-    <div class="grid-block">
-      <div class="logo grid-block">
-        <span class="logo-image"></span>
-        <span class="blue">Micro<span class="orange">Docs</span>
-      </div>
-      <div class="app-name grid-block">
-        <breadcrumbs></breadcrumbs>
-      </div>
-    </div>
-    <!--<hot-links class="grid-block" title="MicroDocs"></hot-links>-->
-  </div>
+<div class="main-container grid-block horizontal app-content">
+  <sidebar-component [customMenu]="menu"></sidebar-component>
 
-
-  <div class="grid-block app-content">
-    <!-- sidebar html -->
-    <div class="grid-block sidebar vertical" [class.big]="showFullSideBar">
-      <a (click)="showFullSideBar = !showFullSideBar" class="change-width">
-        <span class="icon" [hidden]="!showFullSideBar">keyboard_arrow_left</span>
-        <span class="icon" [hidden]="showFullSideBar">keyboard_arrow_right</span>
-      </a>
-      <div class="grid-block">
-        <vertical-menu [menu]="menu"></vertical-menu>
-      </div>
-    </div>
-
-    <!--main content-->
-    <div class="grid-block page-content vertical" id="page-content">
-      <div class="grid-container">
-        <router-outlet></router-outlet>
-      </div>
-
+  <!--main content-->
+  <div class="grid-block grid-container page-content" id="page-content">
+    <div>
+      <router-outlet></router-outlet>
     </div>
   </div>
-
   <snackbar id="snackbar" class="snackbar"></snackbar>
 </div>

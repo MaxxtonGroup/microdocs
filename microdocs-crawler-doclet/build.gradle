@@ -16,7 +16,7 @@ dependencies {
     testCompile("junit:junit:4.12")
 }
 
-group='com.maxxton.microdocs'
+group='com.maxxton'
 version = '1.0'
 
 task fatJar(type: Jar) {
@@ -29,12 +29,4 @@ task fatJar(type: Jar) {
     include('com/maxxton/**')
     include('com/fasterxml/**')
     with jar
-}
-
-uploadArchives {
-    repositories {
-        mavenLocal()
-        //        mavenDeployer {
-        //        }
-    }
 }

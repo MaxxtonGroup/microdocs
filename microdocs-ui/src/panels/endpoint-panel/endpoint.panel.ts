@@ -1,10 +1,9 @@
 import {Component, Input} from '@angular/core';
 import {ROUTER_DIRECTIVES, ActivatedRoute, Router} from "@angular/router";
 
-import {COMPONENTS} from "@maxxton/components/dist/components";
-import {FILTERS} from "@maxxton/components/dist/filters";
+import {COMPONENTS} from "@maxxton/components/components";
+import {FILTERS} from "@maxxton/components/filters";
 import {Path, Schema, Project, Method} from 'microdocs-core-ts/dist/domain';
-import {SchemaHelper} from "microdocs-core-ts/dist/helpers/schema/schema.helper";
 
 import {BodyRenderPanel} from '../body-render/body-render.panel';
 import {ProblemPanel} from "../problem-panel/problem.panel";

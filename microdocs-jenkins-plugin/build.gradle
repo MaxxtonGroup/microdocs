@@ -1,4 +1,4 @@
-group 'com.maxxton.microdocs'
+group 'com.maxxton'
 version '1.0'
 
 buildscript {

@@ -114,13 +114,13 @@ gulp.task('test', [], function () {
 });
 
 gulp.task('package-distribution-development', [], function (done) {
-  runSequence('clean', 'config-development', 'compile', 'package-distribution', 'compile-sourcemaps', 'bundle-libs', done);
+  runSequence('clean', 'config-development', 'compile', 'package-distribution', 'compile-sourcemaps', done);
 });
 gulp.task('package-distribution-acceptance', [], function (done) {
-  runSequence('clean', 'config-acceptance', 'compile', 'package-distribution', 'compile-sourcemaps', 'bundle-libs', done);
+  runSequence('clean', 'config-acceptance', 'compile', 'package-distribution', 'compile-sourcemaps', done);
 });
 gulp.task('package-distribution-production', [], function (done) {
-  runSequence('clean', 'config-production', 'compile', 'package-distribution', 'compile-sourcemaps', 'bundle-libs', done);
+  runSequence('clean', 'config-production', 'compile', 'package-distribution', 'compile-sourcemaps', done);
 });
 
 gulp.task('package-distribution', [], function () {

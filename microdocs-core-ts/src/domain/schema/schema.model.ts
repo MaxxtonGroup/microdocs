@@ -1,41 +1,42 @@
+import {SchemaMappings} from "./schema-mappings.model";
+export interface Schema {
 
-export interface Schema{
+  //all
+  type: string;
+  default?: any;
+  description?: string;
+  required?: boolean;
+  multipleOf?: number;
+  maximum?: number;
+  minimum?: number;
+  exclusiveMaximum?: number;
+  inclusiveMinimum?: number;
+  maxLength?: number;
+  minLength?: number;
+  pattern?: string;
+  maxItems?: number;
+  minItems?: number;
+  uniqueItems?: number;
+  maxProperties?: number;
+  minProperties?: number;
+  mappings?:SchemaMappings;
 
-    //all
-    type:string;
-    default?:any;
-    description?:string;
-    required?:boolean;
-    multipleOf?:number;
-    maximum?:number;
-    minimum?:number;
-    exclusiveMaximum?:number;
-    inclusiveMinimum?:number;
-    maxLength?:number;
-    minLength?:number;
-    pattern?:string;
-    maxItems?:number;
-    minItems?:number;
-    uniqueItems?:number;
-    maxProperties?:number;
-    minProperties?:number;
-    
-    //array
-    items?:Schema;
-    collectionFormat?:string;
-    
-    //object
-    properties?:{[name:string]:Schema};
-    allOf?:Schema[];
-    name?:string;
-    simpleName?:string;
-    genericName?:string;
-    genericSimpleName?:string;
+  //array
+  items?: Schema;
+  collectionFormat?: string;
 
-    //enum
-    enum?:any[];
+  //object
+  properties?: {[name: string]: Schema};
+  allOf?: Schema[];
+  name?: string;
+  simpleName?: string;
+  genericName?: string;
+  genericSimpleName?: string;
 
-    //reference
-    $ref?:string;
+  //enum
+  enum?: any[];
+
+  //reference
+  $ref?: string;
 
 }

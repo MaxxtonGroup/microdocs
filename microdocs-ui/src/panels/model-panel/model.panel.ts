@@ -2,8 +2,8 @@ import {Component, Input} from "@angular/core";
 import {ROUTER_DIRECTIVES} from "@angular/router";
 import {PrettyJsonComponent} from 'angular2-prettyjson';
 
-import {COMPONENTS} from "@maxxton/components/dist/components";
-import {FILTERS} from "@maxxton/components/dist/filters";
+import {COMPONENTS} from "@maxxton/components/components";
+import {FILTERS} from "@maxxton/components/filters";
 import {SchemaHelper} from "microdocs-core-ts/dist/helpers/schema/schema.helper";
 import {Schema} from "microdocs-core-ts/dist/domain";
 

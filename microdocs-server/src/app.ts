@@ -77,8 +77,10 @@ class Server {
     if (Config.has("staticFolder")) {
       staticFolder = Config.get("staticFolder");
     }
-    console.info("static: " + __dirname + "/../" + staticFolder);
-    this.app.use(express.static(path.join(__dirname, '../' + staticFolder)));
+    staticFolder.split(";").forEach(folder => {
+      console.info("static: " + __dirname + "/../" + folder);
+      this.app.use(express.static(path.join(__dirname, '../' + folder)));
+    });
 
     // swagger mock server
     // var self = this;
