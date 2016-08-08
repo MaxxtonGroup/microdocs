@@ -11,7 +11,7 @@ export class BaseRoute{
     /**
      * The mapping of this route
      */
-    protected mapping : RequestMapping;
+    mapping : RequestMapping;
 
     /**
      * Path of this route
@@ -39,7 +39,7 @@ export class BaseRoute{
 
 }
 
-interface RequestMapping{
+export interface RequestMapping{
 
     path : string;
     methods : string[];

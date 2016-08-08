@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
- * @author hermans.s
+ * Command line configurations for JavaDoc
+ * @author Steven Hermans
  */
 public class Configuration {
 
@@ -13,6 +13,9 @@ public class Configuration {
     private static final String OPTION_FILENAME = "-f";
     private static final String OPTION_LINKPATH = "-linkpath";
     private static final String OPTION_CRAWLER = "-crawler";
+    private static final String OPTION_VERSION = "-version";
+    private static final String OPTION_GROUP = "-group";
+    private static final String OPTION_PROJECT_NAME = "-projectName";
     private static final String DEFAULT_DIRECTORY = ".";
     private static final String DEFAULT_FILENAME = "./microdocs.json";
     private static final String DEFAULT_LINKPATH = "./";
@@ -41,6 +44,18 @@ public class Configuration {
         return getOption(OPTION_CRAWLER) != null ? getOption(OPTION_CRAWLER) : DEFAULT_CRAWLER;
     }
 
+    public String getVersion() {
+        return getOption(OPTION_VERSION) != null ? getOption(OPTION_VERSION) : null;
+    }
+
+    public String getGroup() {
+        return getOption(OPTION_GROUP) != null ? getOption(OPTION_GROUP) : null;
+    }
+
+    public String getProjectName() {
+        return getOption(OPTION_PROJECT_NAME) != null ? getOption(OPTION_PROJECT_NAME) : null;
+    }
+
     private String getOption(String optionName) {
         for (String[] option : options) {
             if (option[0].equals(optionName)) {
@@ -56,6 +71,9 @@ public class Configuration {
             case OPTION_FILENAME:
             case OPTION_LINKPATH:
             case OPTION_CRAWLER:
+            case OPTION_VERSION:
+            case OPTION_GROUP:
+            case OPTION_PROJECT_NAME:
                 return 2;
             default:
                 if(IGNORED_OPTIONS.containsKey(option)){

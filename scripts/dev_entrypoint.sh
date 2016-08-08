@@ -6,8 +6,8 @@ cd microdocs-ui
 #npm install
 
 cd ../microdocs-server
-npm install
+#npm install
 
-npm i nodemon -g
+npm install -g nodemon
 
 npm run debug

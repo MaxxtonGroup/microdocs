@@ -1,0 +1,32 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
+         xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:c="/lib/credentials">
+
+  <f:entry title="Project name" field="microDocsProjectName" description="Add the project name">
+    <f:textbox/>
+  </f:entry>
+
+  <f:entry title="Group name" field="microDocsGroupName" description="Add the group name (eg. services)">
+    <f:textbox/>
+  </f:entry>
+
+  <f:entry title="Source folder" field="microDocsSourceFolder" description="Add MicroDocs source folder (eg. /src/main/java)">
+    <f:textbox/>
+  </f:entry>
+
+  <f:entry title="MicroDocs Report file" field="microDocsReportFile" description="Add MicroDocs report file (eg. /build/reports/microdocs.json)">
+    <f:textbox/>
+  </f:entry>
+
+  <f:entry title="Fail build" field="microDocsFailBuild" description="Let the build fail when there are problems">
+    <f:checkbox />
+  </f:entry>
+
+  <f:entry title="Publish" field="microDocsPublish" description="Publish reports to the MicroDocs server">
+    <f:checkbox />
+  </f:entry>
+
+  <f:entry title="	Post comments into pull request" field="microDocsNotifyPullRequest" description="Post a comment into the corresponding pull request">
+    <f:checkbox />
+  </f:entry>
+
+</j:jelly>

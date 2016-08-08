@@ -1,0 +1,13 @@
+<div class="grid-block sidebar vertical">
+    <a class="logo" [routerLink]="['/']"><span class="blue">Micro</span><span class="orange">Docs</span></a>
+
+    <!-- sidebar html -->
+    <a (click)="showFullSideBar = !showFullSideBar" class="change-width">
+        <span class="icon" [hidden]="!showFullSideBar">keyboard_arrow_left</span>
+        <span class="icon" [hidden]="showFullSideBar">keyboard_arrow_right</span>
+    </a>
+
+    <div class="grid-block">
+        <vertical-menu [menu]="customMenu"></vertical-menu>
+    </div>
+</div>
