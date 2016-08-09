@@ -1,7 +1,7 @@
 
 import {PathCheck} from "./path-check";
 import {Path, Project, Schema} from 'microdocs-core-ts/dist/domain';
-import {WARNING} from "microdocs-core-ts/dist/domain/problem/problem-level.model";
+import {WARNING, ERROR} from "microdocs-core-ts/dist/domain/problem/problem-level.model";
 import {ProblemReporter}  from 'microdocs-core-ts/dist/helpers';
 
 export class ResponseCheck implements PathCheck{
@@ -23,7 +23,7 @@ export class ResponseCheck implements PathCheck{
         var clientSchema = clientEndpoint.responses['default'].schema;
         this.checkSchema(producerSchema, clientSchema, problemReport, '');
       }else{
-        problemReport.report(WARNING, "There is no response body");
+        problemReport.report(ERROR, "There is no response body");
       }
     }
   }
@@ -51,7 +51,7 @@ export class ResponseCheck implements PathCheck{
           }
         }
       } else if (clientSchema.required) {
-        problemReport.report(WARNING, "Missing required value at " + path);
+        problemReport.report(ERROR, "Missing required value at " + path);
       }
     }
   }

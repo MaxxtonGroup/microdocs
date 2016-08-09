@@ -1,7 +1,7 @@
 import {PathCheck} from "./path-check";
 import {Project, Path, Schema} from "microdocs-core-ts/dist/domain";
 import {SchemaHelper, ProblemReporter} from "microdocs-core-ts/dist/helpers";
-import {WARNING} from "microdocs-core-ts/dist/domain/problem/problem-level.model";
+import {WARNING, ERROR} from "microdocs-core-ts/dist/domain/problem/problem-level.model";
 import {BODY} from 'microdocs-core-ts/dist/domain/path/parameter-placing.model';
 import {OBJECT, ARRAY} from 'microdocs-core-ts/dist/domain/schema/schema-type.model';
 
@@ -33,7 +33,7 @@ export class BodyParamsCheck implements PathCheck {
           }
         });
         if (!exists && producerParam.required) {
-          problemReport.report(WARNING, "Missing request body");
+          problemReport.report(ERROR, "Missing request body");
         }
       }
     });
@@ -62,7 +62,7 @@ export class BodyParamsCheck implements PathCheck {
           }
         }
       }else if(producerSchema.required){
-        problemReport.report(WARNING, "Missing required value at " + path);
+        problemReport.report(ERROR, "Missing required value at " + path);
       }
     }
   }

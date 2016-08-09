@@ -1,6 +1,6 @@
 import {PathCheck} from "./path-check";
 import {Path, Project} from "microdocs-core-ts/dist/domain";
-import {WARNING} from "microdocs-core-ts/dist/domain/problem/problem-level.model";
+import {WARNING, ERROR} from "microdocs-core-ts/dist/domain/problem/problem-level.model";
 import {ProblemReporter}  from 'microdocs-core-ts/dist/helpers';
 
 export class QueryParamsCheck implements PathCheck {
@@ -31,7 +31,7 @@ export class QueryParamsCheck implements PathCheck {
           }
         });
         if(!exists && producerParam.required){
-          problemReport.report(WARNING, "Missing query parameter " + producerParam.name);
+          problemReport.report(ERROR, "Missing query parameter " + producerParam.name);
         }
       }
     });
