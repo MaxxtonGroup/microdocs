@@ -5,4 +5,5 @@ services:
   - docker
 
 script:
-  - docker build -t maxxton/microdocs .
+  - docker build -t microdocs .
+  - docker tag microdocs maxxton/microdocs:

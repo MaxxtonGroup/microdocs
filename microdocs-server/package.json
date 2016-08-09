@@ -10,11 +10,11 @@
   "scripts": {
     "linkDevelopment": "npm link microdocs-core-ts",
     "unlinkDevelopment": "npm unlink microdocs-core-ts",
-    "linkProduction": "npm link microdocs-core-ts",
+    "link": "npm link microdocs-core-ts",
+    "unlink": "npm unlink microdocs-core-ts",
     "start": "node index.js",
     "debug": "nodemon --debug-brk index.js",
     "test": "mocha",
-    "grunt": "grunt",
     "postinstall": "typings install",
     "package-distribution": "gulp package-distribution-production"
   },
