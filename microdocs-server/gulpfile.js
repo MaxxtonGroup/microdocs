@@ -17,6 +17,7 @@ var plumber = require('gulp-plumber');
 var fs = require("fs");
 var nodemon = require('gulp-nodemon');
 const tscConfig = require('./src/tsconfig.json');
+var mocha = require('gulp-mocha');
 
 var settings = {
   env: 'development',
@@ -29,7 +30,7 @@ gulp.task('default', function (done) {
   runSequence('clean', 'compile', 'config-development', 'run', 'watch', done);
 });
 
-gulp.task('compile', ['compile-typescript']);
+gulp.task('compile', ['test']);
 
 gulp.task('compile-typescript', [], function () {
   // copy all compiled typescript code
@@ -109,8 +110,10 @@ gulp.task('clean', [], function () {
   return gulp.src(settings.distFolder, {read: false}).pipe(clean());
 });
 
-gulp.task('test', [], function () {
-
+gulp.task('test', ['compile-typescript'], function () {
+  return gulp.src(['dist/test/*.js'], { read: false })
+      .pipe(mocha({ reporter: 'list' }))
+      .on('error', gutil.log);
 });
 
 gulp.task('package-distribution-development', [], function (done) {

@@ -1,7 +1,7 @@
 import {PathCheck} from "./path-check";
 import {Project, Path, Schema} from "microdocs-core-ts/dist/domain";
 import {SchemaHelper, ProblemReporter} from "microdocs-core-ts/dist/helpers";
-import {WARNING} from "microdocs-core-ts/dist/domain/problem/problem-level.model";
+import {WARNING, ERROR} from "microdocs-core-ts/dist/domain/problem/problem-level.model";
 import {BODY} from 'microdocs-core-ts/dist/domain/path/parameter-placing.model';
 import {OBJECT, ARRAY} from 'microdocs-core-ts/dist/domain/schema/schema-type.model';
 
@@ -21,7 +21,7 @@ export class BodyParamsCheck implements PathCheck {
       clientParams = [];
     }
     producerParams.forEach(producerParam => {
-      if (producerParam.in == BODY && producerParam.required) {
+      if (producerParam.in == BODY) {
         var exists = false;
         clientParams.forEach(clientParam => {
           if (producerParam.in == clientParam.in) {
@@ -29,15 +29,11 @@ export class BodyParamsCheck implements PathCheck {
             var producerSchema:Schema = SchemaHelper.collect(producerParam.schema, [], project);
             var clientSchema = SchemaHelper.collect(clientParam.schema, [], project);
             this.checkSchema(clientSchema, producerSchema, problemReport, "");
-
-            if (producerParam.type != clientParam.type) {
-              problemReport.report(WARNING, "Type mismatches query parameter " + producerParam.name + ", expected: " + producerParam.type + ", found: " + clientParam.type);
-            }
             return true;
           }
         });
-        if (!exists) {
-          problemReport.report(WARNING, "Missing request body");
+        if (!exists && producerParam.required) {
+          problemReport.report(ERROR, "Missing request body");
         }
       }
     });
@@ -66,7 +62,7 @@ export class BodyParamsCheck implements PathCheck {
           }
         }
       }else if(producerSchema.required){
-        problemReport.report(WARNING, "Missing required value at " + path);
+        problemReport.report(ERROR, "Missing required value at " + path);
       }
     }
   }

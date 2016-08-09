@@ -248,25 +248,28 @@ public class MicroDocsChecker extends Builder {
     Map<String, Map<Integer, List<CheckProblem>>> problemsMap = new HashMap();
 
     for(CheckProblem problem : response.getProblems()){
-      String file = new File(microDocsSourceFolder, problem.getPath()).getPath();
-      if(!problemsMap.containsKey(file)){
-        problemsMap.put(file, new HashMap());
-      }
+      if(problem.getPath() == null){
+        stashClient.postPullRequestComment(buildInfo, problem.getLevel() + ": " + problem.getMessage());
+      }else {
+        String file = new File(microDocsSourceFolder, problem.getPath()).getPath();
+        if (!problemsMap.containsKey(file)) {
+          problemsMap.put(file, new HashMap());
+        }
 
-      Map<Integer, List<CheckProblem>> fileMap = problemsMap.get(file);
-      if(!fileMap.containsKey(problem.getLineNumber())){
-        fileMap.put(problem.getLineNumber(), new ArrayList());
+        Map<Integer, List<CheckProblem>> fileMap = problemsMap.get(file);
+        if (!fileMap.containsKey(problem.getLineNumber())) {
+          fileMap.put(problem.getLineNumber(), new ArrayList());
+        }
+        List<CheckProblem> problemList = fileMap.get(problem.getLineNumber());
+        problemList.add(problem);
       }
-      List<CheckProblem> problemList = fileMap.get(problem.getLineNumber());
-      problemList.add(problem);
-
     }
 
     for(String file : problemsMap.keySet()){
       for(int lineNumber : problemsMap.get(file).keySet()){
         String comment = "";
         for(CheckProblem problem : problemsMap.get(file).get(lineNumber)){
-          String message = problem.getMessage();
+          String message = problem.getLevel() + ": " + problem.getMessage();
           if(problem.getClient() != null){
             message = "**Breaking change detected with [" + problem.getClient().getTitle() + "](" + problem.getClient().getSourceLink() + "):** " + message;
           }

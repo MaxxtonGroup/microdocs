@@ -31,7 +31,6 @@ public abstract class Crawler {
      * @param projectBuilder builder of the project
      * @param classes list of ReflectClasses
      * @return extracted project
-     * @throws Exception
      */
     protected abstract Project extractProject(ProjectBuilder projectBuilder, List<ReflectClass<?>> classes);
 

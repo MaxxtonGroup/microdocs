@@ -1,40 +1,60 @@
-[![Build Status](https://travis-ci.org/MaxxtonGroup/microservice-documentation-tool.svg?branch=master)](https://travis-ci.org/MaxxtonGroup/microservice-documentation-tool)
-# Microservice Documentation tool
+[![Build Status](https://travis-ci.org/MaxxtonGroup/microdocs.svg?branch=master)](https://travis-ci.org/MaxxtonGroup/microdocs)
+# MicroDocs
 
-This is an advanced tool which can automatically documentate your whole microservice architecture. 
-It supports REST endpoints and clients which consumes those endpoints. 
-With this information it can draw fancy graphs and detect breaking changes between services.
+MicroDocs is a tool which preserve compatibilities between RestApi's of web services.
+It is designed and proven itself to work well in a Microservice architecture.
 
-## How does it work?
-* All information (like endpoints, clients, domain models, repositories) are extracted from a project to a json file.
-* This json file is then being analysed and aggregated so the data could be accessed quickly.
-* A web frontend uses the aggregated data to show smart and useful documentation. 
-* Other tools can be integrated, so they can access the data.
+Full documentation can be found at [microdocs.io](http://microdocs.io/docs)
 
-(Currently Java Spring projects are supported for extracting information automatically. 
-But almost any kind of tool could be used to extract the necessary information from other kinds of projects  
+## Features
+* **User interface**
+    * Overview of all projects with their dependencies
+    * RestAPI definitions
+    * Show compatibility problems
+* **Server**
+    * Follows the [Open Api specifications](https://openapis.org/specification) with some additions
+    * Central place to store all project definitions
+    * Versioning support
+    * RestAPI for many integrations
+    * Easy setup through Docker
+* **Crawlers**
+    * Generate definitions from projects
+    * Crawl projects at build time
+    * Plugin for gradle projects
+    * Currently only Spring applications are supported
+* **Integrations**
+    * Jenkins plugin
+        * Publish new definitions to the MicroDocs server
+        * Check for compatibility problems
+        * Report back on a pull request in BitBucket/Stash
+    * Gradle plugin
+        * Generate definitions from projects
+        * Publish new definitions to the MicroDocs server
+        * Check for compatibility problems
+    * Kubernetes (coming soon...)
+    * Api testing (coming soon...)
+    * Mock server (coming soon...)
+    * [Swagger integrations](http://swagger.io/open-source-integrations/)
+    * [Api Blueprint integrations](https://apiblueprint.org/tools.html) (coming soon...)
 
 ## Setup
+MicroDocs consists out of crawlers, server, ui and integrations tools.
+**Crawlers** generates definitions from the source code of a project.
+These definitions are then published at the MicroDocs server.
+The **server** then checks for compatibility problems and aggregate the result.
+The **ui** or other **integration tools** request the result through the RestApi of the server.
 
-1. **Setup the frontend**
-   Copy the content of the web folder to any kind of webserver (eg. apache/nginx) with php5 support
-   
-2. **Configuration**
-    Make a new folder '/projects' on the webserver (in this folder all the project information will be stored).
-    Edit the file '/scripts/settings.json' and adjust it to match your needs.
+### Setup MicroDocs Server
+The MicroDocs server with the ui is available on [dockerhub](https://hub.docker.com/r/maxxton/microdocs/).
+To install via Docker run:
+```
+$ docker run --name microdocs -v /microdocs-server/data -p 3000:3000 -d maxxton/microdocs
+```
 
-3. **Setup your projects**
-   You need to extract the information from your project. A good way too do this, is by including some plugin in your build tool.
-   In this example I use Gradle as build tool and the 'gradle-plugin' from this repository as plugin.
-   This plugin adds some extra tasks to my build tool, so now I can extract javadoc/sources/api documentation from my project.
-   But for example a typescript project you could use typedocs as a plugin for your npm build tool. This extract documentation of your typescript project, just like javadoc for java.
-   
-4. **Move the generated documentation**
-   Copy the generated documentation to /projects/{group}/{projectName}/{version}/ on the webserver.
-   (tip: use a build server eg. Jenkins to automate this process)
-   
-5. **Analyse the data**
-   After you add/modify documentation, you need to run '/scripts/reindex.php' to analyse all the data.
-   
-## Save time and enjoy!
+### Setup Crawlers
+Crawlers are project and framework specific. Currently only the Spring framework is supported. 
+The setup for each Crawler can be found in their subdirectories
+
+### Setup Integrations tools
+Integrations tools have their own setup. They can be found in their subdirectories
 

@@ -1,7 +1,7 @@
 import {PathCheck} from "./path-check";
 import {Path, Project, Parameter} from "microdocs-core-ts/dist/domain";
 import {PATH} from "microdocs-core-ts/dist/domain/path/parameter-placing.model";
-import {WARNING} from "microdocs-core-ts/dist/domain/problem/problem-level.model";
+import {WARNING, ERROR} from "microdocs-core-ts/dist/domain/problem/problem-level.model";
 import {ProblemReporter}  from 'microdocs-core-ts/dist/helpers';
 
 export class PathParamsCheck implements PathCheck {
@@ -23,10 +23,10 @@ export class PathParamsCheck implements PathCheck {
         var clientParam = this.getPathVariable(clientParamName, clientEndpoint);
         var producerParam = this.getPathVariable(producerParamName, producerEndpoint);
         if(clientParam == null){
-          problemReport.report(WARNING, "path variable '" + clientParamName + "' is missing", clientEndpoint.controller, clientEndpoint.method);
+          problemReport.report(ERROR, "path variable '" + clientParamName + "' is missing", clientEndpoint.controller, clientEndpoint.method);
         }
         if(producerParam == null){
-          problemReport.report(WARNING, "path variable '" + producerParamName + "' is missing on the controller", clientEndpoint.controller, clientEndpoint.method);
+          problemReport.report(ERROR, "path variable '" + producerParamName + "' is missing on the controller", clientEndpoint.controller, clientEndpoint.method);
         }
         if(clientParam != null && producerParam != null){
           if(clientParam.type != producerParam.type){

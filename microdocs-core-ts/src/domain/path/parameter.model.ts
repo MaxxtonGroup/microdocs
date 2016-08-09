@@ -13,7 +13,7 @@ export interface Parameter {
     allowEmptyValue?:boolean;
 
     //all
-    type:string;
+    type?:string;
     default?:any;
     multipleOf?:number;
     maximum?:number;
