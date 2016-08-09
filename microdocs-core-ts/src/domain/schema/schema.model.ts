@@ -2,7 +2,7 @@ import {SchemaMappings} from "./schema-mappings.model";
 export interface Schema {
 
   //all
-  type: string;
+  type?: string;
   default?: any;
   description?: string;
   required?: boolean;

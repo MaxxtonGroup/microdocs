@@ -21,7 +21,7 @@ export class BodyParamsCheck implements PathCheck {
       clientParams = [];
     }
     producerParams.forEach(producerParam => {
-      if (producerParam.in == BODY && producerParam.required) {
+      if (producerParam.in == BODY) {
         var exists = false;
         clientParams.forEach(clientParam => {
           if (producerParam.in == clientParam.in) {
@@ -29,14 +29,10 @@ export class BodyParamsCheck implements PathCheck {
             var producerSchema:Schema = SchemaHelper.collect(producerParam.schema, [], project);
             var clientSchema = SchemaHelper.collect(clientParam.schema, [], project);
             this.checkSchema(clientSchema, producerSchema, problemReport, "");
-
-            if (producerParam.type != clientParam.type) {
-              problemReport.report(WARNING, "Type mismatches query parameter " + producerParam.name + ", expected: " + producerParam.type + ", found: " + clientParam.type);
-            }
             return true;
           }
         });
-        if (!exists) {
+        if (!exists && producerParam.required) {
           problemReport.report(WARNING, "Missing request body");
         }
       }

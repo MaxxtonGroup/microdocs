@@ -19,7 +19,7 @@ export class QueryParamsCheck implements PathCheck {
       clientParams = [];
     }
     producerParams.forEach(producerParam => {
-      if(producerParam.in == "query" && producerParam.required){
+      if(producerParam.in == "query"){
         var exists = false;
         clientParams.forEach(clientParam => {
           if(producerParam.name == clientParam.name && producerParam.in == clientParam.in){
@@ -30,7 +30,7 @@ export class QueryParamsCheck implements PathCheck {
             return true;
           }
         });
-        if(!exists){
+        if(!exists && producerParam.required){
           problemReport.report(WARNING, "Missing query parameter " + producerParam.name);
         }
       }

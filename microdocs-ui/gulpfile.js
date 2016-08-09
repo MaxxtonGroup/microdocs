@@ -183,7 +183,7 @@ gulp.task('package-distribution-acceptance', [], function (done) {
   runSequence('clean', 'config-acceptance', 'compile', 'package-distribution', 'compile-sourcemaps', 'bundle-libs', done);
 });
 gulp.task('package-distribution-production', [], function (done) {
-  runSequence('clean', 'config-production', 'compile', 'package-distribution', 'compile-sourcemaps', done);
+  runSequence('clean', 'config-production', 'compile', 'package-distribution', 'compile-sourcemaps', 'bundle-libs', done);
 });
 
 gulp.task('package-distribution', [], function () {

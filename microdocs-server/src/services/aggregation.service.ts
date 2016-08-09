@@ -356,7 +356,7 @@ export class AggregationService {
    */
   private previousProject(project:Project):Project {
     // load older version if so requested
-    var prevProjectInfo = null;
+    var prevProjectInfo:ProjectInfo = null;
 
     var sortedVersions = project.info.versions.sort();
     var index = sortedVersions.indexOf(project.info.version);

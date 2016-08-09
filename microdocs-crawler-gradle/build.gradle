@@ -14,14 +14,14 @@ buildscript {
 
 repositories {
     mavenCentral()
-    mavenLocal()
+//    mavenLocal()
 }
 
 dependencies {
     compile gradleApi()
     compile ("com.fasterxml.jackson.core:jackson-databind:2.7.5")
     compile 'org.codehaus.groovy:groovy-all:2.4.4'
-    compile ("com.maxxton.microdocs:microdocs-core-java:1.0")
+    compile ("com.maxxton:microdocs-core-java:1.0")
 }
 
 group='com.maxxton'
