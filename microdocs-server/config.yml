@@ -1,6 +1,13 @@
 default:
   port: 3000
   basePath: /api/v1
+  tempFolder: /tmp
   staticFolder: ../microdocs-ui/dist;../microdocs-ui/node_modules
   dataFolder: data
+  application-name: Maxxton 2
+  application-version: 2.0
+  application-description: Maxxton 2 rest api
+  application-schema: http
+  application-host: localhost:8000
+  application-basePath: ''
 

@@ -1,34 +1,40 @@
-import {ResponseHandler} from "./response.handler";
-import {JsonResponseHandler} from "./json.handler";
-import {YamlResponseHandler} from "./yaml.handler";
+import {BaseResponseHandler} from "./base-response.handler";
 import * as express from "express";
+import {SwaggerResponseHandler} from "./swagger-response.handler";
+import {MicroDocsResponseHandler} from "./microdocs-response.handler";
+import {PostmanResponseHandler} from "./postman-response.handler";
 
 export class ResponseHelper{
 
-  private static jsonResponse = new JsonResponseHandler();
-  private static yamlResponse = new YamlResponseHandler();
+  private static baseResponse = new BaseResponseHandler();
+  private static microDocsResponse = new MicroDocsResponseHandler();
+  private static swaggerResponse = new SwaggerResponseHandler();
+  private static postmanResponse = new PostmanResponseHandler();
 
-  private static responses:{[key:string]:ResponseHandler} = {
-      "application/json": ResponseHelper.jsonResponse,
-      "application/yaml": ResponseHelper.yamlResponse
+  private static responses:{[key:string]:BaseResponseHandler} = {
+      "default": ResponseHelper.baseResponse,
+      "swagger": ResponseHelper.swaggerResponse,
+      "microdocs": ResponseHelper.microDocsResponse,
+      "postman": ResponseHelper.postmanResponse
   };
 
-  static getDefaultHandler():ResponseHandler{
-    return ResponseHelper.jsonResponse;
+  static getDefaultHandler():BaseResponseHandler{
+    return ResponseHelper.baseResponse;
   }
 
-  static getHandler(req: express.Request):ResponseHandler{
-    var accept = req.get('accept');
-    if(accept == undefined){
-      return ResponseHelper.getDefaultHandler();
-    }else{
-      for(var mime in this.responses){
-        if(req.accepts(mime)){
-          return this.responses[mime];
-        }
+  static getHandler(req: express.Request):BaseResponseHandler{
+    var exportType = req.query.export;
+    if(exportType == undefined){
+      exportType = req.header('export');
+      if(exportType == undefined){
+        exportType = 'default';
       }
-      return null;
     }
+    var response = this.responses[exportType.toLowerCase()];
+    if(response == undefined){
+      response = this.getDefaultHandler();
+    }
+    return response;
   }
 
 }
