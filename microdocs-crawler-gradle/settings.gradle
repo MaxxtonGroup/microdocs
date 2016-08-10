@@ -1,4 +1,1 @@
 rootProject.name = 'microdocs-crawler-gradle'
-
-include ':microdocs-core-java'
-project(':microdocs-core-java').projectDir = new File(settingsDir, '../microdocs-core-java')
