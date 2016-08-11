@@ -1,0 +1,9 @@
+{
+  "name": "microdocs-crawler-angular2",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {},
+  "dependencies": {
+    "typescript": "^1.8.10"
+  }
+}
