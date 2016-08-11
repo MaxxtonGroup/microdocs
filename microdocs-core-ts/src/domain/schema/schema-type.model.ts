@@ -5,4 +5,5 @@ export const
   NUMBER = 'number',
   INTEGER = 'integer',
   BOOLEAN = 'boolean',
-  ENUM = 'enum';
+  ENUM = 'enum',
+  DATE = 'date';

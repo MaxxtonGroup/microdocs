@@ -15,7 +15,7 @@ import {ResponseHelper} from "./responses/response.helper";
  */
 export class PublishRoute extends BaseRoute {
 
-  mapping = {methods: ["put"], path: "/projects/:title", handler: this.publishProject};
+  mapping = {methods: ["put"], path: "/projects/:title", handler: this.publishProject, upload: true};
 
   public publishProject(req: express.Request, res: express.Response, next: express.NextFunction) {
     var handler = ResponseHelper.getHandler(req);
@@ -31,8 +31,19 @@ export class PublishRoute extends BaseRoute {
           failOnProblems = false;
         }
 
+        //get body
+        var body = null;
+        if(req.get('content-type') == 'application/json'){
+          body = req.body;
+        }else{
+          handler.handleUnsupportedMediaType(req, res);
+          return;
+        }
+
+
+
         //check request body
-        if (req.body != undefined) {
+        if (body != null) {
           var report = req.body as Project;
 
           //check version is provided

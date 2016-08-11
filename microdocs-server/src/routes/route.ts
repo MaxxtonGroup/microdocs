@@ -6,43 +6,48 @@ import {RequestHandler} from 'express';
  * Base route
  * Adds mapping to the route itself
  */
-export class BaseRoute{
+export class BaseRoute {
 
-    /**
-     * The mapping of this route
-     */
-    mapping : RequestMapping;
+  /**
+   * The mapping of this route
+   */
+  mapping: RequestMapping;
 
-    /**
-     * Path of this route
-     * @returns {string}
-     */
-    public path() : string{
-        return this.mapping.path;
-    }
+  /**
+   * Path of this route
+   * @returns {string}
+   */
+  public path(): string {
+    return this.mapping.path;
+  }
 
-    /**
-     * List of request methods, eg. ['get', 'post']
-     * @returns {string[]}
-     */
-    public methods() : string[]{
-        return this.mapping.methods;
-    }
+  /**
+   * List of request methods, eg. ['get', 'post']
+   * @returns {string[]}
+   */
+  public methods(): string[] {
+    return this.mapping.methods;
+  }
 
-    /**
-     * Function which handles the request
-     * @returns {RequestHandler}
-     */
-    public handler() : RequestHandler{
-        return this.mapping.handler;
-    }
+  /**
+   * Function which handles the request
+   * @returns {RequestHandler}
+   */
+  public handler(): RequestHandler {
+    return this.mapping.handler;
+  }
+
+  public upload(): boolean{
+    return this.mapping.upload;
+  }
 
 }
 
-export interface RequestMapping{
+export interface RequestMapping {
 
-    path : string;
-    methods : string[];
-    handler : RequestHandler;
+  path: string;
+  methods: string[];
+  handler: RequestHandler;
+  upload?: boolean
 
 }
