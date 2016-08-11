@@ -24,6 +24,7 @@ export abstract class ResponseHandler {
   }
 
   handleInternalServerError(req: express.Request, res: express.Response, error:Error) {
+    console.error(error.stack);
     this.handleError(req, res, {status: 500, error: 'Internal Server Error', message: error.message});
   }
 
