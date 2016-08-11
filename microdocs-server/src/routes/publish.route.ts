@@ -23,6 +23,12 @@ export class PublishRoute extends BaseRoute {
       ResponseHelper.getDefaultHandler().handleNotAcceptable(req, res);
     } else {
       try {
+        var env = PublishRoute.getEnv(req);
+        if(env == null){
+          handler.handleBadRequest(req, res, "env '" + req.query.env + "' doesn't exists");
+          return;
+        }
+
         var title = req.params.title;
         var version = req.query.version;
         var group = req.query.group;
@@ -75,14 +81,14 @@ export class PublishRoute extends BaseRoute {
           report.info.title = title;
 
           // check report
-          var problems: Problem[] = AggregationService.bootstrap().checkProject(report);
+          var problems: Problem[] = AggregationService.bootstrap().checkProject(env, report);
 
           if (!(failOnProblems && problems.filter(problem => problem.level == ERROR || problem.level == WARNING).length > 0)) {
             // save report
-            ReportJsonRepository.bootstrap().storeProject(report);
+            ReportJsonRepository.bootstrap().storeProject(env, report);
 
             // run reindex
-            var treeNode = AggregationService.bootstrap().reindex();
+            var treeNode = AggregationService.bootstrap().reindex(env);
           } else {
             console.warn("Fail publishing due to problems");
           }

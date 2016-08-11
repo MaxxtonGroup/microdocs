@@ -17,14 +17,14 @@ export class ProjectService{
     return new ProjectService();
   }
 
-  public storeAggregatedProjects(node:TreeNode) : void{
-    this.projectRepo.storeAggregatedProjects(node);
+  public storeAggregatedProjects(env:string, node:TreeNode) : void{
+    this.projectRepo.storeAggregatedProjects(env, node);
   }
 
-  public storeAggregatedProject(project:Project) : void{
+  public storeAggregatedProject(env:string, project:Project) : void{
     this.addResponseExamples(project);
 
-    this.projectRepo.storeAggregatedProject(project);
+    this.projectRepo.storeAggregatedProject(env, project);
   }
 
   private addResponseExamples(project:Project){

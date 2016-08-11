@@ -17,6 +17,12 @@ export class CheckRoute extends BaseRoute {
       ResponseHelper.getDefaultHandler().handleNotAcceptable(req, res);
     }else {
       try {
+        var env = CheckRoute.getEnv(req);
+        if(env == null){
+          handler.handleBadRequest(req, res, "env '" + req.query.env + "' doesn't exists");
+          return;
+        }
+
         var project = req.body as Project;
         if (project != null && project != undefined) {
           if (project.info == null || project.info == undefined) {
@@ -33,7 +39,7 @@ export class CheckRoute extends BaseRoute {
           project.info.version = '9999999999.0.0';
           project.info.versions = ['9999999999.0.0'];
 
-          var problems: Problem[] = AggregationService.bootstrap().checkProject(project);
+          var problems: Problem[] = AggregationService.bootstrap().checkProject(env, project);
           handler.handleProblems(req, res, problems);
         } else {
           handler.handleBadRequest(req, res, 'Body is missing');

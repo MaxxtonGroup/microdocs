@@ -17,7 +17,13 @@ export class ProjectsRoute extends BaseRoute {
       ResponseHelper.getDefaultHandler().handleNotAcceptable(req, res);
     } else {
       try {
-        var projects = ProjectJsonRepository.bootstrap().getAggregatedProjects();
+        var env = ProjectsRoute.getEnv(req);
+        if(env == null){
+          handler.handleBadRequest(req, res, "env '" + req.query.env + "' doesn't exists");
+          return;
+        }
+
+        var projects = ProjectJsonRepository.bootstrap().getAggregatedProjects(env);
         if(projects == null){
           projects = new TreeNode();
         }
