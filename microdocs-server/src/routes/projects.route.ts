@@ -18,6 +18,9 @@ export class ProjectsRoute extends BaseRoute {
     } else {
       try {
         var projects = ProjectJsonRepository.bootstrap().getAggregatedProjects();
+        if(projects == null){
+          projects = new TreeNode();
+        }
 
         var groups: string[] = [];
         var titles: string[] = [];
