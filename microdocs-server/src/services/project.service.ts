@@ -2,7 +2,8 @@
 import {ProjectRepository} from '../repositories/project.repo';
 import {ProjectJsonRepository} from '../repositories/json/project-json.repo';
 import {SchemaHelper} from "microdocs-core-ts/dist/helpers/schema/schema.helper";
-import {TreeNode, Project, Schema} from "microdocs-core-ts/dist/domain";
+import {TreeNode, Project, Schema, ProjectInfo} from "microdocs-core-ts/dist/domain";
+import {Config} from "../config";
 
 export class ProjectService{
 

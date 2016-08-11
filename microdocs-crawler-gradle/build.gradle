@@ -61,12 +61,12 @@ uploadArchives {
                 name 'MicroDocs Gradle Crawler'
                 packaging 'jar'
                 description 'MicroDocs crawler for gradle projects'
-                url 'https://github.com/MaxxtonGroup/microservice-documentation-tool'
+                url 'https://github.com/MaxxtonGroup/microdocs'
 
                 scm {
-                    url 'scm:git@github.com:MaxxtonGroup/microservice-documentation-tool.git'
-                    connection 'scm:git@github.com:MaxxtonGroup/microservice-documentation-tool.git'
-                    developerConnection 'scm:git@github.com:MaxxtonGroup/microservice-documentation-tool.git'
+                    url 'scm:git@github.com:MaxxtonGroup/microdocs.git'
+                    connection 'scm:git@github.com:MaxxtonGroup/microdocs.git'
+                    developerConnection 'scm:git@github.com:MaxxtonGroup/microdocs.git'
                 }
 
                 licenses {

@@ -4,15 +4,27 @@ import * as express from "express";
 
 import {BaseRoute} from "./route";
 import {AggregationService} from '../services/aggregation.service';
+import {ResponseHelper} from "./responses/response.helper";
 
 /**
  * @author Steven Hermans
  */
 export class ReindexRoute extends BaseRoute {
 
-    mapping = {methods: ["put"], path: "/reindex", handler: this.reindex};
-    public reindex(req:express.Request, res:express.Response, next:express.NextFunction) {
-        res.json(AggregationService.bootstrap().reindex().unlink());
+  mapping = {methods: ["put"], path: "/reindex", handler: this.reindex};
+
+  public reindex(req: express.Request, res: express.Response, next: express.NextFunction) {
+    var handler = ResponseHelper.getHandler(req);
+    if(handler == null){
+      ResponseHelper.getDefaultHandler().handleNotAcceptable(req, res);
+    }else {
+      try {
+        var nodes = AggregationService.bootstrap().reindex();
+        handler.handleProjects(req, res, nodes);
+      } catch (e) {
+        handler.handleInternalServerError(req, res, e);
+      }
     }
+  }
 
 }

@@ -17,7 +17,7 @@ export class ProjectJsonRepository implements ProjectRepository{
         console.info("Load metadata");
         var dataFolder:string = __dirname + '/../../../' + Config.get("dataFolder") + "/database";
         var metaFile:string = dataFolder + "/projects.json";
-        if(!fs.exists(metaFile)){
+        if(fs.existsSync(metaFile)){
             var string = fs.readFileSync(metaFile).toString();
             var json = JSON.parse(string);
             return TreeNode.link(json);
@@ -30,7 +30,7 @@ export class ProjectJsonRepository implements ProjectRepository{
         var dataFolder:string = __dirname + '/../../../' + Config.get("dataFolder") + "/database";
         var projectFolder:string = dataFolder + "/" + title;
         var storeFile:string = projectFolder + "/" + version + ".json";
-        if(!fs.exists(storeFile)){
+        if(fs.existsSync(storeFile)){
             var string = fs.readFileSync(storeFile).toString();
             var json = JSON.parse(string);
             var project : Project = json;

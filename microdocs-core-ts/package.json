@@ -4,7 +4,7 @@
   "description": "Shared code for the microdocs-server and microdocs-ui",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MaxxtonGroup/microservice-documentation-tool"
+    "url": "https://github.com/MaxxtonGroup/microdocs"
   },
   "author": "Steven Hermans (s.hermans@maxxton.com",
   "license": "MIT",
