@@ -1,6 +1,6 @@
 import { Component, Injectable } from "@angular/core";
 import { COMMON_DIRECTIVES } from "@angular/common";
-import { ROUTER_DIRECTIVES } from "@angular/router";
+import {ROUTER_DIRECTIVES, Router} from "@angular/router";
 
 import { COMPONENTS} from "@maxxton/components/components";
 import { MenuItemModel } from "@maxxton/components/components/vertical-menu/vertical-menu-item.model";
@@ -26,10 +26,31 @@ export class App {
     status: <number|string> null
   };
 
-  private menu:Array<MenuItemModel> = [];
+  menu:Object = [];
+  envs:string[];
+  selectedEnv:string;
 
-  constructor( private image:ImageHelperService, private projectService : ProjectService) {
+  constructor( private image:ImageHelperService, private projectService : ProjectService, private router:Router) {
     projectService.getProjects().subscribe(node => this.initMenu(node));
+    projectService.getEnvs().subscribe((envs) => {
+      this.envs = Object.keys(envs);
+      if(projectService.getSelectedEnv() == undefined) {
+        for (var key in envs) {
+          if (envs[key].default) {
+            projectService.setSelectedEnv(key);
+            this.selectedEnv = key;
+            break;
+          }
+        }
+      }
+    });
+  }
+
+  public onEnvVersion(newEnv){
+    this.projectService.setSelectedEnv(newEnv);
+    this.selectedEnv = newEnv;
+    console.info('change: ' + newEnv);
+    this.projectService.getProjects().subscribe(node => this.initMenu(node));
   }
 
   private initMenu(node:TreeNode){
@@ -54,4 +75,6 @@ export class App {
     }
     this.menu = menus;
   }
+
+
 }

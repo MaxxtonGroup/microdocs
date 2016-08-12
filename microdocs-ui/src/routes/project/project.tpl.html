@@ -11,6 +11,7 @@
             <option *ngFor="let v of versions" [value]="v">{{v}}</option>
         </select>
     </h5>
+    <dependency-graph [nodes]="nodes"></dependency-graph>
     <div *ngIf="project.dependencies | notEmpty">
         <h4>Dependencies</h4>
         <ul>

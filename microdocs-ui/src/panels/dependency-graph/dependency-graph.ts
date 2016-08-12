@@ -1,10 +1,11 @@
-import {Component, ViewContainerRef} from "@angular/core";
+import {Component, ViewContainerRef, Input} from "@angular/core";
 import {Router} from "@angular/router";
 import * as d3 from 'd3';
 
 import {TreeNode} from "microdocs-core-ts/dist/domain";
+import {Observable} from "rxjs/Observable";
 
-import {ProjectService} from "../../services/project.service";
+// import {Observable} from "rxjs";
 
 @Component({
   selector: 'dependency-graph',
@@ -13,13 +14,19 @@ import {ProjectService} from "../../services/project.service";
 export class DependencyGraph {
 
   error:string;
+  force:any;
   data:TreeNode;
-  force:{};
 
-  constructor(private projectService:ProjectService, private containerRef:ViewContainerRef, private router:Router) {
-    this.projectService.getProjects().subscribe((data) => {
+  @Input()
+  nodes:Observable<TreeNode>;
+
+  constructor(private containerRef:ViewContainerRef, private router:Router) {
+  }
+
+  ngOnInit(){
+    this.nodes.subscribe(data => {
       this.data = data;
-      var transformedData = this.transformData(data);
+      var transformedData = this.transformData(this.data);
       this.chartData(transformedData);
     });
   }

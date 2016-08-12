@@ -24,8 +24,6 @@ ADD ./microdocs-server/config.yml /microdocs/microdocs-server/config.yml
 WORKDIR /microdocs/microdocs-server
 RUN npm install && npm run link && npm run package-distribution
 
-VOLUME /microdocs/microdocs-server/data
-
 EXPOSE 3000
 
 cmd ["node", "index.js"]

@@ -46,7 +46,8 @@
         'http',
         'platform-browser',
         'platform-browser-dynamic',
-        'router-deprecated'
+        'router-deprecated',
+        'rxjs'
     ];
 
 

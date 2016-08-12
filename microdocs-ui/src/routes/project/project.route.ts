@@ -12,18 +12,25 @@ import {EndpointPanel} from "../../panels/endpoint-panel/endpoint.panel";
 import {ModelPanel} from "../../panels/model-panel/model.panel";
 import {ProblemPanel} from "../../panels/problem-panel/problem.panel";
 import {SortByHttpMethod} from "../../pipes/sort-by-http-method.pipe"
+import {Subject} from "rxjs/subject";
+import {DependencyGraph} from "../../panels/dependency-graph/dependency-graph";
 
 
 @Component({
   selector: 'project-route',
   templateUrl: 'project.tpl.html',
-  directives: [ROUTER_DIRECTIVES, COMPONENTS, EndpointPanel, ModelPanel, ProblemPanel],
+  directives: [ROUTER_DIRECTIVES, COMPONENTS, EndpointPanel, ModelPanel, ProblemPanel, DependencyGraph],
   pipes: [FILTERS, SortByHttpMethod]
 })
 export class ProjectRoute {
 
   private querySub:any;
   private pathSub:any;
+  private projectSub:any;
+  private projectsSub:any;
+
+  private nodes:Subject = new Subject();
+
   private title:string;
   private version:string;
   private versions:string[];
@@ -36,7 +43,7 @@ export class ProjectRoute {
   private rest = REST;
   private database = DATABASE;
   private uses = USES;
-  private ioncludes = INCLUDES;
+  private includes = INCLUDES;
 
   constructor(private projectService:ProjectService,
               private route:ActivatedRoute,
@@ -83,15 +90,37 @@ export class ProjectRoute {
   }
 
   loadProject(title:string, version:string) {
-    this.projectService.getProject(title, version).subscribe(project => {
+    this.projectSub = this.projectService.getProject(title, version).subscribe(project => {
       this.project = project;
       this.loading = false;
+    });
+    this.projectsSub = this.projectService.getProjects().subscribe(node => {
+      if(node.dependencies != undefined){
+        var removeNames = [title];
+        for(var key in node.dependencies){
+          if(key !== title){
+            if(node.dependencies[key].dependencies == undefined || node.dependencies[key].dependencies[title] == undefined){
+              removeNames.push(key);
+            }
+          }
+        }
+        removeNames.forEach(name => delete node.dependencies);
+        console.info(node);
+        this.nodes.next(node);
+      }
+
     });
   }
 
   ngOnDestroy() {
-    this.querySub.unsubscribe();
-    this.pathSub.unsubscribe();
+    if(this.querySub != undefined)
+      this.querySub.unsubscribe();
+    if(this.pathSub != undefined)
+      this.pathSub.unsubscribe();
+    if(this.projectSub != undefined)
+      this.projectSub.unsubscribe();
+    if(this.projectsSub != undefined)
+      this.projectsSub.unsubscribe();
   }
 
   onChangeVersion(version:string) {

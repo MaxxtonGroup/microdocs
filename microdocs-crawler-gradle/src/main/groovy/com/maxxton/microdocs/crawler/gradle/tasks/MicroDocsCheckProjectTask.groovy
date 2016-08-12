@@ -14,12 +14,15 @@ class MicroDocsCheckProjectTask  extends DefaultTask {
 
     String reportFile;
     String url;
+    String username = null;
+    String password = null;
+    String env = null;
 
     @TaskAction
     def checkProject(){
-        CheckResponse response = MicroDocsPublisher.checkProject(new ServerConfiguration(url), new File(reportFile), project.name);
+        CheckResponse response = MicroDocsPublisher.checkProject(new ServerConfiguration(url, username, password), new File(reportFile), project.name, env);
 
-        MicroDocsPublisher.checkReport(response, project.getRootDir());
+        MicroDocsPublisher.checkReport(response, project.getRootDir(), project.name);
     }
 
 
