@@ -1,11 +1,12 @@
 import {Schema} from "../../domain";
 import {OBJECT, ARRAY, BOOLEAN, ENUM, INTEGER, NUMBER, STRING} from "../../domain/schema/schema-type.model";
+import {evalExpression} from "@angular/compiler/esm/src/facade/lang";
 
 /**
  * Helper class for generation example data based on schema and resolve references
  */
 export class SchemaHelper {
-
+  
   /**
    * Resolve schema and return an example object
    * @param schema
@@ -67,7 +68,7 @@ export class SchemaHelper {
             if (jsonName != null) {
               name = jsonName;
             }
-
+            
             object[name] = SchemaHelper.generateExample(property, name, objectStack, rootObject);
           }
         }
@@ -76,14 +77,14 @@ export class SchemaHelper {
     }
     return null;
   }
-
+  
   public static collect(schema:Schema, objectStack:string[] = [], rootObject?:{}):Schema {
     if (schema == undefined || schema == null) {
       return schema;
     }
-    if(schema.$ref != undefined){
+    if (schema.$ref != undefined) {
       var result = SchemaHelper.resolveReference(schema.$ref, rootObject);
-      if(result != null){
+      if (result != null) {
         schema = result;
       }
     }
@@ -118,7 +119,7 @@ export class SchemaHelper {
       return schema;
     }
   }
-
+  
   /**
    * Search for the reference in the object
    * @param reference href (eg. #/foo/bar) or path (eg. foo.bar)
@@ -148,50 +149,193 @@ export class SchemaHelper {
     }
     return null;
   }
-
+  
+  /**
+   * Extract expressions from string
+   * examples:
+   *    "hello $name"
+   *        -> [{isVar: false, expression: "hello "},{isVar: true, expression: "name"}]
+   *    "hello ${name}"
+   *        -> [{isVar: false, expression: "hello "},{isVar: true, expression: "name"}]
+   *    "${someIndex|number}"
+   *        -> [{isVar: true, expression: "someIndex", pipes:["number"]}]
+   * @param string
+   * @return {{isVar: boolean, expression: string, pipes?: string[]}[]}
+   */
+  public static extractStringSegments(string:string):{isVar:boolean,expression:string, pipes?:string[]}[] {
+    var isEscaped = false;
+    var isVar = false;
+    var isBrackets = false;
+    var isPipe = false;
+    
+    var segments:{isVar:boolean,expression:string, pipes?:string[]}[] = [];
+    var currentSegment:{isVar:boolean,expression:string, pipes?:string[]} = null;
+    for (var i = 0; i < string.length; i++) {
+      var char = string.charAt(i);
+      if (isEscaped) {
+        isEscaped = false;
+        if (isPipe) {
+          if (currentSegment.pipes && currentSegment.pipes.length > 1) {
+            currentSegment.pipes[currentSegment.pipes.length - 1] += char;
+          } else {
+            currentSegment.pipes = [char];
+          }
+        } else {
+          if (!currentSegment) {
+            currentSegment = {isVar: isVar, expression: ""};
+          }
+          currentSegment.expression += char;
+        }
+      } else if (char === "\\") {
+        isEscaped = true;
+      } else if (isVar) {
+        if ((!currentSegment || currentSegment.expression === '') && char === '{') {
+          isBrackets = true;
+        } else if (isBrackets && char === '}') {
+          isVar = false;
+          isPipe = false;
+          if(currentSegment) {
+            if(currentSegment.isVar){
+              currentSegment.expression = currentSegment.expression.trim();
+              if(currentSegment.pipes){
+                var newPipes:string[] = [];
+                currentSegment.pipes.forEach((pipe => {
+                  newPipes.push(pipe.trim());
+                }));
+                currentSegment.pipes = newPipes;
+              }
+            }
+            segments.push(currentSegment);
+          }
+          currentSegment = null;
+        } else if (!isBrackets && char === ' ') {
+          isVar = false;
+          isPipe = false;
+          if(currentSegment) {
+            if(currentSegment.isVar){
+              currentSegment.expression = currentSegment.expression.trim();
+              if(currentSegment.pipes){
+                var newPipes:string[] = [];
+                currentSegment.pipes.forEach((pipe => {
+                  newPipes.push(pipe.trim());
+                }));
+                currentSegment.pipes = newPipes;
+              }
+            }
+            segments.push(currentSegment);
+          }
+          currentSegment = {isVar: false, expression: " "};
+        } else if (currentSegment && char === '|') {
+          isPipe = true;
+          if (!currentSegment.pipes || currentSegment.pipes.length == 0) {
+            currentSegment.pipes = [''];
+          }
+        } else if (currentSegment && isPipe) {
+          if (currentSegment.pipes && currentSegment.pipes.length > 0) {
+            currentSegment.pipes[currentSegment.pipes.length - 1] = currentSegment.pipes[currentSegment.pipes.length - 1] + char;
+          } else {
+            currentSegment.pipes = [char];
+          }
+        } else {
+          if (!currentSegment) {
+            currentSegment = {isVar: isVar, expression: ""};
+          }
+          currentSegment.expression += char;
+        }
+      } else if (char === "$") {
+        isVar = true;
+        if (currentSegment) {
+          if(currentSegment.isVar){
+            currentSegment.expression = currentSegment.expression.trim();
+            if(currentSegment.pipes){
+              var newPipes:string[] = [];
+              currentSegment.pipes.forEach((pipe => {
+                newPipes.push(pipe.trim());
+              }));
+              currentSegment.pipes = newPipes;
+            }
+          }
+          segments.push(currentSegment);
+        }
+        currentSegment = null;
+      } else {
+        if (!currentSegment) {
+          currentSegment = {isVar: false, expression: ""};
+        }
+        currentSegment.expression += char;
+      }
+    }
+    if (currentSegment) {
+      if(currentSegment.isVar){
+        currentSegment.expression = currentSegment.expression.trim();
+        if(currentSegment.pipes){
+          var newPipes:string[] = [];
+          currentSegment.pipes.forEach((pipe => {
+            newPipes.push(pipe.trim());
+          }));
+          currentSegment.pipes = newPipes;
+        }
+      }
+      segments.push(currentSegment);
+    }
+    return segments;
+  }
+  
   /**
    * Resolve string which contains references (eg. "hello {foo.bar}")
    * @param string string to be resolved
    * @param object object where to search in
    * @returns {string} resolved string
    */
-  public static resolveString(string:string, object:{}):string {
-    var newString = '';
-    var insideString = '';
-    var inside:boolean = false;
-    for (var i = 0; i < string.length; i++) {
-      var char = string.substring(i, i + 1);
-      if (char == '{') {
-        inside = true;
-        insideString = '';
-      } else if (char == '}') {
-        inside = false;
-        var resolvedString = SchemaHelper.resolveReference(insideString, object);
-        if (resolvedString == null) {
-          newString += "{" + insideString + "}";
-        } else {
-          newString += resolvedString;
+  public static resolveString(string:string, vars:{}):any {
+    var result:any;
+    var segments = SchemaHelper.extractStringSegments(string);
+    segments.forEach(segment => {
+      if (segment.isVar) {
+        var resolvedObject = SchemaHelper.resolveReference(segment.expression.trim(), vars);
+        if (resolvedObject) {
+          if (segment.pipes) {
+            segment.pipes.forEach(pipe => {
+                if (pipe.trim() === 'integer' || pipe.trim() === 'int') {
+                  resolvedObject = parseInt(resolvedObject);
+                } else if (pipe.trim() === 'number' || pipe.trim() === 'float' || pipe.trim() === 'double') {
+                  resolvedObject = parseFloat(resolvedObject);
+                } else if (pipe.trim() === 'boolean') {
+                  resolvedObject = Boolean(resolvedObject);
+                } else if (pipe.trim() === 'string') {
+                  resolvedObject = new String(resolvedObject);
+                } else if (pipe.trim() === 'json') {
+                  resolvedObject = JSON.stringify(resolvedObject);
+                } else {
+                  console.warn("Unknown pipe: " + pipe);
+                }
+              }
+            );
+          }
+          if (result) {
+            result += resolvedObject;
+          } else {
+            result = resolvedObject;
+          }
         }
-        insideString = '';
-      } else if (inside) {
-        insideString += char;
       } else {
-        newString += char;
+        if (result) {
+          result += segment.expression;
+        } else {
+          result = segment.expression;
+        }
       }
-    }
-    if (insideString.length > 0) {
-      newString += "{" + insideString;
-    }
-    return newString;
+    });
+    return result;
   }
-
+  
   /**
    * Resolve references in a object
    * @param object
    * @param rootObject
    * @returns {{}}
    */
-  public static resolveObject(object:{}, rootObject?:{}):{} {
+  public static resolveObject(object:{}, rootObject ?:{}):{} {
     if (object != null && object != undefined) {
       if (rootObject == undefined) {
         rootObject = object;
@@ -218,5 +362,5 @@ export class SchemaHelper {
     }
     return object;
   }
-
+  
 }
