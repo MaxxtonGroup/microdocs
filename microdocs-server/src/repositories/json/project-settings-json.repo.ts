@@ -16,7 +16,7 @@ export class ProjectSettingsJsonRepository implements ProjectSettingsRepository{
     var dataFolder:string = __dirname + '/../../../' + Config.get("dataFolder") + "/config";
     var projectFile:string = dataFolder + "/project-settings.json";
     var settings : ProjectSettings = {};
-    if(!fs.exists(projectFile)){
+    if(fs.existsSync(projectFile)){
       var string = fs.readFileSync(projectFile).toString();
       settings = JSON.parse(string);
     }

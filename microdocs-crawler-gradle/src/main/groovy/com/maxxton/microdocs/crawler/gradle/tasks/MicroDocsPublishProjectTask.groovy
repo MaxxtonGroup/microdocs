@@ -35,9 +35,8 @@ class MicroDocsPublishProjectTask  extends DefaultTask {
         }
 
         CheckResponse response = MicroDocsPublisher.publishProject(new ServerConfiguration(url, username, password), new File(reportFile), project.name, groupName, version, failOnProblems, env);
-        ErrorReporter.get().printNotice("Successfully published report " + project.name + ":" + version + "\n");
 
-        if(!MicroDocsPublisher.checkReport(report, project.getRootDir()) && failOnProblems){
+        if(!MicroDocsPublisher.printCheckResponse(report, project.getRootDir()) && failOnProblems){
             throw new RuntimeException("Build failed");
         }
     }

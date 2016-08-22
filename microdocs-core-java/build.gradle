@@ -10,9 +10,9 @@ repositories {
 }
 
 dependencies {
-    compile("com.fasterxml.jackson.core:jackson-databind:2.7.5")
-    compile("com.mashape.unirest:unirest-java:1.4.9")
-    testCompile("junit:junit:4.12")
+    compile ("com.fasterxml.jackson.core:jackson-databind:2.7.5")
+    compile ("com.mashape.unirest:unirest-java:1.4.9")
+    testCompile ("junit:junit:4.12")
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {

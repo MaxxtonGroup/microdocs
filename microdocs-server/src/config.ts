@@ -12,7 +12,7 @@ export class Config {
      * Location of the config.yml
      * @type {string}
      */
-    private static configFile : string = __dirname + '/../data/config/config.yml';
+    private static configFile : string = __dirname + '/../config.yml';
     private static config : {};
 
     /**

@@ -22,7 +22,7 @@ class MicroDocsCheckProjectTask  extends DefaultTask {
     def checkProject(){
         CheckResponse response = MicroDocsPublisher.checkProject(new ServerConfiguration(url, username, password), new File(reportFile), project.name, env);
 
-        MicroDocsPublisher.checkReport(response, project.getRootDir(), project.name);
+        MicroDocsPublisher.printCheckResponse(response, project.getRootDir());
     }
 
 
