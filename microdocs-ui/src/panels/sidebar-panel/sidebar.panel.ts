@@ -35,14 +35,7 @@ export class SidebarComponent {
   change = new EventEmitter();
 
   onEnvVersion(newEnv){
-    console.info(newEnv);
     this.change.emit(newEnv);
   }
-
-  ngOnInit(){
-    console.info(this.menu);
-  }
-
-
 
 }

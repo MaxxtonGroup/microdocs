@@ -147,7 +147,7 @@ export class PostmanResponseHandler extends MicroDocsResponseHandler {
       };
     }
     collection.info['schema'] = "https://schema.getpostman.com/json/collection/v2.0.0/collection.json";
-    collection.info['_postman_id'] = uuid.v4();
+    collection.info['_postman_id'] = uuid['v4']();
 
     // get base url
     var schema = Config.get('application-schema');

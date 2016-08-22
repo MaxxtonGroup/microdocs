@@ -31,6 +31,7 @@ export class ProjectRoute {
 
   private nodes:Subject = new Subject();
 
+  private env:string;
   private title:string;
   private version:string;
   private versions:string[];
@@ -67,48 +68,30 @@ export class ProjectRoute {
 
   init() {
     this.version = this.queryParams['version'];
+    this.env = this.queryParams['env'];
     this.title = this.pathParams['project'];
     //load metadata
-    var wait = this.version == undefined;
-    this.projectService.getProjects().subscribe(node => {
+    this.projectService.getProjects(this.env).subscribe(node => {
       if (node.dependencies != undefined) {
         for (var key in node.dependencies) {
           if (key == this.title) {
             this.versions = node.dependencies[key].versions;
-            if (wait) {
-              this.version = node.dependencies[key].version;
-              this.loadProject(this.title, this.version);
-            }
+            this.version = node.dependencies[key].version;
+            this.loadProject(this.title, this.version, this.env);
             break;
           }
         }
-      }
-    });
-    if (!wait) {
-      this.loadProject(this.title, this.version);
-    }
-  }
 
-  loadProject(title:string, version:string) {
-    this.projectSub = this.projectService.getProject(title, version).subscribe(project => {
-      this.project = project;
-      this.loading = false;
-    });
-    this.projectsSub = this.projectService.getProjects().subscribe(node => {
-      if(node.dependencies != undefined){
-        var removeNames = [title];
-        for(var key in node.dependencies){
-          if(key !== title){
-            if(node.dependencies[key].dependencies == undefined || node.dependencies[key].dependencies[title] == undefined){
-              removeNames.push(key);
-            }
-          }
-        }
-        removeNames.forEach(name => delete node.dependencies);
-        console.info(node);
+        // update nodes
         this.nodes.next(node);
       }
+    });
+  }
 
+  loadProject(title:string, version:string, env:string) {
+    this.projectSub = this.projectService.getProject(title, version, env).subscribe(project => {
+      this.project = project;
+      this.loading = false;
     });
   }
 
