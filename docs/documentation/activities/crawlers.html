@@ -1,0 +1,23 @@
+<template activity="crawlers">
+    <article class="selectable">
+        <h1 class="theme-fg-color">Crawlers</h1>
+    </article>
+</template>
+<script>
+    app.activity("crawlers", function () {
+
+        this.title = "Crawlers";
+        this.icon = "mdi-action-cached";
+        this.hOptions = {size: "medium"};
+
+        this.onCreate = function () {
+            setTimeout(function () {
+                app.setTheme("red");
+            }, 20);
+        };
+
+        this.onDestroy = function () {
+            app.setTheme(app.color);
+        };
+    });
+</script>
