@@ -19,8 +19,14 @@ export class ReindexRoute extends BaseRoute {
       ResponseHelper.getDefaultHandler().handleNotAcceptable(req, res);
     }else {
       try {
-        var nodes = AggregationService.bootstrap().reindex();
-        handler.handleProjects(req, res, nodes);
+        var env = ReindexRoute.getEnv(req);
+        if(env == null){
+          handler.handleBadRequest(req, res, "env '" + req.query.env + "' doesn't exists");
+          return;
+        }
+
+        var nodes = AggregationService.bootstrap().reindex(env);
+        handler.handleProjects(req, res, nodes, env);
       } catch (e) {
         handler.handleInternalServerError(req, res, e);
       }

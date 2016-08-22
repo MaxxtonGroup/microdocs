@@ -22,12 +22,12 @@ export class ReportJsonRepository implements ReportRepository {
    * Load projects metadata
    * @return {ProjectInfo[]} list of project metadata like title, group, version and available versions
    */
-  public getProjects():ProjectInfo[] {
+  public getProjects(env:string):ProjectInfo[] {
     console.log("Load metadata");
-    var reportsFolder:string = __dirname + '/../../../' + Config.get("dataFolder") + "/reports";
+    var reportsFolder:string = __dirname + '/../../../' + Config.get("dataFolder") + "/reports/" + env;
     var projects = this.scanGroups(reportsFolder);
 
-    return projects
+    return projects;
   }
 
   /**
@@ -35,7 +35,7 @@ export class ReportJsonRepository implements ReportRepository {
    * @param projectInfo
    * @returns {Project} loaded project or null
    */
-  public getProject(projectInfo:ProjectInfo):Project {
+  public getProject(env:string, projectInfo:ProjectInfo):Project {
     // validate projectInfo
     if (projectInfo.group == null || projectInfo.group == "" ||
       projectInfo.title == null || projectInfo.title == "" ||
@@ -46,7 +46,7 @@ export class ReportJsonRepository implements ReportRepository {
     console.log("Load project: " + projectInfo.title + ":" + projectInfo.version);
 
     // load microdocs.json
-    var reportsFolder:string = __dirname + '/../../../' + Config.get("dataFolder") + "/reports";
+    var reportsFolder:string = __dirname + '/../../../' + Config.get("dataFolder") + "/reports/" + env;
     var projectPath = projectInfo.group + "/" + projectInfo.title + "/" + projectInfo.version;
     var projectFolder = reportsFolder + "/" + projectPath;
     var project = this.loadProject(projectFolder + "/microdocs.json");
@@ -71,7 +71,7 @@ export class ReportJsonRepository implements ReportRepository {
     }
     linkFolders.forEach(linkFolder => project.info.links.push({
       rel: linkFolder,
-      href: "/reports/" + projectPath + "/" + linkFolder
+      href: "/reports/" + env + "/" + projectPath + "/" + linkFolder
     }));
 
     return project;
@@ -81,9 +81,9 @@ export class ReportJsonRepository implements ReportRepository {
    * Store projects
    * @param project
    */
-  public storeProject(project:Project):void {
+  public storeProject(env:string, project:Project):void {
     console.info("Store report: " + project.info.title + ":" + project.info.version);
-    var dataFolder:string = __dirname + '/../../../' + Config.get("dataFolder") + "/reports";
+    var dataFolder:string = __dirname + '/../../../' + Config.get("dataFolder") + "/reports/" + env;
     var groupFolder:string = dataFolder + "/" + project.info.group;
     console.info(project.info);
     var projectFolder:string = groupFolder + "/" + project.info.title;

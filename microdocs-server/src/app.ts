@@ -15,6 +15,7 @@ import {ProjectRoute} from "./routes/project.route";
 import {ReindexRoute} from "./routes/reindex.route";
 import {CheckRoute} from "./routes/check.route";
 import {PublishRoute} from "./routes/publish.route";
+import {EnvRoute} from "./routes/env.route";
 
 /**
  * The server.
@@ -112,7 +113,8 @@ class Server {
       new ProjectRoute(),
       new ReindexRoute(),
       new CheckRoute(),
-      new PublishRoute()
+      new PublishRoute(),
+      new EnvRoute()
     ];
 
     //define basePath

@@ -20,3 +20,5 @@ export {Problem, ProblemClient} from "../domain/problem/problem.model";
 export {Schema} from '../domain/schema/schema.model';
 
 export {TreeNode} from './tree/tree-node.model';
+
+export {ProjectSettings, Environments, Static, Conditions} from './settings/project-settings.model';
