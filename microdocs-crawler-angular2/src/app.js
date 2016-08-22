@@ -22,14 +22,37 @@ function generateDocumentation(fileNames, options) {
     /** visit nodes finding exported classes */
     function visit(node) {
         // Only consider exported nodes
-        // if (!isNodeExported(node)) {
-        //   return;
-        // }
-        console.info(node.getSourceFile().fileName + ": " + node.kind);
-        if (node.kind === 212 /* ClassDeclaration */) {
+        if (node.name == undefined || node.name.kind == undefined) {
+            return;
+        }
+        var symbol = checker.getSymbolAtLocation(node.name);
+        if (symbol == undefined) {
+            return;
+        }
+        console.info(symbol.getName());
+        if (node.kind == 217 /* ModuleBlock */) {
+            // if(symbol['parent'] != undefined){//} && symbol['parent']['SymbolObject'] != undefined && symbol['parent']['SymbolObject']['name'] != undefined){
+            // var filename:string = symbol['parent']['SymbolObject']['name'];
+            // filename = filename.replace(new RegExp("\"", 'g'), '');
+            // if(filename.indexOf('C:/Users/hermans.s.MAXXTONBV/projects/maxxton-frontend/services-library/src') == 0){
             // This is a top level class, get its symbol
-            var symbol = checker.getSymbolAtLocation(node.name);
-            output.push(serializeClass(symbol));
+            var cache = [];
+            // fs.writeFileSync("output/" + symbol.getName() + ".json", JSON.stringify(symbol, function (key, value) {
+            //   if (typeof value === 'object' && value !== null) {
+            //     if (cache.indexOf(value) !== -1) {
+            //       // Circular reference found, discard key
+            //       return;
+            //     }
+            //     // Store value in our collection
+            //     cache.push(value);
+            //   }
+            //   return value;
+            // }, 2));
+            if (symbol.declarations != undefined && symbol.declarations[0] != undefined && symbol.declarations[0].parent != undefined && symbol.declarations[0].parent.getSourceFile() != undefined) {
+                if (symbol.declarations[0].parent.getSourceFile().fileName.indexOf('C:/Users/hermans.s.MAXXTONBV/projects/maxxton-frontend/services-library/src') == 0) {
+                    output.push(serializeClass(symbol));
+                }
+            }
         }
         else if (node.kind === 216 /* ModuleDeclaration */) {
             // This is a namespace, visit its children
