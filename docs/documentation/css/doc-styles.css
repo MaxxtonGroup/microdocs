@@ -1,0 +1,20 @@
+article.selectable{
+    padding: 20px;
+}
+
+.selectable .text {
+    color: #333333;
+    font-size: 16px;
+    line-height: 24px;
+}
+
+.selectable .text code {
+    display: block;
+    margin: 10px 0;
+    padding: 10px 20px;
+    font-size: 13px;
+    border-radius: 3px;
+    color: black;
+    border: rgb(211, 218, 234) 1px solid;
+    font-family: monospace;
+}

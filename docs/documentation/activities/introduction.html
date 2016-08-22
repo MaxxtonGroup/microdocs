@@ -1,0 +1,24 @@
+<template activity="introduction">
+    <article class="selectable">
+        <h1 class="theme-fg-color">Introduction</h1>
+
+    </article>
+</template>
+<script>
+    app.activity("introduction", function(){
+
+        this.title = "Introduction";
+//        this.src = "../assets/images/microdocs.png";
+        this.hOptions = {size: "medium"};
+
+        this.onCreate = function(){
+            setTimeout(function(){
+                app.setTheme("blue");
+            }, 20);
+        };
+
+        this.onDestroy = function(){
+            app.setTheme(app.color);
+        };
+    });
+</script>
