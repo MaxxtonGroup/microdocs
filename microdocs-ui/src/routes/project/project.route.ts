@@ -12,7 +12,7 @@ import {EndpointPanel} from "../../panels/endpoint-panel/endpoint.panel";
 import {ModelPanel} from "../../panels/model-panel/model.panel";
 import {ProblemPanel} from "../../panels/problem-panel/problem.panel";
 import {SortByHttpMethod} from "../../pipes/sort-by-http-method.pipe"
-import {Subject} from "rxjs/subject";
+import {Subject} from "rxjs/Subject";
 import {DependencyGraph} from "../../panels/dependency-graph/dependency-graph";
 
 

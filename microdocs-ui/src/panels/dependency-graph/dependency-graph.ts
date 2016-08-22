@@ -36,7 +36,7 @@ export class DependencyGraph {
       var dependencies = {};
       Object.keys(data.dependencies).forEach(key => dependencies[key] = data.dependencies[key]);
 
-      if(dependencies != undefined){
+      if(this.projectName){
         var removeNames = [];
         for(var key in dependencies){
           if(key !== this.projectName){
