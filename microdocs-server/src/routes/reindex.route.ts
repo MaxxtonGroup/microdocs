@@ -26,7 +26,7 @@ export class ReindexRoute extends BaseRoute {
         }
 
         var nodes = AggregationService.bootstrap().reindex(env);
-        handler.handleProjects(req, res, nodes);
+        handler.handleProjects(req, res, nodes, env);
       } catch (e) {
         handler.handleInternalServerError(req, res, e);
       }

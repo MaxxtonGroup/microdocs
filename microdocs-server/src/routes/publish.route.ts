@@ -94,7 +94,7 @@ export class PublishRoute extends BaseRoute {
           }
 
           // return check result
-          handler.handleProblems(req, res, problems);
+          handler.handleProblems(req, res, problems, env);
         } else {
           handler.handleBadRequest(req, res, "Missing request body");
         }

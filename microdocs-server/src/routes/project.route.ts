@@ -48,7 +48,7 @@ export class ProjectRoute extends BaseRoute {
           if (project == null) {
             ResponseHelper.getHandler(req).handleNotFound(req, res);
           } else {
-            ResponseHelper.getHandler(req).handleProject(req, res, project);
+            ResponseHelper.getHandler(req).handleProject(req, res, project, env);
           }
         } else {
           ResponseHelper.getHandler(req).handleNotFound(req, res);

@@ -40,7 +40,7 @@ export class CheckRoute extends BaseRoute {
           project.info.versions = ['9999999999.0.0'];
 
           var problems: Problem[] = AggregationService.bootstrap().checkProject(env, project);
-          handler.handleProblems(req, res, problems);
+          handler.handleProblems(req, res, problems, env);
         } else {
           handler.handleBadRequest(req, res, 'Body is missing');
         }

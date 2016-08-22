@@ -38,7 +38,7 @@ export class ProjectsRoute extends BaseRoute {
         }
         projects = ProjectsRoute.filterProjects(projects, groups, titles);
 
-        ResponseHelper.getHandler(req).handleProjects(req, res, projects);
+        ResponseHelper.getHandler(req).handleProjects(req, res, projects, env);
       } catch (e) {
         ResponseHelper.getHandler(req).handleInternalServerError(req, res, e);
       }
