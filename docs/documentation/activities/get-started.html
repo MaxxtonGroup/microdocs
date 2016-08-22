@@ -1,0 +1,52 @@
+<template activity="get-started">
+    <article class="selectable">
+        <h1 class="theme-fg-color">Get started</h1>
+        <div class="text">
+            <p>MicroDocs consists out of crawlers, server, ui and integrations tools.
+                <strong>Crawlers</strong> generates definitions from the source code of a project.
+                These definitions are then published at the MicroDocs server.
+                The <strong>server</strong> then checks for compatibility problems and aggregate the result.
+                The <strong>ui</strong> or other <strong>integration tools</strong> request the result through the
+                RestApi
+                of the server.</p>
+        </div>
+
+        <h2 class="theme-fg-color">Setup MicroDocs Server</h2>
+        <div class="text">
+            <p>The MicroDocs server with the ui is available on <a href="https://hub.docker.com/r/maxxton/microdocs/">dockerhub</a>.
+                To install via Docker run:</p>
+            <pre><code>$ docker run --name microdocs -v /microdocs-server/data -p 3000:3000 -d maxxton/microdocs
+</code></pre>
+        </div>
+
+        <h2 class="theme-fg-color">Setup Crawlers</h2>
+        <div class="text">
+            <p>Crawlers are project and framework specific. Currently only the Spring framework is supported.
+                The setup for each Crawler can be found in their subdirectories</p>
+        </div>
+
+        <h2 class="theme-fg-color">Setup Integrations tools</h2>
+        <div class="text">
+            <p>Integrations tools have their own setup. They can be found in their subdirectories</p>
+        </div>
+    </article>
+    </body></html>
+</template>
+<script>
+    app.activity("get-started", function () {
+
+        this.title = "Get Started";
+        this.icon = "mdi-av-play-circle-fill";
+        this.hOptions = {size: "medium"};
+
+        this.onCreate = function () {
+            setTimeout(function () {
+                app.setTheme("green");
+            }, 20);
+        };
+
+        this.onDestroy = function () {
+            app.setTheme(app.color);
+        };
+    });
+</script>

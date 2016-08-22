@@ -1,0 +1,117 @@
+<template activity="home-list">
+    <style>
+        [activity=home-list] .list-container{
+            width: 50%;
+            padding: 20px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            margin-left: 25%;
+            box-shadow: rgba(0, 0, 0, 0.227451) 0px 3px 10px 0px, rgba(0, 0, 0, 0.156863) 0px 3px 10px 0px;
+            background-color: white;
+            transition-property: all;
+            transition-duration: 0.2s;
+        }
+
+        [activity=home-list][pos="xxo"] .list-container{
+            width: 75%;
+            margin-left: 12.5%;
+            margin-top: 72px;
+        }
+
+        [activity=home-list][pos="xoo"] .list-container{
+            width: 100%;
+            margin: 0px;
+            padding: 0px;
+            box-shadow: none;
+            background-color: transparent;
+        }
+
+        [activity=home-list] .activity-frame{
+            top: 0 !important;
+        }
+
+        [activity=home-list][pos="xoo"] .activity-frame{
+            top: 112px !important;
+            transition-duration: 0.2s;
+        }
+
+        .material-app .app-header{
+            height: 112px;
+        }
+    </style>
+    <div class="list-container">
+        <ul class="paper-list">
+            <li class="wrippels medium push-left fg-blue" name="introduction">
+                <div class="icon"><i style="background-image: url('../assets/images/microdocs.png')"></i></div>
+                <div class="title main">Introduction</div>
+                <div class="title sub">What is MicroDocs</div>
+            </li>
+            <li class="wrippels medium fg-green push-left" name="get-started">
+                <div class="icon">
+                    <i class="mdi-av-play-circle-fill"></i>
+                </div>
+                <div class="title main">Get Started</div>
+                <div class="title sub">A quick guide to get you started with PaperWork</div>
+            </li>
+            <li class="wrippels medium fg-blue-gray push-left" name="server">
+                <div class="icon">
+                    <i class="mdi-file-cloud-done"></i>
+                </div>
+                <div class="title main">Server</div>
+                <div class="title sub">Guide to setup and secure the MicroDocs server</div>
+            </li>
+            <li class="wrippels medium fg-red push-left" name="crawlers">
+                <div class="icon">
+                    <i class="mdi-action-cached"></i>
+                </div>
+                <div class="title main">Crawlers</div>
+                <div class="title sub">Guide to setup Crawlers for your projects</div>
+            </li>
+            <li class="wrippels medium fg-orange push-left" name="integrations">
+                <div class="icon">
+                    <i class="mdi-action-extension"></i>
+                </div>
+                <div class="title main">Integrations</div>
+                <div class="title sub">Guide to get started with integration MicroDocs with other tools</div>
+            </li>
+        </ul>
+    </div>
+</template>
+<script>
+    app.activity("home-list", function(){
+
+        var timeout;
+        this.hOptions = {size: "medium"};
+
+        this.onCreate = function(eActivity){
+            var urlData = app.getUrlData();
+            if(urlData.acts.length >= 1) {
+                eActivity.find("ul.paper-list li[name=" + urlData.acts[0].activity + "]").addClass("selected");
+            }
+        };
+
+        $("body").on("click", "[activity=home-list] ul.paper-list li", function(){
+            if(this.nodeName === "LI"){
+                var tthis = this;
+                clearTimeout(timeout);
+                timeout = setTimeout(function(){
+                    app.goToActivity($(tthis).attr("name"), 2);
+                }, 100);
+            }
+        });
+
+        $("body").on("navigate", function(event, url, urlData){
+            onNavigate(urlData);
+        });
+
+        function onNavigate(urlData){
+            if(urlData.group === "home"){
+                $("[activity=home-list] ul.paper-list li").removeClass("selected");
+                if(urlData.acts.length >= 1) {
+                    $("[activity=home-list] ul.paper-list li[name=" + urlData.acts[0].activity + "]").addClass("selected");
+                }
+            }
+        }
+
+    });
+</script>
