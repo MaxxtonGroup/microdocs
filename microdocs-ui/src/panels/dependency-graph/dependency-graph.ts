@@ -42,6 +42,14 @@ export class DependencyGraph {
           if(key !== this.projectName){
             if(dependencies[key].dependencies == undefined || dependencies[key].dependencies[this.projectName] == undefined){
               removeNames.push(key);
+            }else{
+              var removeDeps = [];
+              for(var depName in dependencies[key].dependencies){
+                if(depName != this.projectName){
+                  removeDeps.push(depName);
+                }
+              }
+              removeDeps.forEach(name => delete dependencies[key].dependencies[name]);
             }
           }
         }
