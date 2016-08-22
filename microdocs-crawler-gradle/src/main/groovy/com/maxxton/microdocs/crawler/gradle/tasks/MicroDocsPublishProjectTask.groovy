@@ -16,6 +16,9 @@ class MicroDocsPublishProjectTask  extends DefaultTask {
     String groupName;
     String reportFile;
     String url;
+    String username = null;
+    String password = null;
+    String env = null;
     boolean failOnProblems = true;
 
     @TaskAction
@@ -31,10 +34,9 @@ class MicroDocsPublishProjectTask  extends DefaultTask {
             throw new RuntimeException("Group name not set");
         }
 
-        CheckResponse response = MicroDocsPublisher.publishProject(new ServerConfiguration(url), new File(reportFile), project.name, groupName, version, failOnProblems);
-        ErrorReporter.get().printNotice("Successfully published report " + project.name + ":" + version + "\n");
+        CheckResponse response = MicroDocsPublisher.publishProject(new ServerConfiguration(url, username, password), new File(reportFile), project.name, groupName, version, failOnProblems, env);
 
-        if(!MicroDocsPublisher.checkReport(report, project.getRootDir()) && failOnProblems){
+        if(!MicroDocsPublisher.printCheckResponse(report, project.getRootDir()) && failOnProblems){
             throw new RuntimeException("Build failed");
         }
     }

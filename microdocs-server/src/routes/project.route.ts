@@ -17,13 +17,19 @@ export class ProjectRoute extends BaseRoute {
       ResponseHelper.getDefaultHandler().handleNotAcceptable(req, res);
     }else {
       try {
+        var env = ProjectRoute.getEnv(req);
+        if(env == null){
+          handler.handleBadRequest(req, res, "env '" + req.query.env + "' doesn't exists");
+          return;
+        }
+
         var title = req.params.title;
         var version = req.query.version;
 
 
         // load latest version if not specified
         if (version == undefined) {
-          var rootNode = ProjectJsonRepository.bootstrap().getAggregatedProjects();
+          var rootNode = ProjectJsonRepository.bootstrap().getAggregatedProjects(env);
           if(rootNode != null && rootNode.dependencies != undefined){
             for (var key in rootNode.dependencies) {
               if (key == title) {
@@ -36,13 +42,13 @@ export class ProjectRoute extends BaseRoute {
 
         if (version != undefined) {
           // load project
-          var project = ProjectJsonRepository.bootstrap().getAggregatedProject(title, version);
+          var project = ProjectJsonRepository.bootstrap().getAggregatedProject(env, title, version);
 
           // return project
           if (project == null) {
             ResponseHelper.getHandler(req).handleNotFound(req, res);
           } else {
-            ResponseHelper.getHandler(req).handleProject(req, res, project);
+            ResponseHelper.getHandler(req).handleProject(req, res, project, env);
           }
         } else {
           ResponseHelper.getHandler(req).handleNotFound(req, res);

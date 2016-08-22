@@ -1,5 +1,5 @@
 <div class="main-container grid-block horizontal app-content">
-  <sidebar-component [customMenu]="menu"></sidebar-component>
+  <sidebar-component [menu]="menu" [selectedEnv]="selectedEnv" [envs]="envs" (envChange)="onEnvVersion($event)"></sidebar-component>
 
   <!--main content-->
   <div class="grid-block grid-container page-content" id="page-content">

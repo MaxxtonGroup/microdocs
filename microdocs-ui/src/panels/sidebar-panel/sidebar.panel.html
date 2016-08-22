@@ -7,7 +7,13 @@
         <span class="icon" [hidden]="showFullSideBar">keyboard_arrow_right</span>
     </a>
 
+    <div class="env-box">
+        <select [ngModel]="selectedEnv" (change)="onEnvVersion($event.target.value)">
+            <option *ngFor="let env of envs" [value]="env">{{env}}</option>
+        </select>
+    </div>
+
     <div class="grid-block">
-        <vertical-menu [menu]="customMenu"></vertical-menu>
+        <vertical-menu [menu]="menu"></vertical-menu>
     </div>
 </div>

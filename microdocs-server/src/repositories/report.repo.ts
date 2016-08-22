@@ -6,10 +6,10 @@ import {Project, ProjectInfo} from "microdocs-core-ts/dist/domain";
  */
 export interface ReportRepository{
 
-    getProjects():ProjectInfo[];
+    getProjects(env:string):ProjectInfo[];
 
-    getProject(projectInfo:ProjectInfo):Project;
+    getProject(env:string, projectInfo:ProjectInfo):Project;
 
-    storeProject(project:Project):void;
+    storeProject(env:string, project:Project):void;
 
 }

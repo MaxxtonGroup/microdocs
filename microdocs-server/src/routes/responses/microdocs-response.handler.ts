@@ -6,17 +6,17 @@ import {ProjectJsonRepository} from "../../repositories/json/project-json.repo";
 
 export class MicroDocsResponseHandler extends BaseResponseHandler {
 
-  handleProjects(req: express.Request, res: express.Response, projects: TreeNode) {
-    var project = this.mergeProjects(projects);
+  handleProjects(req: express.Request, res: express.Response, projects: TreeNode, env:string) {
+    var project = this.mergeProjects(projects, env);
 
     this.response(req, res, 200, project);
   }
 
-  handleProject(req: express.Request, res: express.Response, project: Project) {
+  handleProject(req: express.Request, res: express.Response, project: Project, env:string) {
     this.response(req, res, 200, project);
   }
 
-  protected mergeProjects(node: TreeNode): Project {
+  protected mergeProjects(node: TreeNode, env:string): Project {
     var project: Project = {};
     project.info = <ProjectInfo>{
       title: Config.get('application-name'),
@@ -32,7 +32,7 @@ export class MicroDocsResponseHandler extends BaseResponseHandler {
     project.definitions = {};
     project.paths = {};
     for (var title in node.dependencies) {
-      var subProject = ProjectJsonRepository.bootstrap().getAggregatedProject(title, node.dependencies[title].version);
+      var subProject = ProjectJsonRepository.bootstrap().getAggregatedProject(env, title, node.dependencies[title].version);
 
       if (subProject.definitions != undefined) {
         for (var key in subProject.definitions) {
