@@ -13,7 +13,7 @@ import {
 import {NOTICE, ERROR} from "microdocs-core-ts/dist/domain/problem/problem-level.model";
 import {REST} from "microdocs-core-ts/dist/domain/dependency/dependency-type.model";
 
-import {ProblemReporter, SchemaHelper} from "microdocs-core-ts/dist/helpers";
+import {ProblemReporter, SchemaHelper, ProjectSettingsHelper} from "microdocs-core-ts/dist/helpers";
 import {getProblemsInProject, getProblemsInDependency} from "microdocs-core-ts/dist/helpers";
 
 import {PathCheck} from "../checks/path-check";
@@ -145,7 +145,7 @@ export class AggregationService {
       try {
         var project = this.reportRepo.getProject(env, projectInfo);
         if (project != null) {
-          project = this.mergeProjectSettings(project);
+          project = this.applyProjectSettings(project, env);
           if (projectCache[project.info.title] == null || projectCache[project.info.title] == undefined) {
             projectCache[project.info.title] = {};
           }
@@ -375,7 +375,7 @@ export class AggregationService {
     }
     try {
       project = this.reportRepo.getProject(env, prevProjectInfo);
-      project = this.mergeProjectSettings(project);
+      project = this.applyProjectSettings(project, env);
       return project;
     } catch (e) {
       console.warn("Failed to load project: " + project.info.title);
@@ -441,49 +441,13 @@ export class AggregationService {
   }
 
   /**
-   * Merge project settings over the project object
+   * Apply project settings
    * @param project
    * @returns {Project}
    */
-  private mergeProjectSettings(project:Project):Project {
+  private applyProjectSettings(project:Project, env:string):Project {
     var settings = this.projectSettingsRepo.getSettings();
-    if (settings['global'] != undefined && settings['global'] != null) {
-      project = <Project> this.mergeObjects(project, settings['global']);
-    }
-
-    if (project.info != undefined && project.info != null) {
-      if (project.info.group != undefined && project.info.group != null) {
-        if (settings['groups'] != undefined && settings['groups'] != null &&
-          settings['groups'][project.info.group] != undefined && settings['groups'][project.info.group] != null) {
-          project = <Project> this.mergeObjects(project, settings['groups'][project.info.group]);
-        }
-      }
-
-      if (project.info.title != undefined && project.info.title != null) {
-        if (settings['projects'] != undefined && settings['projects'] != null &&
-          settings['projects'][project.info.title] != undefined && settings['projects'][project.info.title] != null) {
-          project = <Project> this.mergeObjects(project, settings['projects'][project.info.title]);
-        }
-      }
-    }
-
-    return project;
-  }
-
-  /**
-   * Merge obj2 on top of obj1
-   * @param obj1
-   * @param obj2
-   * @returns {{}} return merged object
-   */
-  private mergeObjects(obj1:{}, obj2:{}):{} {
-    for (var key in obj2) {
-      if (obj1[key] != undefined && typeof(obj1[key]) == 'object') {
-        obj1[key] = this.mergeObjects(obj1[key], obj2[key]);
-      } else {
-        obj1[key] = obj2[key];
-      }
-    }
-    return obj1;
+    var newProject = ProjectSettingsHelper.resolveSettings(settings, project, env);
+    return newProject;
   }
 }

@@ -12,6 +12,7 @@ var runSequence = require('run-sequence');
 var plumber = require('gulp-plumber');
 var tscConfig = require('./src/tsconfig.json');
 var fs = require('fs');
+var mocha = require('gulp-mocha');
 
 var settings = {
   distFolder: 'dist'
@@ -49,15 +50,17 @@ gulp.task('clean', [], function () {
   return gulp.src(['dist/'], {read: false}).pipe(clean());
 });
 
-gulp.task('test', [], function () {
-
+gulp.task('test', ['compile-typescript'], function () {
+  return gulp.src(['dist/test/*.js'], { read: false })
+      .pipe(mocha({ reporter: 'list' }))
+      .on('error', gutil.log);
 });
 
 /**
  * Cleans, moves, and compiles the code
  */
 gulp.task('prepublish', function (done) {
-  runSequence('clean', 'prepublish-package', 'compile-typescript', done);
+  runSequence('clean', 'prepublish-package', 'compile-typescript', 'test', done);
 });
 
 /**

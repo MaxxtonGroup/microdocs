@@ -10,11 +10,12 @@
   },
   "static": {
     "global": {
+      "lala": true
     },
     "environments": {
     },
     "groups": {
-      "services": {
+      "test": {
         "info": {
           "links": [
             {

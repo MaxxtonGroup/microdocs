@@ -1,6 +1,5 @@
 import {Schema} from "../../domain";
 import {OBJECT, ARRAY, BOOLEAN, ENUM, INTEGER, NUMBER, STRING} from "../../domain/schema/schema-type.model";
-import {evalExpression} from "@angular/compiler/esm/src/facade/lang";
 
 /**
  * Helper class for generation example data based on schema and resolve references
@@ -123,12 +122,12 @@ export class SchemaHelper {
   /**
    * Search for the reference in the object
    * @param reference href (eg. #/foo/bar) or path (eg. foo.bar)
-   * @param object object where to search in
+   * @param vars object where to search in
    * @returns {any} object or null
    */
-  public static resolveReference(reference:string, object:{}):any {
+  public static resolveReference(reference:string, vars:{}):any {
     if (reference != undefined || reference == null) {
-      var currentObject = object;
+      var currentObject = vars;
       var segments:string[] = [];
       if (reference.indexOf("#/") == 0) {
         // href
@@ -139,7 +138,12 @@ export class SchemaHelper {
       }
       segments.forEach((segment) => {
         if (currentObject != undefined && currentObject != null) {
-          currentObject = currentObject[segment];
+          var resolvedName = segment;
+          if(segment.indexOf('[') == 0 && segment.indexOf(']') == segment.length-1){
+            var segmentName = segment.substring(1, segment.length-1);
+            resolvedName = SchemaHelper.resolveString('${' + segmentName + '}', vars);
+          }
+          currentObject = currentObject[resolvedName];
         }
       });
       if (currentObject == undefined) {
@@ -194,6 +198,7 @@ export class SchemaHelper {
         } else if (isBrackets && char === '}') {
           isVar = false;
           isPipe = false;
+          isBrackets = false;
           if(currentSegment) {
             if(currentSegment.isVar){
               currentSegment.expression = currentSegment.expression.trim();
@@ -229,6 +234,8 @@ export class SchemaHelper {
           isPipe = true;
           if (!currentSegment.pipes || currentSegment.pipes.length == 0) {
             currentSegment.pipes = [''];
+          }else{
+            currentSegment.pipes.push('');
           }
         } else if (currentSegment && isPipe) {
           if (currentSegment.pipes && currentSegment.pipes.length > 0) {
@@ -282,7 +289,7 @@ export class SchemaHelper {
   }
   
   /**
-   * Resolve string which contains references (eg. "hello {foo.bar}")
+   * Resolve string which contains references (eg. "hello ${foo.bar}")
    * @param string string to be resolved
    * @param object object where to search in
    * @returns {string} resolved string
