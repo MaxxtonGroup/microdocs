@@ -16,7 +16,7 @@ HOST: {{global.schemas.[0]}}://{{global.host}}{{global.baseUrl}}
 
 {{endpoint.description}}
 
-+ Request ({{#each endpoint.consumes}}{{this}}{{/each}},)
++ Request ({{endpoint.consumes.[0]}})
 
 {{#ifNotEmpty endpoint.parameters}}
     {{#each endpoint.parameters as |parameter index|}}
@@ -31,14 +31,17 @@ HOST: {{global.schemas.[0]}}://{{global.host}}{{global.baseUrl}}
 + Parameters
 {{#each endpoint.parameters as |parameter index|}}
     {{#ifEq parameter.in 'query'}}
-    + {{parameter.name}} ({{parameter.type}}) - {{parameter.description}}
+    + {{parameter.name}}: {{{schemaExample parameter}}} ({{parameter.type}}) - {{parameter.description}}
+    {{/ifEq}}
+    {{#ifEq parameter.in 'path'}}
+    + {{parameter.name}}: {{{schemaExample parameter}}} ({{parameter.type}}) - {{parameter.description}}
     {{/ifEq}}
 {{/each}}
 {{/ifNotEmpty}}
 
 {{#ifNotEmpty endpoint.responses}}
 {{#each endpoint.responses}}
-+ Response {{#ifEq @key 'default'}}200{{else}}{{@key}}{{/ifEq}} ({{#each endpoint.produces}}{{this}}{{/each}},)
++ Response {{#ifEq @key 'default'}}200{{else}}{{@key}}{{/ifEq}} ({{endpoint.produces.[0]}};charset=UTF-8)
 {{#if this.schema.default}}
     + Body
             {{{schemaExample this.schema project 12}}}
