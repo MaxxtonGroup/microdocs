@@ -1,10 +1,9 @@
 [![Build Status](https://travis-ci.org/MaxxtonGroup/microdocs.svg?branch=master)](https://travis-ci.org/MaxxtonGroup/microdocs)
 # MicroDocs
 
-MicroDocs is a tool which preserve compatibilities between RestApi's of web services.
-It is designed and proven itself to work well in a Microservice architecture.
+This tool keeps your api documentation in one place organised. Multiple project can be stored in groups and you can keep track of different versions. MicroDocs uses an extended version of the OpenApi specifications, which adds definitions for dependencies between projects. So breaking changes in the REST API between two project can be detected. MicroDocs can become a key part in your Continuous Integration/Deployment infrastructure, thanks to the integration with many tools
 
-Full documentation can be found at [microdocs.io](http://microdocs.io/docs)
+Full documentation can be found at [microdocs.io](http://microdocs.io/documentation)
 
 ## Features
 * **User interface**
