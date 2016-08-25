@@ -90,7 +90,7 @@ export class PostmanResponseHandler extends MicroDocsResponseHandler {
         if(param.default != undefined){
           generatedValue = param.default;
         }
-        if(url.indexOf("?") == 0){
+        if(url.indexOf("?") == -1){
           url += '?';
         }else{
           url += '&';
