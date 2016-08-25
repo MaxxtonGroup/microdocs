@@ -1,11 +1,20 @@
 import {Project, ProjectSettings} from "../../domain";
 import {SchemaHelper} from "../schema/schema.helper";
+
 /**
+ * Helper for applying custom settings
  * @author Steven Hermans
  */
 export class ProjectSettingsHelper {
 
-  public static resolveSettings(settings: ProjectSettings, project: Project, env: string):Project {
+  /**
+   * Resolve project on different levels: global, env, group and project
+   * @param settings
+   * @param project
+   * @param env
+   * @returns {Project}
+   */
+  public static resolveProject(settings: ProjectSettings, project: Project, env: string):Project {
     if (settings.static.global) {
       project = ProjectSettingsHelper.resolve(project, settings.static.global);
     }
@@ -22,7 +31,16 @@ export class ProjectSettingsHelper {
     return project;
   }
 
-  private static resolve(project: Project, settings: {}, projectScope?: any, settingsScope?: any, variables: {} = {}): any {
+  /**
+   * Resolve project with given settings
+   * @param project
+   * @param settings
+   * @param projectScope
+   * @param settingsScope
+   * @param variables
+   * @returns {any}
+   */
+  public static resolve(project: Project, settings: {}, projectScope?: any, settingsScope?: any, variables: {} = {}): any {
     if (settingsScope === undefined) {
       settingsScope = settings;
     }
@@ -40,13 +58,13 @@ export class ProjectSettingsHelper {
       }
       if (Array.isArray(projectScope)) {
         for (var i = 0; i < settingsScope.length; i++) {
-          projectScope.push(ProjectSettingsHelper.resolve(project, settings, null, settingsScope, variables));
+          projectScope.push(ProjectSettingsHelper.resolve(project, settings, null, settingsScope[i], variables));
         }
       } else {
         console.warn('Could not resolve array when it is not one');
       }
     } else if (typeof(settingsScope) == "object") {
-      if (projectScope == null) {
+      if (projectScope == null || typeof(projectScope) !== 'object') {
         projectScope = {};
       }
       for (var key in settingsScope) {
