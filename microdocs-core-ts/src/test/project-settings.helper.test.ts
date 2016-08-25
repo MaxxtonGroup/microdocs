@@ -54,13 +54,36 @@ describe('#ProjectSettingsHelper: ', () => {
       expect(result).to.deep.eq({array:['item', 'item']});
     });
 
+    it("Test variable injection", () => {
+      var project :Project = {myvar:'helloWorld'};
+      var settings = {resolved: '$project.myvar'};
+
+      var result = ProjectSettingsHelper.resolve(project, settings);
+      expect(result).to.deep.eq({myvar:'helloWorld', resolved: 'helloWorld'});
+    });
+
+    it("Test missing variable injection", () => {
+      var project :Project = {myvar:'helloWorld'};
+      var settings = {resolved: '$myvar'};
+
+      var result = ProjectSettingsHelper.resolve(project, settings);
+      expect(result).to.deep.eq({myvar:'helloWorld'});
+    });
+
     it("Test dynamic array", () => {
       var project :Project = {array:[{name:'john'},{name:'alice'}]};
       var settings = {array:{'{i}': {index: '$i'}}};
 
       var result = ProjectSettingsHelper.resolve(project, settings);
-
       expect(result).to.deep.eq({array:[{name:'john', index: 0},{name:'alice', index: 1}]});
+    });
+
+    it("Test dynamic object", () => {
+      var project :Project = {object:{"john":{age:15},'alice':{age:20}}};
+      var settings = {object:{'{i}': {name: '$i'}}};
+
+      var result = ProjectSettingsHelper.resolve(project, settings);
+      expect(result).to.deep.eq({object:{"john":{age:15,name:'john'},'alice':{age:20, name: 'alice'}}});
     });
 
   });

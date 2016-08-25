@@ -13,7 +13,7 @@ export class EnvRoute extends BaseRoute {
   public projects(req: express.Request, res: express.Response, next: express.NextFunction) {
     var handler = ResponseHelper.getDefaultHandler();
     try {
-      var envs = ProjectSettingsJsonRepository.bootstrap().getSettings().environments;
+      var envs = ProjectSettingsJsonRepository.bootstrap().getEnvs();
       handler.response(req, res, 200, envs);
     } catch (e) {
       ResponseHelper.getHandler(req).handleInternalServerError(req, res, e);

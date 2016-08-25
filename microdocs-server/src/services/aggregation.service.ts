@@ -447,7 +447,7 @@ export class AggregationService {
    */
   private applyProjectSettings(project:Project, env:string):Project {
     var settings = this.projectSettingsRepo.getSettings();
-    var newProject = ProjectSettingsHelper.applySettings(settings, project, env);
+    var newProject = ProjectSettingsHelper.resolveProject(settings, project, env);
     return newProject;
   }
 }

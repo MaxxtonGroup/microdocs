@@ -300,7 +300,7 @@ export class SchemaHelper {
     segments.forEach(segment => {
       if (segment.isVar) {
         var resolvedObject = SchemaHelper.resolveReference(segment.expression.trim(), vars);
-        if (resolvedObject) {
+        if (resolvedObject != undefined) {
           if (segment.pipes) {
             segment.pipes.forEach(pipe => {
                 if (pipe.trim() === 'integer' || pipe.trim() === 'int') {

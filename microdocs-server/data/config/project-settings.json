@@ -1,66 +1,73 @@
 {
+  "global": {},
   "environments": {
-    "development": {
-      "default": true
-    },
-    "acceptance": {},
-    "production": {}
-  },
-  "conditions": {
-  },
-  "static": {
-    "global": {
-      "lala": true
-    },
-    "environments": {
-    },
-    "groups": {
-      "test": {
-        "info": {
-          "links": [
-            {
-              "rel": "repository",
-              "href": "https://stash.maxxton.com/projects/MXTS/repos/{info.title}/browse?at=refs/tags/v{info.version}"
-            }
-          ],
-          "sourceLink": "https://stash.maxxton.com/projects/MXTS/repos/{info.title}/browse/src/main/java/{class.path}.java?at=refs/tags/v{info.version}#{class.lineNumber}"
-        }
+    "acceptance": {
+      "info": {
+        "links": [
+          {
+            "rel": "repository",
+            "href": "https://stash.maxxton.com/projects/${project.info.groupCode}/repos/${project.info.title}/browse?at=refs/tags/v${project.info.version}"
+          }
+        ]
       },
-      "frontend": {
-        "info": {
-          "links": [
-            {
-              "rel": "repository",
-              "href": "https://stash.maxxton.com/projects/MXTF/repos/{info.title}/browse?at=refs%2Ftags%2Fv{info.version}"
-            }
-          ],
-          "sourceLink": "https://stash.maxxton.com/projects/MXTF/repos/{info.title}/browse/{class.path}?at=refs%2Ftags%2Fv{info.version}#{class.lineNumber}"
+      "components": {
+        "{componentName}": {
+          "sourceLink": "https://stash.maxxton.com/projects/${project.info.groupCode}/repos/${project.info.title}/browse/${project.info.sourcePath}${project.components.[componentName].file}?at=refs/tags/v{project.info.version}"
         }
       }
     },
-    "projects": {
-      "authorization-server": {
-        "paths": {
-          "/uaa/oauth/token": {
-            "post": {
-              "consumes": [
-                "application/json"
-              ],
-              "produces": [
-                "application/json"
-              ],
-              "parameters": [
-                {
-                  "in": "query",
-                  "name": "grant_type",
+    "development": {
+      "info": {
+        "links": [
+          {
+            "rel": "repository",
+            "href": "https://stash.maxxton.com/projects/${project.info.groupCode}/repos/${project.info.title}/browse"
+          }
+        ]
+      },
+      "components": {
+        "{componentName}": {
+          "sourceLink": "https://stash.maxxton.com/projects/${project.info.groupCode}/repos/${project.info.title}/browse/${project.info.sourcePath}${project.components.[componentName].file}"
+        }
+      }
+    }
+  },
+  "groups": {
+    "services": {
+      "info": {
+        "sourcePath": "src/main/java/",
+        "groupCode": "MXTS"
+      }
+    },
+    "frontend": {
+      "info": {
+        "sourcePath": "",
+        "groupCode": "MXTF"
+      }
+    }
+  },
+  "projects": {
+    "authorization-server": {
+      "paths": {
+        "/uaa/oauth/token": {
+          "post": {
+            "consumes": [
+              "application/json"
+            ],
+            "produces": [
+              "application/json"
+            ],
+            "parameters": [
+              {
+                "in": "query",
+                "name": "grant_type",
+                "type": "string"
+              }
+            ],
+            "responses": {
+              "default": {
+                "schema": {
                   "type": "string"
-                }
-              ],
-              "responses": {
-                "default": {
-                  "schema": {
-                    "type": "string"
-                  }
                 }
               }
             }
