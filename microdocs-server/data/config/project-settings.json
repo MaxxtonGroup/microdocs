@@ -6,13 +6,18 @@
         "links": [
           {
             "rel": "repository",
-            "href": "https://stash.maxxton.com/projects/${project.info.groupCode}/repos/${project.info.title}/browse?at=refs/tags/v${project.info.version}"
+            "href": "https://stash.maxxton.com/projects/${groupCode}/repos/${project.info.title}/browse?at=refs/tags/v${project.info.version}"
           }
         ]
       },
       "components": {
         "{componentName}": {
-          "sourceLink": "https://stash.maxxton.com/projects/${project.info.groupCode}/repos/${project.info.title}/browse/${project.info.sourcePath}${project.components.[componentName].file}?at=refs/tags/v{project.info.version}"
+          "sourceLink": "https://stash.maxxton.com/projects/${groupCode}/repos/${project.info.title}/browse/${sourcePath}${project.components.[componentName].file}?at=refs/tags/v{project.info.version}",
+          "methods": {
+            "{methodName}": {
+              "sourceLink": "${project.components.[componentName].sourceLink}#${project.components.[componentName].methods.[methodName].lineNumber}"
+            }
+          }
         }
       }
     },
@@ -21,26 +26,31 @@
         "links": [
           {
             "rel": "repository",
-            "href": "https://stash.maxxton.com/projects/${project.info.groupCode}/repos/${project.info.title}/browse"
+            "href": "https://stash.maxxton.com/projects/${groupCode}/repos/${project.info.title}/browse"
           }
         ]
       },
       "components": {
         "{componentName}": {
-          "sourceLink": "https://stash.maxxton.com/projects/${project.info.groupCode}/repos/${project.info.title}/browse/${project.info.sourcePath}${project.components.[componentName].file}"
+          "sourceLink": "https://stash.maxxton.com/projects/${groupCode}/repos/${project.info.title}/browse/${sourcePath}${project.components.[componentName].file}",
+          "methods": {
+            "{methodName}": {
+              "sourceLink": "${project.components.[componentName].sourceLink}#${project.components.[componentName].methods.[methodName].lineNumber}"
+            }
+          }
         }
       }
     }
   },
   "groups": {
     "services": {
-      "info": {
+      "_variables": {
         "sourcePath": "src/main/java/",
         "groupCode": "MXTS"
       }
     },
     "frontend": {
-      "info": {
+      "_variables": {
         "sourcePath": "",
         "groupCode": "MXTF"
       }

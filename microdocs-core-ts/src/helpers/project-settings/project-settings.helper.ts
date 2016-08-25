@@ -15,42 +15,42 @@ export class ProjectSettingsHelper {
    * @returns {Project}
    */
   public static resolveProject(settings: ProjectSettings, project: Project, env: string): Project {
-    if (settings.global) {
-      project = ProjectSettingsHelper.resolveStatic(project, settings.global);
+    // load variables
+    var variables = {};
+    if (settings.global && settings.global['_settings']) {
+      Object.assign(variables, settings.global['_settings']);
+      delete settings.global['_settings'];
     }
-    if (settings.environments && settings.environments[env]) {
-      project = ProjectSettingsHelper.resolveStatic(project, settings.environments[env]);
+    if (settings.environments && settings.environments[env] && settings.environments[env]['_settings']) {
+      Object.assign(variables, settings.environments[env]['_settings']);
+      delete settings.environments[env]['_settings'];
     }
-    if (project.info && project.info.group && settings.groups && settings.groups[project.info.group]) {
-      project = ProjectSettingsHelper.resolveStatic(project, settings.groups[project.info.group]);
+    if (project.info && project.info.group && settings.groups && settings.groups[project.info.group] && settings.groups[project.info.group]['_settings']) {
+      Object.assign(variables, settings.groups[project.info.group]['_settings']);
+      delete settings.groups[project.info.group]['_settings'];
     }
-    if (project.info && project.info.title && settings.projects && settings.projects[project.info.title]) {
-      project = ProjectSettingsHelper.resolveStatic(project, settings.projects[project.info.title]);
+    if (project.info && project.info.title && settings.projects && settings.projects[project.info.title] && settings.projects[project.info.title]['_settings']) {
+      Object.assign(variables, settings.projects[project.info.title]['_settings']);
+      delete settings.projects[project.info.title]['_settings'];
     }
 
-    // do it twice to catch new defined properties
+    console.info(variables);
+
+    // resolve project
     if (settings.global) {
-      project = ProjectSettingsHelper.resolveVariables(project, settings.global);
+      project = ProjectSettingsHelper.resolve(project, settings.global, variables);
     }
     if (settings.environments && settings.environments[env]) {
-      project = ProjectSettingsHelper.resolveVariables(project, settings.environments[env]);
+      project = ProjectSettingsHelper.resolve(project, settings.environments[env], variables);
     }
     if (project.info && project.info.group && settings.groups && settings.groups[project.info.group]) {
-      project = ProjectSettingsHelper.resolveVariables(project, settings.groups[project.info.group]);
+      project = ProjectSettingsHelper.resolve(project, settings.groups[project.info.group], variables);
     }
     if (project.info && project.info.title && settings.projects && settings.projects[project.info.title]) {
-      project = ProjectSettingsHelper.resolveVariables(project, settings.projects[project.info.title]);
+      project = ProjectSettingsHelper.resolve(project, settings.projects[project.info.title], variables);
     }
 
     return project;
-  }
-
-  public static resolveStatic(project:Project, settings:{}){
-    ProjectSettingsHelper.resolve(project, settings, undefined, undefined, {}, false);
-  }
-
-  public static resolveVariables(project:Project, settings:{}){
-    ProjectSettingsHelper.resolve(project, settings, undefined, undefined, {}, true);
   }
 
   /**
@@ -62,7 +62,7 @@ export class ProjectSettingsHelper {
    * @param variables
    * @returns {any}
    */
-  public static resolve(project: Project, settings: {}, projectScope?: any, settingsScope?: any, variables: {} = {}, resolveVariables: boolean = false): any {
+  public static resolve(project: Project, settings: {}, variables: {} = {}, projectScope?: any, settingsScope?: any): any {
     if (settingsScope === undefined) {
       settingsScope = settings;
     }
@@ -80,7 +80,7 @@ export class ProjectSettingsHelper {
       }
       if (Array.isArray(projectScope)) {
         for (var i = 0; i < settingsScope.length; i++) {
-          projectScope.push(ProjectSettingsHelper.resolve(project, settings, null, settingsScope[i], variables, resolveVariables));
+          projectScope.push(ProjectSettingsHelper.resolve(project, settings, variables, null, settingsScope[i]));
         }
       } else {
         console.warn('Could not resolve array when it is not one');
@@ -97,76 +97,68 @@ export class ProjectSettingsHelper {
         var resolvedKey = SchemaHelper.resolveString(key, variables);
         if (resolvedKey) {
           if (resolvedKey.indexOf('{') == 0 && resolvedKey.indexOf('}') == resolvedKey.length - 1) {
-            if(resolveVariables) {
-              var variableName = resolvedKey.substring(1, resolvedKey.length - 1);
-              var oldVarValue = variables[variableName];
-              if (Array.isArray(projectScope)) {
-                var newProjectScopes = [];
-                for (var existingKey = 0; existingKey < projectScope.length; existingKey++) {
-                  variables[variableName] = existingKey;
-                  var newProjectScope = projectScope[existingKey];
-                  if (!newProjectScope) {
-                    newProjectScope = null;
-                  }
-
-                  newProjectScope = ProjectSettingsHelper.resolve(project, settings, newProjectScope, newSettingsScope, variables, resolveVariables);
-                  newProjectScopes.push(newProjectScope);
-
-                  // clean up
-                  if (oldVarValue) {
-                    variables[variableName] = oldVarValue;
-                  } else {
-                    delete variables[variableName];
-                  }
-                }
-              } else {
-                var newProjectScopes = {};
-                for (var existingKey in projectScope) {
-                  variables[variableName] = existingKey;
-                  var newProjectScope = projectScope[existingKey];
-                  if (!newProjectScope) {
-                    newProjectScope = null;
-                  }
-
-                  newProjectScope = ProjectSettingsHelper.resolve(project, settings, newProjectScope, newSettingsScope, variables, resolveVariables);
-                  newProjectScopes[existingKey] = newProjectScope;
-
-                  // clean up
-                  if (oldVarValue) {
-                    variables[variableName] = oldVarValue;
-                  } else {
-                    delete variables[variableName];
-                  }
-                }
-              }
-              projectScope = newProjectScopes;
-            }
-          } else {
-            if(!resolveVariables) {
-              if (Array.isArray(projectScope)) {
-                console.warn("Could resolve array as object");
-              } else {
-                var newProjectScope = projectScope[resolvedKey];
+            var variableName = resolvedKey.substring(1, resolvedKey.length - 1);
+            var oldVarValue = variables[variableName];
+            if (Array.isArray(projectScope)) {
+              var newProjectScopes = [];
+              for (var existingKey = 0; existingKey < projectScope.length; existingKey++) {
+                variables[variableName] = existingKey;
+                var newProjectScope = projectScope[existingKey];
                 if (!newProjectScope) {
                   newProjectScope = null;
                 }
-                newProjectScope = ProjectSettingsHelper.resolve(project, settings, newProjectScope, newSettingsScope, variables, resolveVariables);
-                if (newProjectScope != undefined) {
-                  projectScope[resolvedKey] = newProjectScope;
+
+                newProjectScope = ProjectSettingsHelper.resolve(project, settings, variables, newProjectScope, newSettingsScope);
+                newProjectScopes.push(newProjectScope);
+
+                // clean up
+                if (oldVarValue) {
+                  variables[variableName] = oldVarValue;
+                } else {
+                  delete variables[variableName];
                 }
+              }
+            } else {
+              var newProjectScopes = {};
+              for (var existingKey in projectScope) {
+                variables[variableName] = existingKey;
+                var newProjectScope = projectScope[existingKey];
+                if (!newProjectScope) {
+                  newProjectScope = null;
+                }
+
+                newProjectScope = ProjectSettingsHelper.resolve(project, settings, variables, newProjectScope, newSettingsScope);
+                newProjectScopes[existingKey] = newProjectScope;
+
+                // clean up
+                if (oldVarValue) {
+                  variables[variableName] = oldVarValue;
+                } else {
+                  delete variables[variableName];
+                }
+              }
+            }
+            projectScope = newProjectScopes;
+          } else {
+            if (Array.isArray(projectScope)) {
+              console.warn("Could resolve array as object");
+            } else {
+              var newProjectScope = projectScope[resolvedKey];
+              if (!newProjectScope) {
+                newProjectScope = null;
+              }
+              newProjectScope = ProjectSettingsHelper.resolve(project, settings, variables, newProjectScope, newSettingsScope);
+              if (newProjectScope != undefined) {
+                projectScope[resolvedKey] = newProjectScope;
               }
             }
           }
         }
       }
     } else if (typeof(settingsScope) === 'string') {
-      if (resolveVariables) {
-        var resolvedValue = SchemaHelper.resolveString(settingsScope, variables);
-        if (resolvedValue != undefined) {
-          projectScope = resolvedValue;
-        }
-      } else {
-        projectScope = settingsScope;
+      var resolvedValue = SchemaHelper.resolveString(settingsScope, variables);
+      if (resolvedValue != undefined) {
+        projectScope = resolvedValue;
       }
     } else {
       projectScope = settingsScope;
