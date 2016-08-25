@@ -185,6 +185,10 @@ export class AggregationService {
    */
   private reverseCheckDependencies(env:string, project:Project, projectCache:{[title:string]:{[version:string]:Project}}, parentNode:TreeNode):Problem[] {
     var problems:Problem[] = [];
+    if(!projectCache[project.info.title]) {
+      projectCache[project.info.title] = {};
+    }
+    projectCache[project.info.title][project.info.version] = project;
     for (var title in projectCache) {
       var versions = Object.keys(projectCache[title]).sort();
       if(versions.length > 0){
