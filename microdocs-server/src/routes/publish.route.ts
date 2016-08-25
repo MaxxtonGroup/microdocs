@@ -77,7 +77,8 @@ export class PublishRoute extends BaseRoute {
         report.info.title = title;
 
         // check report
-        var problems: Problem[] = AggregationService.bootstrap().checkProject(env, report);
+        var reportCopy = JSON.parse(JSON.stringify(report));
+        var problems: Problem[] = AggregationService.bootstrap().checkProject(env, reportCopy);
 
         if (!(failOnProblems && problems.filter(problem => problem.level == ERROR || problem.level == WARNING).length > 0)) {
           // save report

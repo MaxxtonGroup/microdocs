@@ -250,7 +250,7 @@ export class AggregationService {
     var dependentProject:Project = null;
     for (var name in projectCache) {
       for (var version in projectCache[name]) {
-        if (projectCache[name][version].info.title == title) {
+        if (projectCache[name][version].info.title.toLowerCase() == title.toLowerCase()) {
           dependentProject = projectCache[name][version];
         }
       }
