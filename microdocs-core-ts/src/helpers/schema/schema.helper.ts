@@ -17,7 +17,6 @@ export class SchemaHelper {
       if (schema.type == OBJECT) {
         if (schema.name != undefined && schema.name != null) {
           var sameObjects:string[] = objectStack.filter((object) => object == schema.name);
-          // console.info('has equals: ' + sameObjects.length + " - " + schema.name);
           if (sameObjects.length > 0) {
             return 'recursive';
           }
@@ -90,7 +89,6 @@ export class SchemaHelper {
     if (schema.type == OBJECT) {
       if (schema.name != undefined && schema.name != null) {
         var sameObjects:string[] = objectStack.filter((object) => object == schema.name);
-        // console.info('has equals: ' + sameObjects.length + " - " + schema.name);
         if (sameObjects.length > 0) {
           return schema;
         }
@@ -166,23 +164,28 @@ export class SchemaHelper {
    * @param string
    * @return {{isVar: boolean, expression: string, pipes?: string[]}[]}
    */
-  public static extractStringSegments(string:string):{isVar:boolean,expression:string, pipes?:string[]}[] {
+  public static extractStringSegments(string:string):{isVar:boolean,expression:string, pipes?:{name:string,args?:string[]}[]}[] {
     var isEscaped = false;
     var isVar = false;
     var isBrackets = false;
     var isPipe = false;
     
-    var segments:{isVar:boolean,expression:string, pipes?:string[]}[] = [];
-    var currentSegment:{isVar:boolean,expression:string, pipes?:string[]} = null;
+    var segments:{isVar:boolean,expression:string, pipes?:{name:string,args?:string[]}[]}[] = [];
+    var currentSegment:{isVar:boolean,expression:string, pipes?:{name:string,args?:string[]}[]} = null;
     for (var i = 0; i < string.length; i++) {
       var char = string.charAt(i);
       if (isEscaped) {
         isEscaped = false;
         if (isPipe) {
-          if (currentSegment.pipes && currentSegment.pipes.length > 1) {
-            currentSegment.pipes[currentSegment.pipes.length - 1] += char;
+          if (currentSegment.pipes && currentSegment.pipes.length > 0) {
+            var currentPipe = currentSegment.pipes[currentSegment.pipes.length - 1];
+            if(currentPipe.args && currentPipe.args.length > 0){
+              currentPipe.args[currentPipe.args.length -1] += char;
+            }else{
+              currentPipe.name = currentPipe.name + char;
+            }
           } else {
-            currentSegment.pipes = [char];
+            currentSegment.pipes = [{name: char}];
           }
         } else {
           if (!currentSegment) {
@@ -203,9 +206,9 @@ export class SchemaHelper {
             if(currentSegment.isVar){
               currentSegment.expression = currentSegment.expression.trim();
               if(currentSegment.pipes){
-                var newPipes:string[] = [];
+                var newPipes:{name:string, args?:string[]}[] = [];
                 currentSegment.pipes.forEach((pipe => {
-                  newPipes.push(pipe.trim());
+                  newPipes.push(pipe);
                 }));
                 currentSegment.pipes = newPipes;
               }
@@ -220,10 +223,10 @@ export class SchemaHelper {
             if(currentSegment.isVar){
               currentSegment.expression = currentSegment.expression.trim();
               if(currentSegment.pipes){
-                var newPipes:string[] = [];
-                currentSegment.pipes.forEach((pipe => {
-                  newPipes.push(pipe.trim());
-                }));
+                var newPipes:{name:string, args?:string[]}[] = [];
+                currentSegment.pipes.forEach(pipe => {
+                  newPipes.push(pipe);
+                });
                 currentSegment.pipes = newPipes;
               }
             }
@@ -233,15 +236,28 @@ export class SchemaHelper {
         } else if (currentSegment && char === '|') {
           isPipe = true;
           if (!currentSegment.pipes || currentSegment.pipes.length == 0) {
-            currentSegment.pipes = [''];
+            currentSegment.pipes = [{name: ''}];
           }else{
-            currentSegment.pipes.push('');
+            currentSegment.pipes.push({name: ''});
           }
         } else if (currentSegment && isPipe) {
           if (currentSegment.pipes && currentSegment.pipes.length > 0) {
-            currentSegment.pipes[currentSegment.pipes.length - 1] = currentSegment.pipes[currentSegment.pipes.length - 1] + char;
+            var currentPipe = currentSegment.pipes[currentSegment.pipes.length - 1];
+            if(char === ' ' && currentPipe.name !== ''){
+              if(!currentPipe.args){
+                currentPipe.args = [''];
+              }else{
+                currentPipe.args.push('');
+              }
+            }else if(char !== ' '){
+              if(currentPipe.args && currentPipe.args.length > 0){
+                currentPipe.args[currentPipe.args.length -1] += char;
+              }else{
+                currentPipe.name = currentPipe.name + char;
+              }
+            }
           } else {
-            currentSegment.pipes = [char];
+            currentSegment.pipes = [{name: char}];
           }
         } else {
           if (!currentSegment) {
@@ -255,10 +271,10 @@ export class SchemaHelper {
           if(currentSegment.isVar){
             currentSegment.expression = currentSegment.expression.trim();
             if(currentSegment.pipes){
-              var newPipes:string[] = [];
-              currentSegment.pipes.forEach((pipe => {
-                newPipes.push(pipe.trim());
-              }));
+              var newPipes:{name:string, args?:string[]}[] = [];
+              currentSegment.pipes.forEach(pipe => {
+                newPipes.push(pipe);
+              });
               currentSegment.pipes = newPipes;
             }
           }
@@ -276,10 +292,10 @@ export class SchemaHelper {
       if(currentSegment.isVar){
         currentSegment.expression = currentSegment.expression.trim();
         if(currentSegment.pipes){
-          var newPipes:string[] = [];
-          currentSegment.pipes.forEach((pipe => {
-            newPipes.push(pipe.trim());
-          }));
+          var newPipes:{name:string, args?:string[]}[] = [];
+          currentSegment.pipes.forEach(pipe => {
+            newPipes.push(pipe);
+          });
           currentSegment.pipes = newPipes;
         }
       }
@@ -303,16 +319,26 @@ export class SchemaHelper {
         if (resolvedObject != undefined) {
           if (segment.pipes) {
             segment.pipes.forEach(pipe => {
-                if (pipe.trim() === 'integer' || pipe.trim() === 'int') {
+                if (pipe.name.trim() === 'integer' || pipe.name.trim() === 'int') {
                   resolvedObject = parseInt(resolvedObject);
-                } else if (pipe.trim() === 'number' || pipe.trim() === 'float' || pipe.trim() === 'double') {
+                } else if (pipe.name.trim() === 'number' || pipe.name.trim() === 'float' || pipe.name.trim() === 'double') {
                   resolvedObject = parseFloat(resolvedObject);
-                } else if (pipe.trim() === 'boolean') {
+                } else if (pipe.name.trim() === 'boolean') {
                   resolvedObject = Boolean(resolvedObject);
-                } else if (pipe.trim() === 'string') {
+                } else if (pipe.name.trim() === 'string') {
                   resolvedObject = new String(resolvedObject);
-                } else if (pipe.trim() === 'json') {
+                } else if (pipe.name.trim() === 'json') {
                   resolvedObject = JSON.stringify(resolvedObject);
+                } else if (pipe.name.trim() === 'uc') {
+                  resolvedObject = resolvedObject.toUpperCase();
+                } else if (pipe.name.trim() === 'lc') {
+                  resolvedObject = resolvedObject.toLowerCase();
+                } else if (pipe.name.trim() === 'replace') {
+                  if(pipe.args.length >= 2){
+                    resolvedObject = resolvedObject.replace(new RegExp(pipe.args[0], 'g'), pipe.args[1]);
+                  }else{
+                    console.warn("Pipe replace requires 2 arguments ");
+                  }
                 } else {
                   console.warn("Unknown pipe: " + pipe);
                 }

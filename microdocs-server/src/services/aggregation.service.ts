@@ -13,7 +13,7 @@ import {
 import {NOTICE, ERROR} from "microdocs-core-ts/dist/domain/problem/problem-level.model";
 import {REST} from "microdocs-core-ts/dist/domain/dependency/dependency-type.model";
 
-import {ProblemReporter, SchemaHelper, ProjectSettingsHelper} from "microdocs-core-ts/dist/helpers";
+import {ProblemReporter, SchemaHelper, MicroDocsPreProcessor} from "microdocs-core-ts/dist/helpers";
 import {getProblemsInProject, getProblemsInDependency} from "microdocs-core-ts/dist/helpers";
 
 import {PathCheck} from "../checks/path-check";
@@ -447,7 +447,7 @@ export class AggregationService {
    */
   private applyProjectSettings(project:Project, env:string):Project {
     var settings = this.projectSettingsRepo.getSettings();
-    var newProject = ProjectSettingsHelper.resolveProject(settings, project, env);
+    var newProject = MicroDocsPreProcessor.resolveProject(settings, project, env);
     return newProject;
   }
 }

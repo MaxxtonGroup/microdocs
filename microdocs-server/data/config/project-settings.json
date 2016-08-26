@@ -19,6 +19,11 @@
             }
           }
         }
+      },
+      "definitions": {
+        "{definitionName}": {
+          "sourceLink": "https://stash.maxxton.com/projects/${groupCode}/repos/${project.info.title}/browse/${sourcePath}${definitionName|replace \\\\\\\\. /}.java?at=refs/tags/v{project.info.version}"
+        }
       }
     },
     "development": {
@@ -38,6 +43,11 @@
               "sourceLink": "${project.components.[componentName].sourceLink}#${project.components.[componentName].methods.[methodName].lineNumber}"
             }
           }
+        }
+      },
+      "definitions": {
+        "{definitionName}": {
+          "sourceLink": "https://stash.maxxton.com/projects/${groupCode}/repos/${project.info.title}/browse/${sourcePath}${definitionName|replace \\\\\\\\. /}.java?at=refs/tags/v{project.info.version}"
         }
       }
     }

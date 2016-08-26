@@ -37,9 +37,7 @@
 </card>
 <card title="Endpoints" [sectionClass]="'card-section content'" [canHide]="true" *ngIf="project.paths | notEmpty">
     <div *ngFor="let path of project.paths | objectIterator | sortByKey:'_id'">
-        <endpoint [path]="path._id" [endpoint]="endpoint"
-                  [sourceLink]="getControllerSourceLink(project.info.sourceLink, endpoint)"
-                  *ngFor="let endpoint of path | objectIterator | sortByHttpMethod:'_id'"></endpoint>
+        <endpoint [path]="path._id" [endpoint]="endpoint" *ngFor="let endpoint of path | objectIterator | sortByHttpMethod:'_id'"></endpoint>
     </div>
 </card>
 <card title="Clients" [sectionClass]="'card-section content'" [canHide]="true"
@@ -55,9 +53,7 @@
             <problem-panel [problems]="client.problems"></problem-panel>
         </template>
         <div *ngFor="let path of client.paths | objectIterator | sortByHttpMethod:'_id'">
-            <endpoint [path]="path._id" [endpoint]="endpoint"
-                      [sourceLink]="getControllerSourceLink(project.info.sourceLink, endpoint)"
-                      *ngFor="let endpoint of path | objectIterator"></endpoint>
+            <endpoint [path]="path._id" [endpoint]="endpoint" *ngFor="let endpoint of path | objectIterator"></endpoint>
         </div>
     </div>
 </card>

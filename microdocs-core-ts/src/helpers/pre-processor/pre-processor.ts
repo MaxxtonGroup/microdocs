@@ -5,7 +5,7 @@ import {SchemaHelper} from "../schema/schema.helper";
  * Helper for applying custom settings
  * @author Steven Hermans
  */
-export class ProjectSettingsHelper {
+export class MicroDocsPreProcessor {
 
   /**
    * Resolve project on different levels: global, env, group and project
@@ -14,7 +14,7 @@ export class ProjectSettingsHelper {
    * @param env
    * @returns {Project}
    */
-  public static resolveProject(settings: ProjectSettings, project: Project, env: string): Project {
+  public static processProject(settings: ProjectSettings, project: Project, env: string): Project {
     // load variables
     var variables = {};
     if (settings.global && settings.global['_settings']) {
@@ -34,20 +34,18 @@ export class ProjectSettingsHelper {
       delete settings.projects[project.info.title]['_settings'];
     }
 
-    console.info(variables);
-
-    // resolve project
+    // process project
     if (settings.global) {
-      project = ProjectSettingsHelper.resolve(project, settings.global, variables);
+      project = MicroDocsPreProcessor.process(project, settings.global, variables);
     }
     if (settings.environments && settings.environments[env]) {
-      project = ProjectSettingsHelper.resolve(project, settings.environments[env], variables);
+      project = MicroDocsPreProcessor.process(project, settings.environments[env], variables);
     }
     if (project.info && project.info.group && settings.groups && settings.groups[project.info.group]) {
-      project = ProjectSettingsHelper.resolve(project, settings.groups[project.info.group], variables);
+      project = MicroDocsPreProcessor.process(project, settings.groups[project.info.group], variables);
     }
     if (project.info && project.info.title && settings.projects && settings.projects[project.info.title]) {
-      project = ProjectSettingsHelper.resolve(project, settings.projects[project.info.title], variables);
+      project = MicroDocsPreProcessor.process(project, settings.projects[project.info.title], variables);
     }
 
     return project;
@@ -62,7 +60,7 @@ export class ProjectSettingsHelper {
    * @param variables
    * @returns {any}
    */
-  public static resolve(project: Project, settings: {}, variables: {} = {}, projectScope?: any, settingsScope?: any): any {
+  public static process(project: Project, settings: {}, variables: {} = {}, projectScope?: any, settingsScope?: any): any {
     if (settingsScope === undefined) {
       settingsScope = settings;
     }
@@ -80,10 +78,10 @@ export class ProjectSettingsHelper {
       }
       if (Array.isArray(projectScope)) {
         for (var i = 0; i < settingsScope.length; i++) {
-          projectScope.push(ProjectSettingsHelper.resolve(project, settings, variables, null, settingsScope[i]));
+          projectScope.push(MicroDocsPreProcessor.process(project, settings, variables, null, settingsScope[i]));
         }
       } else {
-        console.warn('Could not resolve array when it is not one');
+        console.warn('Could not process array when it is not one');
       }
     } else if (typeof(settingsScope) == "object") {
       if (projectScope == null || typeof(projectScope) !== 'object') {
@@ -108,7 +106,7 @@ export class ProjectSettingsHelper {
                   newProjectScope = null;
                 }
 
-                newProjectScope = ProjectSettingsHelper.resolve(project, settings, variables, newProjectScope, newSettingsScope);
+                newProjectScope = MicroDocsPreProcessor.process(project, settings, variables, newProjectScope, newSettingsScope);
                 newProjectScopes.push(newProjectScope);
 
                 // clean up
@@ -127,7 +125,7 @@ export class ProjectSettingsHelper {
                   newProjectScope = null;
                 }
 
-                newProjectScope = ProjectSettingsHelper.resolve(project, settings, variables, newProjectScope, newSettingsScope);
+                newProjectScope = MicroDocsPreProcessor.process(project, settings, variables, newProjectScope, newSettingsScope);
                 newProjectScopes[existingKey] = newProjectScope;
 
                 // clean up
@@ -141,13 +139,13 @@ export class ProjectSettingsHelper {
             projectScope = newProjectScopes;
           } else {
             if (Array.isArray(projectScope)) {
-              console.warn("Could resolve array as object");
+              console.warn("Could process array as object");
             } else {
               var newProjectScope = projectScope[resolvedKey];
               if (!newProjectScope) {
                 newProjectScope = null;
               }
-              newProjectScope = ProjectSettingsHelper.resolve(project, settings, variables, newProjectScope, newSettingsScope);
+              newProjectScope = MicroDocsPreProcessor.process(project, settings, variables, newProjectScope, newSettingsScope);
               if (newProjectScope != undefined) {
                 projectScope[resolvedKey] = newProjectScope;
               }

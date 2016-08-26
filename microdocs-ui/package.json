@@ -9,6 +9,7 @@
   },
   "license": "MIT",
   "scripts": {
+    "dev": "lite-server",
     "linkDevelopment": "npm link @maxxton/components && npm link microdocs-core-ts",
     "unlinkDevelopment": "npm unlink @maxxton/components && npm unlink microdocs-core-ts",
     "link": "npm link microdocs-core-ts",
