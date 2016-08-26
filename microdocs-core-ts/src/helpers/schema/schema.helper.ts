@@ -18,7 +18,7 @@ export class SchemaHelper {
         if (schema.name != undefined && schema.name != null) {
           var sameObjects:string[] = objectStack.filter((object) => object == schema.name);
           if (sameObjects.length > 0) {
-            return 'recursive';
+            return '[' + schema.name + ']';
           }
           objectStack.push(schema.name);
         }
@@ -50,7 +50,7 @@ export class SchemaHelper {
         if (schema.allOf != undefined) {
           schema.allOf.forEach(superSchema => {
             if (superSchema.type == OBJECT) {
-              var superObject = SchemaHelper.generateExample(superSchema, fieldName, objectStack, rootObject);
+              var superObject = SchemaHelper.generateExample(superSchema, fieldName, objectStack.slice(), rootObject);
               for (var field in superObject) {
                 object[field] = superObject[field];
               }
@@ -67,7 +67,7 @@ export class SchemaHelper {
               name = jsonName;
             }
             
-            object[name] = SchemaHelper.generateExample(property, name, objectStack, rootObject);
+            object[name] = SchemaHelper.generateExample(property, name, objectStack.slice(), rootObject);
           }
         }
         return object;

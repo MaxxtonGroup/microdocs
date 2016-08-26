@@ -32,7 +32,7 @@ gulp.task('default', function (done) {
 
 gulp.task('compile', ['test']);
 
-gulp.task('compile-typescript', [], function () {
+gulp.task('compile-typescript', ['compile-pug'], function () {
   // copy all compiled typescript code
   var result = gulp
       .src(['typings/index.d.ts', 'src/**/*.ts'])
@@ -43,6 +43,13 @@ gulp.task('compile-typescript', [], function () {
     result.dts.pipe(gulp.dest(settings.distFolder)),
     result.js.pipe(embedTemplates({sourceType: 'js'})).pipe(gulp.dest(settings.distFolder))
   ]);
+});
+
+gulp.task('compile-pug', [], function () {
+
+    return gulp.src('src/views/**')
+        .pipe(gulp.dest(settings.distFolder + '/views'));
+
 });
 
 gulp.task('compile-sourcemaps', [], function (done) {
@@ -103,7 +110,7 @@ gulp.task('config', function () {
 });
 
 gulp.task('watch', function () {
-  gulp.watch(['src/**/*.ts', 'src/**/*.html'], ['compile-typescript']);
+  gulp.watch(['src/**/*.ts', 'src/**/*.html', 'src/views/**'], ['compile-typescript']);
 });
 
 gulp.task('clean', [], function () {

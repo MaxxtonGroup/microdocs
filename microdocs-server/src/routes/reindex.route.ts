@@ -15,21 +15,17 @@ export class ReindexRoute extends BaseRoute {
 
   public reindex(req: express.Request, res: express.Response, next: express.NextFunction) {
     var handler = ResponseHelper.getHandler(req);
-    if(handler == null){
-      ResponseHelper.getDefaultHandler().handleNotAcceptable(req, res);
-    }else {
-      try {
-        var env = ReindexRoute.getEnv(req);
-        if(env == null){
-          handler.handleBadRequest(req, res, "env '" + req.query.env + "' doesn't exists");
-          return;
-        }
-
-        var nodes = AggregationService.bootstrap().reindex(env);
-        handler.handleProjects(req, res, nodes, env);
-      } catch (e) {
-        handler.handleInternalServerError(req, res, e);
+    try {
+      var env = ReindexRoute.getEnv(req);
+      if (env == null) {
+        handler.handleBadRequest(req, res, "env '" + req.query.env + "' doesn't exists");
+        return;
       }
+
+      var nodes = AggregationService.bootstrap().reindex(env);
+      handler.handleProjects(req, res, nodes, env);
+    } catch (e) {
+      handler.handleInternalServerError(req, res, e);
     }
   }
 

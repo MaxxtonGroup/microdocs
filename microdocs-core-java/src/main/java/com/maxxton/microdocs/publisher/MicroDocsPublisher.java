@@ -185,7 +185,8 @@ public class MicroDocsPublisher {
     if(response.getProblems() != null) {
       for (CheckProblem problem : response.getProblems()) {
         String msg = "\n";
-        String sourceFile = new File(rootDir, "src/main/java/" + problem.getPath() + ":" + String.valueOf(problem.getLineNumber())).getPath();
+        String lineNumber = problem.getLineNumber() > 0 ? ":" + String.valueOf(problem.getLineNumber()) : "";
+        String sourceFile = new File(rootDir, "src/main/java/" + problem.getPath() + lineNumber).getPath();
         msg += sourceFile + ": " + problem.getLevel() + ": " + problem.getMessage();
         if(problem.getClient() != null){
           msg += "\nBreaking change detected with " + problem.getClient().getTitle() + " (source: " + problem.getClient().getSourceLink() + ")";

@@ -15,6 +15,11 @@ export class PostmanResponseHandler extends MicroDocsResponseHandler {
     if(Object.keys(projects.dependencies).length == 1){
       var name = Object.keys(projects.dependencies)[0];
       var project = ProjectJsonRepository.bootstrap().getAggregatedProject(env, name, projects.dependencies[name].version);
+
+      if(req.query['method']){
+        var filterMethods = req.query['method'].split(',');
+        this.filterMethods(project, filterMethods);
+      }
       this.response(req, res, 200, this.postman(project));
     }else {
       this.response(req, res, 200, this.postmans(projects, env));
@@ -22,6 +27,10 @@ export class PostmanResponseHandler extends MicroDocsResponseHandler {
   }
 
   handleProject(req: express.Request, res: express.Response, project: Project, env:string) {
+    if(req.query['method']){
+      var filterMethods = req.query['method'].split(',');
+      this.filterMethods(project, filterMethods);
+    }
     this.response(req, res, 200, this.postman(project));
   }
 
@@ -81,7 +90,7 @@ export class PostmanResponseHandler extends MicroDocsResponseHandler {
         if(param.default != undefined){
           generatedValue = param.default;
         }
-        if(url.indexOf("?") == 0){
+        if(url.indexOf("?") == -1){
           url += '?';
         }else{
           url += '&';
