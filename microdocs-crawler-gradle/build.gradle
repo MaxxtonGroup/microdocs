@@ -14,6 +14,7 @@ buildscript {
 
 repositories {
     mavenCentral()
+    mavenLocal()
 }
 
 dependencies {
@@ -21,23 +22,25 @@ dependencies {
     compile ("com.fasterxml.jackson.core:jackson-databind:2.7.5")
     compile ("com.mashape.unirest:unirest-java:1.4.9")
     compile ("org.codehaus.groovy:groovy-all:2.4.4")
-    compile ("com.maxxton:microdocs-core-java:1.1")
+    compile ("com.maxxton:microdocs-core-java:1.2")
 }
 
 group='com.maxxton'
-version = '1.1'
+version = '1.2'
 
-task fatJar (type: Jar) {
-    manifest {
-        attributes 'Implementation-Title': 'microdocs-crawler-gradle',
-                'Implementation-Version': version
-    }
+task fatJar(type: Jar, dependsOn: 'jar') {
     baseName = project.name
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     include('com/maxxton/**')
     include('com/fasterxml/**')
     include('com/mashape/**')
+    include('META-INF/gradle-plugins/microdocs.properties')
+    include('microdocs-crawler-doclet.jar')
     with jar
+}
+manifest {
+    attributes 'Implementation-Title': 'microdocs-crawler-gradle',
+            'Implementation-Version': version
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
@@ -66,10 +69,10 @@ uploadArchives {
         mavenDeployer {
             beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
-            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-                authentication(userName: sonatypeUsername, password: sonatypePassword)
-            }
-//            repository(url: mavenLocal().url)
+//            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+//                authentication(userName: sonatypeUsername, password: sonatypePassword)
+//            }
+            repository(url: mavenLocal().url)
 
             pom.project {
                 name 'MicroDocs Gradle Crawler'

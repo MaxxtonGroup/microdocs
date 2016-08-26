@@ -13,7 +13,7 @@ import {
 import {NOTICE, ERROR} from "microdocs-core-ts/dist/domain/problem/problem-level.model";
 import {REST} from "microdocs-core-ts/dist/domain/dependency/dependency-type.model";
 
-import {ProblemReporter, SchemaHelper} from "microdocs-core-ts/dist/helpers";
+import {ProblemReporter, SchemaHelper, MicroDocsPreProcessor} from "microdocs-core-ts/dist/helpers";
 import {getProblemsInProject, getProblemsInDependency} from "microdocs-core-ts/dist/helpers";
 
 import {PathCheck} from "../checks/path-check";
@@ -25,10 +25,10 @@ import {ProjectService} from "./project.service";
 
 export class AggregationService {
 
-  private endpointChecks:PathCheck[] = [new QueryParamsCheck(), new BodyParamsCheck(), new PathParamsCheck(), new ResponseCheck()];
-  private reportRepo:ReportRepository;
-  private projectSettingsRepo:ProjectSettingsRepository;
-  private projectService:ProjectService;
+  private endpointChecks: PathCheck[] = [new QueryParamsCheck(), new BodyParamsCheck(), new PathParamsCheck(), new ResponseCheck()];
+  private reportRepo: ReportRepository;
+  private projectSettingsRepo: ProjectSettingsRepository;
+  private projectService: ProjectService;
 
   constructor() {
     this.reportRepo = ReportJsonRepository.bootstrap();
@@ -36,7 +36,7 @@ export class AggregationService {
     this.projectService = ProjectService.bootstrap();
   }
 
-  public static bootstrap():AggregationService {
+  public static bootstrap(): AggregationService {
     return new AggregationService();
   }
 
@@ -45,7 +45,7 @@ export class AggregationService {
    * @param project
    * @returns {Problem[]}
    */
-  public checkProject(env:string, project:Project):Problem[] {
+  public checkProject(env: string, project: Project): Problem[] {
     // Fix project
     this.fixDependencyUpperCase(project);
 
@@ -70,7 +70,7 @@ export class AggregationService {
    * Start the reindex process
    * @return {TreeNode}
    */
-  public reindex(env:string):TreeNode {
+  public reindex(env: string): TreeNode {
     console.info("Start reindex");
 
     // Load all projects
@@ -98,7 +98,7 @@ export class AggregationService {
    * @param projects list of all projects
    * @return {TreeNode} result
    */
-  public buildDependencyTree(env:string, projectCache:{[title:string]:{[version:string]:Project}}):TreeNode {
+  public buildDependencyTree(env: string, projectCache: {[title: string]: {[version: string]: Project}}): TreeNode {
     // create rootnode
     var rootNode = new TreeNode();
 
@@ -115,7 +115,7 @@ export class AggregationService {
       }
     }
 
-    var copyProjectCache:{[title:string]:{[version:string]:Project}} = {};
+    var copyProjectCache: {[title: string]: {[version: string]: Project}} = {};
     for (var title in projectCache) {
       for (var version in projectCache[title]) {
         if (copyProjectCache[title] == undefined) {
@@ -140,10 +140,10 @@ export class AggregationService {
    * Fix uppercase dependency names
    * @param project
    */
-  private fixDependencyUpperCase(project:Project){
-    if(project.dependencies){
+  private fixDependencyUpperCase(project: Project) {
+    if (project.dependencies) {
       var fixedDependencies = {};
-      for(var name in project.dependencies){
+      for (var name in project.dependencies) {
         fixedDependencies[name.toLowerCase()] = project.dependencies[name];
       }
       project.dependencies = fixedDependencies;
@@ -154,8 +154,8 @@ export class AggregationService {
    * Load all projects
    * @return all project structured as [name].[version].[project]
    */
-  private loadProjects(env:string):{[title:string]:{[version:string]:Project}} {
-    var projectCache:{[title:string]:{[version:string]:Project}} = {};
+  private loadProjects(env: string): {[title: string]: {[version: string]: Project}} {
+    var projectCache: {[title: string]: {[version: string]: Project}} = {};
     // var projects:Project[] = [];
     var projectInfos = this.reportRepo.getProjects(env);
     projectInfos.forEach(projectInfo => {
@@ -163,7 +163,7 @@ export class AggregationService {
         var project = this.reportRepo.getProject(env, projectInfo);
         if (project != null) {
           this.fixDependencyUpperCase(project);
-          project = this.mergeProjectSettings(project);
+          project = this.applyProjectSettings(project, env);
           if (projectCache[project.info.title] == null || projectCache[project.info.title] == undefined) {
             projectCache[project.info.title] = {};
           }
@@ -183,16 +183,16 @@ export class AggregationService {
    * @param projectCache
    * @param parentNode
    */
-  private reverseCheckDependencies(env:string, project:Project, projectCache:{[title:string]:{[version:string]:Project}}, parentNode:TreeNode):Problem[] {
-    var problems:Problem[] = [];
-    if(!projectCache[project.info.title]) {
+  private reverseCheckDependencies(env: string, project: Project, projectCache: {[title: string]: {[version: string]: Project}}, parentNode: TreeNode): Problem[] {
+    var problems: Problem[] = [];
+    if (!projectCache[project.info.title]) {
       projectCache[project.info.title] = {};
     }
     projectCache[project.info.title][project.info.version] = project;
     for (var title in projectCache) {
       var versions = Object.keys(projectCache[title]).sort();
-      if(versions.length > 0){
-        var latestVersion = versions[versions.length-1];
+      if (versions.length > 0) {
+        var latestVersion = versions[versions.length - 1];
         var clientProject = projectCache[title][latestVersion];
         if (clientProject.dependencies != null && clientProject.definitions != undefined) {
           if (clientProject.dependencies[project.info.title] != undefined) {
@@ -201,11 +201,11 @@ export class AggregationService {
 
             // map problems to the produces endpoints
             var problemReport = new ProblemReporter(project);
-            if(dependency.paths != undefined && dependency.paths != null){
-              for(var path in dependency.paths){
-                for( var method in dependency.paths[path]){
+            if (dependency.paths != undefined && dependency.paths != null) {
+              for (var path in dependency.paths) {
+                for (var method in dependency.paths[path]) {
                   var endpoint = dependency.paths[path][method];
-                  if(endpoint.problems != undefined && endpoint.problems != null){
+                  if (endpoint.problems != undefined && endpoint.problems != null) {
                     var producerEndpoint = SchemaHelper.resolveReference('paths.' + path + "." + method, project);
                     endpoint.problems.forEach(problem => {
                       problemReport.report(
@@ -239,7 +239,7 @@ export class AggregationService {
    * @param parentNode
    * @returns {Project}
    */
-  private resolveDependencies(env:string, project:Project, projectCache:{[title:string]:{[version:string]:Project}}, parentNode:TreeNode):Project {
+  private resolveDependencies(env: string, project: Project, projectCache: {[title: string]: {[version: string]: Project}}, parentNode: TreeNode): Project {
     console.info('resolve project: ' + project.info.title + ":" + project.info.version);
     if (project.dependencies != null && project.dependencies != undefined) {
       var dependencies = {};
@@ -261,15 +261,15 @@ export class AggregationService {
    * @param projects list of all projects
    * @param parentNode the parent node
    */
-  private resolveDependency(env:string, project:Project, title:string, dependency:Dependency, projectCache:{[title:string]:{[version:string]:Project}}, parentNode:TreeNode) {
+  private resolveDependency(env: string, project: Project, title: string, dependency: Dependency, projectCache: {[title: string]: {[version: string]: Project}}, parentNode: TreeNode) {
     var node = new TreeNode();
     node.parent = parentNode;
 
     //resolve dependency
-    var dependencyProblems:ProblemReporter = new ProblemReporter(project);
+    var dependencyProblems: ProblemReporter = new ProblemReporter(project);
 
     //find dependent project
-    var dependentProject:Project = null;
+    var dependentProject: Project = null;
     for (var name in projectCache) {
       for (var version in projectCache[name]) {
         if (projectCache[name][version].info.title.toLowerCase() == title.toLowerCase()) {
@@ -342,7 +342,7 @@ export class AggregationService {
    * @param dependentProject
    * @returns {boolean} true if compatible, otherwise false
    */
-  private checkEndpoints(title:string, dependency:Dependency, dependentProject:Project, currentProject:Project):boolean {
+  private checkEndpoints(title: string, dependency: Dependency, dependentProject: Project, currentProject: Project): boolean {
     var compatible = true;
     if (dependency.paths != undefined) {
       for (var path in dependency.paths) {
@@ -376,16 +376,16 @@ export class AggregationService {
    * @param project
    * @returns {null|Project} previous project or null if it does not exists
    */
-  private previousProject(env:string, project:Project):Project {
+  private previousProject(env: string, project: Project): Project {
     // load older version if so requested
-    var prevProjectInfo:ProjectInfo = null;
+    var prevProjectInfo: ProjectInfo = null;
 
     var sortedVersions = project.info.versions.sort();
     var index = sortedVersions.indexOf(project.info.version);
     index--;
-    if(index >= 0 && sortedVersions[index] != undefined){
+    if (index >= 0 && sortedVersions[index] != undefined) {
       var version = sortedVersions[index];
-      if(project.info.versions.filter(v => v == version).length == 0){
+      if (project.info.versions.filter(v => v == version).length == 0) {
         return null;
       }
       prevProjectInfo = new ProjectInfo(project.info.title, project.info.group, version, project.info.versions);
@@ -397,7 +397,7 @@ export class AggregationService {
     }
     try {
       project = this.reportRepo.getProject(env, prevProjectInfo);
-      project = this.mergeProjectSettings(project);
+      project = this.applyProjectSettings(project, env);
       return project;
     } catch (e) {
       console.warn("Failed to load project: " + project.info.title);
@@ -413,16 +413,16 @@ export class AggregationService {
    * @param method request method of the endpoint
    * @returns {null,Path} returns Path or null if it does not exists
    */
-  private findEndpoint(title:string, clientEndpoint:Path, clientPath:string, clientMethod:string, checkAlmostEquals:boolean, project:Project, problemReport:ProblemReporter):Path {
-    var clientSegments:string[] = clientPath.split('/');
+  private findEndpoint(title: string, clientEndpoint: Path, clientPath: string, clientMethod: string, checkAlmostEquals: boolean, project: Project, problemReport: ProblemReporter): Path {
+    var clientSegments: string[] = clientPath.split('/');
     for (var producerPath in project.paths) {
-      var producerSegments:string[] = producerPath.split('/');
+      var producerSegments: string[] = producerPath.split('/');
       if (clientSegments.length == producerSegments.length) {
         var almostEquals = true;
         var equals = true;
         for (var i = 0; i < clientSegments.length; i++) {
-          var clientSegment:string = clientSegments[i];
-          var producerSegment:string = producerSegments[i];
+          var clientSegment: string = clientSegments[i];
+          var producerSegment: string = producerSegments[i];
 
           if (!this.isSegmentVariable(producerSegment) && !this.isSegmentVariable(clientSegment) && clientSegment != producerSegment) {
             // segment is not equals
@@ -458,54 +458,18 @@ export class AggregationService {
     return null;
   }
 
-  private isSegmentVariable(segment:string):boolean {
+  private isSegmentVariable(segment: string): boolean {
     return segment.indexOf("{") == 0 && segment.lastIndexOf("}") == segment.length - 1;
   }
 
   /**
-   * Merge project settings over the project object
+   * Apply project settings
    * @param project
    * @returns {Project}
    */
-  private mergeProjectSettings(project:Project):Project {
+  private applyProjectSettings(project: Project, env: string): Project {
     var settings = this.projectSettingsRepo.getSettings();
-    if (settings['global'] != undefined && settings['global'] != null) {
-      project = <Project> this.mergeObjects(project, settings['global']);
-    }
-
-    if (project.info != undefined && project.info != null) {
-      if (project.info.group != undefined && project.info.group != null) {
-        if (settings['groups'] != undefined && settings['groups'] != null &&
-          settings['groups'][project.info.group] != undefined && settings['groups'][project.info.group] != null) {
-          project = <Project> this.mergeObjects(project, settings['groups'][project.info.group]);
-        }
-      }
-
-      if (project.info.title != undefined && project.info.title != null) {
-        if (settings['projects'] != undefined && settings['projects'] != null &&
-          settings['projects'][project.info.title] != undefined && settings['projects'][project.info.title] != null) {
-          project = <Project> this.mergeObjects(project, settings['projects'][project.info.title]);
-        }
-      }
-    }
-
-    return project;
-  }
-
-  /**
-   * Merge obj2 on top of obj1
-   * @param obj1
-   * @param obj2
-   * @returns {{}} return merged object
-   */
-  private mergeObjects(obj1:{}, obj2:{}):{} {
-    for (var key in obj2) {
-      if (obj1[key] != undefined && typeof(obj1[key]) == 'object') {
-        obj1[key] = this.mergeObjects(obj1[key], obj2[key]);
-      } else {
-        obj1[key] = obj2[key];
-      }
-    }
-    return obj1;
+    var newProject = MicroDocsPreProcessor.processProject(settings, project, env);
+    return newProject;
   }
 }

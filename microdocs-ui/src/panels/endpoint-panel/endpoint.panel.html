@@ -9,7 +9,11 @@
             <problem-panel [problems]="endpoint.problems"></problem-panel>
         </template>
         <div class="description">
-            <span *ngIf="endpoint.operationId | notEmpty"><a class="link" [href]="sourceLink" target="_blank">{{endpoint.operationId}}()</a> -  </span>
+            <span *ngIf="endpoint.operationId | notEmpty">
+                <a *ngIf="endpoint | notEmpty:'method.sourceLink'" class="link" [href]="endpoint.method.sourceLink" target="_blank">{{endpoint.operationId}}()</a>
+                <span *ngIf="endpoint | empty:'method.sourceLink'">{{endpoint.operationId}}()</span>
+                <span *ngIf="endpoint.description | notEmpty"> - </span>
+            </span>
             {{endpoint.description}}
         </div>
         <template [ngIf]="endpoint.parameters | notEmpty">

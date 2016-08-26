@@ -20,8 +20,6 @@ export class EndpointPanel {
   private endpoint:Path;
   @Input()
   private path:string;
-  @Input()
-  private sourceLink:string;
 
   getStatusName(statusCode : string){
     switch(statusCode.trim()){
