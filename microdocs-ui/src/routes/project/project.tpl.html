@@ -59,6 +59,5 @@
 </card>
 <card title="Models" [sectionClass]="'card-section content'" [canHide]="true"
       *ngIf="project.definitions | filterByField:'type':'object' | notEmpty">
-    <model-panel [schema]="schema" [sourceLink]="getModelSourceLink(project.info.sourceLink, schema._id, schema)"
-                 *ngFor="let schema of project.definitions | objectIterator | sortByKey:'_id'"></model-panel>
+    <model-panel [schema]="schema" *ngFor="let schema of project.definitions | objectIterator | sortByKey:'_id'"></model-panel>
 </card>

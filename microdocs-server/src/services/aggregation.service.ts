@@ -447,7 +447,7 @@ export class AggregationService {
    */
   private applyProjectSettings(project:Project, env:string):Project {
     var settings = this.projectSettingsRepo.getSettings();
-    var newProject = MicroDocsPreProcessor.resolveProject(settings, project, env);
+    var newProject = MicroDocsPreProcessor.processProject(settings, project, env);
     return newProject;
   }
 }

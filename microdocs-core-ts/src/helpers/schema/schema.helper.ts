@@ -335,7 +335,9 @@ export class SchemaHelper {
                   resolvedObject = resolvedObject.toLowerCase();
                 } else if (pipe.name.trim() === 'replace') {
                   if(pipe.args.length >= 2){
+                    console.error("replace: '" + resolvedObject + "' " + pipe.args[0] + " - " + pipe.args[1]);
                     resolvedObject = resolvedObject.replace(new RegExp(pipe.args[0], 'g'), pipe.args[1]);
+                    console.error("result: " + resolvedObject);
                   }else{
                     console.warn("Pipe replace requires 2 arguments ");
                   }

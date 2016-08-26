@@ -17,22 +17,24 @@ export class MicroDocsPreProcessor {
   public static processProject(settings: ProjectSettings, project: Project, env: string): Project {
     // load variables
     var variables = {};
-    if (settings.global && settings.global['_settings']) {
-      Object.assign(variables, settings.global['_settings']);
-      delete settings.global['_settings'];
+    if (settings.global && settings.global['_variables']) {
+      Object.assign(variables, settings.global['_variables']);
+      delete settings.global['_variables'];
     }
-    if (settings.environments && settings.environments[env] && settings.environments[env]['_settings']) {
-      Object.assign(variables, settings.environments[env]['_settings']);
-      delete settings.environments[env]['_settings'];
+    if (settings.environments && settings.environments[env] && settings.environments[env]['_variables']) {
+      Object.assign(variables, settings.environments[env]['_variables']);
+      delete settings.environments[env]['_variables'];
     }
-    if (project.info && project.info.group && settings.groups && settings.groups[project.info.group] && settings.groups[project.info.group]['_settings']) {
-      Object.assign(variables, settings.groups[project.info.group]['_settings']);
-      delete settings.groups[project.info.group]['_settings'];
+    if (project.info && project.info.group && settings.groups && settings.groups[project.info.group] && settings.groups[project.info.group]['_variables']) {
+      Object.assign(variables, settings.groups[project.info.group]['_variables']);
+      delete settings.groups[project.info.group]['_variables'];
     }
-    if (project.info && project.info.title && settings.projects && settings.projects[project.info.title] && settings.projects[project.info.title]['_settings']) {
-      Object.assign(variables, settings.projects[project.info.title]['_settings']);
-      delete settings.projects[project.info.title]['_settings'];
+    if (project.info && project.info.title && settings.projects && settings.projects[project.info.title] && settings.projects[project.info.title]['_variables']) {
+      Object.assign(variables, settings.projects[project.info.title]['_variables']);
+      delete settings.projects[project.info.title]['_variables'];
     }
+
+    console.error(variables);
 
     // process project
     if (settings.global) {
