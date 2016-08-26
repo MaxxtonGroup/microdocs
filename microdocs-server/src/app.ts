@@ -7,6 +7,7 @@ import * as helmet from "helmet";
 import * as path from "path";
 import * as logger from 'morgan';
 import * as middleware from 'swagger-express-middleware';
+import * as exphbs from 'express-handlebars';
 
 import {Config} from "./config";
 import {BaseRoute} from "./routes/route";
@@ -72,6 +73,15 @@ class Server {
 
     //mount query string parser
     this.app.use(bodyParser.urlencoded({extended: true}));
+
+    //mount view engine
+    var viewFolder = "dist/views";
+    if (Config.has("viewFolder")) {
+      viewFolder = Config.get("viewFolder");
+    }
+    this.app.engine('handlebars', exphbs());
+    this.app.set('views', path.join(__dirname, viewFolder));
+    this.app.set('view engine', 'handlebars');
 
     //add static paths
     var staticFolder = "../microdocs-ui";
