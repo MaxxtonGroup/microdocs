@@ -5,6 +5,7 @@
       [canFullscreen]="false"
       [hidden]="true"
       class="child-card">
+    <div *ngIf="schema.description | notEmpty">{{schema.description}}</div>
     <div class="link" *ngIf="schema.sourceLink | notEmpty">
         <span class="icon">keyboard_arrow_right</span>
         <a [href]="schema.sourceLink" target="_blank">source</a>

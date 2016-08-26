@@ -1,5 +1,5 @@
 group 'com.maxxton'
-version '1.1'
+version '1.2'
 
 apply plugin: 'java'
 apply plugin: 'maven'
@@ -41,9 +41,10 @@ uploadArchives {
         mavenDeployer {
             beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
-            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-                authentication(userName: sonatypeUsername, password: sonatypePassword)
-            }
+//            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+//                authentication(userName: sonatypeUsername, password: sonatypePassword)
+//            }
+            repository(url: mavenLocal().url)
 
             pom.project {
                 name 'MicroDocs Core Java'
