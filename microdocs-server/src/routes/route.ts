@@ -44,7 +44,7 @@ export class BaseRoute {
 
   protected static getEnv(req:Request):string{
     var env = req.query.env;
-    var envs = ProjectSettingsJsonRepository.bootstrap().getSettings().environments;
+    var envs = ProjectSettingsJsonRepository.bootstrap().getEnvs();
 
     if(env == undefined){
       for(var envName in envs){

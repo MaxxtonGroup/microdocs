@@ -7,12 +7,20 @@ import {MicroDocsResponseHandler} from "./microdocs-response.handler";
 export class SwaggerResponseHandler extends MicroDocsResponseHandler {
 
   handleProjects(req: express.Request, res: express.Response, projects: TreeNode, env:string) {
-    var project = this.mergeProjects(projects, env);
+    var filterMethods = [];
+    if(req.query['method']){
+      filterMethods = req.query['method'].split(',');
+    }
+    var project = this.mergeProjects(projects, filterMethods, env);
 
     this.response(req, res, 200, this.swagger(project));
   }
 
   handleProject(req: express.Request, res: express.Response, project: Project, env:string) {
+    if(req.query['method']){
+      var filterMethods = req.query['method'].split(',');
+      this.filterMethods(project, filterMethods);
+    }
     this.response(req, res, 200, this.swagger(project));
   }
 

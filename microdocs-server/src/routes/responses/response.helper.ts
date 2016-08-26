@@ -3,6 +3,7 @@ import * as express from "express";
 import {SwaggerResponseHandler} from "./swagger-response.handler";
 import {MicroDocsResponseHandler} from "./microdocs-response.handler";
 import {PostmanResponseHandler} from "./postman-response.handler";
+import {TemplateResponseHandler} from "./template-response.handler";
 
 export class ResponseHelper{
 
@@ -32,7 +33,7 @@ export class ResponseHelper{
     }
     var response = this.responses[exportType.toLowerCase()];
     if(response == undefined){
-      response = this.getDefaultHandler();
+      return new TemplateResponseHandler(exportType.toLowerCase());
     }
     return response;
   }

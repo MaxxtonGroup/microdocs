@@ -3,46 +3,52 @@ import * as fs from 'fs';
 
 import {ProjectSettingsRepository} from "../project-settings.repo";
 import {Config} from "../../config";
-import {ProjectSettings} from 'microdocs-core-ts/dist/domain';
+import {ProjectSettings, Static, Environments} from 'microdocs-core-ts/dist/domain';
 
-export class ProjectSettingsJsonRepository implements ProjectSettingsRepository{
+export class ProjectSettingsJsonRepository implements ProjectSettingsRepository {
 
-  public static bootstrap():ProjectSettingsJsonRepository {
+  public static bootstrap(): ProjectSettingsJsonRepository {
     return new ProjectSettingsJsonRepository();
   }
 
-  getSettings():ProjectSettings {
+  getEnvs(): {[name: string]: Environments} {
+    console.info("Load project envs");
+    var dataFolder: string = __dirname + '/../../../' + Config.get("dataFolder") + "/config";
+    var projectFile: string = dataFolder + "/envs.json";
+    var envs: {[name: string]: Environments} = {};
+    if (fs.existsSync(projectFile)) {
+      var string = fs.readFileSync(projectFile).toString();
+      envs = JSON.parse(string);
+    }
+    if (!envs || Object.keys(envs).length == 0) {
+      envs = {default: {default: true}};
+    }
+
+    return envs;
+  }
+
+  getSettings(): ProjectSettings {
     console.info("Load project settings");
-    var dataFolder:string = __dirname + '/../../../' + Config.get("dataFolder") + "/config";
-    var projectFile:string = dataFolder + "/project-settings.json";
-    var settings : ProjectSettings = {};
-    if(fs.existsSync(projectFile)){
+    var dataFolder: string = __dirname + '/../../../' + Config.get("dataFolder") + "/config";
+    var projectFile: string = dataFolder + "/project-settings.json";
+    var settings: Static = {};
+    if (fs.existsSync(projectFile)) {
       var string = fs.readFileSync(projectFile).toString();
       settings = JSON.parse(string);
     }
 
-    if(settings.environments == undefined || Object.keys(settings.environments).length == 0){
-      settings.environments = {default:{default: true}};
+    if (!settings.global) {
+      settings.global = {};
     }
-    if(settings.conditions == undefined){
-      settings.conditions = {};
+    if (!settings.environments) {
+      settings.environments = {};
     }
-    if(settings.static == undefined){
-      settings.static = {};
+    if (!settings.groups) {
+      settings.groups = {};
     }
-    if(settings.static.global == undefined){
-      settings.static.global = {};
+    if (!settings.projects) {
+      settings.projects = {};
     }
-    if(settings.static.environments == undefined){
-      settings.static.environments = {};
-    }
-    if(settings.static.groups == undefined){
-      settings.static.groups = {};
-    }
-    if(settings.static.projects == undefined){
-      settings.static.projects = {};
-    }
-
     return settings;
   }
 
