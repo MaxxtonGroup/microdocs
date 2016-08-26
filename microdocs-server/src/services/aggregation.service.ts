@@ -46,6 +46,9 @@ export class AggregationService {
    * @returns {Problem[]}
    */
   public checkProject(env:string, project:Project):Problem[] {
+    // Fix project
+    this.fixDependencyUpperCase(project);
+
     // Load all projects
     var projectCache = this.loadProjects(env);
 
@@ -134,6 +137,20 @@ export class AggregationService {
   }
 
   /**
+   * Fix uppercase dependency names
+   * @param project
+   */
+  private fixDependencyUpperCase(project:Project){
+    if(project.dependencies){
+      var fixedDependencies = {};
+      for(var name in project.dependencies){
+        fixedDependencies[name.toLowerCase()] = project.dependencies[name];
+      }
+      project.dependencies = fixedDependencies;
+    }
+  }
+
+  /**
    * Load all projects
    * @return all project structured as [name].[version].[project]
    */
@@ -145,6 +162,7 @@ export class AggregationService {
       try {
         var project = this.reportRepo.getProject(env, projectInfo);
         if (project != null) {
+          this.fixDependencyUpperCase(project);
           project = this.mergeProjectSettings(project);
           if (projectCache[project.info.title] == null || projectCache[project.info.title] == undefined) {
             projectCache[project.info.title] = {};
@@ -167,6 +185,10 @@ export class AggregationService {
    */
   private reverseCheckDependencies(env:string, project:Project, projectCache:{[title:string]:{[version:string]:Project}}, parentNode:TreeNode):Problem[] {
     var problems:Problem[] = [];
+    if(!projectCache[project.info.title]) {
+      projectCache[project.info.title] = {};
+    }
+    projectCache[project.info.title][project.info.version] = project;
     for (var title in projectCache) {
       var versions = Object.keys(projectCache[title]).sort();
       if(versions.length > 0){
@@ -250,7 +272,7 @@ export class AggregationService {
     var dependentProject:Project = null;
     for (var name in projectCache) {
       for (var version in projectCache[name]) {
-        if (projectCache[name][version].info.title == title) {
+        if (projectCache[name][version].info.title.toLowerCase() == title.toLowerCase()) {
           dependentProject = projectCache[name][version];
         }
       }
