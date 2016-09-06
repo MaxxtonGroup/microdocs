@@ -64,7 +64,7 @@ class MicroDocsCrawlerPlugin implements Plugin<Project> {
             source = project.sourceSets.main.allJava
             destinationDir = project.reporting.file("javadoc")
             classpath = project.configurations.compile
-            options.tags = ['response', 'dummy']
+            options.tags = ['response', 'example']
         }
 
         project.task('microDocs', type: Zip, dependsOn: ['buildMicroDocs', 'buildJavadoc', 'exportVersion'], group: 'microdocs') {

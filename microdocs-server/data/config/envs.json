@@ -1,0 +1,7 @@
+{
+  "development": {
+    "default": true
+  },
+  "acceptance": {},
+  "production": {}
+}

@@ -4,6 +4,7 @@ import com.maxxton.microdocs.core.builder.SchemaMappingsBuilder;
 import com.maxxton.microdocs.core.collector.SchemaCollector;
 import com.maxxton.microdocs.core.collector.SchemaParser;
 import com.maxxton.microdocs.core.domain.schema.Schema;
+import com.maxxton.microdocs.core.domain.schema.SchemaType;
 import com.maxxton.microdocs.core.reflect.ReflectAnnotation;
 import com.maxxton.microdocs.core.reflect.ReflectClass;
 import com.maxxton.microdocs.core.reflect.ReflectDescription;
@@ -70,6 +71,7 @@ public class SpringSchemaCollector extends SchemaCollector {
     @Override
     protected void collectProperty(Map<String, Schema> properties, String name, ReflectGenericClass type, List<ReflectAnnotation> annotations, ReflectDescription docs) {
         Schema fieldSchema = this.collect(type);
+        getDefaultValue(fieldSchema, docs);
         SchemaMappingsBuilder mappingsBuilder = new SchemaMappingsBuilder();
 
         // RELATIONAL
