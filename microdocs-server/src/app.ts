@@ -17,6 +17,7 @@ import {ReindexRoute} from "./routes/reindex.route";
 import {CheckRoute} from "./routes/check.route";
 import {PublishRoute} from "./routes/publish.route";
 import {EnvRoute} from "./routes/env.route";
+import {MockAllRoute} from "./routes/mock-all.route";
 
 /**
  * The server.
@@ -124,7 +125,8 @@ class Server {
       new ReindexRoute(),
       new CheckRoute(),
       new PublishRoute(),
-      new EnvRoute()
+      new EnvRoute(),
+      new MockAllRoute()
     ];
 
     //define basePath
@@ -137,7 +139,8 @@ class Server {
     routes.forEach((route) => {
       route.methods().forEach((method) => {
         var requestMethod = method.toLowerCase();
-        var path = basePath + route.path();
+        var bp = route.basePath() != undefined ? route.basePath() : basePath;
+        var path = bp + route.path();
         if (router[requestMethod] == undefined) {
           throw "unknown request method: " + requestMethod + " for path: " + path;
         }

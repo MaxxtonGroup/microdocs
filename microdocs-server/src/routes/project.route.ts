@@ -9,9 +9,9 @@ import {ResponseHelper} from "./responses/response.helper";
 
 export class ProjectRoute extends BaseRoute {
 
-  mapping = {methods: ['get'], path: '/projects/:title', handler: this.projects};
+  mapping = {methods: ['get'], path: '/projects/:title', handler: this.project};
 
-  public projects(req: express.Request, res: express.Response, next: express.NextFunction) {
+  public project(req: express.Request, res: express.Response, next: express.NextFunction) {
     var handler = ResponseHelper.getHandler(req);
     try {
       var env = ProjectRoute.getEnv(req);

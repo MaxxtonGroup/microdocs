@@ -8,9 +8,9 @@ import {ProjectSettingsJsonRepository} from "../repositories/json/project-settin
 
 export class EnvRoute extends BaseRoute {
 
-  mapping = {methods: ['get'], path: '/envs', handler: this.projects};
+  mapping = {methods: ['get'], path: '/envs', handler: this.envs};
 
-  public projects(req: express.Request, res: express.Response, next: express.NextFunction) {
+  public envs(req: express.Request, res: express.Response, next: express.NextFunction) {
     var handler = ResponseHelper.getDefaultHandler();
     try {
       var envs = ProjectSettingsJsonRepository.bootstrap().getEnvs();

@@ -9,9 +9,9 @@ import {ResponseHelper} from "./responses/response.helper";
 
 export class CheckRoute extends BaseRoute {
 
-  mapping = {methods: ['post'], path: '/check', handler: this.projects};
+  mapping = {methods: ['post'], path: '/check', handler: this.check};
 
-  public projects(req: express.Request, res: express.Response, next: express.NextFunction) {
+  public check(req: express.Request, res: express.Response, next: express.NextFunction) {
     var handler = ResponseHelper.getHandler(req);
     try {
       var env = CheckRoute.getEnv(req);

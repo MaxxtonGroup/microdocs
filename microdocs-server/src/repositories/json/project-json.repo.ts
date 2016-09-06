@@ -18,9 +18,14 @@ export class ProjectJsonRepository implements ProjectRepository {
     var dataFolder: string = __dirname + '/../../../' + Config.get("dataFolder") + "/database/" + env;
     var metaFile: string = dataFolder + "/projects.json";
     if (fs.existsSync(metaFile)) {
-      var string = fs.readFileSync(metaFile).toString();
-      var json = JSON.parse(string);
-      return TreeNode.link(json);
+      try {
+        var string = fs.readFileSync(metaFile).toString();
+        var json = JSON.parse(string);
+        return TreeNode.link(json);
+      }catch(e:Error){
+        console.warn("Failed to load projects @ " + env);
+        console.warn(e.stack);
+      }
     }
     return null;
   }
@@ -31,10 +36,15 @@ export class ProjectJsonRepository implements ProjectRepository {
     var projectFolder: string = dataFolder + "/" + title;
     var storeFile: string = projectFolder + "/" + version + ".json";
     if (fs.existsSync(storeFile)) {
-      var string = fs.readFileSync(storeFile).toString();
-      var json = JSON.parse(string);
-      var project: Project = json;
-      return project;
+      try {
+        var string = fs.readFileSync(storeFile).toString();
+        var json = JSON.parse(string);
+        var project:Project = json;
+        return project;
+      }catch(e:Error){
+        console.warn("Failed to load project: " + title + ":" + version + " @ " + env);
+        console.warn(e.stack);
+      }
     }
     return null;
   }
