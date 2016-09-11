@@ -1,7 +1,7 @@
 package com.example.service.product.controller;
 
 import com.example.service.product.domain.Product;
-import com.example.service.customer.service.ProductService;
+import com.example.service.product.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -40,40 +40,39 @@ public class ProductController {
      */
     @RequestMapping(path = "/{productId}", method=RequestMethod.GET)
     public ResponseEntity<Product> getCustomer(@PathVariable("productId") Long productId){
-        Product customer = productService.getProduct(productId);
-        if(customer != null){
-            return new ResponseEntity<Customer>(customer, HttpStatus.OK);
+        Product product = productService.getProduct(productId);
+        if(product != null){
+            return new ResponseEntity<Product>(product, HttpStatus.OK);
         }
-        return new ResponseEntity<Customer>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<Product>(HttpStatus.NOT_FOUND);
     }
 
     /**
-     * Create new customer
-     * @param customer new customer
-     * @response 201 customer is created
-     * @response 409 customer with the same email already exists
-     * @return CREATED customer with a customerId or CONFLICT if customer with the same email already exists
+     * Create new product
+     * @param product new product
+     * @response 201 product is created
+     * @response 409 product with the same email already exists
+     * @return The created product
      */
     @RequestMapping(path = "", method = RequestMethod.POST)
-    public ResponseEntity<Customer> createCustomer(@RequestBody Customer customer){
-        Customer newCustomer = productService.createCustomer(customer);
-        if(newCustomer != null){
-            return new ResponseEntity<Customer>(newCustomer, HttpStatus.CREATED);
+    public ResponseEntity<Product> createProduct(@RequestBody Product product){
+        Product newProduct = productService.createProduct(product);
+        if(newProduct != null){
+            return new ResponseEntity<Product>(newProduct, HttpStatus.CREATED);
         }else{
-            return new ResponseEntity<Customer>(HttpStatus.CONFLICT);
+            return new ResponseEntity<Product>(HttpStatus.CONFLICT);
         }
     }
 
     /**
-     * Delete customer by id
-     * @param customerId id of the customer
-     * @response 200 the customer is removed
-     * @response 404 the customer did not exists
-     * @return OK if the customer is removed, NOT_FOUND if the customer did not exists
+     * Delete product by id
+     * @param productId id of the product
+     * @response 200 the product is removed
+     * @response 404 the product did not exists
      */
-    @RequestMapping(path = "/{customerId}", method = RequestMethod.DELETE)
-    public ResponseEntity removeCustomer(@PathVariable("customerId") Long customerId){
-        boolean succeed = productService.removeCustomer(customerId);
+    @RequestMapping(path = "/{productId}", method = RequestMethod.DELETE)
+    public ResponseEntity removeProduct(@PathVariable("productId") Long productId){
+        boolean succeed = productService.removeProduct(productId);
         if(succeed){
             return new ResponseEntity(HttpStatus.OK);
         }else{

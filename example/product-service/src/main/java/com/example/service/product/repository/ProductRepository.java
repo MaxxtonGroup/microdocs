@@ -1,6 +1,6 @@
-package com.example.service.customer.repository;
+package com.example.service.product.repository;
 
-import com.example.service.customer.domain.Customer;
+import com.example.service.product.domain.Product;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
@@ -9,8 +9,7 @@ import org.springframework.stereotype.Repository;
  * @author Steven Hermans (s.hermans@maxxton.com)
  */
 @Repository
-public interface CustomerRepository extends PagingAndSortingRepository<Customer, Long> {
+public interface ProductRepository extends PagingAndSortingRepository<Product, Long> {
 
-    Customer findByEmail(String email);
-
+    Product findByName(String name);
 }
