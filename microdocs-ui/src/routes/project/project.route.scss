@@ -1,0 +1,81 @@
+project-route toolbar icon-generator span{
+  position: absolute;
+  top: 10px;
+  height: 40px;
+  width: 40px;
+  padding: 10px;
+  left: 20px;
+}
+
+project-route toolbar-title span{
+  position: absolute;
+  top: 22px;
+  left: 75px;
+}
+
+project-route toolbar-item select{
+  position: absolute;
+  left: 275px;
+  width: auto;
+}
+
+project-route .project-content{
+  position: absolute;
+  top: 60px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: auto;
+}
+
+project-route .page-content{
+  width: auto !important;
+  max-width: 106.66667rem !important;
+  padding: 0px !important;
+}
+
+project-route .project-content{
+  transition: 0.2s ease opacity;
+  opacity: 1;
+}
+
+project-route .project-content.loading{
+  opacity: 0;
+}
+
+project-route .card {
+  box-shadow: none !important;
+  padding: 5px 20px;
+  background: none;
+  margin: 0;
+}
+
+project-route .card .card-section.header{
+  border: none;
+}
+
+project-route .card .float-right{
+  float: none;
+  position: relative;
+  top: 3px;
+}
+
+project-route card .card-section.content{
+  padding-top: 0px;
+}
+
+project-route dependency-graph{
+  display: block;
+  height: 200px;
+  margin-top: 10px;
+  border: 1px solid #d6d6d6;
+  border-radius: 2px;
+}
+
+project-route .project-desc{
+  font-size: 14px;
+}
+
+project-route .project-links ul{
+  margin: 5px 0;
+}

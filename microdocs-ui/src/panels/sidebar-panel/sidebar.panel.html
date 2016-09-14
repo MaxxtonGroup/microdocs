@@ -11,9 +11,9 @@
         </select>
     </div>
 
-    <div class="search-block">
+    <div class="search-box">
         <i class="icon">search</i>
-        <input type="text" placeholder="Search" />
+        <input type="text" placeholder="Search" (val)="searchQuery" (keyup)="onSearchQueryChange($event.target.value)" />
     </div>
 
     <div class="grid-block">

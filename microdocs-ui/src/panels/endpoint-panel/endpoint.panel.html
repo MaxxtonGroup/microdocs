@@ -11,7 +11,7 @@
         <div class="description">
             <span *ngIf="endpoint.operationId | notEmpty">
                 <a *ngIf="endpoint | notEmpty:'method.sourceLink'" class="link" [href]="endpoint.method.sourceLink" target="_blank">{{endpoint.operationId}}()</a>
-                <span *ngIf="endpoint | empty:'method.sourceLink'">{{endpoint.operationId}}()</span>
+                <span *ngIf="endpoint | empty:'method.sourceLink'">{{endpoint.operationId}}</span>
                 <span *ngIf="endpoint.description | notEmpty"> - </span>
             </span>
             {{endpoint.description}}
@@ -57,7 +57,7 @@
                     <div class="description response-description">
                         <template [ngIf]="response._id != 'default'">
                             <span class="response-status">{{response._id + ' ' + getStatusName(response._id)}}</span>
-                            <template [ngIf]="response.description | notEmpty"> - {{response.description}}</template>
+                            <template [ngIf]="response.description | notEmpty"><span> - {{response.description}}</span></template>
                         </template>
                     </div>
                     <template [ngIf]="response.schema | notEmpty">
