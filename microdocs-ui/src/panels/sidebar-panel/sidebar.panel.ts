@@ -82,6 +82,7 @@ export class SidebarComponent {
       // add project
       var problems = filteredNodes.dependencies[title].problems;
       var icon = null;
+      var iconColor = 'red';
       if (problems != undefined && problems != null && problems > 0) {
         icon = 'error';
       }
@@ -90,6 +91,7 @@ export class SidebarComponent {
         path: pathPrefix + groupName + '/' + title,
         name: title,
         postIcon: icon,
+        postIconColor: iconColor,
         generateIcon: true
       });
     }

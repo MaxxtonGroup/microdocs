@@ -18,11 +18,18 @@ endpoint-group .group-header .path{
 }
 
 endpoint-group .methods > span{
+  position: relative;
   padding: 5px 10px;
-  margin-left: 5px;
+  margin-left: 10px;
   background-color: $blue-gray;
   color: $white;
   border-radius: 5px;
+}
+
+endpoint-group .methods > span .icon{
+  position: absolute;
+  top: -8px;
+  right: -11px;
 }
 
 endpoint-group .methods > span.get{
