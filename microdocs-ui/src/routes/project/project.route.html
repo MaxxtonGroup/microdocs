@@ -49,7 +49,7 @@
           <problem-panel [problems]="client.problems"></problem-panel>
         </template>
         <div *ngFor="let path of client.paths | objectIterator | sortByHttpMethod:'_id'">
-          <endpoint [path]="path._id" [endpoint]="endpoint" *ngFor="let endpoint of path | objectIterator"></endpoint>
+          <endpoint-group [endpointGroup]="path"></endpoint-group>
         </div>
       </div>
     </card>

@@ -111,6 +111,7 @@ export class AggregationService {
         node.group = project.info.group;
         node.version = project.info.version;
         node.versions = project.info.versions;
+        node.tags = this.buildTags(project);
         rootNode.dependencies[project.info.title] = node;
       }
     }
@@ -331,8 +332,34 @@ export class AggregationService {
     } else {
       node.reference = "#" + path;
     }
+    node.tags = this.buildTags(project);
     parentNode.dependencies[title] = node;
     parentNode.problems = project.problemCount;
+
+  }
+
+  private buildTags(project:Project):string[]{
+    var tags = {};
+    if(project.paths){
+      for(var path in project.paths){
+        var segments = path.split('/');
+        segments.forEach(segment => {
+          var trimSegment = segment.trim();
+          if(trimSegment && trimSegment.length > 0 && (trimSegment.indexOf('{') != 0 || trimSegment.indexOf('}') != trimSegment.length-1)){
+            tags[trimSegment] = null;
+          }
+        });
+      }
+    }
+    if(project.definitions){
+      for(var name in project.definitions){
+        var definition = project.definitions[name];
+        if(definition.name && definition.name.trim().length > 0){
+          tags[definition.name.trim()] = null;
+        }
+      }
+    }
+    return Object.keys(tags);
   }
 
   /**

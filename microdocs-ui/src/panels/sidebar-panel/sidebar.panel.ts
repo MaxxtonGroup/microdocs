@@ -101,18 +101,21 @@ export class SidebarComponent {
     var newNode = new TreeNode();
     var keywords = query.split(' ');
     for (var title in node.dependencies) {
-      var hit = false;
+      var hit = true;
       if (!query || query.trim().length == 0) {
         hit = true;
       } else {
-        if (this.matchQuery(title, keywords)) {
-          hit = true;
-        } else if (node.dependencies[title]['tags']) {
-          node.dependencies[title]['tags'].forEach(tag => {
-            if (this.matchQuery(tag, keywords)) {
-              hit = true;
+        for (var i = 0; i < keywords.length; i++) {
+          if(title.toLowerCase().indexOf(keywords[i].toLowerCase()) == -1) {
+            hit = false;
+            if (node.dependencies[title]['tags']) {
+              node.dependencies[title]['tags'].forEach(tag => {
+                if (tag.toLowerCase().indexOf(keywords[i].toLowerCase()) != -1) {
+                  hit = true;
+                }
+              });
             }
-          });
+          }
         }
       }
       if (hit) {
@@ -120,15 +123,6 @@ export class SidebarComponent {
       }
     }
     return newNode;
-  }
-  
-  private matchQuery(string:string, keywords:string[]):boolean {
-    for (var i = 0; i < keywords.length; i++) {
-      if (string.toLowerCase().indexOf(keywords[i].toLowerCase()) != -1) {
-        return true;
-      }
-    }
-    return false;
   }
   
 }
