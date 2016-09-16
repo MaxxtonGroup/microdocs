@@ -1,5 +1,5 @@
 <div class="group-header" (click)="hidden = !hidden">
-  <path-highlight class="path">{{endpointGroup._id}}</path-highlight>
+  <path-highlight class="path" [path]="endpointGroup._id"></path-highlight>
   <span class="methods" *ngIf="hidden">
     <span *ngFor="let endpoint of endpointGroup | objectIterator | sortByHttpMethod:'_id'" [class]="endpoint._id | lowercase">{{endpoint._id | uppercase}}</span>
   </span>

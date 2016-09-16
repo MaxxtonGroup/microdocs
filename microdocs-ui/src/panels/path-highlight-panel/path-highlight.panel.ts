@@ -1,25 +1,25 @@
-import {Component, Input, ElementRef} from "@angular/core";
+import {Component, Input, ElementRef, SimpleChanges, OnChanges} from "@angular/core";
 /**
  * @author Steven Hermans
  */
 @Component({
   selector: 'path-highlight',
-  template: ''
+  templateUrl: 'path-highlight.panel.html'
 })
-export class PathHighlightPanel{
+export class PathHighlightPanel implements OnChanges{
   
   constructor(private el:ElementRef){
-    
   }
   
   @Input()
-  private path:string;
-  
-  ngOnChanges(){
-    var hightlightPath = this.path
-      .replace(new RegExp("\{", 'g'), '<span class="highlight">')
-      .replace(new RegExp("\}", 'g'), '</span>');
-   this.el.nativeElement.innerHtml(hightlightPath);
+  path:string;
+
+  highlightPath = '';
+
+  ngOnChanges(changes: SimpleChanges){
+    this.highlightPath = this.path
+      .replace(new RegExp("\{", 'g'), '<span class="highlight">{')
+      .replace(new RegExp("\}", 'g'), '}</span>');
   }
   
 }
