@@ -9,7 +9,8 @@ export class TreeNode {
               public version?:string,
               public versions?:string[],
               public problems?:number,
-              public reference?:string) {
+              public reference?:string,
+              public tags?:string[]) {
   }
 
   public getRoot():TreeNode {
@@ -61,6 +62,9 @@ export class TreeNode {
     if (this.reference != null || this.reference != undefined) {
       node['$ref'] = "#" + this.reference.substring("#/dependencies".length);
     }
+    if (this.tags != null || this.tags != undefined) {
+      node['tags'] = this.tags;
+    }
     return node;
   }
 
@@ -89,6 +93,9 @@ export class TreeNode {
       }
       if (unlinkedNode['$ref'] != undefined) {
         node.reference = "#/dependencies" + unlinkedNode['$ref'].substring(1);
+      }
+      if (unlinkedNode['tags'] != undefined) {
+        node.tags = unlinkedNode['tags'];
       }
     }
     return node;

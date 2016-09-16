@@ -4,7 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * Booting up the service as a Spring Boot application
+ * Service for which owns the customers and their addresses
  * @author Steven Hermans (s.hermans@maxxton.com)
  */
 @SpringBootApplication
