@@ -61,15 +61,8 @@ export class ProblemReporter {
       }
       if (clientMethod != null) {
         client.lineNumber = clientMethod.lineNumber;
-      }
-
-      // log client sourceLink
-      var sourceLink = SchemaHelper.resolveReference("info.sourceLink", clientRootObject);
-      if (sourceLink != null && sourceLink != undefined) {
-        sourceLink = SchemaHelper.resolveString(sourceLink, clientRootObject);
-        if (sourceLink != null && sourceLink != undefined) {
-          var classObject = {class: client};
-          client.sourceLink = SchemaHelper.resolveString(sourceLink, classObject);
+        if(clientMethod['sourceLink']){
+          client.sourceLink = clientMethod['sourceLink'];
         }
       }
 

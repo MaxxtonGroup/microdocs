@@ -189,7 +189,7 @@ public class MicroDocsPublisher {
         String sourceFile = new File(rootDir, "src/main/java/" + problem.getPath() + lineNumber).getPath();
         msg += sourceFile + ": " + problem.getLevel() + ": " + problem.getMessage();
         if(problem.getClient() != null){
-          msg += "\nBreaking change detected with " + problem.getClient().getTitle() + " (source: " + problem.getClient().getSourceLink() + ")";
+          msg += "\nBreaking change detected with " + problem.getClient().getTitle() + " (source: " + problem.getClient().getSourceLink() != null ? problem.getClient().getSourceLink() : problem.getClient().getClassName() + " )";
         }
         if(hasProblems) {
           ErrorReporter.get().printError(msg);

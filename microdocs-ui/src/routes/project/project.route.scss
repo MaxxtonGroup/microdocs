@@ -7,16 +7,35 @@ project-route toolbar icon-generator span{
   left: 20px;
 }
 
-project-route toolbar-title span{
+project-route toolbar-title .title{
   position: absolute;
   top: 22px;
   left: 75px;
+  width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 project-route toolbar-item select{
   position: absolute;
   left: 275px;
   width: auto;
+}
+
+project-route toolbar-item.align-right{
+  position: absolute;
+  right: 0;
+  height: 40px;
+  padding: 10px;
+  margin: 10px;
+  border-radius: 100%;
+  cursor: pointer;
+  text-align: center;
+}
+
+project-route toolbar-item.align-right:hover{
+  background-color: rgba(0,0,0,0.3);
 }
 
 project-route .project-content{
@@ -83,4 +102,18 @@ project-route .project-links ul{
 project-route model-panel card.model-card .card{
   box-shadow: rgba(0, 0, 0, 0.227451) 0px 3px 10px 0px, rgba(0, 0, 0, 0.156863) 0px 3px 10px 0px !important;
   border: none;
+}
+
+project-route .client-problem .icon{
+  position: relative;
+  top: 5px;
+}
+
+project-route .client-problem .client-problem-desc{
+  color: $red;
+}
+
+project-route modal .card{
+  background-color: white;
+  box-shadow: rgba(0, 0, 0, 0.227451) 0px 3px 10px 0px, rgba(0, 0, 0, 0.156863) 0px 3px 10px 0px !important;
 }

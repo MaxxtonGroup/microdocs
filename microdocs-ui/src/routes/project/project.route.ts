@@ -38,6 +38,7 @@ export class ProjectRoute {
   private versions:string[];
   private project:Project = {};
   private loading:boolean = true;
+  private showModal:boolean = false;
 
   private queryParams:Params;
   private pathParams:Params;
@@ -97,7 +98,9 @@ export class ProjectRoute {
         for (var key in node.dependencies) {
           if (key == this.title) {
             this.versions = node.dependencies[key].versions;
-            this.version = node.dependencies[key].version;
+            if(!this.version) {
+              this.version = node.dependencies[key].version;
+            }
             this.loadProject(this.title, this.version, this.env);
             break;
           }

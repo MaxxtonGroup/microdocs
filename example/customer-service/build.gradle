@@ -16,7 +16,7 @@ apply plugin: 'eclipse'
 apply plugin: 'spring-boot'
 apply plugin: 'microdocs'
 
-version = '0.0.1-SNAPSHOT'
+version = '0.0.2-SNAPSHOT'
 
 jar {
 	baseName = 'customer-service'
@@ -57,4 +57,5 @@ checkMicroDocs {
 publishMicroDocs {
 	env = 'development'
 	url = 'http://localhost:3000'
+	failOnProblems = false;
 }

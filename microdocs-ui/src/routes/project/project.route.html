@@ -1,12 +1,15 @@
 <toolbar class="white">
   <toolbar-title>
     <icon-generator [text]="title"></icon-generator>
-    <span>{{title}}</span>
+    <span class="title">{{title}}</span>
   </toolbar-title>
-  <toolbar-item class="align-right">
+  <toolbar-item class="align-left">
     <select [ngModel]="version" (change)="onChangeVersion($event.target.value)">
       <option *ngFor="let v of versions" [value]="v">{{v}}</option>
     </select>
+  </toolbar-item>
+  <toolbar-item class="align-right" (click)="showModal = true">
+    <span class="icon">code</span>
   </toolbar-item>
 </toolbar>
 <div class="project-content" [class.loading]="loading">
@@ -31,7 +34,8 @@
       </div>
       <dependency-graph class="small" [nodes]="nodes" [env]="env" [projectName]="title"></dependency-graph>
     </card>
-    <card title="Endpoints" [sectionClass]="'card-section content'" [canFullscreen]="false" *ngIf="project.paths | notEmpty">
+    <card title="Endpoints" [sectionClass]="'card-section content'" [canFullscreen]="false"
+          *ngIf="project.paths | notEmpty">
       <div *ngFor="let path of project.paths | objectIterator | sortByKey:'_id'">
         <endpoint-group [endpointGroup]="path"></endpoint-group>
       </div>
@@ -40,10 +44,18 @@
           *ngIf="project.dependencies | filterByField:'type':rest | notEmpty">
       <div *ngFor="let client of project.dependencies | filterByField:'type':rest | objectIterator | sortByKey:'_id'">
         <div class="client-header">
-            <span class="link">
-                <span class="icon">keyboard_arrow_right</span>
-                <a [routerLink]="getDependencyLink(client)">{{client._id}}</a>
+          <span class="link">
+            <span class="icon">keyboard_arrow_right</span>
+            <a [routerLink]="getDependencyLink(client)">{{client._id}}</a>
+          </span>
+          <div class="client-problem" *ngIf="client.version !== client.latestVersion">
+            <span class="icon red">error</span>
+            <span class="client-problem-desc" *ngIf="client.version | empty">Not compatible</span>
+            <span class="client-problem-desc" *ngIf="client.version | notEmpty">
+              Latest compatible version:
+              <a class="link" [routerLink]="getDependencyLink(client)" [queryParams]="{version: client.version}">{{client.version}}</a>
             </span>
+          </div>
         </div>
         <template [ngIf]="client.problems | notEmpty">
           <problem-panel [problems]="client.problems"></problem-panel>
@@ -55,7 +67,32 @@
     </card>
     <card title="Models" [sectionClass]="'card-section content'" [canFullscreen]="false"
           *ngIf="project.definitions | filterByField:'type':'object' | notEmpty">
-      <model-panel [schema]="schema" *ngFor="let schema of project.definitions | objectIterator | sortByKey:'_id'"></model-panel>
+      <model-panel [schema]="schema"
+                   *ngFor="let schema of project.definitions | objectIterator | sortByKey:'_id'"></model-panel>
     </card>
   </div>
 </div>
+<modal [showModal]="showModal" (stateChanges)="showModal = $event" title="Export">
+  <ul>
+    <li>
+      <a href="/api/v1/projects/{{title}}?export=microdocs&version={{version}}" target="_blank">
+        <h6>MicroDocs</h6>
+      </a>
+    </li>
+    <li>
+      <a href="/api/v1/projects/{{title}}?export=swagger&version={{version}}" target="_blank">
+        <h6>Swagger</h6>
+      </a>
+    </li>
+    <li>
+      <a href="/api/v1/projects/{{title}}?export=api-blueprint&version={{version}}" target="_blank">
+        <h6>Api Blueprint</h6>
+      </a>
+    </li>
+    <li>
+      <a href="/api/v1/projects/{{title}}?export=postman&version={{version}}" target="_blank">
+        <h6>Postman</h6>
+      </a>
+    </li>
+  </ul>
+</modal>
