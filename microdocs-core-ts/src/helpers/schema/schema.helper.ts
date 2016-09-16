@@ -28,6 +28,9 @@ export class SchemaHelper {
         return schema.default;
       }
       if (schema.type == ENUM && schema.enum != undefined && schema.enum != null) {
+        if(schema.enum.length == 0){
+          return "[" + schema.name + "]";
+        }
         var random = Math.floor((Math.random() * schema.enum.length));
         return schema.enum[random];
       } else if (schema.type == BOOLEAN) {
