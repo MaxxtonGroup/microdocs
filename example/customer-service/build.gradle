@@ -51,10 +51,10 @@ microDocs {
 }
 
 checkMicroDocs {
-	env = 'develop'
+	env = 'development'
 	url = 'http://localhost:3000'
 }
 publishMicroDocs {
-	env = 'develop'
+	env = 'development'
 	url = 'http://localhost:3000'
 }

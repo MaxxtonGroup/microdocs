@@ -33,10 +33,10 @@
     </card>
     <card title="Endpoints" [sectionClass]="'card-section content'" [canFullscreen]="false" *ngIf="project.paths | notEmpty">
       <div *ngFor="let path of project.paths | objectIterator | sortByKey:'_id'">
-        <endpoint [path]="path._id" [endpoint]="endpoint" *ngFor="let endpoint of path | objectIterator | sortByHttpMethod:'_id'"></endpoint>
+        <endpoint-group [endpointGroup]="path"></endpoint-group>
       </div>
     </card>
-    <card title="Clients" [sectionClass]="'card-section content'" [canHide]="true"
+    <card title="Clients" [sectionClass]="'card-section content'" [canFullscreen]="false"
           *ngIf="project.dependencies | filterByField:'type':rest | notEmpty">
       <div *ngFor="let client of project.dependencies | filterByField:'type':rest | objectIterator | sortByKey:'_id'">
         <div class="client-header">
@@ -53,7 +53,7 @@
         </div>
       </div>
     </card>
-    <card title="Models" [sectionClass]="'card-section content'" [canHide]="true"
+    <card title="Models" [sectionClass]="'card-section content'" [canFullscreen]="false"
           *ngIf="project.definitions | filterByField:'type':'object' | notEmpty">
       <model-panel [schema]="schema" *ngFor="let schema of project.definitions | objectIterator | sortByKey:'_id'"></model-panel>
     </card>

@@ -76,7 +76,7 @@ export class SidebarComponent {
         groupName = "default";
       }
       // add group if it doesn't exists
-      if (menus.filter(group => group.path == pathPrefix + groupName).length == 0) {
+      if (menus.filter(group => group.name == groupName).length == 0) {
         menus.push({name: groupName, icon: 'folder', iconOpen: 'folder_open', inactive: true, children: [], childrenVisible: true});
       }
       // add project

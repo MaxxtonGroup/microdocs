@@ -1,0 +1,72 @@
+endpoint-group{
+  display: block;
+  box-shadow: rgba(0, 0, 0, 0.227451) 0px 3px 10px 0px, rgba(0, 0, 0, 0.156863) 0px 3px 10px 0px !important;
+  border-radius: 2px;
+  margin-bottom: 10px;
+  background-color: white;
+}
+
+endpoint-group .group-header{
+  padding: 15px;
+  font-size: 16px;
+  font-family: monospace;
+  cursor: pointer;
+}
+
+endpoint-group .group-header .path{
+  cursor: text;
+}
+
+endpoint-group .methods > span{
+  padding: 5px 10px;
+  margin-left: 5px;
+  background-color: $blue-gray;
+  color: $white;
+  border-radius: 5px;
+}
+
+endpoint-group .methods > span.get{
+  background-color: $green;
+}
+
+endpoint-group .methods > span.post{
+  background-color: $blue;
+}
+
+endpoint-group .methods > span.put{
+  background-color: $orange;
+}
+
+endpoint-group .methods > span.delete{
+  background-color: $red;
+}
+
+endpoint-group .methods > span.path{
+  background-color: $brown;
+}
+
+endpoint-group .group-content{
+  height: auto;
+  padding: 0 20px;
+  opacity: 1;
+  overflow: hidden;
+  transition: 0.2s ease opacity;
+}
+
+endpoint-group .group-content.hidden{
+  opacity: 0;
+  height: 0;
+}
+
+endpoint-group .group-content .methods{
+  border-top: 1px solid #d6d6d6;
+  margin-bottom: 20px;
+  padding-top: 1px;
+}
+
+endpoint-group .group-content .methods > span{
+  display: inline-block;
+  margin: 10px 0;
+  margin-bottom: 20px;
+  font-size: 18px;
+}

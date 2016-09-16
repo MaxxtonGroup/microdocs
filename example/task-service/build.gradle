@@ -61,3 +61,7 @@ checkMicroDocs {
 	url = "https://microdocs.maxxton.com";
 }
 
+publishMicroDocs {
+	env = 'development'
+	url = 'http://localhost:3000'
+}

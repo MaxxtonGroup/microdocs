@@ -14,12 +14,13 @@ import {ProblemPanel} from "../../panels/problem-panel/problem.panel";
 import {SortByHttpMethod} from "../../pipes/sort-by-http-method.pipe"
 import {Subject} from "rxjs/Subject";
 import {DependencyGraph} from "../../panels/dependency-graph/dependency-graph";
+import {EndpointGroupPanel} from "../../panels/endpoint-group-panel/endpoint-group.panel";
 
 
 @Component({
   selector: 'project-route',
   templateUrl: 'project.route.html',
-  directives: [ROUTER_DIRECTIVES, COMPONENTS, EndpointPanel, ModelPanel, ProblemPanel, DependencyGraph],
+  directives: [ROUTER_DIRECTIVES, COMPONENTS, EndpointGroupPanel, EndpointPanel, ModelPanel, ProblemPanel, DependencyGraph],
   pipes: [FILTERS, SortByHttpMethod]
 })
 export class ProjectRoute {
