@@ -179,6 +179,15 @@ public class SchemaCollector {
     }
     schema.setProperties(properties);
 
+    if(reflectClass.getSuperClass() != null &&
+        reflectClass.getSuperClass().getClassType() != null &&
+        !Object.class.getName().equals(reflectClass.getSuperClass().getClassType().getName())){
+      Schema superSchema = collect(reflectClass.getSuperClass());
+      List<Schema> superList = new ArrayList();
+      superList.add(superSchema);
+      schema.setAllOf(superList);
+    }
+
     return schema;
   }
 
