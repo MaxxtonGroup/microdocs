@@ -4,7 +4,7 @@
 MicroDocs is a tool which preserve compatibilities between RestApi's of web services.
 It is designed and proven itself to work well in a Microservice architecture.
 
-Full documentation can be found at [microdocs.io](http://microdocs.io/docs)
+Full documentation can be found at [microdocs.io](http://microdocs.io)
 
 ## Features
 * **User interface**
