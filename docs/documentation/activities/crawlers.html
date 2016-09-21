@@ -1,23 +1,129 @@
 <template activity="crawlers">
-    <article class="selectable">
-        <h1 class="theme-fg-color">Crawlers</h1>
-    </article>
+  <article class="selectable">
+    <h1 class="theme-fg-color">MicroDocs Crawlers</h1>
+    <div class="text">
+      <p>
+        Crawlers are used to extract definitions from projects. This happends at build time, so it fits perfectly in
+        your CI. MicroDocs is backwards compatible with the OpenApi (Swagger) definitions. So if there isn’t a Crawlers
+        available yet for the framework you are using, you can try a Swagger Crawler. But you won’t have all the
+        features that MicroDocs is offering.
+        Spring Crawler
+        For the Spring framework there is a Crawler to extract MicroDoca definitions.
+      </p>
+    </div>
+    <h2 class="theme-fg-color">Setup</h2>
+    <div class="text">
+      <p>
+        This Crawler is available as a Doclet (a Doclet is like an engine which can be ran using the JavaDoc tool) and
+        as a Gradle plugin (which uses onder the hood the Doclet).
+      </p>
+    </div>
+    <h4 class="theme-fg-color">Use the Gradle plugin</h4>
+    <div class="text">
+        <code class="block">
+          <span class="code-title light-gray">gradle.build</span>
+          <pre class="code-block">buildscript {
+  depencencies {
+    classpath("com.maxxton:microdocs-crawler-gradle:1.+")
+  }
+}
+
+apply plugin: "microdocs"
+
+version = "1.0.0" // project version
+
+// build configuration
+buildMicroDocs {
+  options.addStringOption("group", 'services'); // group name
+}
+
+// check configuration
+checkMicroDocs {
+  env = 'development' // which environment to check against
+  url = "http://localhost:3000" // where the MicroDocs server is running
+  //username = "username" // If you use basic auth
+  //password = "password"
+  //reportFile = project.reporting.file('./microdocs.json'); // where to find the MicroDocs report
+}
+
+// publish configuration
+publishMicroDocs {
+  env = 'development' // which environment to check against
+  url = "http://localhost:3000" // where the MicroDocs server is running
+  failOnProblems = true // whether or not to publish if there are problems
+  //username = "username" // If you use basic auth
+  //password = "password"
+  //reportFile = project.reporting.file('./microdocs.json'); // where to find the MicroDocs report
+}</pre>
+        </code>
+    </div>
+    <h2 class="theme-fg-color">Conventions</h2>
+    <div class="text">
+      <p>
+        The Spring Crawler make use of the annotations from Spring MVC/Boot and Netflix Feign to extract the
+        definitions.
+      </p>
+    </div>
+    <h4 class="theme-fg-color">Project info</h4>
+    <div class="text">
+      <p>
+        In Spring Boot applicaties you have a main class with the annotation <code>@SpringBootApplication</code>. The JavaDoc of that
+        class is used as the description of the project.
+      </p>
+    </div>
+    <h4 class="theme-fg-color">Rest Endpoints</h4>
+    <div class="text">
+      <p>
+        With Spring MVC you define your controllers with <code>@RestController</code>. The methods with <code>@RequestMapping</code> in that class
+        are used to define the Endpoints itself. The JavaDocs in combination with <code>@RequestParam</code>, <code>@PathVariable</code>,
+        <code>@RequestBody</code> and the return type are used to extract the endpoint definitions.
+      </p>
+      <p>
+        Additional the JavaDoc tag <code>@response</code> can be used to documentate the possible response codes. For example:
+        …
+      </p>
+    </div>
+    <h4 class="theme-fg-color">Feign Client</h4>
+    <div class="text">
+      <p>
+        The Netflix Feign library is an easy way to make Http calls to other web services.Above the client class you
+        must set the <code>@FeignClient</code> annotation, with the same name/serviceId as the project it depends on. It is used the
+        same annotations as Spring MVC. MicroDocs make use of these annotations to extract client endpoints from a
+        project. This is done the same way as with extracting Rest Endpoint definitions.
+      </p>
+    </div>
+    <h4 class="theme-fg-color">Models</h4>
+    <div class="text">
+      <p>
+        Models are found if the are used by endpoints, have the @Entity annotation or is used by another model.
+        For models, all non classified variables are used for the proporties of the model. On top of that it uses JPA
+        and Hybernate Json annotations to define Json- and relational mappings.
+      </p>
+    </div>
+    <h4 class="theme-fg-color">Documentation example</h4>
+    <div class="text">
+      <p>
+        On the left side is a code preview on how documentation in a Spring Boot application reflects in MicroDocs on the right side.
+      </p>
+    </div>
+    <img src="images/documentation-example.png" width="100%" />
+  </article>
 </template>
 <script>
-    app.activity("crawlers", function () {
+  app.activity("crawlers", function () {
 
-        this.title = "Crawlers";
-        this.icon = "mdi-action-cached";
-        this.hOptions = {size: "medium"};
+    this.title = "Crawlers";
+    this.icon = "mdi-content-archive";
+    this.hOptions = {size: "medium"};
 
-        this.onCreate = function () {
-            setTimeout(function () {
-                app.setTheme("red");
-            }, 20);
-        };
+    this.onCreate = function () {
+      setTimeout(function () {
+        app.setTheme("red");
+      }, 20);
+    };
 
-        this.onDestroy = function () {
-            app.setTheme(app.color);
-        };
-    });
+    this.onDestroy = function () {
+      app.setTheme(app.color);
+    };
+  });
 </script>
