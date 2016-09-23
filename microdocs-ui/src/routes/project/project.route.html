@@ -60,7 +60,7 @@
         <template [ngIf]="client.problems | notEmpty">
           <problem-panel [problems]="client.problems"></problem-panel>
         </template>
-        <div *ngFor="let path of client.paths | objectIterator | sortByHttpMethod:'_id'">
+        <div *ngFor="let path of client.paths | objectIterator | sortByKey:'_id'">
           <endpoint-group [endpointGroup]="path"></endpoint-group>
         </div>
       </div>

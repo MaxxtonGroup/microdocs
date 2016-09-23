@@ -302,7 +302,24 @@ public class ProjectBuilder implements Builder<Project> {
     if (project.getDependencies() == null) {
       project.setDependencies(new HashMap());
     }
-    project.getDependencies().put(name, dependency);
+
+    if(project.getDependencies().containsKey(name.toLowerCase())){
+      Dependency existingDependency = project.getDependencies().get(name.toLowerCase());
+      if(existingDependency.getDescription() == null || existingDependency.getDescription().isEmpty()){
+        existingDependency.setDescription(dependency.getDescription());
+      }
+      dependency.getPaths().entrySet().forEach(entry -> {
+        if(!existingDependency.getPaths().containsKey(entry.getKey())){
+          existingDependency.getPaths().put(entry.getKey(),entry.getValue());
+        }else{
+          entry.getValue().entrySet().forEach(subEntry -> {
+            existingDependency.getPaths().get(entry.getKey()).put(subEntry.getKey(), subEntry.getValue());
+          });
+        }
+      });
+    }else {
+      project.getDependencies().put(name.toLowerCase(), dependency);
+    }
     return this;
   }
 

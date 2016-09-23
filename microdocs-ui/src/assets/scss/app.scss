@@ -376,3 +376,21 @@ dependency-graph text {
   width: auto;
   margin-left: 10px;
 }
+
+welcome-panel{
+  padding: 20px;
+  text-align: center;
+}
+
+welcome-panel h1{
+  color: #f26922;
+  font-size: 3em;
+}
+
+welcome-panel h4{
+  font-weight: normal;
+}
+
+welcome-panel a:hover{
+  text-decoration: underline;
+}

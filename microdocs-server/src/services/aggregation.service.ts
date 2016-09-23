@@ -10,7 +10,7 @@ import {
   Problem,
   ProjectInfo
 } from "microdocs-core-ts/dist/domain";
-import {NOTICE, ERROR} from "microdocs-core-ts/dist/domain/problem/problem-level.model";
+import {NOTICE, ERROR, WARNING} from "microdocs-core-ts/dist/domain/problem/problem-level.model";
 import {REST} from "microdocs-core-ts/dist/domain/dependency/dependency-type.model";
 
 import {ProblemReporter, SchemaHelper, MicroDocsPreProcessor} from "microdocs-core-ts/dist/helpers";
@@ -292,7 +292,7 @@ export class AggregationService {
           //find last compatible if contains problems
           var previousProject = this.previousProject(env, dependentProject);
           while (previousProject != null) {
-            var prevCompatible = this.checkEndpoints(title, dependency, previousProject, project);
+            var prevCompatible = this.checkEndpoints(title, dependency, previousProject, project, true);
             console.info(project.info.title + ":" + project.info.version + ' -> ' + previousProject.info.title + ":" + previousProject.info.version + " = compatible: " + prevCompatible);
 
             if (prevCompatible) {
@@ -367,9 +367,11 @@ export class AggregationService {
    * @param title name of the project
    * @param dependency
    * @param dependentProject
+   * @param currentProject
+   * @param silence Add problems to the client endpoints object
    * @returns {boolean} true if compatible, otherwise false
    */
-  private checkEndpoints(title: string, dependency: Dependency, dependentProject: Project, currentProject: Project): boolean {
+  private checkEndpoints(title: string, dependency: Dependency, dependentProject: Project, currentProject: Project, silence = false): boolean {
     var compatible = true;
     if (dependency.paths != undefined) {
       for (var path in dependency.paths) {
@@ -390,7 +392,9 @@ export class AggregationService {
           // log problems
           if (problemReport.hasProblems()) {
             compatible = false;
-            problemReport.publish(clientEndpoint, currentProject);
+            if(!silence) {
+              problemReport.publish(clientEndpoint, currentProject);
+            }
           }
         }
       }
@@ -468,7 +472,7 @@ export class AggregationService {
           for (var method in project.paths[producerPath]) {
             if (method.toLowerCase() == clientMethod.toLowerCase()) {
               if (!equals) {
-                problemReport.report(NOTICE, "Path variable(s) might not match for '" + method + " " + clientPath + "' on " + title, clientEndpoint.controller, clientEndpoint.method);
+                problemReport.report(WARNING, "Path variable(s) might not match for '" + method + " " + producerPath + "' on " + title, clientEndpoint.controller, clientEndpoint.method);
               }
               var endpoint = project.paths[producerPath][method];
               endpoint.path = producerPath;

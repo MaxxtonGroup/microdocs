@@ -4,6 +4,7 @@ buildscript {
 	}
 	repositories {
 		mavenCentral()
+		mavenLocal()
 	}
 	dependencies {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
@@ -65,4 +66,5 @@ checkMicroDocs {
 publishMicroDocs {
 	env = 'development'
 	url = 'http://localhost:3000'
+	failOnProblems = false;
 }

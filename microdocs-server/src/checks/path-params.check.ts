@@ -30,7 +30,7 @@ export class PathParamsCheck implements PathCheck {
         }
         if(clientParam != null && producerParam != null){
           if(clientParam.type != producerParam.type){
-            problemReport.report(WARNING, "Type mismatches path variable " + clientParamName + ", expected: " + producerParam.type + ", found: " + clientParam.type, clientEndpoint.controller, clientEndpoint.method);
+            problemReport.report(WARNING, "Type mismatches path variable '" + clientParamName + "', expected: " + producerParam.type + ", found: " + clientParam.type, clientEndpoint.controller, clientEndpoint.method);
           }
         }
       }

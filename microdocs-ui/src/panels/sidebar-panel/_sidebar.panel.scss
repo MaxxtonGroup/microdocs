@@ -24,8 +24,21 @@ sidebar-component {
     background-color: $gray-light;
 
     span.icon {
+      position: relative;
+      top: -3px;
       font-size: 2rem;
     }
+  }
+
+  a.microdocs-link{
+    display: none;
+    position: absolute;
+    bottom: 3px;
+    left: 10px;
+    font-size: 14px;
+  }
+  a.microdocs-link:hover{
+    text-decoration: underline;
   }
 
   .action-sheet-container {
@@ -139,6 +152,10 @@ sidebar-component {
       .sidebar {
         max-width: $sidebar-max-width;
         min-width: $sidebar-min-width;
+      }
+
+      a.microdocs-link{
+        display: inline-block;
       }
 
       a.logo {
