@@ -39,7 +39,7 @@ public class CustomerController {
      * @return the customer or null
      */
     @RequestMapping(path = "/{customerId}", method=RequestMethod.GET)
-    public ResponseEntity<Customer> getCustomer(@PathVariable("customerId") Long customerId){
+    public ResponseEntity<Customer> getCustomer(@PathVariable("customerId") Long customerId, @RequestParam(required=true) String name){
         Customer customer = customerService.getCustomer(customerId);
         if(customer != null){
             return new ResponseEntity<Customer>(customer, HttpStatus.OK);

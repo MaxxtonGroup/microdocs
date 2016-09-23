@@ -4,7 +4,7 @@ import { ROUTER_DIRECTIVES } from "@angular/router";
 
 @Component({
     selector: 'group-route',
-    templateUrl: 'group.tpl.html',
+    templateUrl: 'group.route.html',
     directives: [ ROUTER_DIRECTIVES ]
 })
 export class GroupRoute{

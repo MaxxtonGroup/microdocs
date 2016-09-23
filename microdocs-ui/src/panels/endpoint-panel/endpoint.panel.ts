@@ -7,6 +7,7 @@ import {Path, Schema, Project, Method} from 'microdocs-core-ts/dist/domain';
 
 import {BodyRenderPanel} from '../body-render/body-render.panel';
 import {ProblemPanel} from "../problem-panel/problem.panel";
+import {PathHighlightPanel} from "../path-highlight-panel/path-highlight.panel";
 
 @Component({
   selector: 'endpoint',

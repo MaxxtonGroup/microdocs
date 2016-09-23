@@ -52,6 +52,8 @@ public class DependencyCollector implements Collector<DependencyBuilder> {
                 dependencyBuilder.title(annotation.getString("name"));
             } else if (annotation.getString("serviceId") != null) {
                 dependencyBuilder.title(annotation.getString("serviceId"));
+            }else{
+                throw new RuntimeException("Missing serviceId in @FeignClient on " + client.getName());
             }
         }
         dependencyBuilder.description(client.getDescription().getText());
