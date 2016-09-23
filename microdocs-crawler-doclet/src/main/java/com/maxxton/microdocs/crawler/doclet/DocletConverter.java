@@ -175,10 +175,12 @@ public class DocletConverter {
         reflectClass.setName(classDoc.qualifiedName());
         reflectClass.setSimpleName(classDoc.simpleTypeName());
         reflectClass.setPackageName(classDoc.containingPackage() != null ? classDoc.containingPackage().name() : null);
-        if(reflectClass.getPackageName() != null){
-            reflectClass.setFile(reflectClass.getPackageName().replaceAll("\\.", "/") + "/" + classDoc.position().file().getName());
-        }else {
-            reflectClass.setFile(classDoc.position().file().getName());
+        if(classDoc.position() != null && classDoc.position().file() != null) {
+            if (reflectClass.getPackageName() != null) {
+                reflectClass.setFile(reflectClass.getPackageName().replaceAll("\\.", "/") + "/" + classDoc.position().file().getName());
+            } else {
+                reflectClass.setFile(classDoc.position().file().getName());
+            }
         }
         reflectClass.setAbstract(classDoc.isAbstract());
         if (classDoc.isEnum()) {
