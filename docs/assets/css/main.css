@@ -97,3 +97,9 @@ img.pull-left { margin-right: 10px; }
 .navbar-inverse .navbar-brand{
 	margin-top: 5px;
 }
+
+.container img.screenshot{
+	width: 40%;
+	margin: 20px;
+	box-shadow: rgba(0, 0, 0, 0.227451) 0px 3px 10px 0px, rgba(0, 0, 0, 0.156863) 0px 3px 10px 0px;
+}

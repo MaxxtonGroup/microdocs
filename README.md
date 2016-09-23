@@ -35,7 +35,7 @@ Full documentation can be found at [microdocs.io](http://microdocs.io)
     * Api testing (coming soon...)
     * Mock server (coming soon...)
     * [Swagger integrations](http://swagger.io/open-source-integrations/)
-    * [Api Blueprint integrations](https://apiblueprint.org/tools.html) (coming soon...)
+    * [Api Blueprint integrations](https://apiblueprint.org/tools.html)
 
 ## Setup
 MicroDocs consists out of crawlers, server, ui and integrations tools.
@@ -45,10 +45,10 @@ The **server** then checks for compatibility problems and aggregate the result.
 The **ui** or other **integration tools** request the result through the RestApi of the server.
 
 ### Setup MicroDocs Server
-The MicroDocs server with the ui is available on [dockerhub](https://hub.docker.com/r/maxxton/microdocs/).
+The MicroDocs server is available on [Docker Hub](https://hub.docker.com/r/maxxton/microdocs/).
 To install via Docker run:
 ```
-$ docker run --name microdocs -v /microdocs-server/data -p 3000:3000 -d maxxton/microdocs
+$ docker run --name microdocs -v /some/data/folder:/microdocs/microdocs-server/data -p 3000:3000 -d maxxton/microdocs
 ```
 
 ### Setup Crawlers
