@@ -32,7 +32,9 @@ export class App {
   projectSub:any;
   
   constructor(private image:ImageHelperService, private projectService:ProjectService, private router:Router) {
-    this.projectSub = projectService.getProjects().subscribe(node => this.projects.next(node));
+    var result = this.projectService.getProjects();
+    if(result)
+      this.projectSub = result.subscribe(node => this.projects.next(node));
     
     projectService.getEnvs().subscribe((envs) => {
       this.envs = Object.keys(envs);
@@ -41,6 +43,11 @@ export class App {
           if (envs[key].default) {
             projectService.setSelectedEnv(key);
             this.selectedEnv = key;
+  
+            var result = this.projectService.getProjects();
+            if(result)
+              this.projectSub = result.subscribe(node => this.projects.next(node));
+            
             break;
           }
         }
@@ -54,7 +61,9 @@ export class App {
         if (this.projectSub && this.projectSub.unsubscribe) {
           this.projectSub.unsubscribe();
         }
-        this.projectSub = this.projectService.getProjects().subscribe(node => this.projects.next(node));
+        var result = this.projectService.getProjects();
+        if(result)
+          this.projectSub = result.subscribe(node => this.projects.next(node));
       }
     });
   }
@@ -65,7 +74,9 @@ export class App {
     if (this.projectSub && this.projectSub.unsubscribe) {
       this.projectSub.unsubscribe();
     }
-    this.projectSub = this.projectService.getProjects().subscribe(node => this.projects.next(node));
+    var result = this.projectService.getProjects();
+    if(result)
+      this.projectSub = result.subscribe(node => this.projects.next(node));
     
     this.router.navigateByUrl('/?env=' + newEnv);
   }

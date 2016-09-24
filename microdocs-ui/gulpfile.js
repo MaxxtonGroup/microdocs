@@ -97,7 +97,7 @@ gulp.task('compile-html', [], function () {
     encoding: 'utf-8',
     flag: 'rs'
   }, function (e, data) {
-    var basePath = data.toString().match("basepath.+=.+\"(.+)\";");
+    var basePath = data.toString().match("basePath.+=.+\"(.+)\";");
     return gulp.src('src/index.html')
         .pipe(replace('<base mxt/>', '<base href="' + basePath[1] + '"></base>'))
         .pipe(gulp.dest(settings.distFolder));
