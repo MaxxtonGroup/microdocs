@@ -12,6 +12,8 @@ import { App } from "./app";
 import { MicroDocsConfig } from "./../config/config";
 import { MicrodocsRoutes } from "../routes/micrdocs.routes";
 import { ProjectService } from "../services/project.service";
+import { RestProjectService } from "../services/rest-project.service";
+import { StandaloneProjectService } from "../services/standalone-project.service";
 
 if ( MicroDocsConfig.isProduction ) {
   enableProdMode();
@@ -22,7 +24,7 @@ bootstrap( App, [
   HTTP_PROVIDERS,
   APP_WIDE_SERVICES,
   // TranslateService,
-  ProjectService,
+  provide(ProjectService, {useClass: MicroDocsConfig.isStandAlone ? StandaloneProjectService : RestProjectService}),
   DummyPreferenceService,
   // provide( PLATFORM_PIPES, { useValue: [ TranslatePipe ], multi: true } ),
   // provide( TranslateLoader, {

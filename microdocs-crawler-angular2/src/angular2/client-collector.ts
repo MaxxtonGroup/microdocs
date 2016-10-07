@@ -14,16 +14,18 @@ export class ClientCollector {
 
     var baseUrl = '';
     var headers = {};
-    classReflection.decorators.forEach(decorator => {
-      switch (decorator.name) {
-        case 'Client':
-          var clientArgs = this.evalArgument(decorator.arguments.args);
-          baseUrl = clientArgs.baseUrl;
-          dependencyBuilder.title = clientArgs.serviceId;
-          headers = clientArgs.headers;
-          break;
-      }
-    });
+    if(classReflection.decorators) {
+      classReflection.decorators.forEach(decorator => {
+        switch (decorator.name) {
+          case 'Client':
+            var clientArgs = this.evalArgument(decorator.arguments.args);
+            baseUrl = clientArgs.baseUrl;
+            dependencyBuilder.title = clientArgs.serviceId;
+            headers = clientArgs.headers;
+            break;
+        }
+      });
+    }
 
     if (classReflection.children) {
       classReflection.children.filter(member => member.kind === ReflectionKind.Method).forEach(method => {
@@ -47,9 +49,15 @@ export class ClientCollector {
         }
         if (method.signatures) {
           method.signatures.forEach(signature => {
-            signature.parameters.forEach(param => {
+            pathBuilder.endpoint.operationId = signature.name;
+            if (signature.comment) {
+              pathBuilder.endpoint.description = signature.comment.shortText;
+            }
+            if(signature.parameters) {
+              signature.parameters.forEach(param => {
 
-            });
+              });
+            }
           });
         }
 

@@ -22,7 +22,7 @@ var fs = require("fs");
 var settings = {
   env: 'development',
   distFolder: 'dist',
-  basepath: "/"
+  basePath: "/"
 };
 
 

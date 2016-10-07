@@ -10,6 +10,7 @@ import {
 } from 'microdocs-core-ts/dist/domain/component/component-type.model';
 import {ReflectionKind, ContainerReflection, DeclarationReflection, ReferenceType} from "typedoc/lib/models";
 import {ClientCollector} from "./client-collector";
+import {isSubClassOf} from "../helpers/crawler.helper";
 
 export class Angular2Crawler extends Crawler {
 
@@ -17,31 +18,22 @@ export class Angular2Crawler extends Crawler {
 
   crawlClass(projectBuilder: ProjectBuilder, projectReflection: ProjectReflection, classReflection: ContainerReflection): void {
     var type: string;
-    if(this.isClient(classReflection)){
+    if (this.isClient(classReflection)) {
       type = CLIENT;
       projectBuilder.dependency(this.clientCollector.collect(classReflection));
-    }else if(this.isService(classReflection)){
+    } else if (this.isService(classReflection)) {
       type = SERVICE;
     }
     console.info('Class: ' + classReflection.name + " type: " + type);
   }
 
-  private isClient(classReflection: ContainerReflection):boolean{
-    var declaration = classReflection as DeclarationReflection;
-    if (declaration && declaration.extendedTypes) {
-      for(var i = 0; i < declaration.extendedTypes.length; i++){
-        switch ((declaration.extendedTypes[i] as ReferenceType).name) {
-          case 'RestClient':
-            return true;
-        }
-      }
-    }
-    return false;
+  private isClient(classReflection: ContainerReflection): boolean {
+    return isSubClassOf(classReflection, "RestClient") && this.isService(classReflection);
   }
 
-  private isService(classReflection: ContainerReflection):boolean{
+  private isService(classReflection: ContainerReflection): boolean {
     if (classReflection.decorators) {
-      for(var i = 0; i < classReflection.decorators.length; i++){
+      for (var i = 0; i < classReflection.decorators.length; i++) {
         switch (classReflection.decorators[i].name) {
           case 'Injectable':
             return true;
