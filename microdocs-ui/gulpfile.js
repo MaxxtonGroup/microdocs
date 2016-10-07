@@ -97,7 +97,7 @@ gulp.task('compile-html', [], function () {
     encoding: 'utf-8',
     flag: 'rs'
   }, function (e, data) {
-    var basePath = data.toString().match("basepath.+=.+\"(.+)\";");
+    var basePath = data.toString().match("basePath.+=.+\"(.+)\";");
     return gulp.src('src/index.html')
         .pipe(replace('<base mxt/>', '<base href="' + basePath[1] + '"></base>'))
         .pipe(gulp.dest(settings.distFolder));
@@ -139,6 +139,7 @@ gulp.task('watch', [], function () {
 gulp.task('config-development', ['set-dev-env', 'config']);
 gulp.task('config-acceptance', ['set-acc-env', 'config']);
 gulp.task('config-production', ['set-prod-env', 'config']);
+gulp.task('config-standalone', ['set-standalone-env', 'config']);
 gulp.task('set-dev-env', function () {
   settings.env = 'development';
 });
@@ -147,6 +148,9 @@ gulp.task('set-acc-env', function () {
 });
 gulp.task('set-prod-env', function () {
   settings.env = 'production';
+});
+gulp.task('set-standalone-env', function () {
+  settings.env = 'standalone';
 });
 gulp.task('config', function () {
   return gulp.src('src/config/config-' + settings.env + '.ts')
@@ -184,6 +188,9 @@ gulp.task('package-distribution-acceptance', [], function (done) {
 });
 gulp.task('package-distribution-production', [], function (done) {
   runSequence('clean', 'config-production', 'compile', 'package-distribution', 'compile-sourcemaps', 'bundle-libs', done);
+});
+gulp.task('package-distribution-standalone', [], function (done) {
+  runSequence('clean', 'config-standalone', 'compile', 'package-distribution', 'compile-sourcemaps', 'bundle-libs', done);
 });
 
 gulp.task('package-distribution', [], function () {

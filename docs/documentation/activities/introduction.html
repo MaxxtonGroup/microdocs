@@ -1,24 +1,44 @@
 <template activity="introduction">
-    <article class="selectable">
-        <h1 class="theme-fg-color">Hang on!</h1>
-        We are working hard to write documentation for this page.
-    </article>
+  <article class="selectable">
+    <h1 class="theme-fg-color">MicroDocs</h1>
+    <div class="text">
+      <p>
+        MicroDocs is a tool for service documentation. The idea is to create documentation that scales with your
+        Microservices. Which means to centralize and organise documentation of several project and show their relations,
+        like you need when you’re doing Microservices.
+      </p>
+      <p>
+        icroDocs uses under the hood the Open Api standard (with some additions) to ensure compatibility with other api
+        tools. We are also working on supporting Api blueprint and RAML.
+      </p>
+      <p>
+        The flow of how you can use MicroDocs consist of 3 steps:
+      <ol>
+        <li>Extract MicroDocs definitions from the source code on build time</li>
+        <li>Publish the definitions to the MicroDocs server</li>
+        <li>Discover the RestAPI documentation through the web interface or use API to integrate with hundreds of other
+          api tools
+        </li>
+      </ol>
+      </p>
+    </div>
+  </article>
 </template>
 <script>
-    app.activity("introduction", function(){
+  app.activity("introduction", function () {
 
-        this.title = "Introduction";
+    this.title = "Introduction";
 //        this.src = "../assets/images/microdocs.png";
-        this.hOptions = {size: "medium"};
+    this.hOptions = {size: "medium"};
 
-        this.onCreate = function(){
-            setTimeout(function(){
-                app.setTheme("blue");
-            }, 20);
-        };
+    this.onCreate = function () {
+      setTimeout(function () {
+        app.setTheme("blue");
+      }, 20);
+    };
 
-        this.onDestroy = function(){
-            app.setTheme(app.color);
-        };
-    });
+    this.onDestroy = function () {
+      app.setTheme(app.color);
+    };
+  });
 </script>

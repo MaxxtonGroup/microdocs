@@ -1,0 +1,1876 @@
+{
+  "info": {
+    "title": "order-service",
+    "version": "0.0.1",
+    "versions": [
+      "0.0.1"
+    ],
+    "group": "default",
+    "links": [
+      {
+        "rel": "repository",
+        "href": "https://stash.maxxton.com/projects//repos/order-service/browse"
+      }
+    ]
+  },
+  "paths": {
+    "/api/v1/orders": {
+      "post": {
+        "controller": {
+          "$ref": "#/components/OrderController"
+        },
+        "method": {
+          "$ref": "#/components/OrderController/methods/createOrder(OrderInfo)"
+        },
+        "description": "Create new order",
+        "operationId": "createOrder",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "orderInfo",
+            "in": "body",
+            "description": "order to be created",
+            "schema": {
+              "$ref": "#/definitions/com.example.service.order.domain.OrderInfo"
+            }
+          }
+        ],
+        "responses": {
+          "201": {},
+          "400": {},
+          "default": {
+            "description": "Created order",
+            "schema": {
+              "$ref": "#/definitions/com.example.service.order.domain.Order",
+              "default": {
+                "orderId": 55,
+                "orderDate": null,
+                "customer": "[Customer]",
+                "status": "ACCEPTED"
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "controller": {
+          "$ref": "#/components/OrderController"
+        },
+        "method": {
+          "$ref": "#/components/OrderController/methods/getOrder(Pageable)"
+        },
+        "description": "Get page of orders",
+        "operationId": "getOrder",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "page number",
+            "name": "page",
+            "in": "query",
+            "default": 0
+          },
+          {
+            "type": "integer",
+            "description": "items per page",
+            "name": "size",
+            "in": "query",
+            "default": 20
+          },
+          {
+            "type": "string",
+            "description": "sort option",
+            "name": "sort",
+            "in": "query",
+            "default": "asc"
+          }
+        ],
+        "responses": {
+          "200": {},
+          "default": {
+            "description": "List of orders",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "number": {
+                  "type": "number",
+                  "default": 1
+                },
+                "last": {
+                  "type": "boolean",
+                  "default": false
+                },
+                "size": {
+                  "type": "number",
+                  "default": 20
+                },
+                "numberOfElements": {
+                  "type": "number",
+                  "default": 20
+                },
+                "totalPages": {
+                  "type": "number",
+                  "default": 20
+                },
+                "sort": {},
+                "content": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/com.example.service.order.domain.Order"
+                  }
+                },
+                "first": {
+                  "type": "boolean",
+                  "default": true
+                },
+                "totalElements": {
+                  "type": "number",
+                  "default": 196
+                }
+              },
+              "default": {
+                "number": 1,
+                "last": false,
+                "size": 20,
+                "numberOfElements": 20,
+                "totalPages": 20,
+                "sort": null,
+                "content": [
+                  {
+                    "orderId": 44,
+                    "orderDate": null,
+                    "customer": "[Customer]",
+                    "status": "ACCEPTED"
+                  }
+                ],
+                "first": true,
+                "totalElements": 196
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/orders/{orderId}/status": {
+      "put": {
+        "controller": {
+          "$ref": "#/components/OrderController"
+        },
+        "method": {
+          "$ref": "#/components/OrderController/methods/updateStatus(Long,OrderStatus)"
+        },
+        "description": "Update order status",
+        "operationId": "updateStatus",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "id of the order",
+            "required": true,
+            "name": "orderId",
+            "in": "path"
+          },
+          {
+            "type": "enum",
+            "description": "new order status",
+            "name": "status",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {},
+          "404": {},
+          "default": {
+            "description": "Order with the new status",
+            "schema": {
+              "$ref": "#/definitions/com.example.service.order.domain.Order",
+              "default": {
+                "orderId": 74,
+                "orderDate": null,
+                "customer": "[Customer]",
+                "status": "ACCEPTED"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/orders/{orderId}": {
+      "get": {
+        "controller": {
+          "$ref": "#/components/OrderController"
+        },
+        "method": {
+          "$ref": "#/components/OrderController/methods/getOrder(Long)"
+        },
+        "description": "Get order by id",
+        "operationId": "getOrder",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "order id",
+            "required": true,
+            "name": "orderId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {},
+          "404": {},
+          "default": {
+            "description": "Order or not found",
+            "schema": {
+              "$ref": "#/definitions/com.example.service.order.domain.Order",
+              "default": {
+                "orderId": 79,
+                "orderDate": null,
+                "customer": "[Customer]",
+                "status": "PENDING"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "com.example.service.order.domain.OrderInfo": {
+      "type": "object",
+      "description": "",
+      "mappings": {
+        "relational": {
+          "tables": [
+            "ORDER_INFO"
+          ]
+        }
+      },
+      "properties": {
+        "orderId": {
+          "type": "integer",
+          "mappings": {
+            "relational": {
+              "primary": true
+            }
+          }
+        },
+        "billId": {
+          "type": "integer"
+        },
+        "customerId": {
+          "type": "integer"
+        },
+        "orderDate": {
+          "type": "date"
+        },
+        "status": {
+          "type": "enum",
+          "description": "",
+          "name": "com.example.service.order.domain.OrderStatus",
+          "simpleName": "OrderStatus",
+          "enum": [
+            "PENDING",
+            "ACCEPTED",
+            "DELIVERED"
+          ]
+        }
+      },
+      "name": "OrderInfo",
+      "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/domain/OrderInfo.java"
+    },
+    "com.example.service.order.domain.Address": {
+      "type": "object",
+      "description": "",
+      "properties": {
+        "zipCode": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "houseNumber": {
+          "type": "string"
+        },
+        "addressId": {
+          "type": "integer"
+        }
+      },
+      "name": "Address",
+      "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/domain/Address.java"
+    },
+    "com.example.service.order.domain.Order": {
+      "type": "object",
+      "description": "",
+      "mappings": {
+        "relational": {
+          "tables": [
+            "ORDER"
+          ]
+        }
+      },
+      "properties": {
+        "orderId": {
+          "type": "integer",
+          "mappings": {
+            "relational": {
+              "primary": true
+            }
+          }
+        },
+        "orderDate": {
+          "type": "date"
+        },
+        "customer": {
+          "type": "object",
+          "description": "",
+          "properties": {
+            "firstName": {
+              "type": "string"
+            },
+            "lastName": {
+              "type": "string"
+            },
+            "billAddress": {
+              "type": "object",
+              "description": "",
+              "properties": {
+                "zipCode": {
+                  "type": "string"
+                },
+                "address": {
+                  "type": "string"
+                },
+                "city": {
+                  "type": "string"
+                },
+                "houseNumber": {
+                  "type": "string"
+                },
+                "addressId": {
+                  "type": "integer"
+                }
+              },
+              "name": "Address",
+              "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/domain/Address.java"
+            },
+            "customerId": {
+              "type": "integer"
+            },
+            "deliverAddress": {
+              "type": "object",
+              "description": "",
+              "properties": {
+                "zipCode": {
+                  "type": "string"
+                },
+                "address": {
+                  "type": "string"
+                },
+                "city": {
+                  "type": "string"
+                },
+                "houseNumber": {
+                  "type": "string"
+                },
+                "addressId": {
+                  "type": "integer"
+                }
+              },
+              "name": "Address",
+              "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/domain/Address.java"
+            },
+            "email": {
+              "type": "string"
+            }
+          },
+          "name": "Customer",
+          "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/domain/Customer.java"
+        },
+        "status": {
+          "type": "enum",
+          "description": "",
+          "name": "com.example.service.order.domain.OrderStatus",
+          "simpleName": "OrderStatus",
+          "enum": [
+            "PENDING",
+            "ACCEPTED",
+            "DELIVERED"
+          ]
+        }
+      },
+      "name": "Order",
+      "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/domain/Order.java"
+    },
+    "com.example.service.order.domain.Customer": {
+      "type": "object",
+      "description": "",
+      "properties": {
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "billAddress": {
+          "type": "object",
+          "description": "",
+          "properties": {
+            "zipCode": {
+              "type": "string"
+            },
+            "address": {
+              "type": "string"
+            },
+            "city": {
+              "type": "string"
+            },
+            "houseNumber": {
+              "type": "string"
+            },
+            "addressId": {
+              "type": "integer"
+            }
+          },
+          "name": "Address",
+          "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/domain/Address.java"
+        },
+        "customerId": {
+          "type": "integer"
+        },
+        "deliverAddress": {
+          "type": "object",
+          "description": "",
+          "properties": {
+            "zipCode": {
+              "type": "string"
+            },
+            "address": {
+              "type": "string"
+            },
+            "city": {
+              "type": "string"
+            },
+            "houseNumber": {
+              "type": "string"
+            },
+            "addressId": {
+              "type": "integer"
+            }
+          },
+          "name": "Address",
+          "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/domain/Address.java"
+        },
+        "email": {
+          "type": "string"
+        }
+      },
+      "name": "Customer",
+      "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/domain/Customer.java"
+    }
+  },
+  "components": {
+    "CustomerClient": {
+      "name": "com.example.service.order.client.CustomerClient",
+      "type": "client",
+      "file": "com/example/service/order/client/CustomerClient.java",
+      "description": "",
+      "authors": [
+        "Hermans (s.hermans@maxxton.com)"
+      ],
+      "annotations": {
+        "FeignClient": {
+          "properties": {
+            "name": "\"customer-service\""
+          }
+        },
+        "RequestMapping": {
+          "properties": {
+            "value": "\"/api/v1/customers\""
+          }
+        }
+      },
+      "methods": {
+        "getCustomer(Long)": {
+          "name": "getCustomer",
+          "description": "",
+          "parameters": [
+            "Long"
+          ],
+          "lineNumber": 17,
+          "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/CustomerClient.java#17"
+        }
+      },
+      "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/CustomerClient.java"
+    },
+    "OrderRepository": {
+      "name": "com.example.service.order.repository.OrderRepository",
+      "type": "repository",
+      "file": "com/example/service/order/repository/OrderRepository.java",
+      "description": "",
+      "authors": [
+        "Hermans (s.hermans@maxxton.com)"
+      ],
+      "annotations": {
+        "Repository": {}
+      },
+      "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/repository/OrderRepository.java",
+      "methods": {}
+    },
+    "TestClient3": {
+      "name": "com.example.service.order.client.TestClient3",
+      "type": "client",
+      "file": "com/example/service/order/client/TestClient3.java",
+      "description": "",
+      "authors": [
+        "Hermans"
+      ],
+      "annotations": {
+        "FeignClient": {
+          "properties": {
+            "name": "\"customer-service\""
+          }
+        }
+      },
+      "methods": {
+        "testEndpointMissingRequiredRequestParams()": {
+          "name": "testEndpointMissingRequiredRequestParams",
+          "description": "Expected: ERROR",
+          "lineNumber": 30,
+          "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient3.java#30"
+        },
+        "testEndpointMatchRequestParams(boolean)": {
+          "name": "testEndpointMatchRequestParams",
+          "description": "Expected: NOTHING",
+          "parameters": [
+            "boolean"
+          ],
+          "lineNumber": 24,
+          "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient3.java#24"
+        },
+        "testEndpointMismatchTypeRequestParams(String)": {
+          "name": "testEndpointMismatchTypeRequestParams",
+          "description": "Expected: WARNING",
+          "parameters": [
+            "String"
+          ],
+          "lineNumber": 42,
+          "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient3.java#42"
+        },
+        "testEndpointMatchRequiredRequestParams(boolean)": {
+          "name": "testEndpointMatchRequiredRequestParams",
+          "description": "Expected: NOTHING",
+          "parameters": [
+            "boolean"
+          ],
+          "lineNumber": 18,
+          "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient3.java#18"
+        },
+        "testEndpointMissingNotRequiredRequestParams()": {
+          "name": "testEndpointMissingNotRequiredRequestParams",
+          "description": "Expected: NOTHING",
+          "lineNumber": 36,
+          "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient3.java#36"
+        }
+      },
+      "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient3.java"
+    },
+    "TestClient1": {
+      "name": "com.example.service.order.client.TestClient1",
+      "type": "client",
+      "file": "com/example/service/order/client/TestClient1.java",
+      "description": "Missing customer-service2 test\n Expected: ERROR",
+      "authors": [
+        "Hermans"
+      ],
+      "annotations": {
+        "FeignClient": {
+          "properties": {
+            "name": "\"customer-service2\""
+          }
+        }
+      },
+      "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient1.java",
+      "methods": {}
+    },
+    "TestClient2": {
+      "name": "com.example.service.order.client.TestClient2",
+      "type": "client",
+      "file": "com/example/service/order/client/TestClient2.java",
+      "description": "Test path matching with customer-service",
+      "authors": [
+        "Hermans"
+      ],
+      "annotations": {
+        "FeignClient": {
+          "properties": {
+            "name": "\"customer-service\""
+          }
+        }
+      },
+      "methods": {
+        "testFullMatch()": {
+          "name": "testFullMatch",
+          "description": "Expected: NOTHING",
+          "lineNumber": 49,
+          "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient2.java#49"
+        },
+        "testMethodNotAllowed()": {
+          "name": "testMethodNotAllowed",
+          "description": "Expected: ERROR",
+          "lineNumber": 25,
+          "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient2.java#25"
+        },
+        "testEnpointDoesntExists()": {
+          "name": "testEnpointDoesntExists",
+          "description": "Expected: ERROR",
+          "lineNumber": 19,
+          "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient2.java#19"
+        },
+        "testParticalPathStaticMatch()": {
+          "name": "testParticalPathStaticMatch",
+          "description": "Expected: WARNING",
+          "lineNumber": 37,
+          "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient2.java#37"
+        },
+        "testMisMatchPathVar(String)": {
+          "name": "testMisMatchPathVar",
+          "description": "Expected: ERROR",
+          "parameters": [
+            "String"
+          ],
+          "lineNumber": 43,
+          "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient2.java#43"
+        },
+        "testParticalPathVarMatch(String)": {
+          "name": "testParticalPathVarMatch",
+          "description": "Expected: WARNING",
+          "parameters": [
+            "String"
+          ],
+          "lineNumber": 31,
+          "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient2.java#31"
+        }
+      },
+      "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient2.java"
+    },
+    "OrderController": {
+      "name": "com.example.service.order.controller.OrderController",
+      "type": "controller",
+      "file": "com/example/service/order/controller/OrderController.java",
+      "description": "",
+      "authors": [
+        "Hermans (s.hermans@maxxton.com)"
+      ],
+      "annotations": {
+        "RestController": {},
+        "RequestMapping": {
+          "properties": {
+            "value": "\"/api/v1/orders\""
+          }
+        }
+      },
+      "methods": {
+        "getOrder(Pageable)": {
+          "name": "getOrder",
+          "description": "Get page of orders",
+          "parameters": [
+            "Pageable"
+          ],
+          "lineNumber": 31,
+          "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/controller/OrderController.java#31"
+        },
+        "getOrder(Long)": {
+          "name": "getOrder",
+          "description": "Get order by id",
+          "parameters": [
+            "Long"
+          ],
+          "lineNumber": 43,
+          "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/controller/OrderController.java#43"
+        },
+        "createOrder(OrderInfo)": {
+          "name": "createOrder",
+          "description": "Create new order",
+          "parameters": [
+            "OrderInfo"
+          ],
+          "lineNumber": 59,
+          "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/controller/OrderController.java#59"
+        },
+        "updateStatus(Long,OrderStatus)": {
+          "name": "updateStatus",
+          "description": "Update order status",
+          "parameters": [
+            "Long",
+            "OrderStatus"
+          ],
+          "lineNumber": 76,
+          "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/controller/OrderController.java#76"
+        }
+      },
+      "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/controller/OrderController.java"
+    },
+    "OrderService": {
+      "name": "com.example.service.order.service.OrderService",
+      "type": "service",
+      "file": "com/example/service/order/service/OrderService.java",
+      "description": "",
+      "authors": [
+        "Hermans (s.hermans@maxxton.com)"
+      ],
+      "annotations": {
+        "Service": {}
+      },
+      "methods": {
+        "getOrders(Pageable)": {
+          "name": "getOrders",
+          "description": "",
+          "parameters": [
+            "Pageable"
+          ],
+          "lineNumber": 31,
+          "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/service/OrderService.java#31"
+        },
+        "getOrder(OrderInfo)": {
+          "name": "getOrder",
+          "description": "",
+          "parameters": [
+            "OrderInfo"
+          ],
+          "lineNumber": 45,
+          "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/service/OrderService.java#45"
+        },
+        "getOrder(Long)": {
+          "name": "getOrder",
+          "description": "",
+          "parameters": [
+            "Long"
+          ],
+          "lineNumber": 40,
+          "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/service/OrderService.java#40"
+        },
+        "updateStatus(Long,OrderStatus)": {
+          "name": "updateStatus",
+          "description": "",
+          "parameters": [
+            "Long",
+            "OrderStatus"
+          ],
+          "lineNumber": 55,
+          "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/service/OrderService.java#55"
+        },
+        "createOrder(OrderInfo)": {
+          "name": "createOrder",
+          "description": "",
+          "parameters": [
+            "OrderInfo"
+          ],
+          "lineNumber": 65,
+          "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/service/OrderService.java#65"
+        }
+      },
+      "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/service/OrderService.java"
+    },
+    "OrderServiceApplication": {
+      "name": "com.example.service.order.OrderServiceApplication",
+      "type": "application",
+      "file": "com/example/service/order/OrderServiceApplication.java",
+      "description": "",
+      "authors": [
+        "Hermans (s.hermans@maxxton.com)"
+      ],
+      "annotations": {
+        "SpringBootApplication": {}
+      },
+      "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/OrderServiceApplication.java",
+      "methods": {}
+    }
+  },
+  "dependencies": {
+    "customer-service": {
+      "description": "Test path matching with customer-service",
+      "type": "rest",
+      "paths": {
+        "/api/v1/test2/endpoint1": {
+          "delete": {
+            "controller": {
+              "name": "com.example.service.order.client.TestClient2",
+              "type": "client",
+              "file": "com/example/service/order/client/TestClient2.java",
+              "description": "Test path matching with customer-service",
+              "authors": [
+                "Hermans"
+              ],
+              "annotations": {
+                "FeignClient": {
+                  "properties": {
+                    "name": "\"customer-service\""
+                  }
+                }
+              },
+              "methods": {
+                "testFullMatch()": {
+                  "name": "testFullMatch",
+                  "description": "Expected: NOTHING",
+                  "lineNumber": 49,
+                  "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient2.java#49"
+                },
+                "testMethodNotAllowed()": {
+                  "name": "testMethodNotAllowed",
+                  "description": "Expected: ERROR",
+                  "lineNumber": 25,
+                  "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient2.java#25"
+                },
+                "testEnpointDoesntExists()": {
+                  "name": "testEnpointDoesntExists",
+                  "description": "Expected: ERROR",
+                  "lineNumber": 19,
+                  "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient2.java#19"
+                },
+                "testParticalPathStaticMatch()": {
+                  "name": "testParticalPathStaticMatch",
+                  "description": "Expected: WARNING",
+                  "lineNumber": 37,
+                  "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient2.java#37"
+                },
+                "testMisMatchPathVar(String)": {
+                  "name": "testMisMatchPathVar",
+                  "description": "Expected: ERROR",
+                  "parameters": [
+                    "String"
+                  ],
+                  "lineNumber": 43,
+                  "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient2.java#43"
+                },
+                "testParticalPathVarMatch(String)": {
+                  "name": "testParticalPathVarMatch",
+                  "description": "Expected: WARNING",
+                  "parameters": [
+                    "String"
+                  ],
+                  "lineNumber": 31,
+                  "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient2.java#31"
+                }
+              },
+              "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient2.java"
+            },
+            "method": {
+              "name": "testMethodNotAllowed",
+              "description": "Expected: ERROR",
+              "lineNumber": 25,
+              "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient2.java#25"
+            },
+            "description": "Expected: ERROR",
+            "operationId": "testMethodNotAllowed",
+            "consumes": [
+              "application/json"
+            ],
+            "produces": [
+              "application/json"
+            ],
+            "parameters": [],
+            "responses": {},
+            "path": "/api/v1/test2/endpoint1",
+            "requestMethod": "delete",
+            "problems": [
+              {
+                "level": "error",
+                "message": "No mapping for 'delete /api/v1/test2/endpoint1' on customer-service",
+                "path": "com/example/service/order/client/TestClient2.java",
+                "package": "com.example.service.order.client",
+                "className": "TestClient2",
+                "lineNumber": 25
+              }
+            ]
+          }
+        },
+        "/api/v1/test2/endpoint3/someStatic": {
+          "get": {
+            "controller": {
+              "name": "com.example.service.order.client.TestClient2",
+              "type": "client",
+              "file": "com/example/service/order/client/TestClient2.java",
+              "description": "Test path matching with customer-service",
+              "authors": [
+                "Hermans"
+              ],
+              "annotations": {
+                "FeignClient": {
+                  "properties": {
+                    "name": "\"customer-service\""
+                  }
+                }
+              },
+              "methods": {
+                "testFullMatch()": {
+                  "name": "testFullMatch",
+                  "description": "Expected: NOTHING",
+                  "lineNumber": 49,
+                  "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient2.java#49"
+                },
+                "testMethodNotAllowed()": {
+                  "name": "testMethodNotAllowed",
+                  "description": "Expected: ERROR",
+                  "lineNumber": 25,
+                  "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient2.java#25"
+                },
+                "testEnpointDoesntExists()": {
+                  "name": "testEnpointDoesntExists",
+                  "description": "Expected: ERROR",
+                  "lineNumber": 19,
+                  "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient2.java#19"
+                },
+                "testParticalPathStaticMatch()": {
+                  "name": "testParticalPathStaticMatch",
+                  "description": "Expected: WARNING",
+                  "lineNumber": 37,
+                  "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient2.java#37"
+                },
+                "testMisMatchPathVar(String)": {
+                  "name": "testMisMatchPathVar",
+                  "description": "Expected: ERROR",
+                  "parameters": [
+                    "String"
+                  ],
+                  "lineNumber": 43,
+                  "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient2.java#43"
+                },
+                "testParticalPathVarMatch(String)": {
+                  "name": "testParticalPathVarMatch",
+                  "description": "Expected: WARNING",
+                  "parameters": [
+                    "String"
+                  ],
+                  "lineNumber": 31,
+                  "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient2.java#31"
+                }
+              },
+              "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient2.java"
+            },
+            "method": {
+              "name": "testParticalPathStaticMatch",
+              "description": "Expected: WARNING",
+              "lineNumber": 37,
+              "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient2.java#37"
+            },
+            "description": "Expected: WARNING",
+            "operationId": "testParticalPathStaticMatch",
+            "consumes": [
+              "application/json"
+            ],
+            "produces": [
+              "application/json"
+            ],
+            "parameters": [],
+            "responses": {},
+            "path": "/api/v1/test2/endpoint3/someStatic",
+            "requestMethod": "get",
+            "problems": [
+              {
+                "level": "warning",
+                "message": "Path variable(s) might not match for 'get /api/v1/test2/endpoint3/{someVar}' on customer-service",
+                "path": "com/example/service/order/client/TestClient2.java",
+                "package": "com.example.service.order.client",
+                "className": "TestClient2",
+                "lineNumber": 37
+              }
+            ]
+          }
+        },
+        "/api/v1/test3/endpoint3": {
+          "get": {
+            "controller": {
+              "name": "com.example.service.order.client.TestClient3",
+              "type": "client",
+              "file": "com/example/service/order/client/TestClient3.java",
+              "description": "",
+              "authors": [
+                "Hermans"
+              ],
+              "annotations": {
+                "FeignClient": {
+                  "properties": {
+                    "name": "\"customer-service\""
+                  }
+                }
+              },
+              "methods": {
+                "testEndpointMissingRequiredRequestParams()": {
+                  "name": "testEndpointMissingRequiredRequestParams",
+                  "description": "Expected: ERROR",
+                  "lineNumber": 30,
+                  "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient3.java#30"
+                },
+                "testEndpointMatchRequestParams(boolean)": {
+                  "name": "testEndpointMatchRequestParams",
+                  "description": "Expected: NOTHING",
+                  "parameters": [
+                    "boolean"
+                  ],
+                  "lineNumber": 24,
+                  "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient3.java#24"
+                },
+                "testEndpointMismatchTypeRequestParams(String)": {
+                  "name": "testEndpointMismatchTypeRequestParams",
+                  "description": "Expected: WARNING",
+                  "parameters": [
+                    "String"
+                  ],
+                  "lineNumber": 42,
+                  "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient3.java#42"
+                },
+                "testEndpointMatchRequiredRequestParams(boolean)": {
+                  "name": "testEndpointMatchRequiredRequestParams",
+                  "description": "Expected: NOTHING",
+                  "parameters": [
+                    "boolean"
+                  ],
+                  "lineNumber": 18,
+                  "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient3.java#18"
+                },
+                "testEndpointMissingNotRequiredRequestParams()": {
+                  "name": "testEndpointMissingNotRequiredRequestParams",
+                  "description": "Expected: NOTHING",
+                  "lineNumber": 36,
+                  "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient3.java#36"
+                }
+              },
+              "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient3.java"
+            },
+            "method": {
+              "name": "testEndpointMissingRequiredRequestParams",
+              "description": "Expected: ERROR",
+              "lineNumber": 30,
+              "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient3.java#30"
+            },
+            "description": "Expected: ERROR",
+            "operationId": "testEndpointMissingRequiredRequestParams",
+            "consumes": [
+              "application/json"
+            ],
+            "produces": [
+              "application/json"
+            ],
+            "parameters": [],
+            "responses": {},
+            "path": "/api/v1/test3/endpoint3",
+            "requestMethod": "get",
+            "problems": [
+              {
+                "level": "error",
+                "message": "Missing query parameter 'a'"
+              }
+            ]
+          }
+        },
+        "/api/v1/test3/endpoint4": {
+          "get": {
+            "controller": {
+              "name": "com.example.service.order.client.TestClient3",
+              "type": "client",
+              "file": "com/example/service/order/client/TestClient3.java",
+              "description": "",
+              "authors": [
+                "Hermans"
+              ],
+              "annotations": {
+                "FeignClient": {
+                  "properties": {
+                    "name": "\"customer-service\""
+                  }
+                }
+              },
+              "methods": {
+                "testEndpointMissingRequiredRequestParams()": {
+                  "name": "testEndpointMissingRequiredRequestParams",
+                  "description": "Expected: ERROR",
+                  "lineNumber": 30,
+                  "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient3.java#30"
+                },
+                "testEndpointMatchRequestParams(boolean)": {
+                  "name": "testEndpointMatchRequestParams",
+                  "description": "Expected: NOTHING",
+                  "parameters": [
+                    "boolean"
+                  ],
+                  "lineNumber": 24,
+                  "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient3.java#24"
+                },
+                "testEndpointMismatchTypeRequestParams(String)": {
+                  "name": "testEndpointMismatchTypeRequestParams",
+                  "description": "Expected: WARNING",
+                  "parameters": [
+                    "String"
+                  ],
+                  "lineNumber": 42,
+                  "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient3.java#42"
+                },
+                "testEndpointMatchRequiredRequestParams(boolean)": {
+                  "name": "testEndpointMatchRequiredRequestParams",
+                  "description": "Expected: NOTHING",
+                  "parameters": [
+                    "boolean"
+                  ],
+                  "lineNumber": 18,
+                  "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient3.java#18"
+                },
+                "testEndpointMissingNotRequiredRequestParams()": {
+                  "name": "testEndpointMissingNotRequiredRequestParams",
+                  "description": "Expected: NOTHING",
+                  "lineNumber": 36,
+                  "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient3.java#36"
+                }
+              },
+              "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient3.java"
+            },
+            "method": {
+              "name": "testEndpointMissingNotRequiredRequestParams",
+              "description": "Expected: NOTHING",
+              "lineNumber": 36,
+              "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient3.java#36"
+            },
+            "description": "Expected: NOTHING",
+            "operationId": "testEndpointMissingNotRequiredRequestParams",
+            "consumes": [
+              "application/json"
+            ],
+            "produces": [
+              "application/json"
+            ],
+            "parameters": [],
+            "responses": {},
+            "path": "/api/v1/test3/endpoint4",
+            "requestMethod": "get"
+          }
+        },
+        "/api/v1/customers/{customerId}": {
+          "get": {
+            "controller": {
+              "$ref": "#/components/CustomerClient"
+            },
+            "method": {
+              "$ref": "#/components/CustomerClient/methods/getCustomer(Long)"
+            },
+            "description": "",
+            "operationId": "getCustomer",
+            "consumes": [
+              "application/json"
+            ],
+            "produces": [
+              "application/json"
+            ],
+            "parameters": [
+              {
+                "type": "integer",
+                "required": true,
+                "name": "customerId",
+                "in": "path"
+              }
+            ],
+            "responses": {
+              "default": {
+                "schema": {
+                  "$ref": "#/definitions/com.example.service.order.domain.Customer"
+                }
+              }
+            },
+            "path": "/api/v1/customers/{customerId}",
+            "requestMethod": "get",
+            "problems": [
+              {
+                "level": "error",
+                "message": "Missing query parameter 'name'"
+              }
+            ]
+          }
+        },
+        "/api/v1/test3/endpoint5": {
+          "get": {
+            "controller": {
+              "name": "com.example.service.order.client.TestClient3",
+              "type": "client",
+              "file": "com/example/service/order/client/TestClient3.java",
+              "description": "",
+              "authors": [
+                "Hermans"
+              ],
+              "annotations": {
+                "FeignClient": {
+                  "properties": {
+                    "name": "\"customer-service\""
+                  }
+                }
+              },
+              "methods": {
+                "testEndpointMissingRequiredRequestParams()": {
+                  "name": "testEndpointMissingRequiredRequestParams",
+                  "description": "Expected: ERROR",
+                  "lineNumber": 30,
+                  "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient3.java#30"
+                },
+                "testEndpointMatchRequestParams(boolean)": {
+                  "name": "testEndpointMatchRequestParams",
+                  "description": "Expected: NOTHING",
+                  "parameters": [
+                    "boolean"
+                  ],
+                  "lineNumber": 24,
+                  "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient3.java#24"
+                },
+                "testEndpointMismatchTypeRequestParams(String)": {
+                  "name": "testEndpointMismatchTypeRequestParams",
+                  "description": "Expected: WARNING",
+                  "parameters": [
+                    "String"
+                  ],
+                  "lineNumber": 42,
+                  "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient3.java#42"
+                },
+                "testEndpointMatchRequiredRequestParams(boolean)": {
+                  "name": "testEndpointMatchRequiredRequestParams",
+                  "description": "Expected: NOTHING",
+                  "parameters": [
+                    "boolean"
+                  ],
+                  "lineNumber": 18,
+                  "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient3.java#18"
+                },
+                "testEndpointMissingNotRequiredRequestParams()": {
+                  "name": "testEndpointMissingNotRequiredRequestParams",
+                  "description": "Expected: NOTHING",
+                  "lineNumber": 36,
+                  "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient3.java#36"
+                }
+              },
+              "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient3.java"
+            },
+            "method": {
+              "name": "testEndpointMismatchTypeRequestParams",
+              "description": "Expected: WARNING",
+              "parameters": [
+                "String"
+              ],
+              "lineNumber": 42,
+              "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient3.java#42"
+            },
+            "description": "Expected: WARNING",
+            "operationId": "testEndpointMismatchTypeRequestParams",
+            "consumes": [
+              "application/json"
+            ],
+            "produces": [
+              "application/json"
+            ],
+            "parameters": [
+              {
+                "type": "string",
+                "name": "a",
+                "in": "query"
+              }
+            ],
+            "responses": {},
+            "path": "/api/v1/test3/endpoint5",
+            "requestMethod": "get",
+            "problems": [
+              {
+                "level": "warning",
+                "message": "Type mismatches query parameter 'a', expected: 'boolean', found: 'string'"
+              }
+            ]
+          }
+        },
+        "/api/v1/test2/endpoint4/{someVar}": {
+          "get": {
+            "controller": {
+              "name": "com.example.service.order.client.TestClient2",
+              "type": "client",
+              "file": "com/example/service/order/client/TestClient2.java",
+              "description": "Test path matching with customer-service",
+              "authors": [
+                "Hermans"
+              ],
+              "annotations": {
+                "FeignClient": {
+                  "properties": {
+                    "name": "\"customer-service\""
+                  }
+                }
+              },
+              "methods": {
+                "testFullMatch()": {
+                  "name": "testFullMatch",
+                  "description": "Expected: NOTHING",
+                  "lineNumber": 49,
+                  "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient2.java#49"
+                },
+                "testMethodNotAllowed()": {
+                  "name": "testMethodNotAllowed",
+                  "description": "Expected: ERROR",
+                  "lineNumber": 25,
+                  "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient2.java#25"
+                },
+                "testEnpointDoesntExists()": {
+                  "name": "testEnpointDoesntExists",
+                  "description": "Expected: ERROR",
+                  "lineNumber": 19,
+                  "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient2.java#19"
+                },
+                "testParticalPathStaticMatch()": {
+                  "name": "testParticalPathStaticMatch",
+                  "description": "Expected: WARNING",
+                  "lineNumber": 37,
+                  "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient2.java#37"
+                },
+                "testMisMatchPathVar(String)": {
+                  "name": "testMisMatchPathVar",
+                  "description": "Expected: ERROR",
+                  "parameters": [
+                    "String"
+                  ],
+                  "lineNumber": 43,
+                  "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient2.java#43"
+                },
+                "testParticalPathVarMatch(String)": {
+                  "name": "testParticalPathVarMatch",
+                  "description": "Expected: WARNING",
+                  "parameters": [
+                    "String"
+                  ],
+                  "lineNumber": 31,
+                  "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient2.java#31"
+                }
+              },
+              "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient2.java"
+            },
+            "method": {
+              "name": "testMisMatchPathVar",
+              "description": "Expected: ERROR",
+              "parameters": [
+                "String"
+              ],
+              "lineNumber": 43,
+              "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient2.java#43"
+            },
+            "description": "Expected: ERROR",
+            "operationId": "testMisMatchPathVar",
+            "consumes": [
+              "application/json"
+            ],
+            "produces": [
+              "application/json"
+            ],
+            "parameters": [
+              {
+                "type": "string",
+                "required": true,
+                "name": "someVar",
+                "in": "path"
+              }
+            ],
+            "responses": {},
+            "path": "/api/v1/test2/endpoint4/{someVar}",
+            "requestMethod": "get",
+            "problems": [
+              {
+                "level": "warning",
+                "message": "Type mismatches path variable 'someVar', expected: integer, found: string",
+                "path": "com/example/service/order/client/TestClient2.java",
+                "package": "com.example.service.order.client",
+                "className": "TestClient2",
+                "lineNumber": 43
+              }
+            ]
+          }
+        },
+        "/api/v1/test2/endpoint5/someStatic": {
+          "get": {
+            "controller": {
+              "name": "com.example.service.order.client.TestClient2",
+              "type": "client",
+              "file": "com/example/service/order/client/TestClient2.java",
+              "description": "Test path matching with customer-service",
+              "authors": [
+                "Hermans"
+              ],
+              "annotations": {
+                "FeignClient": {
+                  "properties": {
+                    "name": "\"customer-service\""
+                  }
+                }
+              },
+              "methods": {
+                "testFullMatch()": {
+                  "name": "testFullMatch",
+                  "description": "Expected: NOTHING",
+                  "lineNumber": 49,
+                  "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient2.java#49"
+                },
+                "testMethodNotAllowed()": {
+                  "name": "testMethodNotAllowed",
+                  "description": "Expected: ERROR",
+                  "lineNumber": 25,
+                  "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient2.java#25"
+                },
+                "testEnpointDoesntExists()": {
+                  "name": "testEnpointDoesntExists",
+                  "description": "Expected: ERROR",
+                  "lineNumber": 19,
+                  "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient2.java#19"
+                },
+                "testParticalPathStaticMatch()": {
+                  "name": "testParticalPathStaticMatch",
+                  "description": "Expected: WARNING",
+                  "lineNumber": 37,
+                  "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient2.java#37"
+                },
+                "testMisMatchPathVar(String)": {
+                  "name": "testMisMatchPathVar",
+                  "description": "Expected: ERROR",
+                  "parameters": [
+                    "String"
+                  ],
+                  "lineNumber": 43,
+                  "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient2.java#43"
+                },
+                "testParticalPathVarMatch(String)": {
+                  "name": "testParticalPathVarMatch",
+                  "description": "Expected: WARNING",
+                  "parameters": [
+                    "String"
+                  ],
+                  "lineNumber": 31,
+                  "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient2.java#31"
+                }
+              },
+              "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient2.java"
+            },
+            "method": {
+              "name": "testFullMatch",
+              "description": "Expected: NOTHING",
+              "lineNumber": 49,
+              "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient2.java#49"
+            },
+            "description": "Expected: NOTHING",
+            "operationId": "testFullMatch",
+            "consumes": [
+              "application/json"
+            ],
+            "produces": [
+              "application/json"
+            ],
+            "parameters": [],
+            "responses": {},
+            "path": "/api/v1/test2/endpoint5/someStatic",
+            "requestMethod": "get"
+          }
+        },
+        "/api/v1/test3/endpoint1": {
+          "get": {
+            "controller": {
+              "name": "com.example.service.order.client.TestClient3",
+              "type": "client",
+              "file": "com/example/service/order/client/TestClient3.java",
+              "description": "",
+              "authors": [
+                "Hermans"
+              ],
+              "annotations": {
+                "FeignClient": {
+                  "properties": {
+                    "name": "\"customer-service\""
+                  }
+                }
+              },
+              "methods": {
+                "testEndpointMissingRequiredRequestParams()": {
+                  "name": "testEndpointMissingRequiredRequestParams",
+                  "description": "Expected: ERROR",
+                  "lineNumber": 30,
+                  "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient3.java#30"
+                },
+                "testEndpointMatchRequestParams(boolean)": {
+                  "name": "testEndpointMatchRequestParams",
+                  "description": "Expected: NOTHING",
+                  "parameters": [
+                    "boolean"
+                  ],
+                  "lineNumber": 24,
+                  "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient3.java#24"
+                },
+                "testEndpointMismatchTypeRequestParams(String)": {
+                  "name": "testEndpointMismatchTypeRequestParams",
+                  "description": "Expected: WARNING",
+                  "parameters": [
+                    "String"
+                  ],
+                  "lineNumber": 42,
+                  "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient3.java#42"
+                },
+                "testEndpointMatchRequiredRequestParams(boolean)": {
+                  "name": "testEndpointMatchRequiredRequestParams",
+                  "description": "Expected: NOTHING",
+                  "parameters": [
+                    "boolean"
+                  ],
+                  "lineNumber": 18,
+                  "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient3.java#18"
+                },
+                "testEndpointMissingNotRequiredRequestParams()": {
+                  "name": "testEndpointMissingNotRequiredRequestParams",
+                  "description": "Expected: NOTHING",
+                  "lineNumber": 36,
+                  "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient3.java#36"
+                }
+              },
+              "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient3.java"
+            },
+            "method": {
+              "name": "testEndpointMatchRequiredRequestParams",
+              "description": "Expected: NOTHING",
+              "parameters": [
+                "boolean"
+              ],
+              "lineNumber": 18,
+              "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient3.java#18"
+            },
+            "description": "Expected: NOTHING",
+            "operationId": "testEndpointMatchRequiredRequestParams",
+            "consumes": [
+              "application/json"
+            ],
+            "produces": [
+              "application/json"
+            ],
+            "parameters": [
+              {
+                "type": "boolean",
+                "name": "a",
+                "in": "query"
+              }
+            ],
+            "responses": {},
+            "path": "/api/v1/test3/endpoint1",
+            "requestMethod": "get"
+          }
+        },
+        "/api/v1/test2/does-not-exists": {
+          "get": {
+            "controller": {
+              "name": "com.example.service.order.client.TestClient2",
+              "type": "client",
+              "file": "com/example/service/order/client/TestClient2.java",
+              "description": "Test path matching with customer-service",
+              "authors": [
+                "Hermans"
+              ],
+              "annotations": {
+                "FeignClient": {
+                  "properties": {
+                    "name": "\"customer-service\""
+                  }
+                }
+              },
+              "methods": {
+                "testFullMatch()": {
+                  "name": "testFullMatch",
+                  "description": "Expected: NOTHING",
+                  "lineNumber": 49,
+                  "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient2.java#49"
+                },
+                "testMethodNotAllowed()": {
+                  "name": "testMethodNotAllowed",
+                  "description": "Expected: ERROR",
+                  "lineNumber": 25,
+                  "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient2.java#25"
+                },
+                "testEnpointDoesntExists()": {
+                  "name": "testEnpointDoesntExists",
+                  "description": "Expected: ERROR",
+                  "lineNumber": 19,
+                  "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient2.java#19"
+                },
+                "testParticalPathStaticMatch()": {
+                  "name": "testParticalPathStaticMatch",
+                  "description": "Expected: WARNING",
+                  "lineNumber": 37,
+                  "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient2.java#37"
+                },
+                "testMisMatchPathVar(String)": {
+                  "name": "testMisMatchPathVar",
+                  "description": "Expected: ERROR",
+                  "parameters": [
+                    "String"
+                  ],
+                  "lineNumber": 43,
+                  "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient2.java#43"
+                },
+                "testParticalPathVarMatch(String)": {
+                  "name": "testParticalPathVarMatch",
+                  "description": "Expected: WARNING",
+                  "parameters": [
+                    "String"
+                  ],
+                  "lineNumber": 31,
+                  "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient2.java#31"
+                }
+              },
+              "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient2.java"
+            },
+            "method": {
+              "name": "testEnpointDoesntExists",
+              "description": "Expected: ERROR",
+              "lineNumber": 19,
+              "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient2.java#19"
+            },
+            "description": "Expected: ERROR",
+            "operationId": "testEnpointDoesntExists",
+            "consumes": [
+              "application/json"
+            ],
+            "produces": [
+              "application/json"
+            ],
+            "parameters": [],
+            "responses": {},
+            "path": "/api/v1/test2/does-not-exists",
+            "requestMethod": "get",
+            "problems": [
+              {
+                "level": "error",
+                "message": "No mapping for 'get /api/v1/test2/does-not-exists' on customer-service",
+                "path": "com/example/service/order/client/TestClient2.java",
+                "package": "com.example.service.order.client",
+                "className": "TestClient2",
+                "lineNumber": 19
+              }
+            ]
+          }
+        },
+        "/api/v1/test3/endpoint2": {
+          "get": {
+            "controller": {
+              "name": "com.example.service.order.client.TestClient3",
+              "type": "client",
+              "file": "com/example/service/order/client/TestClient3.java",
+              "description": "",
+              "authors": [
+                "Hermans"
+              ],
+              "annotations": {
+                "FeignClient": {
+                  "properties": {
+                    "name": "\"customer-service\""
+                  }
+                }
+              },
+              "methods": {
+                "testEndpointMissingRequiredRequestParams()": {
+                  "name": "testEndpointMissingRequiredRequestParams",
+                  "description": "Expected: ERROR",
+                  "lineNumber": 30,
+                  "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient3.java#30"
+                },
+                "testEndpointMatchRequestParams(boolean)": {
+                  "name": "testEndpointMatchRequestParams",
+                  "description": "Expected: NOTHING",
+                  "parameters": [
+                    "boolean"
+                  ],
+                  "lineNumber": 24,
+                  "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient3.java#24"
+                },
+                "testEndpointMismatchTypeRequestParams(String)": {
+                  "name": "testEndpointMismatchTypeRequestParams",
+                  "description": "Expected: WARNING",
+                  "parameters": [
+                    "String"
+                  ],
+                  "lineNumber": 42,
+                  "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient3.java#42"
+                },
+                "testEndpointMatchRequiredRequestParams(boolean)": {
+                  "name": "testEndpointMatchRequiredRequestParams",
+                  "description": "Expected: NOTHING",
+                  "parameters": [
+                    "boolean"
+                  ],
+                  "lineNumber": 18,
+                  "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient3.java#18"
+                },
+                "testEndpointMissingNotRequiredRequestParams()": {
+                  "name": "testEndpointMissingNotRequiredRequestParams",
+                  "description": "Expected: NOTHING",
+                  "lineNumber": 36,
+                  "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient3.java#36"
+                }
+              },
+              "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient3.java"
+            },
+            "method": {
+              "name": "testEndpointMatchRequestParams",
+              "description": "Expected: NOTHING",
+              "parameters": [
+                "boolean"
+              ],
+              "lineNumber": 24,
+              "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient3.java#24"
+            },
+            "description": "Expected: NOTHING",
+            "operationId": "testEndpointMatchRequestParams",
+            "consumes": [
+              "application/json"
+            ],
+            "produces": [
+              "application/json"
+            ],
+            "parameters": [
+              {
+                "type": "boolean",
+                "name": "a",
+                "in": "query"
+              }
+            ],
+            "responses": {},
+            "path": "/api/v1/test3/endpoint2",
+            "requestMethod": "get"
+          }
+        },
+        "/api/v1/test2/endpoint2/{someVar}": {
+          "get": {
+            "controller": {
+              "name": "com.example.service.order.client.TestClient2",
+              "type": "client",
+              "file": "com/example/service/order/client/TestClient2.java",
+              "description": "Test path matching with customer-service",
+              "authors": [
+                "Hermans"
+              ],
+              "annotations": {
+                "FeignClient": {
+                  "properties": {
+                    "name": "\"customer-service\""
+                  }
+                }
+              },
+              "methods": {
+                "testFullMatch()": {
+                  "name": "testFullMatch",
+                  "description": "Expected: NOTHING",
+                  "lineNumber": 49,
+                  "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient2.java#49"
+                },
+                "testMethodNotAllowed()": {
+                  "name": "testMethodNotAllowed",
+                  "description": "Expected: ERROR",
+                  "lineNumber": 25,
+                  "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient2.java#25"
+                },
+                "testEnpointDoesntExists()": {
+                  "name": "testEnpointDoesntExists",
+                  "description": "Expected: ERROR",
+                  "lineNumber": 19,
+                  "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient2.java#19"
+                },
+                "testParticalPathStaticMatch()": {
+                  "name": "testParticalPathStaticMatch",
+                  "description": "Expected: WARNING",
+                  "lineNumber": 37,
+                  "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient2.java#37"
+                },
+                "testMisMatchPathVar(String)": {
+                  "name": "testMisMatchPathVar",
+                  "description": "Expected: ERROR",
+                  "parameters": [
+                    "String"
+                  ],
+                  "lineNumber": 43,
+                  "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient2.java#43"
+                },
+                "testParticalPathVarMatch(String)": {
+                  "name": "testParticalPathVarMatch",
+                  "description": "Expected: WARNING",
+                  "parameters": [
+                    "String"
+                  ],
+                  "lineNumber": 31,
+                  "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient2.java#31"
+                }
+              },
+              "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient2.java"
+            },
+            "method": {
+              "name": "testParticalPathVarMatch",
+              "description": "Expected: WARNING",
+              "parameters": [
+                "String"
+              ],
+              "lineNumber": 31,
+              "sourceLink": "https://stash.maxxton.com/projects//repos/order-service/browse/com/example/service/order/client/TestClient2.java#31"
+            },
+            "description": "Expected: WARNING",
+            "operationId": "testParticalPathVarMatch",
+            "consumes": [
+              "application/json"
+            ],
+            "produces": [
+              "application/json"
+            ],
+            "parameters": [
+              {
+                "type": "string",
+                "required": true,
+                "name": "someVar",
+                "in": "path"
+              }
+            ],
+            "responses": {},
+            "path": "/api/v1/test2/endpoint2/{someVar}",
+            "requestMethod": "get",
+            "problems": [
+              {
+                "level": "warning",
+                "message": "Path variable(s) might not match for 'get /api/v1/test2/endpoint2/someStatic' on customer-service",
+                "path": "com/example/service/order/client/TestClient2.java",
+                "package": "com.example.service.order.client",
+                "className": "TestClient2",
+                "lineNumber": 31
+              }
+            ]
+          }
+        }
+      },
+      "component": {
+        "$ref": "#/components/CustomerClient"
+      },
+      "latestVersion": "0.0.2",
+      "version": "0.0.2",
+      "group": "default"
+    }
+  },
+  "problemCount": 9,
+  "swagger": "2.0"
+}

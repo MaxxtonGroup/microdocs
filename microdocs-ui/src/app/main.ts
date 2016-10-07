@@ -9,11 +9,11 @@ import { APP_BASE_HREF, LocationStrategy, HashLocationStrategy } from "@angular/
 import { MXT_HELPERS } from "@maxxton/components/helpers";
 
 import { App } from "./app";
-import { NewyseConfig } from "./../config/config";
+import { MicroDocsConfig } from "./../config/config";
 import { MicrodocsRoutes } from "../routes/micrdocs.routes";
 import { ProjectService } from "../services/project.service";
 
-if ( NewyseConfig.isProduction ) {
+if ( MicroDocsConfig.isProduction ) {
   enableProdMode();
 }
 
@@ -30,6 +30,6 @@ bootstrap( App, [
   //   deps: [ Http ]
   // } ),
   provideRouter( MicrodocsRoutes ),
-  provide( APP_BASE_HREF, { useValue: NewyseConfig.basepath } ),
+  provide( APP_BASE_HREF, { useValue: MicroDocsConfig.basePath } ),
   provide(LocationStrategy, {useClass: HashLocationStrategy})
 ] ).catch( err => console.error( err ) );

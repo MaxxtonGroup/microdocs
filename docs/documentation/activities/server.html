@@ -1,24 +1,107 @@
 <template activity="server">
-    <article class="selectable">
-        <h1 class="theme-fg-color">Hang on!</h1>
-        We are working hard to write documentation for this page.
-    </article>
+  <article class="selectable">
+    <h1 class="theme-fg-color">MicroDocs Server</h1>
+    <div class="text">
+      <p>
+        MicroDocs core concept is the use of one central place to store the definitions of all projects. The MicroDocs
+        server can keep track of different version of projects and organise projects in groups. With everything in one
+        place, it is easy to keep the overview and enables you to do al lot of fancy stuff with your RestAPI
+        definitions.
+      </p>
+    </div>
+    <h2 class="theme-fg-color">API Explorer</h2>
+    <div class="text">
+      <p>
+        The MicroDocs server comes with a user friendly web interface to explore the definitions of all RestAPI
+        endpoints. The interface also shows an overview of all the projects and their dependencies with other projects.
+      </p>
+    </div>
+    <h2 class="theme-fg-color">Setup with Docker</h2>
+    <div class="text">
+      <p>
+        Docker is a virualisation tool, which makes it easy to run applications. To get started with Docker see this
+        <a href="https://www.docker.com/">link</a>.
+      </p>
+      <p>
+        If you have Docker up and running, you can start the MicroDocs server with the following command:
+        <code class="block">
+          <span class="code-block">$ docker run --name microdocs -p 3000:3000 -d maxxton/microdocs</span>
+        </code>
+      <ul>
+        <li>The <code>--name microdocs</code> argument defines the name of the container.</li>
+        <li><code>-p 3000:3000</code> sets the port mapping from 3000 on your host to 3000 inside the container.</li>
+        <li>You can also adds mapping of the storage folder inside the MicroDocs server by adding the <code>-v
+          /my/data:/microdocs/microdocs-server/data</code> argument where <code>/my/data</code> is the folder on your
+          host to store the data and <code>/microdocs/microdocs-server/data</code> is the folder inside the container
+          where the data is located.
+        </li>
+      </ul>
+      </p>
+    </div>
+    <h3 class="theme-fg-color">Configuration</h3>
+    <div class="text">
+      <p>
+        You can alter the default configurations of the MicroDocs server, but you most likely don’t wanna do this.
+        Everything is configured correctly to run in Docker.
+      </p>
+      <p>
+        But in case you do like to change it, the configuration file can be found in: <code>/microdocs/microdocs-server/config.yml</code>.
+        In here you can changes thinks like server port, data folder or where to find the static html for the frontend.
+      </p>
+    </div>
+    <h3 class="theme-fg-color">Security</h3>
+    <div class="text">
+      <p>
+        The MicroDocs server doesn’t have build in support for authentication and SSL (https). The best way to
+        accomplisch this is to use a proxy in front of the MicroDocs server.
+      </p>
+      <p>
+        For example you run the MicroDocs server on port 3001 and blocks the port from outside in your firewall. Next
+        you use a proxy server like Apache or Ngnix. Next you can forward port 3000 from the outside to 3001 of the
+        MicroDocs server. Then you can configure the proxy to use authentication and SSL.
+      </p>
+    </div>
+    <h2 class="theme-fg-color">Problem detection</h2>
+    <div class="text">
+      <p>
+        The MicroDocs definition has support for defining Rest clients. So service A has a client for communicating with
+        service B. With these definitions MicroDocs can detect if there are breaking changes between a client and the
+        actual endpoint. It checks for:
+      <ul>
+        <li>Missing projects</li>
+        <li>Missing endpoints</li>
+        <li>Missing required parameters</li>
+        <li>Incompatible request body</li>
+        <li>Incompatible response body</li>
+      </ul>
+      </p>
+    </div>
+    <h2 class="theme-fg-color">Environments</h2>
+    <div class="text">
+      <p>
+        In projects where you have different environments like development, staging and production, it is most likely
+        that each environment is running different versions. To make things clear, you can publish project definitions
+        to each environment. So you keep track of what is running where. And this makes it easier and more clear to
+        detect problems per environment.
+      </p>
+    </div>
+  </article>
 </template>
 <script>
-    app.activity("server", function () {
+  app.activity("server", function () {
 
-        this.title = "Server";
-        this.icon = "mdi-file-cloud-done";
-        this.hOptions = {size: "medium"};
+    this.title = "Server";
+    this.icon = "mdi-file-cloud-done";
+    this.hOptions = {size: "medium"};
 
-        this.onCreate = function () {
-            setTimeout(function () {
-                app.setTheme("blue-gray");
-            }, 20);
-        };
+    this.onCreate = function () {
+      setTimeout(function () {
+        app.setTheme("blue-gray");
+      }, 20);
+    };
 
-        this.onDestroy = function () {
-            app.setTheme(app.color);
-        };
-    });
+    this.onDestroy = function () {
+      app.setTheme(app.color);
+    };
+  });
 </script>
