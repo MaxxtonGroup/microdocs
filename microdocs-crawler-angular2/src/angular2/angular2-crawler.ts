@@ -10,7 +10,7 @@ import {
 } from 'microdocs-core-ts/dist/domain/component/component-type.model';
 import {ReflectionKind, ContainerReflection, DeclarationReflection, ReferenceType} from "typedoc/lib/models";
 import {ClientCollector} from "./client-collector";
-import {isSubClassOf} from "../helpers/crawler.helper";
+import * as helper from "../helpers/crawler.helper";
 
 export class Angular2Crawler extends Crawler {
 
@@ -28,19 +28,11 @@ export class Angular2Crawler extends Crawler {
   }
 
   private isClient(classReflection: ContainerReflection): boolean {
-    return isSubClassOf(classReflection, "RestClient") && this.isService(classReflection);
+    return helper.isSubClassOf(classReflection, "RestClient") && this.isService(classReflection);
   }
 
   private isService(classReflection: ContainerReflection): boolean {
-    if (classReflection.decorators) {
-      for (var i = 0; i < classReflection.decorators.length; i++) {
-        switch (classReflection.decorators[i].name) {
-          case 'Injectable':
-            return true;
-        }
-      }
-    }
-    return false;
+    return helper.hasDecorator(classReflection, 'Injectable');
   }
 
 }
