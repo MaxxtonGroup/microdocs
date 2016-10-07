@@ -1,16 +1,15 @@
 {
   "compilerOptions": {
-    "target": "ES5",
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "sourceMap": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "declaration": true,
-    "removeComments": false,
-    "noImplicitAny": true,
-    "suppressImplicitAnyIndexErrors": true,
-    "isolatedModules": false
+        "module": "commonjs",
+        "target": "es5",
+        "noImplicitAny": false,
+        "outDir": ".",
+        "rootDir": ".",
+        "declaration": true,
+        "removeComments": false,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "sourceMap": true
   },
   "exclude": [
     "./node_modules",

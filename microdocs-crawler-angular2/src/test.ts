@@ -1,11 +1,12 @@
-/**
- * Documentation for C
- */
-export class C {
-  /**
-   * constructor documentation
-   * @param a my parameter documentation
-   * @param b another parameter documentation
-   */
-  constructor(a: string, b: C) { }
-}
+
+import {TypescriptCrawler} from "./typescript-crawler";
+
+var sources = [
+  'C:\\Users\\hermans.s.MAXXTONBV\\projects\\maxxton-frontend\\services-library\\src\\maxxton-services.ts',
+  'C:\\Users\\hermans.s.MAXXTONBV\\projects\\maxxton-frontend\\services-library\\src\\services\\index.ts'
+];
+
+var crawler = new TypescriptCrawler();
+var project = crawler.crawl(sources);
+
+console.info(JSON.stringify(project, undefined, 2));

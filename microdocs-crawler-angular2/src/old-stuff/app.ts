@@ -1,6 +1,7 @@
-/// <reference path="../typings/index.d.ts" />
+/// <reference path="../../typings/index.d.ts" />
 import * as ts from "typescript";
 import * as fs from "fs";
+import Declaration = ts.Declaration;
 
 interface DocEntry {
   name?: string,
@@ -29,8 +30,8 @@ function generateDocumentation(fileNames: string[], options: ts.CompilerOptions)
   }
 
   // print out the doc
-  console.info(JSON.stringify(output, undefined, 4));
-  fs.writeFileSync("classes.json", JSON.stringify(output, undefined, 4));
+  // console.info(JSON.stringify(output, censor(output), 4));
+  fs.writeFileSync("classes.json", JSON.stringify(output, censor(output), 4));
 
   return;
 
@@ -43,10 +44,10 @@ function generateDocumentation(fileNames: string[], options: ts.CompilerOptions)
     if(symbol == undefined){
       return;
     }
-    console.info(node.kind + ": " + symbol.getName());
     if (node.kind === ts.SyntaxKind.ClassDeclaration || node.kind === ts.SyntaxKind.ModuleBlock) {
       // This is a top level class, get its symbol
       output.push(serializeClass(symbol));
+      output.push(symbol);
       // No need to walk any further, class expressions/inner declarations
       // cannot be exported
     }
@@ -72,7 +73,29 @@ function generateDocumentation(fileNames: string[], options: ts.CompilerOptions)
     // Get the construct signatures
     let constructorType = checker.getTypeOfSymbolAtLocation(symbol, symbol.valueDeclaration);
     details.constructors = constructorType.getConstructSignatures().map(serializeSignature);
+
+    if(symbol.declarations){
+      symbol.declarations.forEach(declaration => {
+        if(declaration['members']){
+          declaration['members'].forEach(member => {
+            if(member.nextContainer) {
+              serializeMember(member.nextContainer);
+            }
+          });
+        }
+      });
+    }
     return details;
+  }
+
+  function serializeMember(member:any){
+    if(member.name){
+      console.info(member.name.text + " Found!");
+    }
+
+    if(member.nextContainer) {
+      serializeMember(member.nextContainer);
+    }
   }
 
   /** Serialize a signature (call or construct) */
@@ -82,6 +105,23 @@ function generateDocumentation(fileNames: string[], options: ts.CompilerOptions)
       returnType: checker.typeToString(signature.getReturnType()),
       documentation: ts.displayPartsToString(signature.getDocumentationComment())
     };
+  }
+}
+
+function censor(censor) {
+  var i = 0;
+  var cache = [];
+
+  return function(key, value) {
+    if (typeof value === 'object' && value !== null) {
+      if (cache.indexOf(value) !== -1) {
+        // Circular reference found, discard key
+        return;
+      }
+      // Store value in our collection
+      cache.push(value);
+    }
+    return value;
   }
 }
 

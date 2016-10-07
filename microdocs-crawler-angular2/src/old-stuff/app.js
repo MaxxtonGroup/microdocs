@@ -1,5 +1,5 @@
-/// <reference path="../typings/index.d.ts" />
 "use strict";
+/// <reference path="../typings/index.d.ts" />
 var ts = require("typescript");
 var fs = require("fs");
 ;
@@ -17,42 +17,22 @@ function generateDocumentation(fileNames, options) {
         ts.forEachChild(sourceFile, visit);
     }
     // print out the doc
-    fs.writeFileSync("classes.json", JSON.stringify(output, undefined, 4));
+    // console.info(JSON.stringify(output, censor(output), 4));
+    fs.writeFileSync("classes.json", JSON.stringify(output, censor(output), 4));
     return;
     /** visit nodes finding exported classes */
     function visit(node) {
-        // Only consider exported nodes
-        if (node.name == undefined || node.name.kind == undefined) {
+        if (node == undefined || node.name == undefined) {
             return;
         }
         var symbol = checker.getSymbolAtLocation(node.name);
         if (symbol == undefined) {
             return;
         }
-        console.info(symbol.getName());
-        if (node.kind == 217 /* ModuleBlock */) {
-            // if(symbol['parent'] != undefined){//} && symbol['parent']['SymbolObject'] != undefined && symbol['parent']['SymbolObject']['name'] != undefined){
-            // var filename:string = symbol['parent']['SymbolObject']['name'];
-            // filename = filename.replace(new RegExp("\"", 'g'), '');
-            // if(filename.indexOf('C:/Users/hermans.s.MAXXTONBV/projects/maxxton-frontend/services-library/src') == 0){
+        if (node.kind === 212 /* ClassDeclaration */ || node.kind === 217 /* ModuleBlock */) {
             // This is a top level class, get its symbol
-            var cache = [];
-            // fs.writeFileSync("output/" + symbol.getName() + ".json", JSON.stringify(symbol, function (key, value) {
-            //   if (typeof value === 'object' && value !== null) {
-            //     if (cache.indexOf(value) !== -1) {
-            //       // Circular reference found, discard key
-            //       return;
-            //     }
-            //     // Store value in our collection
-            //     cache.push(value);
-            //   }
-            //   return value;
-            // }, 2));
-            if (symbol.declarations != undefined && symbol.declarations[0] != undefined && symbol.declarations[0].parent != undefined && symbol.declarations[0].parent.getSourceFile() != undefined) {
-                if (symbol.declarations[0].parent.getSourceFile().fileName.indexOf('C:/Users/hermans.s.MAXXTONBV/projects/maxxton-frontend/services-library/src') == 0) {
-                    output.push(serializeClass(symbol));
-                }
-            }
+            output.push(serializeClass(symbol));
+            output.push(symbol);
         }
         else if (node.kind === 216 /* ModuleDeclaration */) {
             // This is a namespace, visit its children
@@ -73,7 +53,27 @@ function generateDocumentation(fileNames, options) {
         // Get the construct signatures
         var constructorType = checker.getTypeOfSymbolAtLocation(symbol, symbol.valueDeclaration);
         details.constructors = constructorType.getConstructSignatures().map(serializeSignature);
+        if (symbol.declarations) {
+            symbol.declarations.forEach(function (declaration) {
+                if (declaration['members']) {
+                    declaration['members'].forEach(function (member) {
+                        if (member.nextContainer) {
+                            serializeMember(member.nextContainer);
+                        }
+                    });
+                }
+            });
+        }
         return details;
+    }
+    function serializeMember(member) {
+        if (member.name) {
+            console.info(member.name.text + " Found!");
+            console.info(JSON.stringify(serializeSignature(member)), undefined, 4);
+        }
+        if (member.nextContainer) {
+            serializeMember(member.nextContainer);
+        }
     }
     /** Serialize a signature (call or construct) */
     function serializeSignature(signature) {
@@ -83,11 +83,23 @@ function generateDocumentation(fileNames, options) {
             documentation: ts.displayPartsToString(signature.getDocumentationComment())
         };
     }
-    /** True if this is visible outside this file, false otherwise */
-    function isNodeExported(node) {
-        return (node.flags & 1 /* Export */) !== 0 || (node.parent && node.parent.kind === 246 /* SourceFile */);
-    }
 }
-generateDocumentation(process.argv.slice(2), {
+function censor(censor) {
+    var i = 0;
+    var cache = [];
+    return function (key, value) {
+        if (typeof value === 'object' && value !== null) {
+            if (cache.indexOf(value) !== -1) {
+                // Circular reference found, discard key
+                return;
+            }
+            // Store value in our collection
+            cache.push(value);
+        }
+        return value;
+    };
+}
+var sourcefile = ["test.ts"];
+generateDocumentation(sourcefile, {
     target: 1 /* ES5 */, module: 1 /* CommonJS */
 });
