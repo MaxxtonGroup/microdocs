@@ -4,9 +4,8 @@ import {Observable} from "rxjs/Observable";
 import {Subject} from "rxjs/Subject";
 
 import {TreeNode, Project, Environments} from "microdocs-core-ts/dist/domain";
-import {NewyseConfig as config} from "../config/config";
+import {MicroDocsConfig as config} from "../config/config";
 import {SchemaHelper} from "microdocs-core-ts/dist/helpers/schema/schema.helper";
-import {PreferenceService} from "@maxxton/components/services";
 
 @Injectable()
 export class ProjectService {
@@ -20,23 +19,21 @@ export class ProjectService {
     if(env == undefined){
       env = this.getSelectedEnv();
     }
-    var envParam = (env != undefined ? "?env=" + env : "");
-
-    var url = config.apipath + "/projects" + envParam;
-    return this.http.get(url).map(resp => {
-      var json = resp.json();
-      return TreeNode.link(json);
-    });
+    if(env) {
+      return this.http.get(this.getApiUrl('/projects', {env: env})).map(resp => {
+        var json = resp.json();
+        return TreeNode.link(json);
+      });
+    }
+    return null;
   }
 
   public getProject(name: string, version?: string, env?: string): Observable<Project> {
-    var versionParam = (version != undefined ? "&version=" + version : "");
     if(env == undefined){
       env = this.getSelectedEnv();
     }
-    var envParam = (env != undefined ? "&env=" + env : "");
 
-    return this.http.get(config.apipath + '/projects/' + name + '?' + versionParam + envParam).map(resp => {
+    return this.http.get(this.getApiUrl('/projects/' + name, {version: version, env: env})).map(resp => {
       var json = resp.json();
 
       // resolve references
@@ -55,7 +52,30 @@ export class ProjectService {
   }
 
   public getEnvs(): Observable<{[key:string]:Environments}> {
-    return this.http.get(config.apipath + "/envs").map(resp => resp.json());
+    return this.http.get(this.getApiUrl("/envs")).map(resp => resp.json());
+  }
+  
+  private getApiUrl(path:string, params?:{[key: string]: any}){
+    var fullPath = config.apiPath + path;
+    if(config.isStandAlone){
+      if(params) {
+        Object.keys(params).sort().filter(key => params[key]).forEach(key => fullPath += "-" + params[key]);
+      }
+      fullPath += '.json';
+    }else{
+      if(params) {
+        var first = true;
+        Object.keys(params).sort().filter(key => params[key]).forEach(key => {
+          if(first){
+            first = false;
+            fullPath += "?" + key + '=' + params[key];
+          }else {
+            fullPath += "&" + key + '=' + params[key];
+          }
+        });
+      }
+    }
+    return fullPath;
   }
 
 
