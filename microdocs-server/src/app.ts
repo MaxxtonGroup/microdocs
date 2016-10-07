@@ -7,6 +7,7 @@ import * as helmet from "helmet";
 import * as path from "path";
 import * as logger from 'morgan';
 import * as middleware from 'swagger-express-middleware';
+import * as exphbs from 'express-handlebars';
 
 import {Config} from "./config";
 import {BaseRoute} from "./routes/route";
@@ -15,6 +16,7 @@ import {ProjectRoute} from "./routes/project.route";
 import {ReindexRoute} from "./routes/reindex.route";
 import {CheckRoute} from "./routes/check.route";
 import {PublishRoute} from "./routes/publish.route";
+import {EnvRoute} from "./routes/env.route";
 
 /**
  * The server.
@@ -72,6 +74,15 @@ class Server {
     //mount query string parser
     this.app.use(bodyParser.urlencoded({extended: true}));
 
+    //mount view engine
+    var viewFolder = "dist/views";
+    if (Config.has("viewFolder")) {
+      viewFolder = Config.get("viewFolder");
+    }
+    this.app.engine('handlebars', exphbs());
+    this.app.set('views', path.join(__dirname, viewFolder));
+    this.app.set('view engine', 'handlebars');
+
     //add static paths
     var staticFolder = "../microdocs-ui";
     if (Config.has("staticFolder")) {
@@ -112,7 +123,8 @@ class Server {
       new ProjectRoute(),
       new ReindexRoute(),
       new CheckRoute(),
-      new PublishRoute()
+      new PublishRoute(),
+      new EnvRoute()
     ];
 
     //define basePath

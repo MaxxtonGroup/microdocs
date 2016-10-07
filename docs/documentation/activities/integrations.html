@@ -1,0 +1,24 @@
+<template activity="integrations">
+    <article class="selectable">
+        <h1 class="theme-fg-color">Hang on!</h1>
+        We are working hard to write documentation for this page.
+    </article>
+</template>
+<script>
+    app.activity("integrations", function () {
+
+        this.title = "Integrations";
+        this.icon = "mdi-action-extension";
+        this.hOptions = {size: "medium"};
+
+        this.onCreate = function () {
+            setTimeout(function () {
+                app.setTheme("orange");
+            }, 20);
+        };
+
+        this.onDestroy = function () {
+            app.setTheme(app.color);
+        };
+    });
+</script>

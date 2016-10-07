@@ -17,8 +17,6 @@ export class ModelPanel {
 
   @Input()
   schema:Schema;
-  @Input()
-  sourceLink:string;
 
   example:{};
 

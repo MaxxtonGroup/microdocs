@@ -1,6 +1,7 @@
 /// <reference path="../_all.d.ts" />
 
-import {RequestHandler} from 'express';
+import {RequestHandler, Request} from 'express';
+import {ProjectSettingsJsonRepository} from "../repositories/json/project-settings-json.repo";
 
 /**
  * Base route
@@ -39,6 +40,27 @@ export class BaseRoute {
 
   public upload(): boolean{
     return this.mapping.upload;
+  }
+
+  protected static getEnv(req:Request):string{
+    var env = req.query.env;
+    var envs = ProjectSettingsJsonRepository.bootstrap().getEnvs();
+
+    if(env == undefined){
+      for(var envName in envs){
+        if(envs[envName].default){
+          return envName.toLowerCase();
+        }
+      }
+      return Object.keys(envs)[0].toLowerCase();
+    }else{
+      for(var envName in envs){
+        if(envName.toLowerCase() == env.toLowerCase()){
+          return envName.toLowerCase();
+        }
+      }
+    }
+    return null;
   }
 
 }

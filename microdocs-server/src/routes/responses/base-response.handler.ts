@@ -6,15 +6,15 @@ import {ERROR, WARNING} from "microdocs-core-ts/dist/domain/problem/problem-leve
 
 export class BaseResponseHandler {
 
-  handleProjects(req: express.Request, res: express.Response, treeNode: TreeNode) {
+  handleProjects(req: express.Request, res: express.Response, treeNode: TreeNode, env:string) {
     this.response(req, res, 200, treeNode.unlink());
   }
 
-  handleProject(req: express.Request, res: express.Response, project: Project) {
+  handleProject(req: express.Request, res: express.Response, project: Project, env:string) {
     this.response(req, res, 200, project);
   }
 
-  handleProblems(req: express.Request, res: express.Response, problems: Problem[]) {
+  handleProblems(req: express.Request, res: express.Response, problems: Problem[], env:string) {
     var object = {problems: problems};
     if (problems.filter(problem => problem.level == ERROR || problem.level == WARNING).length == 0){
       object['status'] = 'ok';

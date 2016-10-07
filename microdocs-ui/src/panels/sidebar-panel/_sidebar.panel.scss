@@ -9,13 +9,12 @@ sidebar-component .sidebar {
 sidebar-component {
   //@include grid-size(expand);
 
-  background-color: #fcfcfc;
-  border-right: 0.065rem solid $dividers-color;
+  background-color: white;
   max-width: 4rem;
   width: 100%;
   @include grid-block;
   @include grid-orient(vertical);
-  @include elevation(4);
+  box-shadow: rgba(0, 0, 0, 0.227451) 0px 6px 10px 0px, rgba(0, 0, 0, 0.188235) 0px 10px 30px 0px;
   min-height: 100vh;
 
   .change-width {
@@ -25,8 +24,21 @@ sidebar-component {
     background-color: $gray-light;
 
     span.icon {
+      position: relative;
+      top: -3px;
       font-size: 2rem;
     }
+  }
+
+  a.microdocs-link{
+    display: none;
+    position: absolute;
+    bottom: 3px;
+    left: 10px;
+    font-size: 14px;
+  }
+  a.microdocs-link:hover{
+    text-decoration: underline;
   }
 
   .action-sheet-container {
@@ -35,15 +47,101 @@ sidebar-component {
   }
 
   a.logo {
-    background: $white url("../images/microdocs.png") no-repeat 1rem center;
-    background-size: auto 2.4rem;
-    background-position: 20px center;
     height: 4rem;
+    position: relative;
+    display: block;
+    background-color: #2196F3;
+    padding-top: 24px;
+    padding-bottom: 64px;
+
+    h1 {
+      display: none;
+      color: white;
+      text-align: center;
+      font-size: 24px;
+    }
+
+    div.logo-left, div.logo-right {
+      position: absolute;
+      height: 50px;
+      width: 50px;
+      background-image: url(/assets/images/microdocs-white.png);
+      background-size: contain;
+    }
+
+    div.logo-left {
+      bottom: 16px;
+      left: 2px;
+      transition: ease 0.2s;
+      transition-property: bottom, left;
+    }
+
+    div.logo-right {
+      display: none;
+      position: absolute;
+      height: 50px;
+      top: -10px;
+      right: 5px;
+    }
+  }
+
+  .env-box {
+    display: none;
+    position: absolute;
+    top: 48px;
+    right: 0;
+
+    select {
+      background: url(/assets/images/arrow_down.png) no-repeat right transparent;
+      background-size: 24px;
+      border: none;
+      color: white;
+
+      option {
+        color: black;
+      }
+    }
+  }
+
+  .search-box {
+    position: relative;
+    min-height: 33px;
+
+    i {
+      position: absolute;
+      left: 12px;
+      top: 7px;
+    }
+
+    input {
+      display: none;
+      background: none !important;
+      border: none !important;
+      outline: none;
+      margin: 0;
+      padding-left: 42px;
+    }
   }
 
   vertical-menu {
     .name {
       display: none;
+      font-weight: normal !important;
+    }
+    li, a {
+      border: none !important;
+    }
+    li:hover a {
+      color: $body-font-color !important;
+    }
+    li {
+      ul li a {
+        padding-left: 20px !important;
+      }
+      a:hover, a.active {
+        color: $accent-color-primary !important;
+        background: #f4f4f4;
+      }
     }
   }
 
@@ -56,12 +154,32 @@ sidebar-component {
         min-width: $sidebar-min-width;
       }
 
+      a.microdocs-link{
+        display: inline-block;
+      }
+
       a.logo {
         //background-position: center center;
+        h1, .logo-right {
+          display: initial;
+        }
+        .logo-left {
+          bottom: -10px;
+          left: 5px;
+        }
+      }
+      .env-box {
+        display: initial;
+      }
+      .search-box input {
+        display: initial;
       }
       vertical-menu {
         .name {
           display: initial;
+        }
+        li ul li a {
+          padding-left: 30px !important;
         }
       }
     }
@@ -84,9 +202,10 @@ sidebar-component {
     max-width: 4rem;
     width: 100%;
     height: 100%;
+    overflow: hidden;
   }
 
-  .grid-block{
+  .grid-block {
     height: 100%;
   }
 }

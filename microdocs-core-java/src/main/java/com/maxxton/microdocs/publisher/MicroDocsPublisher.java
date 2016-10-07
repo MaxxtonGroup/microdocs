@@ -36,7 +36,7 @@ public class MicroDocsPublisher {
    * @return check response
    * @throws IOException
    */
-  public static CheckResponse publishProject(ServerConfiguration configuration, File microDocsReport, String projectName, String groupName, String version, boolean failOnProblems) throws IOException {
+  public static CheckResponse publishProject(ServerConfiguration configuration, File microDocsReport, String projectName, String groupName, String version, boolean failOnProblems, String env) throws IOException {
     String report = loadReport(microDocsReport);
 
     String url = configuration.getUrl() + "/api/v1/projects/" + URLParamEncoder.encode(projectName);
@@ -53,6 +53,12 @@ public class MicroDocsPublisher {
       }
       if (version != null && !version.trim().isEmpty()) {
         request = request.queryString("version", version);
+      }
+      if(configuration.getUsername() != null && configuration.getPassword() != null){
+        request = request.basicAuth(configuration.getUsername(), configuration.getPassword());
+      }
+      if(env != null && !env.trim().isEmpty()){
+        request = request.queryString("env", env);
       }
 
       response = request
@@ -74,7 +80,7 @@ public class MicroDocsPublisher {
    * @param configuration
    * @return check response
    */
-  public static CheckResponse checkProject(ServerConfiguration configuration, File microDocsReport, String projectName) throws IOException {
+  public static CheckResponse checkProject(ServerConfiguration configuration, File microDocsReport, String projectName, String env) throws IOException {
     String report = loadReport(microDocsReport);
 
     String url = configuration.getUrl() + "/api/v1/check";
@@ -82,10 +88,14 @@ public class MicroDocsPublisher {
     initObjectMapper();
     HttpResponse<CheckResponse> response = null;
     try {
-      response = Unirest.post(configuration.getUrl() + "/api/v1/check")
+      HttpRequestWithBody request = Unirest.post(configuration.getUrl() + "/api/v1/check")
           .queryString("project", projectName)
           .header("content-type", "application/json")
-          .header("accept", "application/json")
+          .header("accept", "application/json");
+      if(env != null && !env.trim().isEmpty()){
+        request = request.queryString("env", env);
+      }
+      response = request
           .body(report)
           .asObject(CheckResponse.class);
       if (response.getStatus() != 200) {
@@ -175,10 +185,11 @@ public class MicroDocsPublisher {
     if(response.getProblems() != null) {
       for (CheckProblem problem : response.getProblems()) {
         String msg = "\n";
-        String sourceFile = new File(rootDir, "src/main/java/" + problem.getPath() + ":" + String.valueOf(problem.getLineNumber())).getPath();
+        String lineNumber = problem.getLineNumber() > 0 ? ":" + String.valueOf(problem.getLineNumber()) : "";
+        String sourceFile = new File(rootDir, "src/main/java/" + problem.getPath() + lineNumber).getPath();
         msg += sourceFile + ": " + problem.getLevel() + ": " + problem.getMessage();
         if(problem.getClient() != null){
-          msg += "\nBreaking change detected with " + problem.getClient().getTitle() + " (source: " + problem.getClient().getSourceLink() + ")";
+          msg += "\nBreaking change detected with " + problem.getClient().getTitle() + " (source: " + problem.getClient().getSourceLink() != null ? problem.getClient().getSourceLink() : problem.getClient().getClassName() + " )";
         }
         if(hasProblems) {
           ErrorReporter.get().printError(msg);

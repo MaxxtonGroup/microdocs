@@ -12,31 +12,58 @@ import {EndpointPanel} from "../../panels/endpoint-panel/endpoint.panel";
 import {ModelPanel} from "../../panels/model-panel/model.panel";
 import {ProblemPanel} from "../../panels/problem-panel/problem.panel";
 import {SortByHttpMethod} from "../../pipes/sort-by-http-method.pipe"
+import {Subject} from "rxjs/Subject";
+import {DependencyGraph} from "../../panels/dependency-graph/dependency-graph";
+import {EndpointGroupPanel} from "../../panels/endpoint-group-panel/endpoint-group.panel";
 
 
 @Component({
   selector: 'project-route',
-  templateUrl: 'project.tpl.html',
-  directives: [ROUTER_DIRECTIVES, COMPONENTS, EndpointPanel, ModelPanel, ProblemPanel],
+  templateUrl: 'project.route.html',
+  directives: [ROUTER_DIRECTIVES, COMPONENTS, EndpointGroupPanel, EndpointPanel, ModelPanel, ProblemPanel, DependencyGraph],
   pipes: [FILTERS, SortByHttpMethod]
 })
 export class ProjectRoute {
 
   private querySub:any;
   private pathSub:any;
+  private projectSub:any;
+  private projectsSub:any;
+
+  private nodes:Subject = new Subject();
+
+  private env:string;
   private title:string;
   private version:string;
   private versions:string[];
   private project:Project = {};
   private loading:boolean = true;
+  private showModal:boolean = false;
 
   private queryParams:Params;
   private pathParams:Params;
+  
+  private color = 'blue-gray';
+  private colorRanges = {
+    'pink': ['a', 'b'],
+    'red': ['c', 'd'],
+    'orange': ['e', 'f'],
+    'amber': ['g', 'h'],
+    'yellow': ['i', 'j'],
+    'lime': ['k', 'l'],
+    'green': ['m', 'n'],
+    'teal': ['o', 'p'],
+    'cyan': ['q', 'r'],
+    'light-blue': ['s', 't'],
+    'blue': ['u', 'v'],
+    'indigo': ['w', 'x'],
+    'purple': ['y', 'z']
+  };
 
   private rest = REST;
   private database = DATABASE;
   private uses = USES;
-  private ioncludes = INCLUDES;
+  private includes = INCLUDES;
 
   constructor(private projectService:ProjectService,
               private route:ActivatedRoute,
@@ -45,53 +72,80 @@ export class ProjectRoute {
 
   ngOnInit() {
     this.querySub = this.router.routerState.queryParams.subscribe(params => {
+      this.loading = true;
       this.queryParams = params;
       if (this.pathParams != undefined) {
-        this.init();
+        setTimeout(() => this.init());
       }
     });
     this.pathSub = this.route.params.subscribe(params => {
+      this.loading = true;
       this.pathParams = params;
       if (this.queryParams != undefined) {
-        this.init();
+        setTimeout(() => this.init(), 100);
       }
     });
   }
 
   init() {
     this.version = this.queryParams['version'];
+    this.env = this.queryParams['env'];
     this.title = this.pathParams['project'];
+    this.color = this.getColorByTitle(this.title);
     //load metadata
-    var wait = this.version == undefined;
-    this.projectService.getProjects().subscribe(node => {
+    this.projectService.getProjects(this.env).subscribe(node => {
       if (node.dependencies != undefined) {
         for (var key in node.dependencies) {
           if (key == this.title) {
             this.versions = node.dependencies[key].versions;
-            if (wait) {
+            if(!this.version) {
               this.version = node.dependencies[key].version;
-              this.loadProject(this.title, this.version);
             }
+            this.loadProject(this.title, this.version, this.env);
             break;
           }
         }
+
+        // update nodes
+        this.nodes.next(node);
       }
     });
-    if (!wait) {
-      this.loadProject(this.title, this.version);
+  }
+  
+  getColorByTitle(title:string):string{
+    let selectedColor;
+    var first = title.substr(0, 1);
+    for (var color in this.colorRanges) {
+      this.colorRanges[color].forEach(char => {
+        if (char == first) {
+          selectedColor = color;
+          return false;
+        }
+      });
+      if (selectedColor) {
+        return selectedColor;
+      }
     }
+    return 'blue-gray';
   }
 
-  loadProject(title:string, version:string) {
-    this.projectService.getProject(title, version).subscribe(project => {
+  loadProject(title:string, version:string, env:string) {
+    this.projectSub = this.projectService.getProject(title, version, env).subscribe(project => {
       this.project = project;
       this.loading = false;
     });
   }
 
   ngOnDestroy() {
-    this.querySub.unsubscribe();
-    this.pathSub.unsubscribe();
+    console.info("destroy");
+    if(this.querySub != undefined)
+      this.querySub.unsubscribe();
+    if(this.pathSub != undefined)
+      this.pathSub.unsubscribe();
+    if(this.projectSub != undefined)
+      this.projectSub.unsubscribe();
+    if(this.projectsSub != undefined)
+      this.projectsSub.unsubscribe();
   }
 
   onChangeVersion(version:string) {
@@ -111,31 +165,6 @@ export class ProjectRoute {
       };
 
       sourceLink = SchemaHelper.resolveString(sourceLink, schemaSettings);
-    }
-    return sourceLink;
-  }
-
-  getControllerSourceLink(sourceLink:string, endpoint:Path) {
-    if (sourceLink != null && sourceLink != undefined) {
-      if (endpoint.controller != undefined) {
-        var controller = endpoint.controller;
-        var method:Method = endpoint.method;
-        if (controller != undefined) {
-          var controllerSettings = {};
-          if (controller != undefined && controller != null) {
-            controllerSettings['class'] = {
-              type: controller.type,
-              name: controller.name,
-              path: controller.name.replace(new RegExp('\\.', 'g'), '/'),
-              lineNumber: 0
-            };
-            if (method != undefined && method != null) {
-              controllerSettings['class']['lineNumber'] = method.lineNumber;
-            }
-          }
-          sourceLink = SchemaHelper.resolveString(sourceLink, controllerSettings);
-        }
-      }
     }
     return sourceLink;
   }

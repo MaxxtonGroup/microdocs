@@ -1,6 +1,7 @@
 import {Project, Schema, Path, ProjectInfo, TreeNode} from "microdocs-core-ts/dist/domain";
 import {QUERY, PATH, BODY} from "microdocs-core-ts/dist/domain/path/parameter-placing.model";
 import {SchemaHelper} from "microdocs-core-ts/dist/helpers/schema/schema.helper";
+import * as uuid from 'uuid';
 
 
 import * as express from "express";
@@ -10,19 +11,34 @@ import {ProjectJsonRepository} from "../../repositories/json/project-json.repo";
 
 export class PostmanResponseHandler extends MicroDocsResponseHandler {
 
-  handleProjects(req: express.Request, res: express.Response, projects: TreeNode) {
-    this.response(req, res, 200, this.postmans(projects));
+  handleProjects(req: express.Request, res: express.Response, projects: TreeNode, env:string) {
+    if(Object.keys(projects.dependencies).length == 1){
+      var name = Object.keys(projects.dependencies)[0];
+      var project = ProjectJsonRepository.bootstrap().getAggregatedProject(env, name, projects.dependencies[name].version);
+
+      if(req.query['method']){
+        var filterMethods = req.query['method'].split(',');
+        this.filterMethods(project, filterMethods);
+      }
+      this.response(req, res, 200, this.postman(project));
+    }else {
+      this.response(req, res, 200, this.postmans(projects, env));
+    }
   }
 
-  handleProject(req: express.Request, res: express.Response, project: Project) {
-    this.response(req, res, 200, this.postman([project]));
+  handleProject(req: express.Request, res: express.Response, project: Project, env:string) {
+    if(req.query['method']){
+      var filterMethods = req.query['method'].split(',');
+      this.filterMethods(project, filterMethods);
+    }
+    this.response(req, res, 200, this.postman(project));
   }
 
-  postmans(projects: TreeNode):{}{
+  postmans(projects: TreeNode, env:string):{}{
     var collection = this.getPostmanBase();
 
     for(var name in projects.dependencies){
-      var project = ProjectJsonRepository.bootstrap().getAggregatedProject(name, projects.dependencies[name].version);
+      var project = ProjectJsonRepository.bootstrap().getAggregatedProject(env, name, projects.dependencies[name].version);
       var subCollection = this.getPostmanItems(project);
       collection['item'].push({
         name: name,
@@ -35,7 +51,7 @@ export class PostmanResponseHandler extends MicroDocsResponseHandler {
   }
 
   postman(project: Project): {} {
-    var collection = this.getPostmanBase();
+    var collection = this.getPostmanBase(project);
     collection['item'] = this.getPostmanItems(project);
 
     return collection;
@@ -45,16 +61,10 @@ export class PostmanResponseHandler extends MicroDocsResponseHandler {
     var items = [];
     if (project.paths != undefined) {
       for(var path in project.paths){
-        var folder = {
-          name: path,
-          description: 'folder for ' + path,
-          item: []
-        };
         for(var method in project.paths[path]){
           var item = this.getPostmanItem(path, method, project.paths[path][method]);
-          folder.item.push(item);
+          items.push(item);
         }
-        items.push(folder);
       }
     }
     return items;
@@ -62,7 +72,7 @@ export class PostmanResponseHandler extends MicroDocsResponseHandler {
 
   getPostmanItem(path:string, method:string, endpoint:Path):{}{
     var url = "{{baseUrl}}" + path;
-    var body = undefined;
+    var body = {};
     var responses = [];
     if(endpoint.parameters != undefined){
       //replace path variables
@@ -80,7 +90,7 @@ export class PostmanResponseHandler extends MicroDocsResponseHandler {
         if(param.default != undefined){
           generatedValue = param.default;
         }
-        if(url.indexOf("?") == 0){
+        if(url.indexOf("?") == -1){
           url += '?';
         }else{
           url += '&';
@@ -130,16 +140,23 @@ export class PostmanResponseHandler extends MicroDocsResponseHandler {
     };
   }
 
-  getPostmanBase(): {} {
-    var collection = {
-      info: {
+  getPostmanBase(project?:Project): {} {
+    var collection = {item: [], info:{}};
+    if(project){
+      collection['info'] = {
+        name: project.info.title,
+        version: project.info.version,
+        description: project.info.description
+      };
+    }else{
+      collection['info'] = {
         name: Config.get('application-name'),
         version: Config.get('application-version').toString(),
-        description: Config.get('application-description'),
-        schema: "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
-      },
-      item: []
-    };
+        description: Config.get('application-description')
+      };
+    }
+    collection.info['schema'] = "https://schema.getpostman.com/json/collection/v2.0.0/collection.json";
+    collection.info['_postman_id'] = uuid['v4']();
 
     // get base url
     var schema = Config.get('application-schema');
@@ -151,7 +168,7 @@ export class PostmanResponseHandler extends MicroDocsResponseHandler {
     }
 
     var baseUrl = schema + "://" + host + "/" + basePath;
-    collection['variable'] = [
+    collection['variables'] = [
       {
         id: 'baseUrl',
         type: 'string',

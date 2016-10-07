@@ -1,12 +1,14 @@
-<card title="{{schema.name}}"
+<card *ngIf="schema.properties | notEmpty"
+      title="{{schema.name}}"
       subTitle="{{getSubTitle(schema)}}"
       [private]="true"
       [canFullscreen]="false"
       [hidden]="true"
-      class="child-card">
-    <div class="link">
+      class="child-card model-card">
+    <div *ngIf="schema.description | notEmpty">{{schema.description}}</div>
+    <div class="link" *ngIf="schema.sourceLink | notEmpty">
         <span class="icon">keyboard_arrow_right</span>
-        <a [href]="sourceLink" target="_blank">source</a>
+        <a [href]="schema.sourceLink" target="_blank">source</a>
     </div>
     <template [ngIf]="example | notEmpty">
         <prettyjson [obj]="example"></prettyjson>

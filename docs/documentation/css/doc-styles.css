@@ -1,0 +1,37 @@
+article.selectable{
+    padding: 20px;
+}
+
+.selectable .text {
+    color: #333333;
+    font-size: 16px;
+    line-height: 24px;
+}
+
+.selectable .text code {
+    padding: 5px;
+    margin: 10px 0;
+    font-size: 13px;
+    border-radius: 3px;
+    color: black;
+    border: rgb(211, 218, 234) 1px solid;
+    font-family: monospace;
+}
+
+.selectable .text code.block{
+    display: block;
+    padding: 0;
+}
+
+.selectable .text code .code-title{
+    display: block;
+    padding: 5px 20px;
+    font-family: monospace;
+}
+
+.selectable .text code .code-block{
+    padding: 10px 20px;
+    margin: 0;
+    overflow: auto;
+    font-family: monospace;
+}

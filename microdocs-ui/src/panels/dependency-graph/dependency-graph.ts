@@ -1,10 +1,11 @@
-import {Component, ViewContainerRef} from "@angular/core";
+import {Component, ViewContainerRef, Input} from "@angular/core";
 import {Router} from "@angular/router";
 import * as d3 from 'd3';
 
 import {TreeNode} from "microdocs-core-ts/dist/domain";
+import {Observable} from "rxjs/Observable";
 
-import {ProjectService} from "../../services/project.service";
+// import {Observable} from "rxjs";
 
 @Component({
   selector: 'dependency-graph',
@@ -13,13 +14,50 @@ import {ProjectService} from "../../services/project.service";
 export class DependencyGraph {
 
   error:string;
+  force:any;
+  filteredData:{dependencies:{}};
   data:TreeNode;
-  force:{};
 
-  constructor(private projectService:ProjectService, private containerRef:ViewContainerRef, private router:Router) {
-    this.projectService.getProjects().subscribe((data) => {
+  @Input()
+  nodes:Observable<TreeNode>;
+
+  @Input()
+  projectName:string;
+
+  @Input()
+  env:string;
+
+  constructor(private containerRef:ViewContainerRef, private router:Router) {
+  }
+
+  ngOnInit(){
+    this.nodes.subscribe(data => {
       this.data = data;
-      var transformedData = this.transformData(data);
+      var dependencies = {};
+      Object.keys(data.dependencies).forEach(key => dependencies[key] = data.dependencies[key]);
+
+      if(this.projectName){
+        var removeNames = [];
+        for(var key in dependencies){
+          if(key !== this.projectName){
+            if(dependencies[key].dependencies == undefined || dependencies[key].dependencies[this.projectName] == undefined){
+              removeNames.push(key);
+            }else{
+              var removeDeps = [];
+              for(var depName in dependencies[key].dependencies){
+                if(depName != this.projectName){
+                  removeDeps.push(depName);
+                }
+              }
+              removeDeps.forEach(name => delete dependencies[key].dependencies[name]);
+            }
+          }
+        }
+        removeNames.forEach(name => delete dependencies[name]);
+      }
+      this.filteredData = {dependencies: dependencies};
+
+      var transformedData = this.transformData(this.filteredData);
       this.chartData(transformedData);
     });
   }
@@ -41,11 +79,12 @@ export class DependencyGraph {
     if(project == undefined){
       console.error('could not find project ' + name);
     }else{
-      this.router.navigateByUrl('/projects/' + project.group + "/" + name);
+      var envString = (this.env ? '?env=' + this.env : '');
+      this.router.navigateByUrl('/projects/' + project.group + "/" + name + envString);
     }
   }
 
-  transformData(data:TreeNode) {
+  transformData(data:{dependencies:{}}) {
     var nodes = {};
     var links = [];
     if (data.dependencies != undefined) {
@@ -68,8 +107,11 @@ export class DependencyGraph {
   }
 
   chartData(data:{}):void {
-    if (data == null) {
+    var svg = d3.select(this.containerRef.element.nativeElement).select('.container').select('svg').remove();
+    if (!data) {
       //handle
+      console.warn('No chart data');
+
       return;
     }
     this.error = null;

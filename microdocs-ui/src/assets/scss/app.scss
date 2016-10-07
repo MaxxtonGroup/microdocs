@@ -3,25 +3,33 @@
 @import "partials/json-view";
 @import "../../../node_modules/@maxxton/components/assets/scss/mxt-components";
 @import "../../panels/sidebar-panel/_sidebar.panel";
+@import "../../routes/project/project.route";
+@import "../../panels/endpoint-group-panel/endpoint-group.panel.scss";
+@import "../../panels/path-highlight-panel/path-highlight.panel";
 
-//@font-face {
-//  font-family: 'Roboto';
-//  font-style: normal;
-//  font-weight: 400;
-//  src: local('Roboto'), local('Roboto-Regular'), url(https://fonts.gstatic.com/s/roboto/v15/CWB0XYA8bzo0kSThX0UTuA.woff2) format('woff2');
-//  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
-//}
-//@font-face {
-//  font-family: 'Roboto';
-//  font-style: normal;
-//  font-weight: 700;
-//  src: local('Roboto Bold'), local('Roboto-Bold'), url(https://fonts.gstatic.com/s/roboto/v15/d-6IYplOFocCacKzxwXSOFtXRa8TVwTICgirnJhmVJw.woff2) format('woff2');
-//  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
-//}
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Roboto'), local('Roboto-Regular'), url(https://fonts.gstatic.com/s/roboto/v15/CWB0XYA8bzo0kSThX0UTuA.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Roboto Bold'), local('Roboto-Bold'), url(https://fonts.gstatic.com/s/roboto/v15/d-6IYplOFocCacKzxwXSOFtXRa8TVwTICgirnJhmVJw.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
 //
 //body{
 //  font-family: "Roboto", "Open Sans", "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
 //}
+
+.content{
+  width: 100%;
+  position: relative;
+}
 
 .page-content.grid-container {
   width: 70%;
@@ -83,153 +91,13 @@ table {
   height: 150px;
 }
 
-accommodation-price-table {
+.card{
+  box-shadow: rgba(0, 0, 0, 0.227451) 0px 3px 10px 0px, rgba(0, 0, 0, 0.156863) 0px 3px 10px 0px !important;
+  border-radius: 2px;
+}
 
-  .button-container {
-    margin: 1rem 0 0 0;
-  }
-
-  data-table {
-    tr td:nth-of-type(1) {
-      span {
-        max-height: 2rem;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-width: 70%;
-      }
-      input {
-        height: 2.05rem;
-      }
-      > * {
-        background-color: inherit;
-      }
-    }
-
-    tr td.editable-column:not(.pristine) {
-      background-color: $info-color !important;
-      font-weight: bold;
-      color: $white !important;
-      a,
-      input {
-        color: $white;
-      }
-    }
-
-    a.primary {
-      background-color: inherit;
-    }
-  }
-
-  card {
-    display: inline-block;
-    width: 100%;
-    margin-bottom: 2rem;
-  }
-
-  display: block;
-  .stay {
-    margin-top: 1.5rem;
-
-    .rate .small-2 {
-      padding: 0 .5rem;
-      border-bottom: 1px solid $dividers-color;
-      align-self: flex-end;
-
-      h6 {
-        //margin-bottom: 0.3rem;
-        margin-bottom: 0;
-        margin-top: 0;
-      }
-    }
-  }
-  table td {
-    border: .125rem solid $dividers-color;
-    span.placeholder {
-      height: 2rem;
-      padding: .7rem .25rem;
-      display: block;
-    }
-    input[type="text"] {
-      height: 2rem;
-      font-size: 0.8rem;
-      margin-bottom: 0;
-      border: 0;
-
-      &:focus,
-      &:active {
-        background-color: $table-row-stripe-hover;
-      }
-    }
-    //changed input
-
-    a {
-      width: 100%;
-      display: block;
-      padding: .25rem 0;
-    }
-  }
-
-  table tr td:nth-child(odd) input {
-    background-color: $table-striped-background;
-  }
-
-  .button-container h6 {
-    padding: 0.25rem 0.5rem;
-  }
-
-  .rentability {
-    .availability {
-      &.high {
-        background-color: $meter-fill-high;
-      }
-      &.medium {
-        background-color: $meter-fill-medium;
-      }
-      &.low {
-        background-color: $meter-fill-low;
-      }
-      color: $white;
-      text-align: center;
-      padding: 0.6rem 0;
-    }
-  }
-  .resellers {
-    td {
-      > span,
-      > a > span {
-        text-align: center;
-        display: block;
-        padding: 0 .2rem;
-      }
-
-      input {
-        margin-bottom: 0;
-        text-align: center;
-      }
-      .button-group {
-        z-index: 100;
-        margin: 0.2rem 0 0 -4.2rem;
-        li {
-          .icon {
-            font-size: 1.3rem;
-            padding: .5rem;
-          }
-
-          span {
-            line-height: 1.5;
-          }
-        }
-      }
-      &:last-of-type {
-        .options {
-          margin-left: -6.5rem;
-        }
-      }
-    }
-
-  }
-
+.card .card{
+  box-shadow: none !important;
 }
 
 .full-width {
@@ -284,96 +152,6 @@ accommodation-price-table {
   right: 0;
   z-index: 200;
   @include elevation(6);
-}
-
-prices {
-  .change-period {
-    padding: 1.56rem .5rem;
-  }
-
-  .start-date {
-    input {
-      padding: 1.47rem 1rem;
-    }
-  }
-
-  .search-options {
-    display: block;
-    margin: -1.9rem -8.5% 0;
-    width: auto;
-
-    .card {
-      box-shadow: none;
-    }
-
-    .header {
-      padding: 1rem 5rem;
-      .actions {
-        display: none;
-      }
-    }
-
-    .card-section.content {
-      max-width: 85%;
-      margin: 0 auto;
-    }
-  }
-
-  .rentability {
-    border-top: 0.125rem solid $dividers-color;
-    background-color: #fcfcfc;
-    padding: 1.5rem;
-    margin: 1rem -1.5rem;
-
-    input {
-      text-align: center;
-    }
-
-    td a.icon {
-      display: block;
-      width: 100%;
-      padding: 0;
-      text-align: center;
-      height: 2.4rem;
-      line-height: 1.6;
-    }
-
-    td.editable-column {
-      > input:not(.pristine),
-      > a.icon:not(.pristine),
-      > span:not(.pristine) {
-        background-color: $info-color !important;
-        font-weight: bold;
-        color: $white !important;
-      }
-    }
-
-  }
-
-  //show actions in left menu
-  .small-2 {
-    span {
-      line-height: 2;
-    }
-    a {
-      color: $accent-color-primary;
-
-      &.disabled {
-        color: $disabled-color;
-      }
-    }
-  }
-
-  @include breakpoint(large) {
-    .search-options {
-      margin: -3.9rem -9.4% 0;
-    }
-  }
-
-  .container.paging {
-    background-color: white;
-    @include elevation(4);
-  }
 }
 
 .logo{
@@ -432,7 +210,6 @@ ul{
 }
 
 .problem-box .problem{
-  font-weight: bold;
   position: relative;
   top: -5px;
 }
@@ -488,10 +265,9 @@ ul{
 }
 
 endpoint .description{
-  font-size: 12px;
-  font-weight: bold;
+  font-size: 14px;
   color: #4d4d4d;
-  font-family: "Open Sans", "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
+  font-family: "Roboto", "Open Sans", "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
 }
 
 h4{
@@ -572,6 +348,11 @@ dependency-graph svg{
   height: 75vh;
 }
 
+dependency-graph.small svg{
+  width: 100%;
+  height: 200px;
+}
+
 dependency-graph path {
   fill: none;
   stroke: #2A9AF3;
@@ -594,4 +375,22 @@ dependency-graph text {
   display: inline-block;
   width: auto;
   margin-left: 10px;
+}
+
+welcome-panel{
+  padding: 20px;
+  text-align: center;
+}
+
+welcome-panel h1{
+  color: #f26922;
+  font-size: 3em;
+}
+
+welcome-panel h4{
+  font-weight: normal;
+}
+
+welcome-panel a:hover{
+  text-decoration: underline;
 }

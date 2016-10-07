@@ -1,4 +1,3 @@
-
 REM build and move reports from the maxxton-services
 
 SET folder=../maxxton-services
@@ -20,14 +19,9 @@ GOTO :end
 :build_and_move
 echo ..\maxxton-services\%1
  IF ["%1"] NEQ  [""] (
-     rmdir /S /Q microdocs-server\data\reports\services\%1
-
      cd %folder%/%1
-     cmd.exe /c gradle microDocs
-
-     cd ../../microservice-documentation-tool
-     mkdir microdocs-server\data\reports\services\%1\1.0.0
-     xcopy /s "%folder%\%1\build\reports" "microdocs-server\data\reports\services\%1\1.0.0"
+     cmd.exe /c gradle publishMicroDocs
+     cd ../../microdocs
  )
 
 :end

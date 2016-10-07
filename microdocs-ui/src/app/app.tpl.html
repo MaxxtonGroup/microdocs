@@ -1,8 +1,8 @@
 <div class="main-container grid-block horizontal app-content">
-  <sidebar-component [customMenu]="menu"></sidebar-component>
+  <sidebar-component [projects]="projects" [selectedEnv]="selectedEnv" [envs]="envs" (envChange)="onEnvVersion($event)"></sidebar-component>
 
   <!--main content-->
-  <div class="grid-block grid-container page-content" id="page-content">
+  <div class="content" id="page-content">
     <div>
       <router-outlet></router-outlet>
     </div>

@@ -5,12 +5,12 @@ import {Project, TreeNode} from "microdocs-core-ts/dist/domain";
  */
 export interface ProjectRepository{
 
-    getAggregatedProjects():TreeNode;
+    getAggregatedProjects(env:string):TreeNode;
 
-    getAggregatedProject(title:string,version:string):Project;
+    getAggregatedProject(env:string, title:string,version:string):Project;
 
-    storeAggregatedProjects(treeNode:TreeNode):void;
+    storeAggregatedProjects(env:string, treeNode:TreeNode):void;
 
-    storeAggregatedProject(project:Project):void;
+    storeAggregatedProject(env:string, project:Project):void;
 
 }

@@ -1,0 +1,24 @@
+<template activity="server">
+    <article class="selectable">
+        <h1 class="theme-fg-color">Hang on!</h1>
+        We are working hard to write documentation for this page.
+    </article>
+</template>
+<script>
+    app.activity("server", function () {
+
+        this.title = "Server";
+        this.icon = "mdi-file-cloud-done";
+        this.hOptions = {size: "medium"};
+
+        this.onCreate = function () {
+            setTimeout(function () {
+                app.setTheme("blue-gray");
+            }, 20);
+        };
+
+        this.onDestroy = function () {
+            app.setTheme(app.color);
+        };
+    });
+</script>

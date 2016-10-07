@@ -13,29 +13,31 @@ export class ProjectsRoute extends BaseRoute {
 
   public projects(req: express.Request, res: express.Response, next: express.NextFunction) {
     var handler = ResponseHelper.getHandler(req);
-    if (handler == null) {
-      ResponseHelper.getDefaultHandler().handleNotAcceptable(req, res);
-    } else {
-      try {
-        var projects = ProjectJsonRepository.bootstrap().getAggregatedProjects();
-        if(projects == null){
-          projects = new TreeNode();
-        }
-
-        var groups: string[] = [];
-        var titles: string[] = [];
-        if (req.query.groups != undefined) {
-          groups = req.query.groups.split(',');
-        }
-        if (req.query.projects != undefined) {
-          titles = req.query.projects.split(',');
-        }
-        projects = ProjectsRoute.filterProjects(projects, groups, titles);
-
-        ResponseHelper.getHandler(req).handleProjects(req, res, projects);
-      } catch (e) {
-        ResponseHelper.getHandler(req).handleInternalServerError(req, res, e);
+    try {
+      var env = ProjectsRoute.getEnv(req);
+      if (env == null) {
+        handler.handleBadRequest(req, res, "env '" + req.query.env + "' doesn't exists");
+        return;
       }
+
+      var projects = ProjectJsonRepository.bootstrap().getAggregatedProjects(env);
+      if (projects == null) {
+        projects = new TreeNode();
+      }
+
+      var groups: string[] = [];
+      var titles: string[] = [];
+      if (req.query.groups != undefined) {
+        groups = req.query.groups.split(',');
+      }
+      if (req.query.projects != undefined) {
+        titles = req.query.projects.split(',');
+      }
+      projects = ProjectsRoute.filterProjects(projects, groups, titles);
+
+      ResponseHelper.getHandler(req).handleProjects(req, res, projects, env);
+    } catch (e) {
+      ResponseHelper.getHandler(req).handleInternalServerError(req, res, e);
     }
   }
 
@@ -48,15 +50,15 @@ export class ProjectsRoute extends BaseRoute {
 
         // filter project
         projects.forEach(fTitle => {
-          if(fTitle.indexOf('!') == 0){
+          if (fTitle.indexOf('!') == 0) {
             //ignore
             fTitle = fTitle.substring(1);
-            if(title == fTitle){
+            if (title == fTitle) {
               filter = true;
             }
-          }else{
+          } else {
             //select
-            if(title != fTitle){
+            if (title != fTitle) {
               filter = true;
             }
           }
@@ -64,23 +66,23 @@ export class ProjectsRoute extends BaseRoute {
 
         // filter groups
         groups.forEach(group => {
-          if(group.indexOf('!') == 0){
+          if (group.indexOf('!') == 0) {
             //ignore
             group = group.substring(1);
-            if(project.dependencies[title].group == group){
+            if (project.dependencies[title].group == group) {
               filter = true;
             }
-          }else{
+          } else {
             //select
-            if(project.dependencies[title].group != group){
+            if (project.dependencies[title].group != group) {
               filter = true;
             }
           }
         });
 
-        if(filter){
+        if (filter) {
           removedProjects.push(title);
-        }else{
+        } else {
           this.filterProjects(project.dependencies[title], projects, groups);
         }
       }

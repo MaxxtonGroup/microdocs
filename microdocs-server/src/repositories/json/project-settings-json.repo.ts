@@ -3,23 +3,53 @@ import * as fs from 'fs';
 
 import {ProjectSettingsRepository} from "../project-settings.repo";
 import {Config} from "../../config";
+import {ProjectSettings, Static, Environments} from 'microdocs-core-ts/dist/domain';
 
-export class ProjectSettingsJsonRepository implements ProjectSettingsRepository{
+export class ProjectSettingsJsonRepository implements ProjectSettingsRepository {
 
-  public static bootstrap():ProjectSettingsJsonRepository {
+  public static bootstrap(): ProjectSettingsJsonRepository {
     return new ProjectSettingsJsonRepository();
   }
 
-  getSettings():{} {
-    console.info("Load project settings");
-    var dataFolder:string = __dirname + '/../../../' + Config.get("dataFolder") + "/config";
-    var projectFile:string = dataFolder + "/project-settings.json";
-    if(!fs.exists(projectFile)){
+  getEnvs(): {[name: string]: Environments} {
+    console.info("Load project envs");
+    var dataFolder: string = __dirname + '/../../../' + Config.get("dataFolder") + "/config";
+    var projectFile: string = dataFolder + "/envs.json";
+    var envs: {[name: string]: Environments} = {};
+    if (fs.existsSync(projectFile)) {
       var string = fs.readFileSync(projectFile).toString();
-      var json = JSON.parse(string);
-      return json;
+      envs = JSON.parse(string);
     }
-    return {'global': {}, 'groups': {}, 'projects': {}};
+    if (!envs || Object.keys(envs).length == 0) {
+      envs = {default: {default: true}};
+    }
+
+    return envs;
+  }
+
+  getSettings(): ProjectSettings {
+    console.info("Load project settings");
+    var dataFolder: string = __dirname + '/../../../' + Config.get("dataFolder") + "/config";
+    var projectFile: string = dataFolder + "/project-settings.json";
+    var settings: Static = {};
+    if (fs.existsSync(projectFile)) {
+      var string = fs.readFileSync(projectFile).toString();
+      settings = JSON.parse(string);
+    }
+
+    if (!settings.global) {
+      settings.global = {};
+    }
+    if (!settings.environments) {
+      settings.environments = {};
+    }
+    if (!settings.groups) {
+      settings.groups = {};
+    }
+    if (!settings.projects) {
+      settings.projects = {};
+    }
+    return settings;
   }
 
 }
