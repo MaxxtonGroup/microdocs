@@ -1,0 +1,1261 @@
+{
+  "info": {
+    "description": "Maxxton Microservice main class for customer-service.",
+    "title": "customer-service",
+    "group": "services",
+    "version": "1.1.0",
+    "versions": [
+      "1.1.0"
+    ],
+    "links": [
+      {
+        "rel": "repository",
+        "href": "https://stash.maxxton.com/projects/MXTS/repos/customer-service/browse"
+      }
+    ]
+  },
+  "paths": {
+    "/api/v1/owners/{ownerId}/accountant": {
+      "get": {
+        "controller": {
+          "$ref": "#/components/OwnerController"
+        },
+        "method": {
+          "$ref": "#/components/OwnerController/methods/getOwnerAccountant(Long)"
+        },
+        "description": "Method to retrieve one single owner's accountant",
+        "operationId": "getOwnerAccountant",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "The primary key of owner",
+            "required": true,
+            "name": "ownerId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "an entity with the accountant of the owner or empty result in case owner id doesn't exist or there's no accountant configured",
+            "schema": {
+              "$ref": "#/definitions/com.maxxton.customer.domain.Person",
+              "default": {
+                "firstName": "Extended kindness trifling",
+                "lastName": "Extended kindness trifling",
+                "birthdate": null,
+                "sex": "Extended kindness trifling",
+                "personId": 4,
+                "invoiceAddressmanagerId": 15,
+                "middleName": "Extended kindness trifling",
+                "title": "Extended kindness trifling",
+                "mailAddressmanagerId": 47
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/owners/{id}": {
+      "delete": {
+        "controller": {
+          "$ref": "#/components/OwnerController"
+        },
+        "method": {
+          "$ref": "#/components/OwnerController/methods/deleteOwnerById(Long)"
+        },
+        "description": "Delete an excisting Owner",
+        "operationId": "deleteOwnerById",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "Identifier of the Owner",
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "responses": {}
+      },
+      "put": {
+        "controller": {
+          "$ref": "#/components/OwnerController"
+        },
+        "method": {
+          "$ref": "#/components/OwnerController/methods/updateOwnerById(Long,Owner)"
+        },
+        "description": "Update an excisting Owner",
+        "operationId": "updateOwnerById",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "   Identifier of the Owner",
+            "required": true,
+            "name": "id",
+            "in": "path"
+          },
+          {
+            "name": "owner",
+            "in": "body",
+            "description": "The Owner object to be updated",
+            "schema": {
+              "$ref": "#/definitions/com.maxxton.customer.domain.Owner"
+            }
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/api/v1/owners": {
+      "post": {
+        "controller": {
+          "$ref": "#/components/OwnerController"
+        },
+        "method": {
+          "$ref": "#/components/OwnerController/methods/createOwner(Owner)"
+        },
+        "description": "Create a new Owner",
+        "operationId": "createOwner",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "owner",
+            "in": "body",
+            "description": "The Owner object to be created",
+            "schema": {
+              "$ref": "#/definitions/com.maxxton.customer.domain.Owner"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "The Owner object if created correctly",
+            "schema": {
+              "$ref": "#/definitions/com.maxxton.customer.domain.Owner",
+              "default": {}
+            }
+          }
+        }
+      },
+      "get": {
+        "controller": {
+          "$ref": "#/components/OwnerController"
+        },
+        "method": {
+          "$ref": "#/components/OwnerController/methods/getOwners(Long,Specifications,Pageable)"
+        },
+        "description": "A get all owners call with optional filters",
+        "operationId": "getOwners",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "      id of the client used by the filter",
+            "name": "client",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "description": "page number",
+            "name": "page",
+            "in": "query",
+            "default": 0
+          },
+          {
+            "type": "integer",
+            "description": "items per page",
+            "name": "size",
+            "in": "query",
+            "default": 20
+          },
+          {
+            "type": "string",
+            "description": "sort option",
+            "name": "sort",
+            "in": "query",
+            "default": "asc"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "the list of owners",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "number": {
+                  "type": "number",
+                  "default": 1
+                },
+                "last": {
+                  "type": "boolean",
+                  "default": false
+                },
+                "size": {
+                  "type": "number",
+                  "default": 20
+                },
+                "numberOfElements": {
+                  "type": "number",
+                  "default": 20
+                },
+                "totalPages": {
+                  "type": "number",
+                  "default": 20
+                },
+                "sort": {},
+                "content": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/com.maxxton.customer.domain.Owner"
+                  }
+                },
+                "first": {
+                  "type": "boolean",
+                  "default": true
+                },
+                "totalElements": {
+                  "type": "number",
+                  "default": 196
+                }
+              },
+              "default": {
+                "number": 1,
+                "last": false,
+                "size": 20,
+                "numberOfElements": 20,
+                "totalPages": 20,
+                "sort": null,
+                "content": [
+                  {}
+                ],
+                "first": true,
+                "totalElements": 196
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/customers/{id}": {
+      "delete": {
+        "controller": {
+          "$ref": "#/components/CustomerController"
+        },
+        "method": {
+          "$ref": "#/components/CustomerController/methods/deleteCustomerById(Long)"
+        },
+        "description": "Delete an excisting Customer",
+        "operationId": "deleteCustomerById",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "Identifier of the Customer",
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "responses": {}
+      },
+      "put": {
+        "controller": {
+          "$ref": "#/components/CustomerController"
+        },
+        "method": {
+          "$ref": "#/components/CustomerController/methods/updateCustomerById(Long,Customer)"
+        },
+        "description": "Update an excisting Customer",
+        "operationId": "updateCustomerById",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "  Identifier of the Customer",
+            "required": true,
+            "name": "id",
+            "in": "path"
+          },
+          {
+            "name": "customer",
+            "in": "body",
+            "description": "The Customer object to be updated",
+            "schema": {
+              "$ref": "#/definitions/com.maxxton.customer.domain.Customer"
+            }
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/api/v1/customers/{customerId}": {
+      "get": {
+        "controller": {
+          "$ref": "#/components/CustomerController"
+        },
+        "method": {
+          "$ref": "#/components/CustomerController/methods/getCustomerById(Long)"
+        },
+        "description": "Method to retrieve one single customer",
+        "operationId": "getCustomerById",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "The primary key of customer",
+            "required": true,
+            "name": "customerId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "an entity with the customer or empty result in case customer id doesn't exist.",
+            "schema": {
+              "$ref": "#/definitions/com.maxxton.customer.domain.Customer",
+              "default": {}
+            }
+          }
+        },
+        "path": "/api/v1/customers/{customerId}",
+        "requestMethod": "get"
+      }
+    },
+    "/api/v1/owners/current": {
+      "get": {
+        "controller": {
+          "$ref": "#/components/OwnerController"
+        },
+        "method": {
+          "$ref": "#/components/OwnerController/methods/getCurrentOwner(Long)"
+        },
+        "description": "Get the current owner for a single unit",
+        "operationId": "getCurrentOwner",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "the id of the unit",
+            "required": true,
+            "name": "unit",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "a single owner for the unit",
+            "schema": {
+              "$ref": "#/definitions/com.maxxton.customer.domain.Owner",
+              "default": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/owners/{ownerId}/keeper": {
+      "get": {
+        "controller": {
+          "$ref": "#/components/OwnerController"
+        },
+        "method": {
+          "$ref": "#/components/OwnerController/methods/getOwnerKeeper(Long)"
+        },
+        "description": "Method to retrieve one single owner's keeper",
+        "operationId": "getOwnerKeeper",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "The primary key of owner",
+            "required": true,
+            "name": "ownerId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "an entity with the keeper of the owner or empty result in case owner id doesn't exist or there's no keeper configured",
+            "schema": {
+              "$ref": "#/definitions/com.maxxton.customer.domain.Person",
+              "default": {
+                "firstName": "Extended kindness trifling",
+                "lastName": "Extended kindness trifling",
+                "birthdate": null,
+                "sex": "Extended kindness trifling",
+                "personId": 4,
+                "invoiceAddressmanagerId": 18,
+                "middleName": "Extended kindness trifling",
+                "title": "Extended kindness trifling",
+                "mailAddressmanagerId": 34
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/owners/{ownerId}": {
+      "get": {
+        "controller": {
+          "$ref": "#/components/OwnerController"
+        },
+        "method": {
+          "$ref": "#/components/OwnerController/methods/getOwnerById(Long)"
+        },
+        "description": "Method to retrieve one single owner",
+        "operationId": "getOwnerById",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "The primary key of owner",
+            "required": true,
+            "name": "ownerId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "an entity with the owner or empty result in case owner id doesn't exist",
+            "schema": {
+              "$ref": "#/definitions/com.maxxton.customer.domain.Owner",
+              "default": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/customers": {
+      "post": {
+        "controller": {
+          "$ref": "#/components/CustomerController"
+        },
+        "method": {
+          "$ref": "#/components/CustomerController/methods/createCustomer(Customer)"
+        },
+        "description": "Create a new Customer",
+        "operationId": "createCustomer",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "customer",
+            "in": "body",
+            "description": "The Customer object to be created",
+            "schema": {
+              "$ref": "#/definitions/com.maxxton.customer.domain.Customer"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "The Customer object if created correctly",
+            "schema": {
+              "$ref": "#/definitions/com.maxxton.customer.domain.Customer",
+              "default": {}
+            }
+          }
+        }
+      },
+      "get": {
+        "controller": {
+          "$ref": "#/components/CustomerController"
+        },
+        "method": {
+          "$ref": "#/components/CustomerController/methods/getCustomers(Specifications,Pageable)"
+        },
+        "description": "A get all customers call with optional filters",
+        "operationId": "getCustomers",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "page number",
+            "name": "page",
+            "in": "query",
+            "default": 0
+          },
+          {
+            "type": "integer",
+            "description": "items per page",
+            "name": "size",
+            "in": "query",
+            "default": 20
+          },
+          {
+            "type": "string",
+            "description": "sort option",
+            "name": "sort",
+            "in": "query",
+            "default": "asc"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "the list of customers",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "number": {
+                  "type": "number",
+                  "default": 1
+                },
+                "last": {
+                  "type": "boolean",
+                  "default": false
+                },
+                "size": {
+                  "type": "number",
+                  "default": 20
+                },
+                "numberOfElements": {
+                  "type": "number",
+                  "default": 20
+                },
+                "totalPages": {
+                  "type": "number",
+                  "default": 20
+                },
+                "sort": {},
+                "content": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/com.maxxton.customer.domain.Customer"
+                  }
+                },
+                "first": {
+                  "type": "boolean",
+                  "default": true
+                },
+                "totalElements": {
+                  "type": "number",
+                  "default": 196
+                }
+              },
+              "default": {
+                "number": 1,
+                "last": false,
+                "size": 20,
+                "numberOfElements": 20,
+                "totalPages": 20,
+                "sort": null,
+                "content": [
+                  {}
+                ],
+                "first": true,
+                "totalElements": 196
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "com.maxxton.customer.domain.OwnerOwnership": {
+      "type": "object",
+      "description": "Owner and ownership joined domain object\n\n Maxxton Group 2016",
+      "mappings": {
+        "relational": {
+          "tables": [
+            "CUSTOMER"
+          ]
+        }
+      },
+      "properties": {
+        "endDate": {
+          "type": "date"
+        },
+        "startDate": {
+          "type": "date"
+        }
+      },
+      "name": "OwnerOwnership",
+      "sourceLink": "https://stash.maxxton.com/projects/MXTS/repos/customer-service/browse/src/main/java/com/maxxton/customer/domain/OwnerOwnership.java"
+    },
+    "org.springframework.data.jpa.domain.Specifications": {
+      "type": "object",
+      "description": "",
+      "properties": {},
+      "name": "Specifications",
+      "sourceLink": "https://stash.maxxton.com/projects/MXTS/repos/customer-service/browse/src/main/java/org/springframework/data/jpa/domain/Specifications.java"
+    },
+    "com.maxxton.customer.domain.Client": {
+      "type": "object",
+      "description": "Client domain class\n\n Maxxton Group 2016",
+      "mappings": {
+        "relational": {
+          "tables": [
+            "EMPLOYEE"
+          ]
+        }
+      },
+      "properties": {
+        "clientId": {
+          "type": "integer",
+          "mappings": {
+            "relational": {
+              "name": "employee_id",
+              "primary": true
+            }
+          }
+        }
+      },
+      "name": "Client",
+      "sourceLink": "https://stash.maxxton.com/projects/MXTS/repos/customer-service/browse/src/main/java/com/maxxton/customer/domain/Client.java"
+    },
+    "com.maxxton.customer.domain.Owner": {
+      "type": "object",
+      "description": "Owner domain object\n\n Maxxton Group 2016",
+      "mappings": {
+        "relational": {
+          "tables": [
+            "CUSTOMER"
+          ]
+        }
+      },
+      "properties": {},
+      "name": "Owner",
+      "sourceLink": "https://stash.maxxton.com/projects/MXTS/repos/customer-service/browse/src/main/java/com/maxxton/customer/domain/Owner.java"
+    },
+    "com.maxxton.customer.domain.Person": {
+      "type": "object",
+      "description": "Maxxton Group 2016",
+      "mappings": {
+        "relational": {
+          "tables": [
+            "PERSON"
+          ]
+        }
+      },
+      "properties": {
+        "firstName": {
+          "type": "string",
+          "mappings": {
+            "relational": {
+              "name": "first_name"
+            }
+          }
+        },
+        "lastName": {
+          "type": "string",
+          "mappings": {
+            "relational": {
+              "name": "last_name"
+            }
+          }
+        },
+        "birthdate": {
+          "type": "date"
+        },
+        "sex": {
+          "type": "string"
+        },
+        "personId": {
+          "type": "integer",
+          "mappings": {
+            "relational": {
+              "name": "person_id",
+              "primary": true
+            }
+          }
+        },
+        "invoiceAddressmanagerId": {
+          "type": "integer",
+          "mappings": {
+            "relational": {
+              "name": "invoice_addressmanager_id"
+            }
+          }
+        },
+        "middleName": {
+          "type": "string",
+          "mappings": {
+            "relational": {
+              "name": "middle_name"
+            }
+          }
+        },
+        "title": {
+          "type": "string"
+        },
+        "mailAddressmanagerId": {
+          "type": "integer",
+          "mappings": {
+            "relational": {
+              "name": "mail_addressmanager_id"
+            }
+          }
+        }
+      },
+      "name": "Person",
+      "sourceLink": "https://stash.maxxton.com/projects/MXTS/repos/customer-service/browse/src/main/java/com/maxxton/customer/domain/Person.java"
+    },
+    "com.maxxton.customer.domain.Ownership": {
+      "type": "object",
+      "description": "Domain object for Ownership\n\n Maxxton Group 2016",
+      "mappings": {
+        "relational": {
+          "tables": [
+            "OWNERSHIP"
+          ]
+        }
+      },
+      "properties": {
+        "ownershipId": {
+          "type": "integer",
+          "mappings": {
+            "relational": {
+              "name": "ownership_id",
+              "primary": true
+            }
+          }
+        },
+        "clients": {
+          "type": "array",
+          "mappings": {
+            "json": {
+              "ignore": true
+            }
+          },
+          "items": {
+            "$ref": "#/definitions/com.maxxton.customer.domain.Client"
+          }
+        },
+        "endDate": {
+          "type": "date",
+          "mappings": {
+            "relational": {
+              "name": "end_date"
+            }
+          }
+        },
+        "unitId": {
+          "type": "integer",
+          "mappings": {
+            "relational": {
+              "name": "object_id"
+            }
+          }
+        },
+        "ownerId": {
+          "type": "integer",
+          "mappings": {
+            "relational": {
+              "name": "owner_id"
+            }
+          }
+        },
+        "startDate": {
+          "type": "date",
+          "mappings": {
+            "relational": {
+              "name": "start_date"
+            }
+          }
+        }
+      },
+      "name": "Ownership",
+      "sourceLink": "https://stash.maxxton.com/projects/MXTS/repos/customer-service/browse/src/main/java/com/maxxton/customer/domain/Ownership.java"
+    },
+    "com.maxxton.customer.domain.Customer": {
+      "type": "object",
+      "description": "Maxxton Group 2016",
+      "mappings": {
+        "relational": {
+          "tables": [
+            "CUSTOMER"
+          ]
+        }
+      },
+      "properties": {},
+      "name": "Customer",
+      "sourceLink": "https://stash.maxxton.com/projects/MXTS/repos/customer-service/browse/src/main/java/com/maxxton/customer/domain/Customer.java"
+    }
+  },
+  "components": {
+    "CustomerService": {
+      "name": "com.maxxton.customer.service.CustomerService",
+      "type": "service",
+      "file": "com/maxxton/customer/service/CustomerService.java",
+      "description": "Maxxton Group 2016",
+      "authors": [
+        "Sonke (r.sonke@maxxton.com)"
+      ],
+      "annotations": {
+        "Service": {}
+      },
+      "methods": {
+        "updateCustomer(Customer)": {
+          "name": "updateCustomer",
+          "description": "Update an existing customer",
+          "parameters": [
+            "Customer"
+          ],
+          "lineNumber": 70,
+          "sourceLink": "https://stash.maxxton.com/projects/MXTS/repos/customer-service/browse/src/main/java/com/maxxton/customer/service/CustomerService.java#70"
+        },
+        "getCustomer(Long)": {
+          "name": "getCustomer",
+          "description": "Get one customer by its id",
+          "parameters": [
+            "Long"
+          ],
+          "lineNumber": 40,
+          "sourceLink": "https://stash.maxxton.com/projects/MXTS/repos/customer-service/browse/src/main/java/com/maxxton/customer/service/CustomerService.java#40"
+        },
+        "createCustomer(Customer)": {
+          "name": "createCustomer",
+          "description": "Create a new customer",
+          "parameters": [
+            "Customer"
+          ],
+          "lineNumber": 50,
+          "sourceLink": "https://stash.maxxton.com/projects/MXTS/repos/customer-service/browse/src/main/java/com/maxxton/customer/service/CustomerService.java#50"
+        },
+        "getCustomers(Specifications,Pageable)": {
+          "name": "getCustomers",
+          "description": "Get all customers",
+          "parameters": [
+            "Specifications",
+            "Pageable"
+          ],
+          "lineNumber": 30,
+          "sourceLink": "https://stash.maxxton.com/projects/MXTS/repos/customer-service/browse/src/main/java/com/maxxton/customer/service/CustomerService.java#30"
+        },
+        "deleteCustomer(Long)": {
+          "name": "deleteCustomer",
+          "description": "Delete an existing customer",
+          "parameters": [
+            "Long"
+          ],
+          "lineNumber": 59,
+          "sourceLink": "https://stash.maxxton.com/projects/MXTS/repos/customer-service/browse/src/main/java/com/maxxton/customer/service/CustomerService.java#59"
+        }
+      },
+      "sourceLink": "https://stash.maxxton.com/projects/MXTS/repos/customer-service/browse/src/main/java/com/maxxton/customer/service/CustomerService.java"
+    },
+    "OwnerService": {
+      "name": "com.maxxton.customer.service.OwnerService",
+      "type": "service",
+      "file": "com/maxxton/customer/service/OwnerService.java",
+      "description": "Owner service class\n\n Maxxton Group 2016",
+      "authors": [
+        "Sonke (r.sonke@maxxton.com)"
+      ],
+      "annotations": {
+        "Service": {}
+      },
+      "methods": {
+        "deleteOwner(Long)": {
+          "name": "deleteOwner",
+          "description": "Delete/remove an owner by id",
+          "parameters": [
+            "Long"
+          ],
+          "lineNumber": 110,
+          "sourceLink": "https://stash.maxxton.com/projects/MXTS/repos/customer-service/browse/src/main/java/com/maxxton/customer/service/OwnerService.java#110"
+        },
+        "getKeeper(Long)": {
+          "name": "getKeeper",
+          "description": "Get the owner keeper",
+          "parameters": [
+            "Long"
+          ],
+          "lineNumber": 134,
+          "sourceLink": "https://stash.maxxton.com/projects/MXTS/repos/customer-service/browse/src/main/java/com/maxxton/customer/service/OwnerService.java#134"
+        },
+        "getCurrentOwner(Long)": {
+          "name": "getCurrentOwner",
+          "description": "Get the current owner for a single unit",
+          "parameters": [
+            "Long"
+          ],
+          "lineNumber": 50,
+          "sourceLink": "https://stash.maxxton.com/projects/MXTS/repos/customer-service/browse/src/main/java/com/maxxton/customer/service/OwnerService.java#50"
+        },
+        "getAccountant(Long)": {
+          "name": "getAccountant",
+          "description": "Get the owner accountant",
+          "parameters": [
+            "Long"
+          ],
+          "lineNumber": 149,
+          "sourceLink": "https://stash.maxxton.com/projects/MXTS/repos/customer-service/browse/src/main/java/com/maxxton/customer/service/OwnerService.java#149"
+        },
+        "getOwners(Long,Specifications,Pageable)": {
+          "name": "getOwners",
+          "description": "Get a list of owners, filtered or not.",
+          "parameters": [
+            "Long",
+            "Specifications",
+            "Pageable"
+          ],
+          "lineNumber": 78,
+          "sourceLink": "https://stash.maxxton.com/projects/MXTS/repos/customer-service/browse/src/main/java/com/maxxton/customer/service/OwnerService.java#78"
+        },
+        "createOwner(Owner)": {
+          "name": "createOwner",
+          "description": "Create a new owner",
+          "parameters": [
+            "Owner"
+          ],
+          "lineNumber": 101,
+          "sourceLink": "https://stash.maxxton.com/projects/MXTS/repos/customer-service/browse/src/main/java/com/maxxton/customer/service/OwnerService.java#101"
+        },
+        "getOwnersByUnit(Long,Specifications,Pageable)": {
+          "name": "getOwnersByUnit",
+          "description": "Get all owners by a single unit",
+          "parameters": [
+            "Long",
+            "Specifications",
+            "Pageable"
+          ],
+          "lineNumber": 63,
+          "sourceLink": "https://stash.maxxton.com/projects/MXTS/repos/customer-service/browse/src/main/java/com/maxxton/customer/service/OwnerService.java#63"
+        },
+        "updateOwner(Owner)": {
+          "name": "updateOwner",
+          "description": "Update an existing owner",
+          "parameters": [
+            "Owner"
+          ],
+          "lineNumber": 121,
+          "sourceLink": "https://stash.maxxton.com/projects/MXTS/repos/customer-service/browse/src/main/java/com/maxxton/customer/service/OwnerService.java#121"
+        },
+        "getOwner(Long)": {
+          "name": "getOwner",
+          "description": "Get one owner by the id",
+          "parameters": [
+            "Long"
+          ],
+          "lineNumber": 91,
+          "sourceLink": "https://stash.maxxton.com/projects/MXTS/repos/customer-service/browse/src/main/java/com/maxxton/customer/service/OwnerService.java#91"
+        }
+      },
+      "sourceLink": "https://stash.maxxton.com/projects/MXTS/repos/customer-service/browse/src/main/java/com/maxxton/customer/service/OwnerService.java"
+    },
+    "PersonRepository": {
+      "name": "com.maxxton.customer.repository.PersonRepository",
+      "type": "repository",
+      "file": "com/maxxton/customer/repository/PersonRepository.java",
+      "description": "Repository class for persons\n\n Maxxton Group 2016",
+      "authors": [
+        "Sonke (r.sonke@maxxton.com)"
+      ],
+      "annotations": {
+        "Repository": {}
+      },
+      "sourceLink": "https://stash.maxxton.com/projects/MXTS/repos/customer-service/browse/src/main/java/com/maxxton/customer/repository/PersonRepository.java",
+      "methods": {}
+    },
+    "OwnerController": {
+      "name": "com.maxxton.customer.controller.OwnerController",
+      "type": "controller",
+      "file": "com/maxxton/customer/controller/OwnerController.java",
+      "description": "An owner rest controller\n\n Maxxton Group 2016",
+      "authors": [
+        "Sonke (r.sonke@maxxton.com)"
+      ],
+      "annotations": {
+        "RestController": {},
+        "RequestMapping": {
+          "properties": {
+            "value": "\"/api/v1/owners\""
+          }
+        }
+      },
+      "methods": {
+        "getOwnerAccountant(Long)": {
+          "name": "getOwnerAccountant",
+          "description": "Method to retrieve one single owner's accountant",
+          "parameters": [
+            "Long"
+          ],
+          "lineNumber": 114,
+          "sourceLink": "https://stash.maxxton.com/projects/MXTS/repos/customer-service/browse/src/main/java/com/maxxton/customer/controller/OwnerController.java#114"
+        },
+        "updateOwnerById(Long,Owner)": {
+          "name": "updateOwnerById",
+          "description": "Update an excisting Owner",
+          "parameters": [
+            "Long",
+            "Owner"
+          ],
+          "lineNumber": 142,
+          "sourceLink": "https://stash.maxxton.com/projects/MXTS/repos/customer-service/browse/src/main/java/com/maxxton/customer/controller/OwnerController.java#142"
+        },
+        "getCurrentOwner(Long)": {
+          "name": "getCurrentOwner",
+          "description": "Get the current owner for a single unit",
+          "parameters": [
+            "Long"
+          ],
+          "lineNumber": 48,
+          "sourceLink": "https://stash.maxxton.com/projects/MXTS/repos/customer-service/browse/src/main/java/com/maxxton/customer/controller/OwnerController.java#48"
+        },
+        "deleteOwnerById(Long)": {
+          "name": "deleteOwnerById",
+          "description": "Delete an excisting Owner",
+          "parameters": [
+            "Long"
+          ],
+          "lineNumber": 154,
+          "sourceLink": "https://stash.maxxton.com/projects/MXTS/repos/customer-service/browse/src/main/java/com/maxxton/customer/controller/OwnerController.java#154"
+        },
+        "getOwners(Long,Specifications,Pageable)": {
+          "name": "getOwners",
+          "description": "A get all owners call with optional filters",
+          "parameters": [
+            "Long",
+            "Specifications",
+            "Pageable"
+          ],
+          "lineNumber": 75,
+          "sourceLink": "https://stash.maxxton.com/projects/MXTS/repos/customer-service/browse/src/main/java/com/maxxton/customer/controller/OwnerController.java#75"
+        },
+        "getOwnerKeeper(Long)": {
+          "name": "getOwnerKeeper",
+          "description": "Method to retrieve one single owner's keeper",
+          "parameters": [
+            "Long"
+          ],
+          "lineNumber": 101,
+          "sourceLink": "https://stash.maxxton.com/projects/MXTS/repos/customer-service/browse/src/main/java/com/maxxton/customer/controller/OwnerController.java#101"
+        },
+        "createOwner(Owner)": {
+          "name": "createOwner",
+          "description": "Create a new Owner",
+          "parameters": [
+            "Owner"
+          ],
+          "lineNumber": 129,
+          "sourceLink": "https://stash.maxxton.com/projects/MXTS/repos/customer-service/browse/src/main/java/com/maxxton/customer/controller/OwnerController.java#129"
+        },
+        "getOwnersByUnit(Long,Specifications,Pageable)": {
+          "name": "getOwnersByUnit",
+          "description": "Get all owners by a single unit",
+          "parameters": [
+            "Long",
+            "Specifications",
+            "Pageable"
+          ],
+          "lineNumber": 61,
+          "sourceLink": "https://stash.maxxton.com/projects/MXTS/repos/customer-service/browse/src/main/java/com/maxxton/customer/controller/OwnerController.java#61"
+        },
+        "getOwnerById(Long)": {
+          "name": "getOwnerById",
+          "description": "Method to retrieve one single owner",
+          "parameters": [
+            "Long"
+          ],
+          "lineNumber": 88,
+          "sourceLink": "https://stash.maxxton.com/projects/MXTS/repos/customer-service/browse/src/main/java/com/maxxton/customer/controller/OwnerController.java#88"
+        }
+      },
+      "sourceLink": "https://stash.maxxton.com/projects/MXTS/repos/customer-service/browse/src/main/java/com/maxxton/customer/controller/OwnerController.java"
+    },
+    "CustomerRepository": {
+      "name": "com.maxxton.customer.repository.CustomerRepository",
+      "type": "repository",
+      "file": "com/maxxton/customer/repository/CustomerRepository.java",
+      "description": "Repository class for customers\n\n Maxxton Group 2016",
+      "authors": [
+        "Sonke (r.sonke@maxxton.com)"
+      ],
+      "annotations": {
+        "Repository": {}
+      },
+      "sourceLink": "https://stash.maxxton.com/projects/MXTS/repos/customer-service/browse/src/main/java/com/maxxton/customer/repository/CustomerRepository.java",
+      "methods": {}
+    },
+    "OwnerOwnershipRepository": {
+      "name": "com.maxxton.customer.repository.OwnerOwnershipRepository",
+      "type": "repository",
+      "file": "com/maxxton/customer/repository/OwnerOwnershipRepository.java",
+      "description": "OwnerOwnership repository\n\n Maxxton Group 2016",
+      "authors": [
+        "Hermans (r.hermans@maxxton.com)"
+      ],
+      "annotations": {
+        "Repository": {}
+      },
+      "sourceLink": "https://stash.maxxton.com/projects/MXTS/repos/customer-service/browse/src/main/java/com/maxxton/customer/repository/OwnerOwnershipRepository.java",
+      "methods": {}
+    },
+    "CustomerServiceApplication": {
+      "name": "com.maxxton.customer.CustomerServiceApplication",
+      "type": "application",
+      "file": "com/maxxton/customer/CustomerServiceApplication.java",
+      "description": "Maxxton Microservice main class for customer-service.",
+      "authors": [
+        "Sonke (r.sonke@maxxton.com)\n Maxxton Group 2016"
+      ],
+      "annotations": {
+        "SpringBootApplication": {},
+        "EnableMultiConcern": {},
+        "EnableCaching": {},
+        "EnableCircuitBreaker": {},
+        "EnableDiscoveryClient": {},
+        "EnableMaxxtonTools": {},
+        "EnableResourceServer": {}
+      },
+      "methods": {
+        "initApplication()": {
+          "name": "initApplication",
+          "description": "Initializes application.\n <p> Spring profiles can be configured with a program arguments --spring.profiles.active=your-active-profile",
+          "lineNumber": 59,
+          "sourceLink": "https://stash.maxxton.com/projects/MXTS/repos/customer-service/browse/src/main/java/com/maxxton/customer/CustomerServiceApplication.java#59"
+        }
+      },
+      "sourceLink": "https://stash.maxxton.com/projects/MXTS/repos/customer-service/browse/src/main/java/com/maxxton/customer/CustomerServiceApplication.java"
+    },
+    "OwnerRepository": {
+      "name": "com.maxxton.customer.repository.OwnerRepository",
+      "type": "repository",
+      "file": "com/maxxton/customer/repository/OwnerRepository.java",
+      "description": "Repository class for owners\n\n Maxxton Group 2016",
+      "authors": [
+        "Sonke (r.sonke@maxxton.com)"
+      ],
+      "annotations": {
+        "Repository": {}
+      },
+      "sourceLink": "https://stash.maxxton.com/projects/MXTS/repos/customer-service/browse/src/main/java/com/maxxton/customer/repository/OwnerRepository.java",
+      "methods": {}
+    },
+    "CustomerController": {
+      "name": "com.maxxton.customer.controller.CustomerController",
+      "type": "controller",
+      "file": "com/maxxton/customer/controller/CustomerController.java",
+      "description": "A controller class for customer rest api\n\n Maxxton Group 2016",
+      "authors": [
+        "Sonke (r.sonke@maxxton.com)"
+      ],
+      "annotations": {
+        "RestController": {},
+        "RequestMapping": {
+          "properties": {
+            "value": "\"/api/v1/customers\""
+          }
+        }
+      },
+      "methods": {
+        "getCustomerById(Long)": {
+          "name": "getCustomerById",
+          "description": "Method to retrieve one single customer",
+          "parameters": [
+            "Long"
+          ],
+          "lineNumber": 60,
+          "sourceLink": "https://stash.maxxton.com/projects/MXTS/repos/customer-service/browse/src/main/java/com/maxxton/customer/controller/CustomerController.java#60"
+        },
+        "updateCustomerById(Long,Customer)": {
+          "name": "updateCustomerById",
+          "description": "Update an excisting Customer",
+          "parameters": [
+            "Long",
+            "Customer"
+          ],
+          "lineNumber": 88,
+          "sourceLink": "https://stash.maxxton.com/projects/MXTS/repos/customer-service/browse/src/main/java/com/maxxton/customer/controller/CustomerController.java#88"
+        },
+        "deleteCustomerById(Long)": {
+          "name": "deleteCustomerById",
+          "description": "Delete an excisting Customer",
+          "parameters": [
+            "Long"
+          ],
+          "lineNumber": 100,
+          "sourceLink": "https://stash.maxxton.com/projects/MXTS/repos/customer-service/browse/src/main/java/com/maxxton/customer/controller/CustomerController.java#100"
+        },
+        "createCustomer(Customer)": {
+          "name": "createCustomer",
+          "description": "Create a new Customer",
+          "parameters": [
+            "Customer"
+          ],
+          "lineNumber": 75,
+          "sourceLink": "https://stash.maxxton.com/projects/MXTS/repos/customer-service/browse/src/main/java/com/maxxton/customer/controller/CustomerController.java#75"
+        },
+        "getCustomers(Specifications,Pageable)": {
+          "name": "getCustomers",
+          "description": "A get all customers call with optional filters",
+          "parameters": [
+            "Specifications",
+            "Pageable"
+          ],
+          "lineNumber": 47,
+          "sourceLink": "https://stash.maxxton.com/projects/MXTS/repos/customer-service/browse/src/main/java/com/maxxton/customer/controller/CustomerController.java#47"
+        }
+      },
+      "sourceLink": "https://stash.maxxton.com/projects/MXTS/repos/customer-service/browse/src/main/java/com/maxxton/customer/controller/CustomerController.java"
+    }
+  },
+  "swagger": "2.0"
+}

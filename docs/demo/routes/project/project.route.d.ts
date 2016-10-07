@@ -1,0 +1,37 @@
+import { ActivatedRoute, Router } from "@angular/router";
+import { Schema, Dependency } from "microdocs-core-ts/dist/domain";
+import { ProjectService } from "../../services/project.service";
+export declare class ProjectRoute {
+    private projectService;
+    private route;
+    private router;
+    private querySub;
+    private pathSub;
+    private projectSub;
+    private projectsSub;
+    private nodes;
+    private env;
+    private title;
+    private version;
+    private versions;
+    private project;
+    private loading;
+    private showModal;
+    private queryParams;
+    private pathParams;
+    private color;
+    private colorRanges;
+    private rest;
+    private database;
+    private uses;
+    private includes;
+    constructor(projectService: ProjectService, route: ActivatedRoute, router: Router);
+    ngOnInit(): void;
+    init(): void;
+    getColorByTitle(title: string): string;
+    loadProject(title: string, version: string, env: string): void;
+    ngOnDestroy(): void;
+    onChangeVersion(version: string): void;
+    getModelSourceLink(sourceLink: string, name: string, schema: Schema): string;
+    getDependencyLink(dependency: Dependency): string;
+}
