@@ -2,6 +2,9 @@
 import {Project} from "../domain/project.model";
 import {Builder} from "./builder";
 import {DependencyBuilder} from "./dependency.builder";
+import {ComponentBuilder} from "./component.builder";
+import {PathBuilder} from "./path.builder";
+import {ControllerBuilder} from "./controller.builder";
 
 export class ProjectBuilder implements Builder<Project>{
 
@@ -17,6 +20,9 @@ export class ProjectBuilder implements Builder<Project>{
   }
 
   dependency(dependencyBuilder:DependencyBuilder):void{
+    if(!dependencyBuilder.title || dependencyBuilder.title == ''){
+      throw new Error("No title found for client");
+    }
     if(!this._project.dependencies){
       this._project.dependencies = {};
     }
@@ -43,6 +49,26 @@ export class ProjectBuilder implements Builder<Project>{
     }else{
       this._project.dependencies[dependencyBuilder.title] = dependencyBuilder.build();
     }
+  }
+  
+  component(componentBuilder:ComponentBuilder):void{
+    if(!componentBuilder.title || componentBuilder.title == ''){
+      throw new Error("No title found for component");
+    }
+    this._project.components[componentBuilder.title] = componentBuilder.build();
+  }
+  
+  controller(controllerBuilder:ControllerBuilder):void{
+    controllerBuilder.build().forEach(pathBuilder => {
+      this.path(pathBuilder);
+    });
+  }
+  
+  path(pathBuilder:PathBuilder):void{
+    if(!componentBuilder.title || componentBuilder.title == ''){
+      throw new Error("No title found for component");
+    }
+    this._project.components[componentBuilder.title] = componentBuilder.build();
   }
 
 }

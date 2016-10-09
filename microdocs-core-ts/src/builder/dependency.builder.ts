@@ -7,7 +7,7 @@ export class DependencyBuilder implements Builder<Dependency> {
   private _dependency: Dependency;
   private _title: string;
 
-  constructor(type: string) {
+  constructor(type?: string) {
     this._dependency = {type: type};
   }
 
