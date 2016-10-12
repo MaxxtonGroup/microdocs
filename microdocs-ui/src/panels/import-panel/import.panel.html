@@ -1,0 +1,33 @@
+<modal [showModal]="showModal" (stateChanges)="setOpened($event)" title="Import Project" icon="file_upload">
+  <h5>Paste here your definitions </h5>
+  <div class="row">
+    <div class="large-12 columns">
+      <textarea placeholder="microdocs.json / swagger.json" (keyup)="onProjectInserted($event)"></textarea>
+    </div>
+    <div class="text-danger text-right">{{jsonError}}</div>
+  </div>
+  <template [ngIf]="project != null">
+    <div class="row">
+      <div class="large-4 columns">
+        <label>Project name</label>
+        <input type="text" placeholder="order-service" [(ngModel)]="projectInfo.title" name="title"/>
+      </div>
+    </div>
+    <div class="row">
+      <div class="large-4 columns">
+        <label>Group</label>
+        <input type="text" placeholder="Services" [(ngModel)]="projectInfo.group" name="group"/>
+      </div>
+    </div>
+    <div class="row">
+      <div class="large-4 columns">
+        <label>Version</label>
+        <input type="text" placeholder="1.0.0" [(ngModel)]="projectInfo.version" name="version"/>
+      </div>
+    </div>
+    <div class="row">
+      <button class="button" (click)="onSubmit()">Import</button>
+      <span class="text-danger">{{generalError}}</span>
+    </div>
+  </template>
+</modal>

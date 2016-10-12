@@ -30,6 +30,54 @@ sidebar-component {
     }
   }
 
+  .controls-box{
+    position: relative;
+    height: 65px;
+    border-top: 1px solid #eee;
+
+    a{
+      position: absolute;
+      display: inline-block;
+      height: 50px;
+      width: 33%;
+
+      .icon{
+        position: absolute;
+        width: 100%;
+        height: 80%;
+        top: 24%;
+        text-align: center;
+        font-size: 25px;
+      }
+
+      .control-text{
+        position: absolute;
+        display: none;
+        width: 100%;
+        top: 66%;
+        text-align: center;
+      }
+    }
+    a:hover, a:active{
+      background-color: #eee;
+    }
+    a.import-button{
+      display: none;
+      color: $green;
+    }
+    a.export-button{
+      display: none;
+      color: $blue;
+      width: 34%;
+      left: 33%;
+    }
+    a.settings-button{
+      color: $blue-gray;
+      right: 0;
+      width: 100%;
+    }
+  }
+
   a.microdocs-link{
     display: none;
     position: absolute;
@@ -173,6 +221,22 @@ sidebar-component {
       }
       .search-box input {
         display: initial;
+      }
+      .controls-box{
+        a{
+          .icon{
+            top: 10%;
+          }
+          .control-text{
+            display: inline-block;
+          }
+        }
+        .import-button, .export-button{
+          display: inline-block;
+        }
+        .settings-button{
+          width: 33%;
+        }
       }
       vertical-menu {
         .name {

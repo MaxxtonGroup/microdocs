@@ -20,9 +20,25 @@
         <vertical-menu [menu]="menu"></vertical-menu>
     </div>
 
+    <div class="controls-box">
+        <a (click)="showImportModal = true" class="import-button">
+            <span class="icon">file_upload</span>
+            <span class="control-text">Import</span>
+        </a>
+        <a (click)="showImportModal = true" class="export-button">
+            <span class="icon">file_download</span>
+            <span class="control-text">Export</span>
+        </a>
+        <a (click)="showImportModal = true" class="settings-button">
+            <span class="icon">settings</span>
+            <span class="control-text">Settings</span>
+        </a>
+    </div>
+
     <a (click)="showFullSideBar = !showFullSideBar" class="change-width">
         <span class="icon" [hidden]="!showFullSideBar">keyboard_arrow_left</span>
         <span class="icon" [hidden]="showFullSideBar">keyboard_arrow_right</span>
     </a>
     <a class="microdocs-link" target="_blank" [href]="'http://www.microdocs.io'">microdocs.io</a>
 </div>
+<import-panel [showModal]="showImportModal" (stateChanges)="showImportModal = $event"></import-panel>

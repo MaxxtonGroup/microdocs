@@ -8,15 +8,17 @@ import {ProjectService} from "../../services/project.service";
 import {Observable} from "rxjs/Observable";
 import {TreeNode} from 'microdocs-core-ts/dist/domain';
 import {DashboardRoute} from "../../routes/dashboard/dashboard";
+import {ImportPanel} from "../import-panel/import.panel";
 
 @Component({
   selector: 'sidebar-component',
   templateUrl: 'sidebar.panel.html',
-  directives: [ROUTER_DIRECTIVES, COMPONENTS]
+  directives: [ROUTER_DIRECTIVES, COMPONENTS, ImportPanel]
 })
 
 export class SidebarComponent {
   private user = {};
+  showImportModal = false;
   
   @HostBinding('class.big')
   private showFullSideBar:boolean = true;
