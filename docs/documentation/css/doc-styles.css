@@ -16,6 +16,7 @@ article.selectable{
     color: black;
     border: rgb(211, 218, 234) 1px solid;
     font-family: monospace;
+    white-space: nowrap;
 }
 
 .selectable .text code.block{

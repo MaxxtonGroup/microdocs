@@ -20,9 +20,9 @@
     </div>
     <h4 class="theme-fg-color">Use the Gradle plugin</h4>
     <div class="text">
-        <code class="block">
-          <span class="code-title light-gray">gradle.build</span>
-          <pre class="code-block">buildscript {
+      <code class="block">
+        <span class="code-title light-gray">gradle.build</span>
+        <pre class="code-block">buildscript {
   depencencies {
     classpath("com.maxxton:microdocs-crawler-gradle:1.+")
   }
@@ -55,7 +55,7 @@ publishMicroDocs {
   //password = "password"
   //reportFile = project.reporting.file('./microdocs.json'); // where to find the MicroDocs report
 }</pre>
-        </code>
+      </code>
     </div>
     <h2 class="theme-fg-color">Conventions</h2>
     <div class="text">
@@ -67,19 +67,22 @@ publishMicroDocs {
     <h4 class="theme-fg-color">Project info</h4>
     <div class="text">
       <p>
-        In Spring Boot applicaties you have a main class with the annotation <code>@SpringBootApplication</code>. The JavaDoc of that
+        In Spring Boot applicaties you have a main class with the annotation <code>@SpringBootApplication</code>. The
+        JavaDoc of that
         class is used as the description of the project.
       </p>
     </div>
     <h4 class="theme-fg-color">Rest Endpoints</h4>
     <div class="text">
       <p>
-        With Spring MVC you define your controllers with <code>@RestController</code>. The methods with <code>@RequestMapping</code> in that class
+        With Spring MVC you define your controllers with <code>@RestController</code>. The methods with <code>@RequestMapping</code>
+        in that class
         are used to define the Endpoints itself. The JavaDocs in combination with <code>@RequestParam</code>, <code>@PathVariable</code>,
         <code>@RequestBody</code> and the return type are used to extract the endpoint definitions.
       </p>
       <p>
-        Additional the JavaDoc tag <code>@response</code> can be used to documentate the possible response codes. For example:
+        Additional the JavaDoc tag <code>@response</code> can be used to documentate the possible response codes. For
+        example:
         …
       </p>
     </div>
@@ -87,7 +90,8 @@ publishMicroDocs {
     <div class="text">
       <p>
         The Netflix Feign library is an easy way to make Http calls to other web services.Above the client class you
-        must set the <code>@FeignClient</code> annotation, with the same name/serviceId as the project it depends on. It is used the
+        must set the <code>@FeignClient</code> annotation, with the same name/serviceId as the project it depends on. It
+        is used the
         same annotations as Spring MVC. MicroDocs make use of these annotations to extract client endpoints from a
         project. This is done the same way as with extracting Rest Endpoint definitions.
       </p>
@@ -103,10 +107,11 @@ publishMicroDocs {
     <h4 class="theme-fg-color">Documentation example</h4>
     <div class="text">
       <p>
-        On the left side is a code preview on how documentation in a Spring Boot application reflects in MicroDocs on the right side.
+        On the left side is a code preview on how documentation in a Spring Boot application reflects in MicroDocs on
+        the right side.
       </p>
     </div>
-    <img src="images/documentation-example.png" width="100%" />
+    <img src="images/documentation-example.png" width="100%"/>
   </article>
 </template>
 <script>

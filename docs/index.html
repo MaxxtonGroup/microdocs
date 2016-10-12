@@ -1,37 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="MicroDocs is an unique open source solution for the RestAPI Documentation. It has the ability to organise many project and keeps track of different versions on different environments.">
-    <meta name="keywords" content="MicroDocs,Http,Rest,Api,Documentation,Definitions,Swagger,Open Api,Api blueprints,specifications,postman,test,server,standalone,spring framework,detect breaking changes,continuous integration,tool">
-    <meta name="author" content="Steven Hermans (s.hermans@maxxton.com)">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+        content="MicroDocs is an unique open source solution for the RestAPI Documentation. It has the ability to organise many project and keeps track of different versions on different environments.">
+  <meta name="keywords"
+        content="MicroDocs,Http,Rest,Api,Documentation,Definitions,Swagger,Open Api,Api blueprints,specifications,postman,test,server,standalone,spring framework,detect breaking changes,continuous integration,tool">
+  <meta name="author" content="Steven Hermans (s.hermans@maxxton.com)">
 
-    <title>MicroDocs - Documentation that scales with your MicroServices</title>
+  <title>MicroDocs - Documentation that scales with your MicroServices</title>
 
-    <link rel="shortcut icon" href="assets/images/microdocs.png">
+  <link rel="shortcut icon" href="assets/images/microdocs.png">
 
-    <link rel="stylesheet" media="screen" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
-    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
-    <link rel="stylesheet" href="assets/css/font-awesome.min.css">
+  <link rel="stylesheet" media="screen" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
+  <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+  <link rel="stylesheet" href="assets/css/font-awesome.min.css">
 
-    <!-- Custom styles for our template -->
-    <link rel="stylesheet" href="assets/css/bootstrap-theme.css" media="screen">
-    <link rel="stylesheet" href="assets/css/main.css">
+  <!-- Custom styles for our template -->
+  <link rel="stylesheet" href="assets/css/bootstrap-theme.css" media="screen">
+  <link rel="stylesheet" href="assets/css/main.css">
 
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-    <script src="assets/js/html5shiv.js"></script>
-    <script src="assets/js/respond.min.js"></script>
-    <![endif]-->
+  <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!--[if lt IE 9]>
+  <script src="assets/js/html5shiv.js"></script>
+  <script src="assets/js/respond.min.js"></script>
+  <![endif]-->
 </head>
 
 <body class="home">
 <script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  (function (i, s, o, g, r, a, m) {
+    i['GoogleAnalyticsObject'] = r;
+    i[r] = i[r] || function () {
+          (i[r].q = i[r].q || []).push(arguments)
+        }, i[r].l = 1 * new Date();
+    a = s.createElement(o),
+        m = s.getElementsByTagName(o)[0];
+    a.async = 1;
+    a.src = g;
+    m.parentNode.insertBefore(a, m)
+  })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
 
   ga('create', 'UA-82983000-1', 'auto');
   ga('send', 'pageview');
@@ -40,142 +49,156 @@
 
 <!-- Fixed navbar -->
 <div class="navbar navbar-inverse navbar-fixed-top headroom">
-    <div class="container">
-        <div class="navbar-header">
-            <!-- Button for smallest screens -->
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span></button>
-            <a class="navbar-brand" href="index.html">
-                <img src="assets/images/microdocs.png" style="height: 50px" alt="Progressus HTML5 template">
-                <span class="blue">Micro</span><span class="orange">Docs</span>
-            </a>
-        </div>
-        <div class="navbar-collapse collapse">
-            <ul class="nav navbar-nav pull-right">
-                <li class="active"><a href="#">Home</a></li>
-                <li><a href="documentation/#!home/get-started">Get started</a></li>
-                <li><a href="documentation/">Documentation</a></li>
-                <li><a href="https://github.com/MaxxtonGroup/microdocs"><i class="fa fa-github fa-2"></i> Github</a></li>
-            </ul>
-        </div><!--/.nav-collapse -->
+  <div class="container">
+    <div class="navbar-header">
+      <!-- Button for smallest screens -->
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+        <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span></button>
+      <a class="navbar-brand" href="index.html">
+        <img src="assets/images/microdocs.png" style="height: 50px" alt="Progressus HTML5 template">
+        <span class="blue">Micro</span><span class="orange">Docs</span>
+      </a>
     </div>
+    <div class="navbar-collapse collapse">
+      <ul class="nav navbar-nav pull-right">
+        <li class="active"><a href="#">Home</a></li>
+        <li><a href="demo/">Demo</a></li>
+        <li><a href="documentation/#!home/get-started">Get started</a></li>
+        <li><a href="documentation/">Documentation</a></li>
+        <li><a href="https://github.com/MaxxtonGroup/microdocs"><i class="fa fa-github fa-2"></i> Github</a></li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div>
 </div>
 <!-- /.navbar -->
 
 <!-- Header -->
 <header id="head">
-    <div class="container">
-        <div class="row">
-            <img class="logo1" src="assets/images/microdocs-white.png" />
-            <img class="logo2" src="assets/images/microdocs-white.png" />
-            <h1 class="lead">Documentation that scales with your <br>Microservices</h1>
-            <p class="tagline">MicroDocs is created and proven by
-                <a href="https://maxxton.com" target="_blank">Maxxton</a>
-            </p>
-            <p>
-                <a href="documentation/#!home/get-started" class="btn btn-action btn-lg" role="button">Get Started</a>
-            </p>
-        </div>
+  <div class="container">
+    <div class="row">
+      <img class="logo1" src="assets/images/microdocs-white.png"/>
+      <img class="logo2" src="assets/images/microdocs-white.png"/>
+      <h1 class="lead">Documentation that scales with your <br>Microservices</h1>
+      <p class="tagline">MicroDocs is created and proven by
+        <a href="https://maxxton.com" target="_blank">Maxxton</a>
+      </p>
+      <p>
+        <a href="documentation/#!home/get-started" class="btn btn-action btn-lg" role="button">Get Started</a>
+      </p>
     </div>
+  </div>
 </header>
 <!-- /Header -->
 
 <!-- Intro -->
 <div class="container text-center">
-    <br> <br>
-    <h2 class="thin">MicroDocs centralises your RestAPI Documentation and keeps it organised!</h2>
-    <p class="text-muted">
-        MicroDocs is an unique open source solution for the RestAPI Documentation.
-        It has the ability to organise many project and keeps track of different versions on different environments.
-    </p>
+  <br> <br>
+  <h2 class="thin">MicroDocs centralises your RestAPI Documentation and keeps it organised!</h2>
+  <p class="text-muted">
+    MicroDocs is an unique open source solution for the RestAPI Documentation.
+    It gives you the ability to organise many projects and keeps track of different versions on different environments.
+  </p>
 </div>
 <!-- /Intro-->
-
+<div class="container text-center preview">
+  <h3 class="thin">Easy Setup with Docker</h3>
+  <br>
+  <code>docker run --name <span class="highlight">microdocs</span> -p <span class="highlight">3000</span>:3000 -d
+    maxxton/microdocs</code>
+</div>
 <div class="container text-center">
+  <a href="demo">
     <img src="assets/images/screenshot-1.png" class="screenshot">
+  </a>
+  <a href="demo">
     <img src="assets/images/screenshot-2.png" class="screenshot">
+  </a>
 </div>
 
 <!-- Highlights - jumbotron -->
 <div class="jumbotron top-space">
-    <div class="container">
+  <div class="container">
 
-        <h3 class="text-center thin">Reasons to use MicroDocs</h3>
+    <h3 class="text-center thin">Reasons to use MicroDocs</h3>
 
-        <div class="row">
-            <div class="col-md-3 col-sm-6 highlight">
-                <div class="h-caption"><h4><i class="fa fa-heart fa-5"></i>Never break anything</h4></div>
-                <div class="h-body text-center">
-                    <p>
-                        MicroDocs detects breaking changes in RestAPI calls between projects.
-                        So you are always aware when you break something and never face the problem again of incompatible RestAPI's
-                    </p>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-6 highlight">
-                <div class="h-caption"><h4><i class="fa fa-flash fa-5"></i>Framework supported</h4></div>
-                <div class="h-body text-center">
-                    <p>
-                        MicroDocs has currently a Crawler for the <strong>Spring Framework</strong>. But because MicroDocs is compatible with the OpenApi specifictations, you can also use <a href="http://swagger.io/open-source-integrations/">Swagger Tools</a>
-                    </p>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-6 highlight">
-                <div class="h-caption"><h4><i class="fa fa-cogs fa-5"></i>Continuous Integration</h4></div>
-                <div class="h-body text-center">
-                    <p>MicroDocs fits perfectly in your CI or CD pipeline. There are currently plugins for Jenkins and Gradle, besides that does MicroDocs works well with <a href="http://swagger.io/open-source-integrations/">Swagger Tools</a> and <a href="https://apiblueprint.org/tools.html">Api Blueprint Tools</a></p>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-6 highlight">
-                <div class="h-caption"><h4><i class="fa fa-smile-o fa-5"></i>Keep in control of your RestAPI</h4></div>
-                <div class="h-body text-center">
-                    <p>
-                        You are in control of your own MicroDocs server. Browse and explore your Api's using the web interface.
-                    </p>
-                </div>
-            </div>
-        </div> <!-- /row  -->
+    <div class="row">
+      <div class="col-md-3 col-sm-6 highlight">
+        <div class="h-caption"><h4><i class="fa fa-heart fa-5"></i>Never break anything</h4></div>
+        <div class="h-body text-center">
+          <p>
+            MicroDocs detects breaking changes in RestAPI calls between projects.
+            So you are always aware when you break something and never face the problem again of incompatible RestAPI's
+          </p>
+        </div>
+      </div>
+      <div class="col-md-3 col-sm-6 highlight">
+        <div class="h-caption"><h4><i class="fa fa-flash fa-5"></i>Framework supported</h4></div>
+        <div class="h-body text-center">
+          <p>
+            MicroDocs has currently a Crawler for the <strong>Spring Framework</strong>. But because MicroDocs is
+            compatible with the OpenApi specifictations, you can also use <a
+              href="http://swagger.io/open-source-integrations/">Swagger Tools</a>
+          </p>
+        </div>
+      </div>
+      <div class="col-md-3 col-sm-6 highlight">
+        <div class="h-caption"><h4><i class="fa fa-cogs fa-5"></i>Continuous Integration</h4></div>
+        <div class="h-body text-center">
+          <p>MicroDocs fits perfectly in your CI or CD pipeline. There are currently plugins for Jenkins and Gradle,
+            besides that does MicroDocs works well with <a href="http://swagger.io/open-source-integrations/">Swagger
+              Tools</a> and <a href="https://apiblueprint.org/tools.html">Api Blueprint Tools</a></p>
+        </div>
+      </div>
+      <div class="col-md-3 col-sm-6 highlight">
+        <div class="h-caption"><h4><i class="fa fa-smile-o fa-5"></i>Keep in control of your RestAPI</h4></div>
+        <div class="h-body text-center">
+          <p>
+            You are in control of your own MicroDocs server. Browse and explore your Api's using the web interface.
+          </p>
+        </div>
+      </div>
+    </div> <!-- /row  -->
 
-    </div>
+  </div>
 </div>
 <!-- /Highlights -->
 
 <!-- container -->
 <div class="container">
-    <h2 class="text-center top-space">Get started now!</h2>
-    <br>
-    <p class="text-center"><a class="btn btn-primary btn-large">Get started</a></p>
+  <h2 class="text-center top-space">Get started now!</h2>
+  <br>
+  <p class="text-center"><a class="btn btn-primary btn-large">Get started</a></p>
 </div>
 
 
 <footer id="footer" class="top-space">
 
-    <div class="footer2">
-        <div class="container">
-            <div class="row">
+  <div class="footer2">
+    <div class="container">
+      <div class="row">
 
-                <div class="col-md-6 widget">
-                    <div class="widget-body">
-                        <p class="simplenav">
-                            <a href="#">Home</a> |
-                            <a href="documentation/#!home/get-started">Get started</a> |
-                            <a href="documentation/">Documentation</a> |
-                            <a href="https://github.com/MaxxtonGroup/microdocs"><i class="fa fa-github fa-2"></i> Github</a>
-                        </p>
-                    </div>
-                </div>
-
-                <div class="col-md-6 widget">
-                    <div class="widget-body">
-                        <p class="text-right">
-                            Copyright &copy; 2016, <a href="https://maxxton.com">Maxxton Group</a>
-                        </p>
-                    </div>
-                </div>
-
-            </div> <!-- /row of widgets -->
+        <div class="col-md-6 widget">
+          <div class="widget-body">
+            <p class="simplenav">
+              <a href="#">Home</a> |
+              <a href="documentation/#!home/get-started">Get started</a> |
+              <a href="documentation/">Documentation</a> |
+              <a href="https://github.com/MaxxtonGroup/microdocs"><i class="fa fa-github fa-2"></i> Github</a>
+            </p>
+          </div>
         </div>
+
+        <div class="col-md-6 widget">
+          <div class="widget-body">
+            <p class="text-right">
+              Copyright &copy; 2016, <a href="https://maxxton.com">Maxxton Group</a>
+            </p>
+          </div>
+        </div>
+
+      </div> <!-- /row of widgets -->
     </div>
+  </div>
 
 </footer>
 
@@ -184,7 +207,7 @@
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
 <script src="assets/js/headroom.min.js"></script>
-<script src="assets/js/jQuery.headroom.min.js"></script>
-<script src="assets/js/template.js"></script>
+<!--<script src="assets/js/jQuery.headroom.min.js"></script>-->
+<!--<script src="assets/js/template.js"></script>-->
 </body>
 </html>

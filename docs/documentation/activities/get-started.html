@@ -1,52 +1,61 @@
 <template activity="get-started">
-    <article class="selectable">
-        <h1 class="theme-fg-color">Get started</h1>
-        <div class="text">
-            <p>MicroDocs consists out of crawlers, server, ui and integrations tools.
-                <strong>Crawlers</strong> generates definitions from the source code of a project.
-                These definitions are then published at the MicroDocs server.
-                The <strong>server</strong> then checks for compatibility problems and aggregate the result.
-                The <strong>ui</strong> or other <strong>integration tools</strong> request the result through the
-                RestApi
-                of the server.</p>
-        </div>
+  <article class="selectable">
+    <h1 class="theme-fg-color">Get started</h1>
+    <div class="text">
+      <p>
+        MicroDocs consists of a central server which stores all definitions on one place and a crawler which extracts
+        definitions from the source code of a project.
+      </p>
+    </div>
 
-        <h2 class="theme-fg-color">Setup MicroDocs Server</h2>
-        <div class="text">
-            <p>The MicroDocs server with the ui is available on <a href="https://hub.docker.com/r/maxxton/microdocs/">dockerhub</a>.
-                To install via Docker run:</p>
-            <pre><code>$ docker run --name microdocs -v /microdocs-server/data -p 3000:3000 -d maxxton/microdocs
-</code></pre>
-        </div>
+    <h2 class="theme-fg-color">Setup MicroDocs Server</h2>
+    <div class="text">
+      <p>
+        Docker is a virualisation tool, which makes it easy to run applications. To get started with Docker see this
+        <a href="https://www.docker.com/">link</a>.
+      </p>
+      <p>
+        If you have Docker up and running, you can start the MicroDocs server with the following command:
+        <code class="block">
+          <span class="code-block">$ docker run --name microdocs -p 3000:3000 -d maxxton/microdocs</span>
+        </code>
+      <ul>
+        <li>The <code>--name microdocs</code> argument defines the name of the container.</li>
+        <li><code>-p 3000:3000</code> sets the port mapping from 3000 on your host to 3000 inside the container.</li>
+        <li>You can also adds mapping of the storage folder inside the MicroDocs server by adding the <code>-v
+          /my/data:/microdocs/microdocs-server/data</code> argument where <code>/my/data</code> is the folder on your
+          host to store the data and <code>/microdocs/microdocs-server/data</code> is the folder inside the container
+          where the data is located.
+        </li>
+      </ul>
+      </p>
+    </div>
 
-        <h2 class="theme-fg-color">Setup Crawlers</h2>
-        <div class="text">
-            <p>Crawlers are project and framework specific. Currently only the Spring framework is supported.
-                The setup for each Crawler can be found in their subdirectories</p>
-        </div>
-
-        <h2 class="theme-fg-color">Setup Integrations tools</h2>
-        <div class="text">
-            <p>Integrations tools have their own setup. They can be found in their subdirectories</p>
-        </div>
-    </article>
-    </body></html>
+    <h2 class="theme-fg-color">Setup Crawlers</h2>
+    <div class="text">
+      <p>
+        Crawlers are language and framework specific. See the <a href="#!home/crawlers" class="fg-red">Crawlers</a>
+        section for how to setup a crawler for your project.
+      </p>
+    </div>
+  </article>
+  </body></html>
 </template>
 <script>
-    app.activity("get-started", function () {
+  app.activity("get-started", function () {
 
-        this.title = "Get Started";
-        this.icon = "mdi-av-play-circle-fill";
-        this.hOptions = {size: "medium"};
+    this.title = "Get Started";
+    this.icon = "mdi-av-play-circle-fill";
+    this.hOptions = {size: "medium"};
 
-        this.onCreate = function () {
-            setTimeout(function () {
-                app.setTheme("green");
-            }, 20);
-        };
+    this.onCreate = function () {
+      setTimeout(function () {
+        app.setTheme("green");
+      }, 20);
+    };
 
-        this.onDestroy = function () {
-            app.setTheme(app.color);
-        };
-    });
+    this.onDestroy = function () {
+      app.setTheme(app.color);
+    };
+  });
 </script>

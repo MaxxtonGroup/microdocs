@@ -1,0 +1,2 @@
+"use strict";
+exports.GET = 'get', exports.POST = 'post', exports.PUT = 'put', exports.PATCH = 'patch', exports.DELETE = 'delete', exports.OPTIONS = 'options', exports.TRACE = 'trace', exports.CONNECT = 'connect', exports.HEAD = 'head', exports.PROPFIND = 'propfind', exports.PROPPATCH = 'poppatch', exports.MKCOL = 'mkcol', exports.COPY = 'copy', exports.MOVE = 'move', exports.LOCK = 'lock', exports.UNLOCK = 'unlock', exports.LINK = 'link', exports.UNLINK = 'unlink';
