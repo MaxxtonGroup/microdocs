@@ -6,7 +6,6 @@ import {ComponentBuilder} from "./component.builder";
 import {PathBuilder} from "./path.builder";
 import {ControllerBuilder} from "./controller.builder";
 import {Schema} from "../domain/schema/schema.model";
-import * as PathUtil from 'path';
 
 export class ProjectBuilder implements Builder<Project>{
 
@@ -67,7 +66,7 @@ export class ProjectBuilder implements Builder<Project>{
   }
   
   path(pathBuilder:PathBuilder, basePath:string='', requestMethods:string[]=[]):void{
-    var path = PathUtil.join(basePath, pathBuilder.path);
+    var path = basePath + pathBuilder.path;
     var requestMethods = pathBuilder.methods.concat(requestMethods).map(method => method.toLowerCase());
     if(!path || path == ''){
       throw new Error("No path found for endpoint");
@@ -76,11 +75,14 @@ export class ProjectBuilder implements Builder<Project>{
       throw new Error("No request methods found for endpoint");
     }
 
+    if(!this._project.paths){
+      this._project.paths = {};
+    }
     if(!this._project.paths[path]){
       this._project.paths[path] = {};
     }
     requestMethods.forEach(method => {
-      this._project.paths[pathBuilder.path][pathBuilder.methods] = pathBuilder.build();
+      this._project.paths[pathBuilder.path][method] = pathBuilder.build();
     });
   }
 

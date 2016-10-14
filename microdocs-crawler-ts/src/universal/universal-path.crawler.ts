@@ -9,7 +9,7 @@ import {Parameter} from 'microdocs-core-ts/dist/domain';
 import {QUERY, BODY, PATH} from 'microdocs-core-ts/dist/domain/path/parameter-placing.model';
 import {HTTP_METHODS} from "../common/domain/http-methods";
 import {AbstractCrawler} from "../common/abstract/abstract.crawler";
-import * as helper from '../common/helpers/crawler.helper';
+import * as helper from '../common/helpers';
 
 export class UniversalPathCrawler extends PathCrawler {
 
@@ -49,16 +49,17 @@ export class UniversalPathCrawler extends PathCrawler {
   }
 
   private crawlPath(tag: CommentTag, signature: SignatureReflection, pathBuilder: PathBuilder) {
-    var tag = this.convertCommentTag(tag);
+    var tag = helper.transformCommentTag(tag);
     var reflectParameter = this.findParameter(signature, tag.paramName);
-    if (reflectParameter) {
-      var param: Parameter = {
-        name: tag.paramName,
-        description: tag.text.trim(),
-        'in': PATH,
-        type: reflectParameter.type.toString(),
-        required: true
-      };
+    var param: Parameter = {
+      name: tag.paramName,
+      description: tag.text.trim(),
+      'in': PATH,
+      required: true
+    };
+    if(reflectParameter) {
+      param.type = reflectParameter.type.toString();
+
       if (reflectParameter.defaultValue) {
         try {
           var result = helper.evalArgument(reflectParameter.defaultValue);
@@ -66,30 +67,29 @@ export class UniversalPathCrawler extends PathCrawler {
         } catch (e) {
         }
       }
-      if (!pathBuilder.endpoint.parameters) {
-        pathBuilder.endpoint.parameters = [];
-      }
-      pathBuilder.endpoint.parameters.push(param);
-    } else {
-      throw new Error("Could not find parameter " + tag.paramName);
     }
+
+    if (!pathBuilder.endpoint.parameters) {
+      pathBuilder.endpoint.parameters = [];
+    }
+    pathBuilder.endpoint.parameters.push(param);
   }
 
   private crawlQuery(tag: CommentTag, signature: SignatureReflection, pathBuilder: PathBuilder) {
-    var tag = this.convertCommentTag(tag);
+    var tag = helper.transformCommentTag(tag);
     var reflectParameter = this.findParameter(signature, tag.paramName);
-    var required = true;
-    if (reflectParameter.flags && reflectParameter.flags.length > 0 && reflectParameter.flags[0] === "Optional") {
-      required = false;
-    }
-    if (reflectParameter) {
-      var param: Parameter = {
-        name: tag.paramName,
-        description: tag.text.trim(),
-        'in': QUERY,
-        type: reflectParameter.type.toString(),
-        required: required
-      };
+    var param: Parameter = {
+      name: tag.paramName,
+      description: tag.text.trim(),
+      'in': QUERY,
+      required: true
+    };
+    if(reflectParameter) {
+      param.type = reflectParameter.type.toString();
+      if (reflectParameter.flags && reflectParameter.flags.length > 0 && reflectParameter.flags[0] === "Optional") {
+        param.required = false;
+      }
+
       if (reflectParameter.defaultValue) {
         param.required = false;
         try {
@@ -98,35 +98,15 @@ export class UniversalPathCrawler extends PathCrawler {
         } catch (e) {
         }
       }
-      if (!pathBuilder.endpoint.parameters) {
-        pathBuilder.endpoint.parameters = [];
-      }
-      pathBuilder.endpoint.parameters.push(param);
-    } else {
-      throw new Error("Could not find parameter " + tag.paramName);
     }
-  }
+    if(tag.optional){
+      param.required = false;
+    }
 
-  private convertCommentTag(tag: CommentTag): CommentTag {
-    if (tag.text) {
-      var paramName: string;
-      var text: string;
-      var slices = tag.text.trim().split(" ");
-      if (slices.length > 0) {
-        paramName = slices[0];
-        if (slices.length > 1) {
-          for (var i = 1; i < slices.length; i++) {
-            if (text) {
-              text += ' ' + slices[i];
-            } else {
-              text = slices[i];
-            }
-          }
-        }
-        return new CommentTag(tag.tagName, paramName, text);
-      }
+    if (!pathBuilder.endpoint.parameters) {
+      pathBuilder.endpoint.parameters = [];
     }
-    return tag;
+    pathBuilder.endpoint.parameters.push(param);
   }
 
   private findParameter(signature: SignatureReflection, paramName: string): ParameterReflection {

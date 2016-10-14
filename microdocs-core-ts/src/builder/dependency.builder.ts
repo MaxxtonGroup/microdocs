@@ -1,7 +1,6 @@
 import {Dependency} from "../domain/dependency/dependency.model";
 import {Builder} from "./builder";
 import {PathBuilder} from "./path.builder";
-import * as PathUtil from 'path';
 
 export class DependencyBuilder implements Builder<Dependency> {
 
@@ -31,7 +30,7 @@ export class DependencyBuilder implements Builder<Dependency> {
   }
 
   path(pathBuilder: PathBuilder): void {
-    var path = PathUtil.join(this.baseUrl, pathBuilder.path);
+    var path = this.basePath + pathBuilder.path;
     var requestMethods = pathBuilder.methods.concat(this.requestMethods).map(method => method.toLowerCase());
 
     if(!path || path == ''){

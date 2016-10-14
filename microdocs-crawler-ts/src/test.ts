@@ -2,7 +2,7 @@
 import {MicroDocsCrawler} from "./microdocs-crawler";
 
 var sources = [
-  'C:\\Users\\hermans.s.MAXXTONBV\\projects\\microdocs\\microdocs-ui\\src\\app\\main.ts'
+  'C:\\Users\\hermans.s.MAXXTONBV\\projects\\microdocs\\microdocs-server\\src\\app.ts'
   // 'C:\\Users\\hermans.s.MAXXTONBV\\projects\\maxxton-frontend\\services-library\\src\\maxxton-services.ts',
   // 'C:\\Users\\hermans.s.MAXXTONBV\\projects\\maxxton-frontend\\services-library\\src\\services\\index.ts'
 ];

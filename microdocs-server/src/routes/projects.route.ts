@@ -7,10 +7,20 @@ import {ProjectJsonRepository} from "../repositories/json/project-json.repo";
 import {ResponseHelper} from "./responses/response.helper";
 import {TreeNode} from 'microdocs-core-ts/dist/domain';
 
+/**
+ * @controller
+ */
 export class ProjectsRoute extends BaseRoute {
 
   mapping = {methods: ['get'], path: '/projects', handler: this.projects};
 
+  /**
+   * @get /projects
+   * @httpQuery ?env {string}
+   * @httpQuery ?groups {string[]} filter to include or exclude groups with a '!' in front
+   * @httpQuery ?projects {string[]} filter to include or exclude groups with a '!' in front
+   * @httpResponse 200 {TreeNode}
+   */
   public projects(req: express.Request, res: express.Response, next: express.NextFunction) {
     var handler = ResponseHelper.getHandler(req);
     try {

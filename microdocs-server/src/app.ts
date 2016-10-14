@@ -19,8 +19,9 @@ import {PublishRoute} from "./routes/publish.route";
 import {EnvRoute} from "./routes/env.route";
 
 /**
- * The server.
- *
+ * The MicroDocs server
+ * @projectName microdocs-server
+ * @projectGroup MicroDocs
  * @class Server
  */
 class Server {
