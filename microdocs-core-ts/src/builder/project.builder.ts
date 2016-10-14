@@ -5,6 +5,8 @@ import {DependencyBuilder} from "./dependency.builder";
 import {ComponentBuilder} from "./component.builder";
 import {PathBuilder} from "./path.builder";
 import {ControllerBuilder} from "./controller.builder";
+import {Schema} from "../domain/schema/schema.model";
+import * as PathUtil from 'path';
 
 export class ProjectBuilder implements Builder<Project>{
 
@@ -60,15 +62,36 @@ export class ProjectBuilder implements Builder<Project>{
   
   controller(controllerBuilder:ControllerBuilder):void{
     controllerBuilder.build().forEach(pathBuilder => {
-      this.path(pathBuilder);
+      this.path(pathBuilder, controllerBuilder.baseUrl, controllerBuilder.requestMethods);
     });
   }
   
-  path(pathBuilder:PathBuilder):void{
-    if(!componentBuilder.title || componentBuilder.title == ''){
-      throw new Error("No title found for component");
+  path(pathBuilder:PathBuilder, basePath:string='', requestMethods:string[]=[]):void{
+    var path = PathUtil.join(basePath, pathBuilder.path);
+    var requestMethods = pathBuilder.methods.concat(requestMethods).map(method => method.toLowerCase());
+    if(!path || path == ''){
+      throw new Error("No path found for endpoint");
     }
-    this._project.components[componentBuilder.title] = componentBuilder.build();
+    if(!requestMethods || requestMethods.length == 0){
+      throw new Error("No request methods found for endpoint");
+    }
+
+    if(!this._project.paths[path]){
+      this._project.paths[path] = {};
+    }
+    requestMethods.forEach(method => {
+      this._project.paths[pathBuilder.path][pathBuilder.methods] = pathBuilder.build();
+    });
+  }
+
+  model(schema:Schema):void{
+    if(!schema.name || schema.name == ''){
+      throw new Error("No name found for schema");
+    }
+    if(!this._project.definitions){
+      this._project.definitions = {};
+    }
+    this._project.definitions[schema.name] = schema;
   }
 
 }

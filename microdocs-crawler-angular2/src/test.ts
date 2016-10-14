@@ -1,5 +1,5 @@
 
-import {TypescriptCrawler} from "./typescript-crawler";
+import {MicroDocsCrawler} from "./microdocs-crawler";
 
 var sources = [
   'C:\\Users\\hermans.s.MAXXTONBV\\projects\\microdocs\\microdocs-ui\\src\\app\\main.ts'
@@ -7,7 +7,7 @@ var sources = [
   // 'C:\\Users\\hermans.s.MAXXTONBV\\projects\\maxxton-frontend\\services-library\\src\\services\\index.ts'
 ];
 
-var crawler = new TypescriptCrawler();
+var crawler = new MicroDocsCrawler();
 var project = crawler.crawl(sources);
 
 console.info(JSON.stringify(project, undefined, 2));

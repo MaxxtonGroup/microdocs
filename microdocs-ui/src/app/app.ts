@@ -11,6 +11,11 @@ import {ProjectService} from "./../services/project.service";
 import {SidebarComponent} from "../panels/sidebar-panel/sidebar.panel";
 import {Subject} from "rxjs/Subject";
 
+/**
+ * Frontend for MicroDocs
+ * @projectName microdocs-ui
+ * @projectGroup MicroDocs
+ */
 @Component({
   selector: 'app',
   providers: [],

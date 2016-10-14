@@ -6,7 +6,7 @@ export class PathBuilder implements Builder<Path>{
 
   private _endpoint: Path = {};
   private _path: string;
-  private _methods: string[];
+  private _methods: string[] = [];
 
   get endpoint():Path{
     return this._endpoint;

@@ -5,7 +5,7 @@ import {PathBuilder} from "./path.builder";
  */
 export class ControllerBuilder implements Builder<PathBuilder[]> {
   
-  public basePath:string;
+  public baseUrl:string = '';
   public requestMethods:string[] = [];
   private pathBuilders:PathBuilder[] = [];
   
