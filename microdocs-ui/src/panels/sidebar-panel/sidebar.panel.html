@@ -25,7 +25,7 @@
             <span class="icon">file_upload</span>
             <span class="control-text">Import</span>
         </a>
-        <a (click)="showImportModal = true" class="export-button">
+        <a (click)="showExportModal = true" class="export-button">
             <span class="icon">file_download</span>
             <span class="control-text">Export</span>
         </a>
@@ -42,3 +42,4 @@
     <a class="microdocs-link" target="_blank" [href]="'http://www.microdocs.io'">microdocs.io</a>
 </div>
 <import-panel [showModal]="showImportModal" (stateChanges)="showImportModal = $event"></import-panel>
+<export-panel [showModal]="showExportModal" (stateChanges)="showExportModal = $event"></export-panel>

@@ -1,7 +1,7 @@
 import { provide, enableProdMode, PLATFORM_PIPES } from "@angular/core";
 import { Http, HTTP_PROVIDERS } from "@angular/http";
 import { provideRouter } from "@angular/router";
-import { APP_WIDE_SERVICES, DummyPreferenceService} from "@maxxton/components/services";
+import { APP_WIDE_SERVICES, DummyPreferenceService, SnackbarService} from "@maxxton/components/services";
 import { bootstrap } from "@angular/platform-browser-dynamic";
 import { APP_BASE_HREF, LocationStrategy, HashLocationStrategy } from "@angular/common";
 // import { TranslateService, TranslateLoader, TranslateStaticLoader, TranslatePipe } from "ng2-translate/ng2-translate";
@@ -26,6 +26,7 @@ bootstrap( App, [
   // TranslateService,
   provide(ProjectService, {useClass: MicroDocsConfig.isStandAlone ? StandaloneProjectService : RestProjectService}),
   DummyPreferenceService,
+  SnackbarService,
   // provide( PLATFORM_PIPES, { useValue: [ TranslatePipe ], multi: true } ),
   // provide( TranslateLoader, {
   //   useFactory: ( http:Http ) => new TranslateStaticLoader( http, 'assets/i18n', '.json' ),

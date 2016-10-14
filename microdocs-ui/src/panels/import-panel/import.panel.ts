@@ -1,6 +1,7 @@
 import {Component, Input, Output, EventEmitter} from "@angular/core";
+import {Router} from "@angular/router";
 import {COMPONENTS} from "@maxxton/components/components";
-import {Project, ProjectInfo} from "microdocs-core-ts/dist/domain";
+import {Project} from "microdocs-core-ts/dist/domain";
 import {ProjectService} from "../../services/project.service";
 
 /**
@@ -26,7 +27,7 @@ export class ImportPanel{
   generalError:string = "";
   valid:boolean = false;
   
-  constructor(private projectService:ProjectService){}
+  constructor(private projectService:ProjectService, private router:Router){}
   
   public setOpened(state:boolean){
     this.showModal = state;
@@ -77,8 +78,20 @@ export class ImportPanel{
       return;
     }
   
-    // this.projectService.createProject(this.project, this.projectInfo.title, this.projectInfo.group, this.projectInfo.version);
-    this.setOpened(false);
+    this.projectService.importProject(this.project, this.projectInfo.title, this.projectInfo.group, this.projectInfo.version).subscribe(resp => {
+      var url = "/projects/" + this.projectInfo.group + "/" + this.projectInfo.title + "?version=" + this.projectInfo.version + "&env=" + this.projectService.getSelectedEnv();
+      this.setOpened(false);
+      this.projectService.refreshProjects();
+      this.router.navigateByUrl(url);
+    }, error => {
+      this.generalError = "Something went wrong";
+    });
   }
   
+}
+
+export class ProjectInfo{
+  title:string;
+  group:string;
+  version:string;
 }

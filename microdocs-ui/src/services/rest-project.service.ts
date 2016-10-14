@@ -1,12 +1,6 @@
 import {Injectable} from "@angular/core";
 import {Http} from "@angular/http";
-import {
-  Get,
-  Path,
-  Query,
-  Map,
-  Produces, MediaType, Client
-} from "angular2-rest/angular2-rest";
+import {Get, Path, Put, Query, Body,  Map, Produces, MediaType, Client} from "angular2-rest/angular2-rest";
 import {TreeNode, Project, Environments} from "microdocs-core-ts/dist/domain";
 import {Observable} from "rxjs/Observable";
 import {SchemaHelper} from "../../../microdocs-core-ts/dist/helpers/schema/schema.helper";
@@ -27,8 +21,6 @@ import {ProjectService} from "./project.service";
 @Injectable()
 export class RestProjectService extends ProjectService {
 
-  private env: string;
-
   constructor(private http: Http) {
     super(http);
   }
@@ -40,7 +32,7 @@ export class RestProjectService extends ProjectService {
    */
   @Get("/projects")
   @Map(resp => TreeNode.link(resp.json()))
-  public getProjects(@Query("env") env: string = this.getSelectedEnv()): Observable<TreeNode> {
+  public loadProjects(@Query("env") env: string = this.getSelectedEnv()): Observable<TreeNode> {
     return null;
   }
 
@@ -66,13 +58,10 @@ export class RestProjectService extends ProjectService {
   public getEnvs(): Observable<{[key: string]: Environments}> {
     return null
   }
-
-  public setSelectedEnv(env: string) {
-    this.env = env;
-  }
-
-  public getSelectedEnv(): string {
-    return this.env;
+  
+  @Put("/projects/{title}")
+  public importProject(@Body project:Project, @Path("title") name:string, @Query("group") group:string, @Query("version") version:string, @Query("env") env:string = this.getSelectedEnv()):Observable {
+    return null;
   }
 
 }

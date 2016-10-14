@@ -9,16 +9,18 @@ import {Observable} from "rxjs/Observable";
 import {TreeNode} from 'microdocs-core-ts/dist/domain';
 import {DashboardRoute} from "../../routes/dashboard/dashboard";
 import {ImportPanel} from "../import-panel/import.panel";
+import {ExportPanel} from "../export-panel/export.panel";
 
 @Component({
   selector: 'sidebar-component',
   templateUrl: 'sidebar.panel.html',
-  directives: [ROUTER_DIRECTIVES, COMPONENTS, ImportPanel]
+  directives: [ROUTER_DIRECTIVES, COMPONENTS, ImportPanel, ExportPanel]
 })
 
 export class SidebarComponent {
   private user = {};
   showImportModal = false;
+  showExportModal = false;
   
   @HostBinding('class.big')
   private showFullSideBar:boolean = true;
@@ -60,10 +62,6 @@ export class SidebarComponent {
   
   private initMenu() {
     var pathPrefix = "projects/";
-    var pathPostfix = '';
-    if (this.selectedEnv) {
-      pathPostfix += '?env=' + this.selectedEnv;
-    }
     var menus:Array<any> = [{
       path: '/dashboard',
       pathMatch: 'full',
@@ -73,7 +71,8 @@ export class SidebarComponent {
     }];
     var filteredNodes = this.filterNodes(this.node, this.searchQuery);
     for (var title in filteredNodes.dependencies) {
-      var groupName = filteredNodes.dependencies[title].group;
+      var p = filteredNodes.dependencies[title];
+      var groupName = p.group;
       if (groupName == undefined) {
         groupName = "default";
       }
@@ -82,7 +81,7 @@ export class SidebarComponent {
         menus.push({name: groupName, icon: 'folder', iconOpen: 'folder_open', inactive: true, children: [], childrenVisible: true});
       }
       // add project
-      var problems = filteredNodes.dependencies[title].problems;
+      var problems = p.problems;
       var icon = null;
       var iconColor = 'red';
       if (problems != undefined && problems != null && problems > 0) {
@@ -91,6 +90,7 @@ export class SidebarComponent {
       var groupRoute = menus.filter(group => group.name == groupName)[0];
       groupRoute.children.push({
         path: pathPrefix + groupName + '/' + title,
+        pathParams: {version: p.version},
         name: title,
         postIcon: icon,
         postIconColor: iconColor,

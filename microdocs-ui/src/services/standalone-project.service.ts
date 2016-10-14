@@ -9,7 +9,7 @@ import {
   Query,
   Map,
   Produces, MediaType, Client
-} from "../../../../angular2-rest/angular2-rest";
+} from "angular2-rest/angular2-rest";
 import {TreeNode, Project, Environments} from "microdocs-core-ts/dist/domain";
 import {Observable} from "rxjs/Observable";
 import {SchemaHelper} from "../../../microdocs-core-ts/dist/helpers/schema/schema.helper";
@@ -28,8 +28,6 @@ import {SchemaHelper} from "../../../microdocs-core-ts/dist/helpers/schema/schem
 @Injectable()
 export class StandaloneProjectService extends ProjectService{
 
-  private env:string;
-
   constructor(private http:Http){
     super(http);
   }
@@ -40,7 +38,7 @@ export class StandaloneProjectService extends ProjectService{
    */
   @Get("/projects-{env}.json")
   @Map(resp => TreeNode.link(resp.json()))
-  public getProjects(@Path("env") env: string = this.getSelectedEnv()): Observable<TreeNode>{return null;}
+  public loadProjects(@Path("env") env: string = this.getSelectedEnv()): Observable<TreeNode>{return null;}
 
   /**
    * Load project
@@ -60,13 +58,9 @@ export class StandaloneProjectService extends ProjectService{
   @Get("/envs.json")
   @Map(resp => resp.json())
   public getEnvs(): Observable<{[key:string]:Environments}> {return null}
-
-  public setSelectedEnv(env: string) {
-    this.env = env;
-  }
-
-  public getSelectedEnv(): string {
-    return this.env;
+  
+  importProject(project:Project, name:string, group:string, version:string, env?:string):Observable {
+    return null;
   }
 
 }

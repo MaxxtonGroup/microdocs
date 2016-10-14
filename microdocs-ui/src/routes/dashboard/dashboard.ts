@@ -24,7 +24,7 @@ import {WelcomePanel} from "../../panels/welcome-panel/welcome.panel";
 export class DashboardRoute {
 
   empty:boolean = false;
-  nodes:Subject<TreeNode> = new Subject();
+  nodes:Subject<TreeNode> = new Subject<TreeNode>();
   env:string;
 
   constructor(private projectService:ProjectService, private router:Router){}

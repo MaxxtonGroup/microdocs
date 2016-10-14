@@ -65,10 +65,10 @@ export class ProjectBuilder implements Builder<Project>{
   }
   
   path(pathBuilder:PathBuilder):void{
-    if(!componentBuilder.title || componentBuilder.title == ''){
-      throw new Error("No title found for component");
-    }
-    this._project.components[componentBuilder.title] = componentBuilder.build();
+    // if(!componentBuilder.title || componentBuilder.title == ''){
+    //   throw new Error("No title found for component");
+    // }
+    // this._project.components[componentBuilder.title] = componentBuilder.build();
   }
 
 }
