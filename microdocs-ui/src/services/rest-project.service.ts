@@ -1,12 +1,6 @@
 import {Injectable} from "@angular/core";
 import {Http} from "@angular/http";
-import {
-  Get,
-  Path,
-  Query,
-  Map,
-  Produces, MediaType, Client
-} from "angular2-rest/angular2-rest";
+import {Get, Path, Query,  Map, Produces, MediaType, Client, Handler} from "angular2-rest/angular2-rest";
 import {TreeNode, Project, Environments} from "microdocs-core-ts/dist/domain";
 import {Observable} from "rxjs/Observable";
 import {SchemaHelper} from "../../../microdocs-core-ts/dist/helpers/schema/schema.helper";
@@ -40,6 +34,7 @@ export class RestProjectService extends ProjectService {
    */
   @Get("/projects")
   @Map(resp => TreeNode.link(resp.json()))
+  @Map(resp => TreeNode.link(resp.json()))
   public getProjects(@Query("env") env: string = this.getSelectedEnv()): Observable<TreeNode> {
     return null;
   }
@@ -54,6 +49,7 @@ export class RestProjectService extends ProjectService {
    */
   @Get("/projects/{title}")
   @Map(resp => SchemaHelper.resolveObject(resp.json()))
+  @Handler(obs => obs.map(resp => SchemaHelper.resolveObject(resp.json())))
   public getProject(@Path("title") title: string, @Query("version") version?: string, @Query("env") env: string = this.getSelectedEnv()): Observable<Project> {
     return null;
   }
