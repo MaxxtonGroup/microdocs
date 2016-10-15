@@ -8,8 +8,8 @@
       <option *ngFor="let v of versions" [value]="v">{{v}}</option>
     </select>
   </toolbar-item>
-  <toolbar-item class="align-right" (click)="showModal = true">
-    <span class="icon">code</span>
+  <toolbar-item class="align-right" (click)="showExportModal = true">
+    <span class="icon">file_download</span>
   </toolbar-item>
 </toolbar>
 <div class="project-content" [class.loading]="loading">
@@ -72,27 +72,4 @@
     </card>
   </div>
 </div>
-<modal [showModal]="showModal" (stateChanges)="showModal = $event" title="Export">
-  <ul>
-    <li>
-      <a href="/api/v1/projects/{{title}}?export=microdocs&version={{version}}" target="_blank">
-        <h6>MicroDocs</h6>
-      </a>
-    </li>
-    <li>
-      <a href="/api/v1/projects/{{title}}?export=swagger&version={{version}}" target="_blank">
-        <h6>Swagger</h6>
-      </a>
-    </li>
-    <li>
-      <a href="/api/v1/projects/{{title}}?export=api-blueprint&version={{version}}" target="_blank">
-        <h6>Api Blueprint</h6>
-      </a>
-    </li>
-    <li>
-      <a href="/api/v1/projects/{{title}}?export=postman&version={{version}}" target="_blank">
-        <h6>Postman</h6>
-      </a>
-    </li>
-  </ul>
-</modal>
+<export-panel [showModal]="showExportModal" (stateChanges)="showExportModal = $event" [project]="title" [version]="version"></export-panel>

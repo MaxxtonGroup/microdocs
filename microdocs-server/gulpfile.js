@@ -74,17 +74,16 @@ gulp.task('compile-sourcemaps', [], function (done) {
 
 gulp.task('run', function () {
   nodemon({
-    script: 'index.js',
+    script: 'dist/',
     ext: 'js',
     env: {
       'NODE_ENV': 'development'
     }
   })
       .on('start', ['watch'])
-      .on('change', ['watch'])
-      .on('restart', function () {
-        console.log('restarted!');
-      });
+      .on('restart', function(){
+        console.info('change');
+      })
 });
 
 /**

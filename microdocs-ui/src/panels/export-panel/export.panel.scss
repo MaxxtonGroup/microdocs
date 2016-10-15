@@ -1,0 +1,93 @@
+
+export-panel {
+  h6, h5 {
+    color: $blue !important;
+    padding: 5px 20px;
+  }
+
+  h5{
+    margin-top: 0;
+    padding-top: 0;
+  }
+
+  h6 i {
+    position: relative;
+    top: 5px;
+    height: 21px;
+    margin-right: 10px;
+    font-size: 24px;
+  }
+
+  .row{
+    height: 320px;
+  }
+
+  .row:before {
+    box-sizing: border-box;
+    content: " ";
+    display: table;
+  }
+
+  .row .columns {
+    float: left;
+    display: block;
+  }
+
+  .row .columns.large-6 {
+    width: 50%;
+  }
+
+  .export-formats{
+    li {
+      padding: 10px;
+      cursor: pointer;
+      margin-bottom: 5px;
+    }
+    li.selected{
+      color: #f26922;
+      background-color: rgb(244,244,244);
+    }
+    li span{
+      display: inline-block;
+      height: 32px;
+      padding: 5px 0px 5px 40px;
+      background-size: 32px;
+      background-repeat: no-repeat;
+    }
+    li.microdocs span{
+      background-image: url('../images/microdocs.png');
+    }
+    li.swagger span{
+      background-image: url('../images/swagger.png');
+    }
+    li.api-blueprint span{
+      background-image: url('../images/api_blueprint.png');
+    }
+    li.postman span{
+      background-image: url('../images/postman.png');
+    }
+  }
+
+  .bottom-bar {
+    button {
+      float: right;
+    }
+    .text-warning {
+      color: $orange;
+      height: 30px;
+      padding-right: 20px;
+      float: left;
+      position: relative;
+      top: 10px;
+      width: 70%;
+    }
+    .text-danger {
+      color: $red;
+      height: 30px;
+      padding-right: 20px;
+      float: right;
+      position: relative;
+      top: 10px;
+    }
+  }
+}

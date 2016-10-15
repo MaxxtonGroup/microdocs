@@ -32,10 +32,11 @@ project-route toolbar-item.align-right{
   border-radius: 100%;
   cursor: pointer;
   text-align: center;
+  color: $blue;
 }
 
 project-route toolbar-item.align-right:hover{
-  background-color: rgba(0,0,0,0.3);
+  background-color: rgba(0,0,0,0.1);
 }
 
 project-route .project-content{

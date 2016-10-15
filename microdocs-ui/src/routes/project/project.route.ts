@@ -15,12 +15,13 @@ import {SortByHttpMethod} from "../../pipes/sort-by-http-method.pipe"
 import {Subject} from "rxjs/Subject";
 import {DependencyGraph} from "../../panels/dependency-graph/dependency-graph";
 import {EndpointGroupPanel} from "../../panels/endpoint-group-panel/endpoint-group.panel";
+import {ExportPanel} from "../../panels/export-panel/export.panel";
 
 
 @Component({
   selector: 'project-route',
   templateUrl: 'project.route.html',
-  directives: [ROUTER_DIRECTIVES, COMPONENTS, EndpointGroupPanel, EndpointPanel, ModelPanel, ProblemPanel, DependencyGraph],
+  directives: [ROUTER_DIRECTIVES, COMPONENTS, EndpointGroupPanel, EndpointPanel, ModelPanel, ProblemPanel, DependencyGraph, ExportPanel],
   pipes: [FILTERS, SortByHttpMethod]
 })
 export class ProjectRoute {
@@ -38,7 +39,7 @@ export class ProjectRoute {
   private versions:string[];
   private project:Project = {};
   private loading:boolean = true;
-  private showModal:boolean = false;
+  private showExportModal:boolean = false;
 
   private queryParams:Params;
   private pathParams:Params;
