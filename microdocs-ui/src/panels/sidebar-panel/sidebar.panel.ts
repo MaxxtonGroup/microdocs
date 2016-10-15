@@ -21,6 +21,7 @@ export class SidebarComponent {
   private user = {};
   showImportModal = false;
   showExportModal = false;
+  showSettingsModal = false;
   
   @HostBinding('class.big')
   private showFullSideBar:boolean = true;
@@ -65,6 +66,7 @@ export class SidebarComponent {
     var menus:Array<any> = [{
       path: '/dashboard',
       pathMatch: 'full',
+      pathParams: {env: this.selectedEnv},
       component: DashboardRoute,
       name: 'Overview',
       icon: 'home'
@@ -90,7 +92,7 @@ export class SidebarComponent {
       var groupRoute = menus.filter(group => group.name == groupName)[0];
       groupRoute.children.push({
         path: pathPrefix + groupName + '/' + title,
-        pathParams: {version: p.version},
+        pathParams: {version: p.version, env: this.selectedEnv},
         name: title,
         postIcon: icon,
         postIconColor: iconColor,

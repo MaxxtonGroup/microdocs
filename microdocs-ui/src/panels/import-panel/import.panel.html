@@ -2,7 +2,7 @@
   <h5>Paste here your definitions </h5>
   <div class="row">
     <div class="large-12 columns">
-      <textarea placeholder="microdocs.json / swagger.json" (keyup)="onProjectInserted($event)"></textarea>
+      <textarea placeholder="microdocs.json / swagger.json" (keyup)="onProjectInserted($event)" [value]="projectDefinition"></textarea>
     </div>
     <div class="text-danger text-right">{{jsonError}}</div>
   </div>

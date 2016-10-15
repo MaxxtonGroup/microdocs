@@ -37,6 +37,11 @@ export-panel {
     width: 50%;
   }
 
+  .row .columns.large-6 ul{
+    height: 291px;
+    overflow: auto;
+  }
+
   .export-formats{
     li {
       padding: 10px;

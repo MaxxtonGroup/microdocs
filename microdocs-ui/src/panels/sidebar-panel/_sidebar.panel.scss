@@ -39,7 +39,7 @@ sidebar-component {
       position: absolute;
       display: inline-block;
       height: 50px;
-      width: 33%;
+      width: 50%;
 
       .icon{
         position: absolute;
@@ -62,16 +62,17 @@ sidebar-component {
       background-color: #eee;
     }
     a.import-button{
-      display: none;
       color: $green;
+      width: 100%;
     }
     a.export-button{
       display: none;
       color: $blue;
-      width: 34%;
-      left: 33%;
+      width: 50%;
+      left: 50%;
     }
     a.settings-button{
+      display: none;
       color: $blue-gray;
       right: 0;
       width: 100%;
@@ -233,6 +234,9 @@ sidebar-component {
         }
         .import-button, .export-button{
           display: inline-block;
+        }
+        .import-button{
+          width: 50%;
         }
         .settings-button{
           width: 33%;

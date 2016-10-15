@@ -35,6 +35,10 @@ project-route toolbar-item.align-right{
   color: $blue;
 }
 
+project-route toolbar-item.align-right:nth-child(2){
+  right: 50px;
+}
+
 project-route toolbar-item.align-right:hover{
   background-color: rgba(0,0,0,0.1);
 }

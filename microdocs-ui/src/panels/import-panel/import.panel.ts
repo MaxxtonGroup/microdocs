@@ -26,6 +26,7 @@ export class ImportPanel{
   jsonError:string = "";
   generalError:string = "";
   valid:boolean = false;
+  projectDefinition:string = '';
   
   constructor(private projectService:ProjectService, private router:Router){}
   
@@ -33,15 +34,17 @@ export class ImportPanel{
     this.showModal = state;
     this.stateChanges.emit(state);
     if(!state){
+      this.projectDefinition = '';
       this.project = null;
       this.projectInfo = new ProjectInfo();
     }
   }
   
   onProjectInserted($event){
+    this.projectDefinition = $event.target.value;
     this.jsonError = "";
     try{
-      this.project = JSON.parse($event.target.value);
+      this.project = JSON.parse(this.projectDefinition);
     }catch(e){
       this.valid = false;
       this.jsonError = "Invalid json";

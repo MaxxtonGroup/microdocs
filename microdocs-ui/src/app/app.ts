@@ -58,7 +58,7 @@ export class App {
     this.projectService.setSelectedEnv(newEnv);
     this.selectedEnv = newEnv;
     
-    this.router.navigateByUrl('/?env=' + newEnv);
+    this.router.navigate(['/dashboard'], {queryParams: {env: newEnv}});
   }
   
   

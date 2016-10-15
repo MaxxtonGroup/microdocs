@@ -406,3 +406,7 @@ welcome-panel a:hover{
 .input-field:focus{
   border-bottom: 1px solid $orange !important;
 }
+
+.modal-overlay .modal{
+  top: 0 !important;
+}

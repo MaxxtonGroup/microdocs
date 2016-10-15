@@ -26,11 +26,6 @@ import {ExportPanel} from "../../panels/export-panel/export.panel";
 })
 export class ProjectRoute {
 
-  private querySub:any;
-  private pathSub:any;
-  private projectSub:any;
-  private projectsSub:any;
-
   private nodes:Subject = new Subject();
 
   private env:string;
@@ -72,14 +67,14 @@ export class ProjectRoute {
   }
 
   ngOnInit() {
-    this.querySub = this.router.routerState.queryParams.subscribe(params => {
+    this.router.routerState.queryParams.subscribe(params => {
       this.loading = true;
       this.queryParams = params;
       if (this.pathParams != undefined) {
         setTimeout(() => this.init());
       }
     });
-    this.pathSub = this.route.params.subscribe(params => {
+    this.route.params.subscribe(params => {
       this.loading = true;
       this.pathParams = params;
       if (this.queryParams != undefined) {
@@ -131,26 +126,15 @@ export class ProjectRoute {
   }
 
   loadProject(title:string, version:string, env:string) {
-    this.projectSub = this.projectService.getProject(title, version, env).subscribe(project => {
+    this.projectService.getProject(title, version, env).subscribe(project => {
       this.project = project;
       this.loading = false;
     });
   }
 
-  ngOnDestroy() {
-    console.info("destroy");
-    if(this.querySub != undefined)
-      this.querySub.unsubscribe();
-    if(this.pathSub != undefined)
-      this.pathSub.unsubscribe();
-    if(this.projectSub != undefined)
-      this.projectSub.unsubscribe();
-    if(this.projectsSub != undefined)
-      this.projectsSub.unsubscribe();
-  }
-
   onChangeVersion(version:string) {
-    this.router.navigateByUrl('/projects/' + this.project.info.group + "/" + this.title + "?version=" + version);
+    var url = '/projects/' + this.project.info.group + "/" + this.title;
+    this.router.navigate(['projects', this.project.info.group, this.title], {queryParams: {version: version, env: this.projectService.getSelectedEnv()}});
   }
 
   getModelSourceLink(sourceLink:string, name:string, schema:Schema) {

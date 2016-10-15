@@ -10,11 +10,13 @@ const TIMEOUT:number = 1000;
 export abstract class ProjectService extends RestClient {
   
   private env:string;
+  private lastValue:TreeNode;
   private projects:Subject<TreeNode> = new Subject<TreeNode>();
   private lastRefresh:number = 0;
   
   constructor(http:Http, private snackbarService:SnackbarService) {
     super(http);
+    this.projects.subscribe(node => this.lastValue = node);
   }
   
   public getProjects(env:string = this.getSelectedEnv()):Observable<TreeNode> {
@@ -26,6 +28,8 @@ export abstract class ProjectService extends RestClient {
     if(this.lastRefresh + TIMEOUT < new Date().getTime()) {
       this.loadProjects(env).subscribe(node => this.projects.next(node), error => this.snackbarService.addNotification("Failed to load project list"));
       this.lastRefresh = new Date().getTime();
+    }else{
+      setTimeout(() => this.projects.next(this.lastValue), 20);
     }
   }
   
