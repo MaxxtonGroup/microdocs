@@ -11,10 +11,10 @@ export class ProjectRoute extends BaseRoute {
 
   mapping = {methods: ['get'], path: '/projects/:title', handler: this.projects};
 
-  public projects(req: express.Request, res: express.Response, next: express.NextFunction) {
+  public projects(req: express.Request, res: express.Response, next: express.NextFunction, scope:BaseRoute) {
     var handler = ResponseHelper.getHandler(req);
     try {
-      var env = ProjectRoute.getEnv(req);
+      var env = scope.getEnv(req, scope);
       if (env == null) {
         handler.handleBadRequest(req, res, "env '" + req.query.env + "' doesn't exists");
         return;
@@ -22,11 +22,12 @@ export class ProjectRoute extends BaseRoute {
 
       var title = req.params.title;
       var version = req.query.version;
-
+      
+      var projectRepo = scope.injection.ProjectRepository();
 
       // load latest version if not specified
       if (version == undefined) {
-        var rootNode = ProjectJsonRepository.bootstrap().getAggregatedProjects(env);
+        var rootNode = projectRepo.getAggregatedProjects(env);
         if (rootNode != null && rootNode.dependencies != undefined) {
           for (var key in rootNode.dependencies) {
             if (key == title) {
@@ -39,7 +40,7 @@ export class ProjectRoute extends BaseRoute {
 
       if (version != undefined) {
         // load project
-        var project = ProjectJsonRepository.bootstrap().getAggregatedProject(env, title, version);
+        var project = projectRepo.getAggregatedProject(env, title, version);
 
         // return project
         if (project == null) {

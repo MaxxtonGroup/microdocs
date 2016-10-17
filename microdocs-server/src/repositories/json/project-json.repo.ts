@@ -8,9 +8,27 @@ import {ProjectRepository} from "../project.repo";
 import {Project, TreeNode} from "microdocs-core-ts/dist/domain";
 
 export class ProjectJsonRepository implements ProjectRepository {
-
-  public static bootstrap(): ProjectJsonRepository {
-    return new ProjectJsonRepository();
+  
+  public removeAggregatedProject(env:string, title:string, version?:string):boolean {
+    console.info("Remove project: " + title + ":" + version);
+    
+    var dataFolder: string = __dirname + '/../../../' + Config.get("dataFolder") + "/database/" + env;
+    var projectFolder: string = dataFolder + "/" + title;
+    
+    if(version) {
+      var storeFile:string = projectFolder + "/" + version + ".json";
+      if (fs.existsSync(storeFile)) {
+        fs.unlinkSync(storeFile);
+        return true;
+      }
+    }else{
+      if(fs.existsSync(projectFolder)){
+        deleteFolderRecursive(projectFolder);
+        return true;
+      }
+    }
+    
+    return false;
   }
 
   public getAggregatedProjects(env: string): TreeNode {
@@ -62,4 +80,18 @@ export class ProjectJsonRepository implements ProjectRepository {
     fs.writeFileSync(storeFile, json);
   }
 
+}
+
+function deleteFolderRecursive(path):void {
+  if (fs.existsSync(path)) {
+  fs.readdirSync(path).forEach(function (file, index) {
+    var curPath = path + "/" + file;
+    if (fs.lstatSync(curPath).isDirectory()) { // recurse
+      deleteFolderRecursive(curPath);
+    } else { // delete file
+      fs.unlinkSync(curPath);
+    }
+  });
+  fs.rmdirSync(path);
+}
 }

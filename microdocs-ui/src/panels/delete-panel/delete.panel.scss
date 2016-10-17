@@ -1,0 +1,34 @@
+delete-panel {
+  h6, h5 {
+    color: $red !important;
+    padding: 5px 20px;
+  }
+
+  h5{
+    margin-top: 0;
+    padding-top: 0;
+    padding-left: 0;
+  }
+
+  h6 i {
+    position: relative;
+    top: 5px;
+    height: 21px;
+    margin-right: 10px;
+    font-size: 24px;
+  }
+
+  button.button-danger{
+    margin-top: 20px;
+    background-color: $red;
+  }
+  button.button-danger:hover, button.button-danger:focus{
+    background-color: $red;
+  }
+
+  .text-danger {
+    position: relative;
+    top: 6px;
+    color: $red;
+  }
+}

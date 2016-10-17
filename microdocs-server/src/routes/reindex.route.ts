@@ -13,16 +13,16 @@ export class ReindexRoute extends BaseRoute {
 
   mapping = {methods: ["put"], path: "/reindex", handler: this.reindex};
 
-  public reindex(req: express.Request, res: express.Response, next: express.NextFunction) {
+  public reindex(req: express.Request, res: express.Response, next: express.NextFunction, scope:BaseRoute) {
     var handler = ResponseHelper.getHandler(req);
     try {
-      var env = ReindexRoute.getEnv(req);
+      var env = scope.getEnv(req, scope);
       if (env == null) {
         handler.handleBadRequest(req, res, "env '" + req.query.env + "' doesn't exists");
         return;
       }
 
-      var nodes = AggregationService.bootstrap().reindex(env);
+      var nodes = scope.injection.AggregationService().reindex(env);
       handler.handleProjects(req, res, nodes, env);
     } catch (e) {
       handler.handleInternalServerError(req, res, e);

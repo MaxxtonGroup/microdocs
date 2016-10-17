@@ -8,10 +8,10 @@
       <option *ngFor="let v of versions" [value]="v">{{v}}</option>
     </select>
   </toolbar-item>
-  <toolbar-item class="align-right" (click)="showExportModal = true">
+  <toolbar-item class="align-right delete-button" (click)="showDeleteModal = true">
     <span class="icon">delete</span>
   </toolbar-item>
-  <toolbar-item class="align-right" (click)="showExportModal = true">
+  <toolbar-item class="align-right export-button" (click)="showExportModal = true">
     <span class="icon">file_download</span>
   </toolbar-item>
 </toolbar>
@@ -76,3 +76,4 @@
   </div>
 </div>
 <export-panel [showModal]="showExportModal" (stateChanges)="showExportModal = $event" [project]="title" [version]="version"></export-panel>
+<delete-panel [showModal]="showDeleteModal" (stateChanges)="showDeleteModal = $event" [project]="title" [version]="version"></delete-panel>

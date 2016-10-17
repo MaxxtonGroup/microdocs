@@ -25,18 +25,22 @@ project-route toolbar-item select{
 
 project-route toolbar-item.align-right{
   position: absolute;
-  right: 0;
   height: 40px;
   padding: 10px;
   margin: 10px;
   border-radius: 100%;
   cursor: pointer;
   text-align: center;
+}
+
+project-route toolbar-item.align-right.export-button{
+  right: 50px;
   color: $blue;
 }
 
-project-route toolbar-item.align-right:nth-child(2){
-  right: 50px;
+project-route toolbar-item.align-right.delete-button{
+  right: 0px;
+  color: $red;
 }
 
 project-route toolbar-item.align-right:hover{

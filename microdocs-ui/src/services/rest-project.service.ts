@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
-import {Http} from "@angular/http";
-import {Get, Path, Put, Query, Body,  Map, Produces, MediaType, Client} from "angular2-rest/angular2-rest";
+import {Http, Response} from "@angular/http";
+import {Get, Path, Put, Query, Body,  Map, Produces, MediaType, Client, Delete} from "angular2-rest/angular2-rest";
 import {TreeNode, Project, Environments} from "microdocs-core-ts/dist/domain";
 import {Observable} from "rxjs/Observable";
 import {SchemaHelper} from "../../../microdocs-core-ts/dist/helpers/schema/schema.helper";
@@ -61,6 +61,11 @@ export class RestProjectService extends ProjectService {
   
   @Put("/projects/{title}")
   public importProject(@Body project:Project, @Path("title") name:string, @Query("group") group:string, @Query("version") version:string, @Query("env") env:string = this.getSelectedEnv()):Observable {
+    return null;
+  }
+  
+  @Delete("/projects/{title}")
+  public deleteProject(@Path('title') name:string, @Query('version') version?:string, @Query('env') env:string = this.getSelectedEnv()):Observable<Response>{
     return null;
   }
 

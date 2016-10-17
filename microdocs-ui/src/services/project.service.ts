@@ -1,6 +1,6 @@
 import {Observable} from "rxjs/Observable";
 import {Subject} from "rxjs/Subject";
-import {Http} from "@angular/http";
+import {Http, Response} from "@angular/http";
 import {RestClient} from "angular2-rest/angular2-rest";
 import {SnackbarService} from "@maxxton/components/services/snackbar.service";
 import {TreeNode, Project, Environments} from "microdocs-core-ts/dist/domain";
@@ -37,7 +37,9 @@ export abstract class ProjectService extends RestClient {
 
   public abstract getProject(name:string, version?:string, env?:string):Observable<Project>;
 
-  public abstract importProject(project:Project, name:string, group:string, version:string, env?:string):Observable;
+  public abstract importProject(project:Project, name:string, group:string, version:string, env?:string):Observable<Response>;
+  
+  public abstract deleteProject(name:string, version?:string, env?:string):Observable<Response>;
   
   public setSelectedEnv(env:string) {
     this.env = env;

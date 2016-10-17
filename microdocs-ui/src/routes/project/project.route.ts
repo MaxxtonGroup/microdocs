@@ -16,12 +16,13 @@ import {Subject} from "rxjs/Subject";
 import {DependencyGraph} from "../../panels/dependency-graph/dependency-graph";
 import {EndpointGroupPanel} from "../../panels/endpoint-group-panel/endpoint-group.panel";
 import {ExportPanel} from "../../panels/export-panel/export.panel";
+import {DeletePanel} from "../../panels/delete-panel/delete.panel";
 
 
 @Component({
   selector: 'project-route',
   templateUrl: 'project.route.html',
-  directives: [ROUTER_DIRECTIVES, COMPONENTS, EndpointGroupPanel, EndpointPanel, ModelPanel, ProblemPanel, DependencyGraph, ExportPanel],
+  directives: [ROUTER_DIRECTIVES, COMPONENTS, EndpointGroupPanel, EndpointPanel, ModelPanel, ProblemPanel, DependencyGraph, ExportPanel, DeletePanel],
   pipes: [FILTERS, SortByHttpMethod]
 })
 export class ProjectRoute {
@@ -35,6 +36,7 @@ export class ProjectRoute {
   private project:Project = {};
   private loading:boolean = true;
   private showExportModal:boolean = false;
+  private showDeleteModal:boolean = false;
 
   private queryParams:Params;
   private pathParams:Params;

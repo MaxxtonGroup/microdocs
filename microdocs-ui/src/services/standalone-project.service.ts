@@ -1,6 +1,6 @@
 import {ProjectService} from "./project.service";
 import {Injectable} from "@angular/core";
-import {Http} from "@angular/http";
+import {Http, Response} from "@angular/http";
 import {
   RestClient,
   HttpClient,
@@ -59,8 +59,11 @@ export class StandaloneProjectService extends ProjectService{
   @Map(resp => resp.json())
   public getEnvs(): Observable<{[key:string]:Environments}> {return null}
   
-  importProject(project:Project, name:string, group:string, version:string, env?:string):Observable {
-    return null;
+  importProject(project:Project, name:string, group:string, version:string, env?:string):Observable<Response> {
+    throw new Error('Import project is not supported in standalone');
+  }
+  exportProject(name:string, group:string, version:string, env?:string):Observable<Response> {
+    throw new Error('Delete project is not supported in standalone');
   }
 
 }
