@@ -1,10 +1,13 @@
-/**
- * @author Steven Hermans
- */
-export class TreeNode {
 
-  constructor(public parent:TreeNode = null,
-              public dependencies:{[title:string]:TreeNode} = {},
+import {Node} from "./node.model";
+import {RootNode} from "./root-node.model";
+import {ProjectNodeDependency} from "./project-node-dependency.model";
+import {Project} from "gulp-typescript/release/project";
+
+export class ProjectNode extends Node{
+
+  constructor(public parent:Node = null,
+              public dependencies:ProjectNodeDependency[] = [],
               public group?:string,
               public version?:string,
               public versions?:string[],
@@ -13,36 +16,45 @@ export class TreeNode {
               public tags?:string[]) {
   }
 
-  public getRoot():TreeNode {
-    if (this.parent != null) {
-      return this.parent.getRoot();
-    }
-    return this;
+  public getRoot():RootNode {
+    return this.parent.getRoot();
   }
 
   public findNodePath(title:string, version:string):string {
-    for (var key in this.dependencies) {
-      if (key == title && this.dependencies[key].version == version) {
+    for(var i = 0; i < this.dependencies.length; i++){
+      var dependency = this.dependencies[i];
+      if (dependency.title === title && dependency.item.version == version) {
         return "/dependencies/" + title;
       }
-      var path = this.dependencies[key].findNodePath(title, version);
+      var path = dependency.item.findNodePath(title, version);
       if (path != null) {
-        return "/dependencies/" + title + path;
+        return "/dependencies/" + title + '/item' + path;
       }
     }
     return null;
   }
 
-
-  public unlink(root:boolean = true):{} {
+  public unlink():{} {
+    if (this.reference) {
+      return {
+        '$ref': "#" + this.reference.substring("#/dependencies".length)
+      };
+    }
+    
     var dependencies:{[title:string]:{}} = {};
-    for (var key in this.dependencies) {
-      var child = this.dependencies[key];
-      dependencies[key] = child.unlink(false);
-    }
-    if (root) {
-      return dependencies;
-    }
+    this.dependencies.forEach(dependency => {
+      var child = {
+        item: dependency.item
+      };
+      if(dependency.problems){
+        child['problems'] = dependency.problems;
+      }
+      if(dependency.type){
+        child['type'] = dependency.type;
+      }
+      dependencies[dependency.title] = child;
+    });
+    
     var node = {};
     if (Object.keys(dependencies).length > 0) {
       node['dependencies'] = dependencies;
@@ -59,22 +71,26 @@ export class TreeNode {
     if (this.problems != null || this.problems != undefined) {
       node['problems'] = this.problems;
     }
-    if (this.reference != null || this.reference != undefined) {
-      node['$ref'] = "#" + this.reference.substring("#/dependencies".length);
-    }
     if (this.tags != null || this.tags != undefined) {
       node['tags'] = this.tags;
     }
     return node;
   }
+  
+  public static linkProject(unlinkedProject:{}):ProjectNode{
+    
+  }
+  
+  public static linkDependency(unlinkedDependency:{}):ProjectNodeDependency{
+    
+  }
 
-  public static link(unlinkedNode:{}, root:boolean = true):TreeNode {
-
-    var node:TreeNode = new TreeNode();
+  public static link(unlinkedNode:{}, root:boolean = true):ProjectNode {
+    var node:ProjectNode = new ProjectNode();
     var dependencyNode = (root ? unlinkedNode : unlinkedNode['dependencies']);
     if (dependencyNode != undefined) {
       for (var key in dependencyNode) {
-        node.dependencies[key] = TreeNode.link(dependencyNode[key], false);
+        node.dependencies[key] = ProjectNode.link(dependencyNode[key], false);
         node.dependencies[key].parent = node;
       }
     }
@@ -102,3 +118,4 @@ export class TreeNode {
   }
 
 }
+

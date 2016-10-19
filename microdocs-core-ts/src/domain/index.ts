@@ -31,7 +31,7 @@ export {Schema} from './schema/schema.model';
 import * as SchemaTypes from './schema/schema-type.model';
 export {SchemaTypes};
 
-export {TreeNode} from './tree/tree-node.model';
+export {ProjectNode} from './tree/tree-node.model';
 
 export {ProjectSettings, Environments} from './settings/project-settings.model';
 export {ProjectChangeRule} from './settings/project-change-rule.model';

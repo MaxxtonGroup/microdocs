@@ -10,6 +10,7 @@ import {TreeNode} from 'microdocs-core-ts/dist/domain';
 import {DashboardRoute} from "../../routes/dashboard/dashboard";
 import {ImportPanel} from "../import-panel/import.panel";
 import {ExportPanel} from "../export-panel/export.panel";
+import {MicroDocsConfig} from '../../config/config';
 
 @Component({
   selector: 'sidebar-component',
@@ -18,6 +19,9 @@ import {ExportPanel} from "../export-panel/export.panel";
 })
 
 export class SidebarComponent {
+  
+  config = MicroDocsConfig;
+  
   private user = {};
   showImportModal = false;
   showExportModal = false;

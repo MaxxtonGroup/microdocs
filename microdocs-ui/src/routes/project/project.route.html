@@ -8,7 +8,7 @@
       <option *ngFor="let v of versions" [value]="v">{{v}}</option>
     </select>
   </toolbar-item>
-  <template [ngIf]="!loading && !error">
+  <template [ngIf]="!loading && !error && !config.isStandAlone">
     <toolbar-item class="align-right delete-button" (click)="showDeleteModal = true">
       <span class="icon">delete</span>
     </toolbar-item>
@@ -84,7 +84,8 @@
       <div class="error-page">
         <template [ngIf]="notFound">
           <h1><i class="icon">warning</i> {{error}}</h1>
-          <h2><strong>{{title + ' '}}</strong><span *ngIf="version">version <strong>{{version + ' '}}</strong></span>doesn't exists</h2>
+          <h2><strong>{{title + ' '}}</strong><span *ngIf="version">version <strong>{{version + ' '}}</strong></span>doesn't
+            exists</h2>
         </template>
         <template [ngIf]="!notFound">
           <h1 class="error"><i class="icon">error</i> {{error}}</h1>
@@ -93,6 +94,8 @@
     </template>
   </div>
 </div>
-<export-panel [showModal]="showExportModal" (stateChanges)="showExportModal = $event" [project]="title" [version]="version"></export-panel>
-<edit-panel [showModal]="showEditModal" (stateChanges)="showEditModal = $event" [project]="title" [version]="version" [group]="project?.info?.group"></edit-panel>
-<delete-panel [showModal]="showDeleteModal" (stateChanges)="showDeleteModal = $event" [project]="title" [version]="version"></delete-panel>
+<template [ngIf]="!config.isStandAlone">
+  <export-panel [showModal]="showExportModal" (stateChanges)="showExportModal = $event" [project]="title" [version]="version"></export-panel>
+  <edit-panel [showModal]="showEditModal" (stateChanges)="showEditModal = $event" [project]="title" [version]="version" [group]="project?.info?.group"></edit-panel>
+  <delete-panel [showModal]="showDeleteModal" (stateChanges)="showDeleteModal = $event" [project]="title" [version]="version"></delete-panel>
+</template>

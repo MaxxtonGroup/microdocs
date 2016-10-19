@@ -1,5 +1,8 @@
 import {Component} from "@angular/core";
 import {ROUTER_DIRECTIVES, ActivatedRoute, Router, Params} from "@angular/router";
+import {Subject} from "rxjs/Subject";
+import {ReplaySubject} from "rxjs/ReplaySubject";
+import {Subscription} from "rxjs/Subscription";
 
 import {COMPONENTS} from "@maxxton/components/components";
 import {FILTERS} from "@maxxton/components/filters";
@@ -17,9 +20,7 @@ import {EndpointGroupPanel} from "../../panels/endpoint-group-panel/endpoint-gro
 import {ExportPanel} from "../../panels/export-panel/export.panel";
 import {DeletePanel} from "../../panels/delete-panel/delete.panel";
 import {EditPanel} from "../../panels/edit-panel/edit.panel";
-import {Subject} from "rxjs/Subject";
-import {ReplaySubject} from "rxjs/ReplaySubject";
-import {Subscription} from "rxjs/Subscription";
+import {MicroDocsConfig} from '../../config/config';
 
 
 @Component({
@@ -29,6 +30,8 @@ import {Subscription} from "rxjs/Subscription";
   pipes: [FILTERS, SortByHttpMethod]
 })
 export class ProjectRoute {
+  
+  config = MicroDocsConfig;
   
   private projects:TreeNode;
   private nodes:Subject<TreeNode> = new ReplaySubject<TreeNode>(1);
