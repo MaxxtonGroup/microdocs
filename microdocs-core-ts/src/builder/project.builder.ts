@@ -10,9 +10,7 @@ export class ProjectBuilder implements Builder<Project>{
 
   private _project:Project = {};
   public project():Project {
-    get: {
-      return this._project;
-    }
+    return this._project;
   }
 
   build(): Project {

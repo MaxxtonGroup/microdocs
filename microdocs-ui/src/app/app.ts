@@ -10,6 +10,7 @@ import {DashboardRoute} from "./../routes/dashboard/dashboard";
 import {ProjectService} from "./../services/project.service";
 import {SidebarComponent} from "../panels/sidebar-panel/sidebar.panel";
 import {Subject} from "rxjs/Subject";
+import {Notification} from "rxjs/Notification";
 
 @Component({
   selector: 'app',
@@ -26,7 +27,7 @@ export class App {
     status: <number|string> null
   };
   
-  projects:Subject<TreeNode> = new Subject<TreeNode>();
+  projects:Subject<Notification<TreeNode>> = new Subject<Notification<TreeNode>>();
   envs:string[];
   selectedEnv:string;
   

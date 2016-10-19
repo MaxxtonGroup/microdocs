@@ -1,4 +1,4 @@
-import {Schema} from "../../domain";
+import {Schema, SchemaTypes} from "../../domain";
 import {OBJECT, ARRAY, BOOLEAN, ENUM, INTEGER, NUMBER, STRING} from "../../domain/schema/schema-type.model";
 
 /**
@@ -401,4 +401,189 @@ export class SchemaHelper {
     return object;
   }
   
+  /**
+   * Set a property in an object
+   * @param object object set the property off
+   * @param key property key
+   * @param value value
+   */
+  public static setProperty(object:{}, key:string, value:any):{}{
+    var segments = key.split(".");
+    var currentObject:{} = object;
+    var currentPath:string = null;
+    for(var i = 0; i < segments.length; i++){
+      var segment = segments[i];
+      if(currentPath){
+        currentPath += '.' + segment;
+      }else{
+        currentPath = segment;
+      }
+      if(i == segments.length-1){
+        currentObject[segment] = value;
+      }else{
+        if(currentObject[segment]){
+          if(typeof(currentObject[segment]) === 'object' && !Array.isArray(currentObject[segment])){
+            currentObject = currentObject[segment];
+          }else{
+            throw new Error("Property " + currentPath + " already exists and is not an object");
+          }
+        }else{
+          currentObject[segment] = {};
+          currentObject = currentObject[segment];
+        }
+      }
+    }
+    
+    return object;
+  }
+  
+  /**
+   * Remove a property in an object and remove empty objects it creates
+   * @param object
+   * @param key
+   * @return {{}}
+   */
+  public static removeProperty(object:{}, key:string):{}{
+    var segments = key.split(".");
+    var currentObject:{} = object;
+    var currentPath:string = null;
+    var objectStack:{}[] = [];
+    
+    for(var i = 0; i < segments.length; i++) {
+      objectStack.push(currentObject);
+      var segment = segments[i];
+      if (currentPath) {
+        currentPath += '.' + segment;
+      } else {
+        currentPath = segment;
+      }
+      if(i == segments.length-1){
+        delete currentObject[segment];
+      }else{
+        if(currentObject[segment]){
+          if(typeof(currentObject[segment]) === 'object' && !Array.isArray(currentObject[segment])){
+            currentObject = currentObject[segment];
+          }else{
+            throw new Error("Property " + currentPath + " already exists and is not an object");
+          }
+        }else{
+          break;
+        }
+      }
+    }
+    
+    for(var i = objectStack.length -1; i >= 0; i--){
+      if(Object.keys(currentObject).length == 0){
+        if(i > 0){
+          delete objectStack[i-1][segments[i-1]];
+        }
+      }
+    }
+    
+    return object;
+  }
+  
+  
+  public static resolveTypeString(string:string, resolveUnknownObject?:((name:string) => Schema), originalString?:string, cursor:number = 0):Schema{
+    if(!originalString){
+      originalString = string;
+    }
+    var input = string.trim();
+    var arrayMatch = input.match(REGEX_TYPE_ARRAY);
+    if(arrayMatch && arrayMatch.length == 2){
+      var subSchema = SchemaHelper.resolveTypeString(arrayMatch[1], resolveUnknownObject, originalString, cursor + arrayMatch.index);
+      return {
+        type: SchemaTypes.ARRAY,
+        items: subSchema
+      }
+    }
+    var isObjectMatch = input.match(REGEX_TYPE_IS_OBJECT);
+    if(isObjectMatch && isObjectMatch.length == 2){
+      var schema:Schema = {};
+      var objContent = isObjectMatch[1];
+      var regExp = new RegExp(REGEX_TYPE_OBJECT, 'g');
+      var propMatch;
+      while(propMatch = regExp.exec(objContent)){
+        var key = propMatch[1];
+        var value = propMatch[3];
+        if(!value){
+          if(schema.type && schema.type !== SchemaTypes.ENUM){
+            throw SchemaHelper.resolveTypeError("Expected key:value", propMatch[0], originalString, cursor + propMatch.index);
+          }
+          schema.type = SchemaTypes.ENUM;
+          if(!schema.enum){
+            schema.enum = [];
+          }
+          schema.enum.push(key);
+        }else{
+          if(schema.type && schema.type !== SchemaTypes.OBJECT){
+            throw SchemaHelper.resolveTypeError("Expected enum", propMatch[0], originalString, cursor + propMatch.index);
+          }
+          schema.type = SchemaTypes.OBJECT;
+          if(!schema.properties){
+            schema.properties = {};
+          }
+          schema.properties[key] = SchemaHelper.resolveTypeString(value, resolveUnknownObject, originalString, cursor + propMatch.index);
+        }
+      }
+      if(!schema.type){
+        schema.type = SchemaTypes.OBJECT;
+        schema.properties = {};
+      }
+      return schema;
+    }
+    
+    if(input.match(REGEX_TYPE_STRING)){
+      return {
+        type: SchemaTypes.STRING
+      };
+    }
+    if(input.match(REGEX_TYPE_NUMBER)){
+      return {
+        type: SchemaTypes.NUMBER
+      };
+    }
+    if(input.match(REGEX_TYPE_BOOLEAN)){
+      return {
+        type: SchemaTypes.BOOLEAN
+      };
+    }
+    if(input.match(REGEX_TYPE_INTEGER)){
+      return {
+        type: SchemaTypes.INTEGER
+      };
+    }
+    if(input.match(REGEX_TYPE_DATE)){
+      return {
+        type: SchemaTypes.DATE
+      };
+    }
+    if(input.match(REGEX_TYPE_ANY)){
+      return {
+        type: SchemaTypes.ANY
+      };
+    }
+    
+    if(resolveUnknownObject){
+      return resolveUnknownObject(string);
+    }
+    
+    throw SchemaHelper.resolveTypeError("Unknown type", string, originalString, cursor);
+  }
+  
+  private static resolveTypeError(msg:string, match:string, originalString:string, cursor:number):Error{
+    var trace = originalString.substr(0, cursor) + "-->" + originalString.substr(cursor);
+    return new Error(msg + ": " + match + " in " + trace);
+  }
+  
 }
+
+const REGEX_TYPE_ARRAY = /^(.+)\[\]$/;
+const REGEX_TYPE_IS_OBJECT = /^\{(.*)\}$/;
+const REGEX_TYPE_OBJECT = "(?:(\\w+)|'(.+)')(?:\\s*:\\s*(?:([\\w]+)|(\\{.*\\}(?:\\[\\])?)))?\\s*,?";
+const REGEX_TYPE_STRING = /^string$/;
+const REGEX_TYPE_NUMBER = /^number$/;
+const REGEX_TYPE_BOOLEAN = /^bool(ean)?$/;
+const REGEX_TYPE_INTEGER = /^int(eger)?$/;
+const REGEX_TYPE_DATE = /^date$/;
+const REGEX_TYPE_ANY = /^any$/;

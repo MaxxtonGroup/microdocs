@@ -5,8 +5,6 @@ import * as bodyParser from "body-parser";
 import * as express from "express";
 import * as helmet from "helmet";
 import * as path from "path";
-import * as logger from 'morgan';
-import * as middleware from 'swagger-express-middleware';
 import * as exphbs from 'express-handlebars';
 
 import {Config} from "./config";
@@ -20,6 +18,7 @@ import {EnvRoute} from "./routes/env.route";
 import {Request, Response, NextFunction} from "express";
 import {DefaultInjectionConfig, Injection} from "./injections";
 import {RemoveProjectRoute} from "./routes/remove-project.route";
+import {EditProjectRoute} from "./routes/edit-project.route";
 
 /**
  * The server.
@@ -72,7 +71,9 @@ class Server {
     this.app.use(helmet());
     
     //mount json form parser
-    this.app.use(bodyParser.json());
+    this.app.use(bodyParser.json({
+      limit: '1mb'
+    }));
     
     //mount query string parser
     this.app.use(bodyParser.urlencoded({extended: true}));
@@ -128,7 +129,8 @@ class Server {
       new CheckRoute(this.injection),
       new PublishRoute(this.injection),
       new EnvRoute(this.injection),
-      new RemoveProjectRoute(this.injection)
+      new RemoveProjectRoute(this.injection),
+      new EditProjectRoute(this.injection)
     ];
     
     //define basePath

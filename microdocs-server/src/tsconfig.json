@@ -13,8 +13,6 @@
     "isolatedModules": false
   },
   "exclude": [
-    "./node_modules",
-    "src/config",
-    "node-yaml-config"
+    "./node_modules"
   ]
 }

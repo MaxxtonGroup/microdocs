@@ -1,10 +1,11 @@
 import {Injectable} from "@angular/core";
 import {Http, Response} from "@angular/http";
-import {Get, Path, Put, Query, Body,  Map, Produces, MediaType, Client, Delete} from "angular2-rest/angular2-rest";
-import {TreeNode, Project, Environments} from "microdocs-core-ts/dist/domain";
+import {Get, Path, Put, Patch, Query, Body,  Map, Produces, MediaType, Client, Delete} from "angular2-rest/angular2-rest";
+import {TreeNode, Project, Environments, ProjectChangeRule} from "microdocs-core-ts/dist/domain";
 import {Observable} from "rxjs/Observable";
 import {SchemaHelper} from "../../../microdocs-core-ts/dist/helpers/schema/schema.helper";
 import {ProjectService} from "./project.service";
+import {SnackbarService} from "@maxxton/components/services/snackbar.service";
 
 /**
  * Client for integration with the microdocs-server implementation.
@@ -21,8 +22,8 @@ import {ProjectService} from "./project.service";
 @Injectable()
 export class RestProjectService extends ProjectService {
 
-  constructor(private http: Http) {
-    super(http);
+  constructor(private http: Http, private snackbarService:SnackbarService) {
+    super(http, snackbarService);
   }
 
   /**
@@ -45,7 +46,7 @@ export class RestProjectService extends ProjectService {
    */
   @Get("/projects/{title}")
   @Map(resp => SchemaHelper.resolveObject(resp.json()))
-  public getProject(@Path("title") title: string, @Query("version") version?: string, @Query("env") env: string = this.getSelectedEnv()): Observable<Project> {
+  public loadProject(@Path("title") title: string, @Query("version") version?: string, @Query("env") env: string = this.getSelectedEnv()): Observable<Project> {
     return null;
   }
 
@@ -66,6 +67,11 @@ export class RestProjectService extends ProjectService {
   
   @Delete("/projects/{title}")
   public deleteProject(@Path('title') name:string, @Query('version') version?:string, @Query('env') env:string = this.getSelectedEnv()):Observable<Response>{
+    return null;
+  }
+  
+  @Patch("/projects/{title}")
+  public updateProject(@Path('title') name:string, @Body rules:ProjectChangeRule[], @Query('version') version?:string, @Query('env') env?:string = this.getSelectedEnv()):Observable<Response> {
     return null;
   }
 

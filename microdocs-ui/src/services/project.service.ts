@@ -1,49 +1,86 @@
 import {Observable} from "rxjs/Observable";
 import {Subject} from "rxjs/Subject";
+import {ReplaySubject} from "rxjs/ReplaySubject";
+import {Notification} from "rxjs/Notification";
 import {Http, Response} from "@angular/http";
 import {RestClient} from "angular2-rest/angular2-rest";
 import {SnackbarService} from "@maxxton/components/services/snackbar.service";
-import {TreeNode, Project, Environments} from "microdocs-core-ts/dist/domain";
+import {TreeNode, Project, Environments, ProjectChangeRule} from "microdocs-core-ts/dist/domain";
 
 const TIMEOUT:number = 1000;
 
 export abstract class ProjectService extends RestClient {
   
   private env:string;
-  private lastValue:TreeNode;
-  private projects:Subject<TreeNode> = new Subject<TreeNode>();
-  private lastRefresh:number = 0;
+  private projects:Subject<Notification<TreeNode>> = new ReplaySubject <Notification<TreeNode>>(1);
+  private project:Subject<Notification<Project>> = new ReplaySubject <Notification<Project>>(1);
+  private lastProjectsValue:TreeNode;
+  private lastProjectValue:Project;
+  private lastProjectsRefresh:number = 0;
+  private lastProjectRefresh:number = 0;
+  private lastProjectTitle:string;
+  private lastProjectVersion:string;
   
   constructor(http:Http, private snackbarService:SnackbarService) {
     super(http);
-    this.projects.subscribe(node => this.lastValue = node);
+    this.projects.subscribe(node => this.lastProjectsValue = node);
+    this.project.subscribe(project => this.lastProjectValue = project);
   }
   
-  public getProjects(env:string = this.getSelectedEnv()):Observable<TreeNode> {
+  public getProjects(env:string = this.getSelectedEnv()):Observable<Notification<TreeNode>> {
     this.refreshProjects(env);
     return this.projects;
   }
   
-  public refreshProjects(env:string = this.getSelectedEnv()){
-    if(this.lastRefresh + TIMEOUT < new Date().getTime()) {
-      this.loadProjects(env).subscribe(node => this.projects.next(node), error => this.snackbarService.addNotification("Failed to load project list"));
-      this.lastRefresh = new Date().getTime();
-    }else{
-      setTimeout(() => this.projects.next(this.lastValue), 20);
+  public refreshProjects(env:string = this.getSelectedEnv()):void {
+    if (this.lastProjectsRefresh + TIMEOUT < new Date().getTime()) {
+      this.loadProjects(env).subscribe(
+        node => this.projects.next(Notification.createNext(node)),
+        error => {
+          this.handleError(error, "Failed to load project list");
+          this.projects.next(Notification.createError(error));
+        });
+      this.lastProjectsRefresh = new Date().getTime();
     }
   }
   
   public abstract loadProjects(env:string):Observable<TreeNode>;
-
-  public abstract getProject(name:string, version?:string, env?:string):Observable<Project>;
-
+  
+  public getProject(name:string, version?:string, env?:string = this.getSelectedEnv()):Observable<Notification<Project>> {
+    this.refreshProject(name, version, env);
+    return this.project;
+  }
+  
+  public refreshProject(name:string, version?:string, env?:string = this.getSelectedEnv()):void {
+    var shouldRefresh = true;
+    if (this.lastProjectRefresh + TIMEOUT >= new Date().getTime() && this.lastProjectTitle && this.lastProjectTitle.toLowerCase() === name.toLowerCase() && this.lastProjectVersion === version) {
+      shouldRefresh = false;
+    }
+    if (shouldRefresh) {
+      this.loadProject(name, version, env).subscribe(
+        project => this.project.next(Notification.createNext(project)),
+        error => {
+          this.handleError(error, "Failed to load project " + name + ":" + version);
+          this.project.next(Notification.createError(error));
+        });
+      this.lastProjectRefresh = new Date().getTime();
+      this.lastProjectTitle = name;
+      this.lastProjectVersion = version;
+    }
+  }
+  
+  public abstract loadProject(name:string, version?:string, env?:string):Observable<Project>;
+  
   public abstract importProject(project:Project, name:string, group:string, version:string, env?:string):Observable<Response>;
   
   public abstract deleteProject(name:string, version?:string, env?:string):Observable<Response>;
   
+  public abstract updateProject(name:string, rules:ProjectChangeRule[], version?:string, env?:string):Observable<Response>;
+  
   public setSelectedEnv(env:string) {
     this.env = env;
-    this.lastRefresh = 0;
+    this.lastProjectsRefresh = 0;
+    this.lastProjectRefresh = 0;
     this.refreshProjects(env);
   }
   
@@ -52,5 +89,17 @@ export abstract class ProjectService extends RestClient {
   }
   
   abstract getEnvs():Observable<{[key:string]:Environments}>;
+  
+  private handleError(error:Response, friendlyMessage:string):void{
+    this.snackbarService.addNotification(friendlyMessage, undefined, undefined, undefined, undefined);
+    try{
+      var body = error.json();
+      var e = body.error;
+      var msg = body.message;
+      if(e){
+        console.error(e + (msg ? ' (' + msg + ')' : ''));
+      }
+    }catch(e){/*hide parse error*/}
+  }
   
 }

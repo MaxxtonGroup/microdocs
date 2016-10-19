@@ -44,9 +44,10 @@ export class DeletePanel {
   public doDelete() {
     this.error = '';
     if (this.scope !== 'all' && this.scope !== 'current') {
-      this.error = "Select what to delete";
+      this.error = "Select what you want to delete";
     } else {
       this.projectService.deleteProject(this.project, this.scope === 'current' ? this.version : undefined).subscribe(response => {
+          this.projectService.refreshProjects();
           this.setOpened(false);
           this.router.navigate(['/dashboard'], {queryParams: {env: this.projectService.getSelectedEnv()}});
         }, (error) => {

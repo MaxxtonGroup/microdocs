@@ -6,6 +6,7 @@ import {Config} from "../../config";
 import {ReportRepository} from "../report.repo";
 import {Project, ProjectInfo} from "microdocs-core-ts/dist/domain";
 import * as mkdir from 'mkdir-p';
+import * as fsHelper from '../../helpers/file.helper';
 
 /**
  * Json file based repository.
@@ -23,11 +24,12 @@ export class ReportJsonRepository implements ReportRepository {
   public removeProject(env:string, info:ProjectInfo):boolean {
     console.log("Remove report: " + info.title + ":" + info.version);
     var reportsFolder:string = __dirname + '/../../../' + Config.get("dataFolder") + "/reports/" + env;
-    var projectPath:string = info.group + "/" + info.title + "/" + (info.version ? info.version : '');
+    var projectPath:string = info.group.toLowerCase() + "/" + info.title.toLowerCase() + (info.version ? "/" + info.version.toLowerCase() : '');
     var projectFolder = reportsFolder + "/" + projectPath;
     
     if (fs.existsSync(projectFolder)) {
-      deleteFolderRecursive(projectFolder);
+      fsHelper.deleteFolderRecursive(projectFolder);
+      fsHelper.cleanEmptyFolders(reportsFolder);
       return true;
     }
     return false;
@@ -62,7 +64,7 @@ export class ReportJsonRepository implements ReportRepository {
     
     // load microdocs.json
     var reportsFolder:string = __dirname + '/../../../' + Config.get("dataFolder") + "/reports/" + env;
-    var projectPath = projectInfo.group + "/" + projectInfo.title + "/" + projectInfo.version;
+    var projectPath = projectInfo.group.toLowerCase() + "/" + projectInfo.title.toLowerCase() + "/" + projectInfo.version.toLowerCase();
     var projectFolder = reportsFolder + "/" + projectPath;
     var project = this.loadProject(projectFolder + "/microdocs.json");
     
@@ -70,9 +72,9 @@ export class ReportJsonRepository implements ReportRepository {
     if (project.info == undefined || project.info == null) {
       project.info = projectInfo;
     } else {
-      project.info.title = projectInfo.title;
-      project.info.group = projectInfo.group;
-      project.info.version = projectInfo.version;
+      project.info.title = projectInfo.title.toLowerCase();
+      project.info.group = projectInfo.group.toLowerCase();
+      project.info.version = projectInfo.version.toLowerCase();
       project.info.versions = projectInfo.versions;
       if (projectInfo.description != null && projectInfo.description != "") {
         project.info.description = projectInfo.description;
@@ -99,10 +101,9 @@ export class ReportJsonRepository implements ReportRepository {
   public storeProject(env:string, project:Project):void {
     console.info("Store report: " + project.info.title + ":" + project.info.version);
     var dataFolder:string = __dirname + '/../../../' + Config.get("dataFolder") + "/reports/" + env;
-    var groupFolder:string = dataFolder + "/" + project.info.group;
-    console.info(project.info);
-    var projectFolder:string = groupFolder + "/" + project.info.title;
-    var versionFolder:string = projectFolder + "/" + project.info.version;
+    var groupFolder:string = dataFolder + "/" + project.info.group.toLowerCase();
+    var projectFolder:string = groupFolder + "/" + project.info.title.toLowerCase();
+    var versionFolder:string = projectFolder + "/" + project.info.version.toLowerCase();
     var storeFile:string = versionFolder + "/microdocs.json";
     
     mkdir.sync(versionFolder);
@@ -185,17 +186,3 @@ export class ReportJsonRepository implements ReportRepository {
 }
 
 
-
-function deleteFolderRecursive(path):void {
-  if (fs.existsSync(path)) {
-  fs.readdirSync(path).forEach(function (file, index) {
-    var curPath = path + "/" + file;
-    if (fs.lstatSync(curPath).isDirectory()) { // recurse
-      deleteFolderRecursive(curPath);
-    } else { // delete file
-      fs.unlinkSync(curPath);
-    }
-  });
-  fs.rmdirSync(path);
-}
-}

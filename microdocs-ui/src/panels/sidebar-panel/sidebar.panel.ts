@@ -4,7 +4,7 @@
 import {Component, HostBinding, Input, Output, EventEmitter} from "@angular/core";
 import {ROUTER_DIRECTIVES} from "@angular/router";
 import {COMPONENTS} from "@maxxton/components/components";
-import {ProjectService} from "../../services/project.service";
+import {Notification} from "rxjs/Notification";
 import {Observable} from "rxjs/Observable";
 import {TreeNode} from 'microdocs-core-ts/dist/domain';
 import {DashboardRoute} from "../../routes/dashboard/dashboard";
@@ -28,7 +28,7 @@ export class SidebarComponent {
   
   
   @Input()
-  projects:Observable<TreeNode>;
+  projects:Observable<Notification<TreeNode>>;
   
   menu:Object = [];
   
@@ -46,9 +46,11 @@ export class SidebarComponent {
   change = new EventEmitter();
   
   ngOnInit() {
-    this.projects.subscribe(node => {
-      this.node = node;
-      this.initMenu()
+    this.projects.subscribe(notification => {
+      notification.do(node => {
+        this.node = node;
+        this.initMenu()
+      });
     });
   }
   
@@ -91,7 +93,7 @@ export class SidebarComponent {
       }
       var groupRoute = menus.filter(group => group.name == groupName)[0];
       groupRoute.children.push({
-        path: pathPrefix + groupName + '/' + title,
+        path: pathPrefix + title,
         pathParams: {version: p.version, env: this.selectedEnv},
         name: title,
         postIcon: icon,
