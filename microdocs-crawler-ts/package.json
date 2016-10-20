@@ -1,10 +1,11 @@
 {
   "name": "microdocs-crawler-ts",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "private": true,
   "scripts": {},
   "dependencies": {
     "chai": "^3.5.0",
+    "globby": "^6.0.0",
     "typedoc": "^0.4.5",
     "typescript": "^1.8.10"
   },
