@@ -22,6 +22,10 @@ gulp.task('default', ['compile'], function () {
   gulp.watch(['src/**/*.ts', 'src/**/*.html'], ['compile-typescript']);
 });
 
+gulp.task('watchTest', function(){
+  gulp.watch(['src/**/*.ts', 'src/**/*.html'], ['test']);
+});
+
 gulp.task('compile', function (done) {
   runSequence('clean', 'compile-typescript', done);
 });

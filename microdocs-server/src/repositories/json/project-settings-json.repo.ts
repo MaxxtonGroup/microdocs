@@ -3,13 +3,9 @@ import * as fs from 'fs';
 
 import {ProjectSettingsRepository} from "../project-settings.repo";
 import {Config} from "../../config";
-import {ProjectSettings, Static, Environments} from 'microdocs-core-ts/dist/domain';
+import {ProjectSettings, Environments} from 'microdocs-core-ts/dist/domain';
 
 export class ProjectSettingsJsonRepository implements ProjectSettingsRepository {
-
-  public static bootstrap(): ProjectSettingsJsonRepository {
-    return new ProjectSettingsJsonRepository();
-  }
 
   getEnvs(): {[name: string]: Environments} {
     console.info("Load project envs");
@@ -31,7 +27,7 @@ export class ProjectSettingsJsonRepository implements ProjectSettingsRepository 
     console.info("Load project settings");
     var dataFolder: string = __dirname + '/../../../' + Config.get("dataFolder") + "/config";
     var projectFile: string = dataFolder + "/project-settings.json";
-    var settings: Static = {};
+    var settings: ProjectSettings = {};
     if (fs.existsSync(projectFile)) {
       var string = fs.readFileSync(projectFile).toString();
       settings = JSON.parse(string);

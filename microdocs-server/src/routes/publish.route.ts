@@ -28,10 +28,10 @@ export class PublishRoute extends BaseRoute {
    * @httpResponse 200 {Problem[]}
    * @httpResponse 400 Missing title/version/group in the project definitions or missing request body
    */
-  public publishProject(req: express.Request, res: express.Response, next: express.NextFunction) {
+  public publishProject(req: express.Request, res: express.Response, next: express.NextFunction, scope:BaseRoute) {
     var handler = ResponseHelper.getHandler(req);
     try {
-      var env = PublishRoute.getEnv(req);
+      var env = scope.getEnv(req, scope);
       if (env == null) {
         handler.handleBadRequest(req, res, "env '" + req.query.env + "' doesn't exists");
         return;
@@ -87,16 +87,18 @@ export class PublishRoute extends BaseRoute {
         report.info.group = group;
         report.info.title = title;
 
+        var aggregationService = scope.injection.AggregationService();
+        
         // check report
         var reportCopy = JSON.parse(JSON.stringify(report));
-        var problems: Problem[] = AggregationService.bootstrap().checkProject(env, reportCopy);
+        var problems: Problem[] = aggregationService.checkProject(env, reportCopy);
 
         if (!(failOnProblems && problems.filter(problem => problem.level == ERROR || problem.level == WARNING).length > 0)) {
           // save report
-          ReportJsonRepository.bootstrap().storeProject(env, report);
+          scope.injection.ReportRepository().storeProject(env, report);
 
           // run reindex
-          var treeNode = AggregationService.bootstrap().reindex(env);
+          var treeNode = aggregationService.reindex(env);
         } else {
           console.warn("Fail publishing due to problems");
         }

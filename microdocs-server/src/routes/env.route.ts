@@ -18,10 +18,10 @@ export class EnvRoute extends BaseRoute {
    * @get /envs
    * @httpResponse 200 {{[name: string]: Environments}[]}
    */
-  public projects(req: express.Request, res: express.Response, next: express.NextFunction) {
+  public projects(req: express.Request, res: express.Response, next: express.NextFunction, scope:BaseRoute) {
     var handler = ResponseHelper.getDefaultHandler();
     try {
-      var envs = ProjectSettingsJsonRepository.bootstrap().getEnvs();
+      var envs = scope.injection.ProjectSettingsRepository().getEnvs();
       handler.response(req, res, 200, envs);
     } catch (e) {
       ResponseHelper.getHandler(req).handleInternalServerError(req, res, e);

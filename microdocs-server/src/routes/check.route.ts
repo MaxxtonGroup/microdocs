@@ -16,7 +16,7 @@ export class CheckRoute extends BaseRoute {
 
   /**
    * Check project definitions for problems
-   * @post /check
+   * @httpPost /check
    * @httpQuery ?env {string} environment to check the project definition against
    * @httpQuery ?project {string} name of the project if not already defined in the project definitions
    * @httpQuery ?title {string} alias for project
@@ -24,10 +24,10 @@ export class CheckRoute extends BaseRoute {
    * @httpResponse 200 {Problem[]}
    * @httpResponse 404 {} Body is missing or project title is missing
    */
-  public projects(req: express.Request, res: express.Response, next: express.NextFunction) {
+  public projects(req: express.Request, res: express.Response, next: express.NextFunction, scope:BaseRoute) {
     var handler = ResponseHelper.getHandler(req);
     try {
-      var env = CheckRoute.getEnv(req);
+      var env = scope.getEnv(req, scope);
       if (env == null) {
         handler.handleBadRequest(req, res, "env '" + req.query.env + "' doesn't exists");
         return;
@@ -49,7 +49,7 @@ export class CheckRoute extends BaseRoute {
         project.info.version = '9999999999.0.0';
         project.info.versions = ['9999999999.0.0'];
 
-        var problems: Problem[] = AggregationService.bootstrap().checkProject(env, project);
+        var problems: Problem[] = scope.injection.AggregationService().checkProject(env, project);
         handler.handleProblems(req, res, problems, env);
       } else {
         handler.handleBadRequest(req, res, 'Body is missing');

@@ -5,9 +5,8 @@
  * @author Steven Hermans
  */
 
-//module dependencies
-var config = require("./dist/config");
-var app = require("./dist/app");
+var config = require("./config");
+var app = require("./app");
 var debug = require("debug")("express:server");
 var http = require("http");
 

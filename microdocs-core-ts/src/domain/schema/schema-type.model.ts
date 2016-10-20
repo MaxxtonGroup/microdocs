@@ -6,4 +6,5 @@ export const
   INTEGER = 'integer',
   BOOLEAN = 'boolean',
   ENUM = 'enum',
-  DATE = 'date';
+  DATE = 'date',
+  ANY = 'any';

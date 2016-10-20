@@ -100,8 +100,8 @@ export class MicroDocsPreProcessor {
             var variableName = resolvedKey.substring(1, resolvedKey.length - 1);
             var oldVarValue = variables[variableName];
             if (Array.isArray(projectScope)) {
-              var newProjectScopes = [];
-              for (var existingKey = 0; existingKey < projectScope.length; existingKey++) {
+              let newProjectScopes:any[] = [];
+              for (let existingKey = 0; existingKey < projectScope.length; existingKey++) {
                 variables[variableName] = existingKey;
                 var newProjectScope = projectScope[existingKey];
                 if (!newProjectScope) {
@@ -118,9 +118,10 @@ export class MicroDocsPreProcessor {
                   delete variables[variableName];
                 }
               }
+              projectScope = newProjectScopes;
             } else {
-              var newProjectScopes = {};
-              for (var existingKey in projectScope) {
+              let newProjectScopes:{} = {};
+              for (let existingKey in projectScope) {
                 variables[variableName] = existingKey;
                 var newProjectScope = projectScope[existingKey];
                 if (!newProjectScope) {
@@ -137,8 +138,8 @@ export class MicroDocsPreProcessor {
                   delete variables[variableName];
                 }
               }
+              projectScope = newProjectScopes;
             }
-            projectScope = newProjectScopes;
           } else {
             if (Array.isArray(projectScope)) {
               console.warn("Could process array as object");

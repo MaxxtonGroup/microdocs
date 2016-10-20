@@ -10,9 +10,7 @@ export class ComponentBuilder implements Builder<Component>{
   public title:string;
   
   public component():Component {
-    get: {
-      return this._component;
-    }
+    return this._component;
   }
   
   build():Component {

@@ -3,9 +3,9 @@
 import * as express from "express";
 
 import {BaseRoute} from "./route";
-import {ProjectJsonRepository} from "../repositories/json/project-json.repo";
 import {ResponseHelper} from "./responses/response.helper";
 import {TreeNode} from 'microdocs-core-ts/dist/domain';
+import {ProjectRepository} from "../repositories/project.repo";
 
 /**
  * @controller
@@ -15,22 +15,22 @@ export class ProjectsRoute extends BaseRoute {
   mapping = {methods: ['get'], path: '/projects', handler: this.projects};
 
   /**
-   * @get /projects
+   * @httpGet /projects
    * @httpQuery ?env {string}
    * @httpQuery ?groups {string[]} filter to include or exclude groups with a '!' in front
    * @httpQuery ?projects {string[]} filter to include or exclude groups with a '!' in front
    * @httpResponse 200 {TreeNode}
    */
-  public projects(req: express.Request, res: express.Response, next: express.NextFunction) {
+  public projects(req: express.Request, res: express.Response, next: express.NextFunction, scope:BaseRoute) {
     var handler = ResponseHelper.getHandler(req);
     try {
-      var env = ProjectsRoute.getEnv(req);
+      var env = scope.getEnv(req, scope);
       if (env == null) {
         handler.handleBadRequest(req, res, "env '" + req.query.env + "' doesn't exists");
         return;
       }
 
-      var projects = ProjectJsonRepository.bootstrap().getAggregatedProjects(env);
+      var projects = scope.injection.ProjectRepository().getAggregatedProjects(env);
       if (projects == null) {
         projects = new TreeNode();
       }
@@ -93,7 +93,7 @@ export class ProjectsRoute extends BaseRoute {
         if (filter) {
           removedProjects.push(title);
         } else {
-          this.filterProjects(project.dependencies[title], projects, groups);
+          ProjectsRoute.filterProjects(project.dependencies[title], projects, groups);
         }
       }
     }

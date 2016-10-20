@@ -10,7 +10,7 @@ describe('#MicroDocsPreProcessor: ', () => {
   describe("#process(): ", () => {
 
     it("Test empty settings", () => {
-      var project :Project = {};
+      var project :Project = <Project>{};
       var settings = {};
 
       var result = MicroDocsPreProcessor.process(project, settings);
@@ -19,7 +19,7 @@ describe('#MicroDocsPreProcessor: ', () => {
     });
 
     it("Test static settings", () => {
-      var project :Project = {};
+      var project :Project = <Project>{};
       var settings = {test:true};
 
       var result = MicroDocsPreProcessor.process(project, settings);
@@ -28,7 +28,7 @@ describe('#MicroDocsPreProcessor: ', () => {
     });
 
     it("Test static nested settings", () => {
-      var project :Project = {};
+      var project :Project = <Project>{};
       var settings = {obj:{test:true}};
 
       var result = MicroDocsPreProcessor.process(project, settings);
@@ -37,7 +37,7 @@ describe('#MicroDocsPreProcessor: ', () => {
     });
 
     it("Test static merge settings", () => {
-      var project :Project = {obj: 'lalala'};
+      var project :Project = <Project>{obj: 'lalala'};
       var settings = {obj:{test:true}};
 
       var result = MicroDocsPreProcessor.process(project, settings);
@@ -46,7 +46,7 @@ describe('#MicroDocsPreProcessor: ', () => {
     });
 
     it("Test static array", () => {
-      var project :Project = {array:[]};
+      var project :Project = <Project>{array:[]};
       var settings = {array:['item', 'item']};
 
       var result = MicroDocsPreProcessor.process(project, settings);
@@ -55,7 +55,7 @@ describe('#MicroDocsPreProcessor: ', () => {
     });
 
     it("Test variable injection", () => {
-      var project :Project = {myvar:'helloWorld'};
+      var project :Project = <Project>{myvar:'helloWorld'};
       var settings = {resolved: '$project.myvar'};
 
       var result = MicroDocsPreProcessor.process(project, settings);
@@ -63,7 +63,7 @@ describe('#MicroDocsPreProcessor: ', () => {
     });
 
     it("Test missing variable injection", () => {
-      var project :Project = {myvar:'helloWorld'};
+      var project :Project = <Project>{myvar:'helloWorld'};
       var settings = {resolved: '$myvar'};
 
       var result = MicroDocsPreProcessor.process(project, settings);
@@ -71,7 +71,7 @@ describe('#MicroDocsPreProcessor: ', () => {
     });
 
     it("Test dynamic array", () => {
-      var project :Project = {array:[{name:'john'},{name:'alice'}]};
+      var project :Project = <Project>{array:[{name:'john'},{name:'alice'}]};
       var settings = {array:{'{i}': {index: '$i'}}};
 
       var result = MicroDocsPreProcessor.process(project, settings);
@@ -79,7 +79,7 @@ describe('#MicroDocsPreProcessor: ', () => {
     });
 
     it("Test dynamic object", () => {
-      var project :Project = {object:{"john":{age:15},'alice':{age:20}}};
+      var project :Project = <Project>{object:{"john":{age:15},'alice':{age:20}}};
       var settings = {object:{'{i}': {name: '$i'}}};
 
       var result = MicroDocsPreProcessor.process(project, settings);

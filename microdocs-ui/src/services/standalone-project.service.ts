@@ -1,6 +1,6 @@
 import {ProjectService} from "./project.service";
 import {Injectable} from "@angular/core";
-import {Http} from "@angular/http";
+import {Http, Response} from "@angular/http";
 import {
   RestClient,
   HttpClient,
@@ -9,10 +9,11 @@ import {
   Query,
   Map,
   Produces, MediaType, Client
-} from "../../../../angular2-rest/angular2-rest";
-import {TreeNode, Project, Environments} from "microdocs-core-ts/dist/domain";
+} from "angular2-rest/angular2-rest";
+import {TreeNode, Project, Environments, ProjectChangeRule} from "microdocs-core-ts/dist/domain";
 import {Observable} from "rxjs/Observable";
 import {SchemaHelper} from "../../../microdocs-core-ts/dist/helpers/schema/schema.helper";
+import {SnackbarService} from "@maxxton/components/services/snackbar.service";
 
 /**
  * Client for the standalone implementation.
@@ -28,10 +29,8 @@ import {SchemaHelper} from "../../../microdocs-core-ts/dist/helpers/schema/schem
 @Injectable()
 export class StandaloneProjectService extends ProjectService{
 
-  private env:string;
-
-  constructor(private http:Http){
-    super(http);
+  constructor(private http:Http, private snackbarService:SnackbarService){
+    super(http, snackbarService);
   }
   /**
    * Loads all projects
@@ -40,7 +39,7 @@ export class StandaloneProjectService extends ProjectService{
    */
   @Get("/projects-{env}.json")
   @Map(resp => TreeNode.link(resp.json()))
-  public getProjects(@Path("env") env: string = this.getSelectedEnv()): Observable<TreeNode>{return null;}
+  public loadProjects(@Path("env") env: string = this.getSelectedEnv()): Observable<TreeNode>{return null;}
 
   /**
    * Load project
@@ -51,7 +50,7 @@ export class StandaloneProjectService extends ProjectService{
    */
   @Get("/projects/{title}-{env}-{version}.json")
   @Map(resp => SchemaHelper.resolveObject(resp.json()))
-  public getProject(@Path("title") title:string, @Path("version") version?:string, @Path("env") env: string = this.getSelectedEnv()): Observable<Project>{return null;}
+  public loadProject(@Path("projectName") projectName:string, @Path("version") version?:string, @Path("env") env: string = this.getSelectedEnv()): Observable<Project>{return null;}
 
   /**
    * Load all the environments
@@ -60,13 +59,17 @@ export class StandaloneProjectService extends ProjectService{
   @Get("/envs.json")
   @Map(resp => resp.json())
   public getEnvs(): Observable<{[key:string]:Environments}> {return null}
-
-  public setSelectedEnv(env: string) {
-    this.env = env;
+  
+  importProject(project:Project, name:string, group:string, version:string, env?:string):Observable<Response> {
+    throw new Error('Import project is not supported in standalone');
   }
-
-  public getSelectedEnv(): string {
-    return this.env;
+  
+  deleteProject(name:string, version?:string, env?:string):Observable<Response> {
+    throw new Error('Delete project is not supported in standalone');
+  }
+  
+  updateProject(name:string, rules:ProjectChangeRule[], version?:string, env?:string):Observable<Response> {
+    throw new Error('Update project is not supported in standalone');
   }
 
 }

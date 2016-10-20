@@ -11,9 +11,7 @@ export class ProjectBuilder implements Builder<Project>{
 
   private _project:Project = {};
   public project():Project {
-    get: {
-      return this._project;
-    }
+    return this._project;
   }
 
   build(): Project {
@@ -64,7 +62,7 @@ export class ProjectBuilder implements Builder<Project>{
       this.path(pathBuilder, controllerBuilder.baseUrl, controllerBuilder.requestMethods);
     });
   }
-  
+
   path(pathBuilder:PathBuilder, basePath:string='', requestMethods:string[]=[]):void{
     var path = basePath + pathBuilder.path;
     var requestMethods = pathBuilder.methods.concat(requestMethods).map(method => method.toLowerCase());
@@ -86,11 +84,11 @@ export class ProjectBuilder implements Builder<Project>{
     });
   }
 
-  model(schema:Schema):void{
-    if(!schema.name || schema.name == ''){
+  model(schema:Schema):void {
+    if (!schema.name || schema.name == '') {
       throw new Error("No name found for schema");
     }
-    if(!this._project.definitions){
+    if (!this._project.definitions) {
       this._project.definitions = {};
     }
     this._project.definitions[schema.name] = schema;
