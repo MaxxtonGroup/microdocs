@@ -19,7 +19,7 @@ export class PublishRoute extends BaseRoute {
 
   /**
    * Publish new project definitions
-   * @put /projects/{title}
+   * @httpPut /projects/{title}
    * @httpQuery ?env {string} environment to publish the project definition
    * @httpQuery ?failOnProblems {boolean} either to publish when there are problems or
    * @httpQuery ?title {string} override the info.title in the project definitions

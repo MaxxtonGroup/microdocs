@@ -26,7 +26,7 @@ export function transformCommentTag(tag: CommentTag): AdvancedCommentTag {
         tagName: tag.tagName,
         paramName: paramName,
         text: text,
-        optional = optional
+        optional: optional
       };
     }
   }
