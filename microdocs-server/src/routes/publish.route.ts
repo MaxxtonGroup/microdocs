@@ -12,6 +12,7 @@ import {ResponseHelper} from "./responses/response.helper";
 
 /**
  * @controller
+ * @baseUrl /api/v1
  */
 export class PublishRoute extends BaseRoute {
 
@@ -20,6 +21,7 @@ export class PublishRoute extends BaseRoute {
   /**
    * Publish new project definitions
    * @httpPut /projects/{title}
+   * @httpPath title {string} name of the project
    * @httpQuery ?env {string} environment to publish the project definition
    * @httpQuery ?failOnProblems {boolean} either to publish when there are problems or
    * @httpQuery ?title {string} override the info.title in the project definitions

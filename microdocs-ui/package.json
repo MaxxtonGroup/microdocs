@@ -44,18 +44,19 @@
     "zone.js": "0.6.12"
   },
   "devDependencies": {
+    "async": "^2.1.2",
     "gulp": "3.9.1",
-    "gulp-typescript": ">=2.13.0",
-    "gulp-sourcemaps": "1.6.0",
-    "gulp-plumber": ">=1.1.0",
-    "gulp-connect": "4.0.0",
     "gulp-angular-embed-templates": "2.2.0",
-    "gulp-sass": ">=2.3.0",
+    "gulp-connect": "4.0.0",
+    "gulp-plumber": ">=1.1.0",
     "gulp-rename": ">=1.2.2",
     "gulp-replace": ">=0.5.4",
-    "run-sequence": "1.1.5",
-    "merge2": "1.0.1",
     "gulp-rimraf": "0.2.0",
+    "gulp-sass": ">=2.3.0",
+    "gulp-sourcemaps": "1.6.0",
+    "gulp-typescript": ">=2.13.0",
+    "merge2": "1.0.1",
+    "run-sequence": "1.1.5",
     "typings": "^1.0.4"
   }
 }

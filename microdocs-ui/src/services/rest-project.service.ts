@@ -1,13 +1,7 @@
 import {Injectable} from "@angular/core";
-<<<<<<< HEAD
-import {Http} from "@angular/http";
-import {Get, Path, Query,  Map, Produces, MediaType, Client, OnEmit} from "angular2-rest/angular2-rest";
-import {TreeNode, Project, Environments} from "microdocs-core-ts/dist/domain";
-=======
 import {Http, Response} from "@angular/http";
 import {Get, Path, Put, Patch, Query, Body,  Map, Produces, MediaType, Client, Delete} from "angular2-rest/angular2-rest";
 import {TreeNode, Project, Environments, ProjectChangeRule} from "microdocs-core-ts/dist/domain";
->>>>>>> development
 import {Observable} from "rxjs/Observable";
 import {SchemaHelper} from "../../../microdocs-core-ts/dist/helpers/schema/schema.helper";
 import {ProjectService} from "./project.service";

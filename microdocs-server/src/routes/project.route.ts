@@ -8,6 +8,7 @@ import {ResponseHelper} from "./responses/response.helper";
 
 /**
  * @controller
+ * @baseUrl /api/v1
  */
 export class ProjectRoute extends BaseRoute {
 
@@ -16,6 +17,7 @@ export class ProjectRoute extends BaseRoute {
   /**
    * Get project definition
    * @httpGet /projects/{title}
+   * @httpPath title {string} name of the project
    * @httpQuery ?version {string} specify a version
    * @httpQuery ?env {string} environment to find the project definition
    * @httpResponse 200 {Project}

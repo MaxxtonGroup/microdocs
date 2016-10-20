@@ -17,7 +17,7 @@ export class ReindexRoute extends BaseRoute {
   /**
    * Start the reindex process
    * @httpPut /reindex
-   * @httpEnv ?env {string} environment to publish the project definition
+   * @httpQuery ?env {string} environment to publish the project definition
    * @httpResponse 200 {Problem[]}
    */
   public reindex(req: express.Request, res: express.Response, next: express.NextFunction, scope:BaseRoute) {

@@ -8,6 +8,7 @@ import {ProjectSettingsJsonRepository} from "../repositories/json/project-settin
 
 /**
  * @controller
+ * @baseUrl /api/v1
  */
 export class EnvRoute extends BaseRoute {
 
@@ -15,7 +16,7 @@ export class EnvRoute extends BaseRoute {
 
   /**
    * Get all the environments
-   * @get /envs
+   * @httpGet /envs
    * @httpResponse 200 {{[name: string]: Environments}[]}
    */
   public projects(req: express.Request, res: express.Response, next: express.NextFunction, scope:BaseRoute) {

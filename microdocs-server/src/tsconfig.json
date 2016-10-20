@@ -10,7 +10,8 @@
     "removeComments": false,
     "noImplicitAny": true,
     "suppressImplicitAnyIndexErrors": true,
-    "isolatedModules": false
+    "isolatedModules": false,
+    "ignoreCompilerErrors": true
   },
   "exclude": [
     "./node_modules"

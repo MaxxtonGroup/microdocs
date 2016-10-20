@@ -17,15 +17,16 @@ export class MicroDocsCrawler {
    * @param frameworks which frameworks it should crawl for
    * @returns {Project} MicroDocs definition
    */
-  public crawl(sources: string[], frameworks: Framework[] = FRAMEWORKS): Project {
+  public crawl(sources: string[], tsConfig:{} = this.getDefaultTsConfig(), frameworks: Framework[] = FRAMEWORKS): Project {
     // Check frameworks
     if (frameworks.length == 0) {
       throw new CrawlerException('No framework selected');
     }
 
     // Convert source to reflection
-    console.info('Crawl sources');
-    var typedocApplication = new Application({ignoreCompilerErrors: true});
+    console.info('Crawl sources with config:');
+    console.info(JSON.stringify(tsConfig, undefined, 2));
+    var typedocApplication = new Application(tsConfig);
     var reflect = typedocApplication.convert(sources);
 
     // Init Crawling
@@ -39,6 +40,12 @@ export class MicroDocsCrawler {
     rootCrawler.crawl(projectBuilder, reflect);
 
     return projectBuilder.build();
+  }
+
+  private getDefaultTsConfig():{}{
+    return {
+      ignoreCompilerErrors: true
+    };
   }
 
 }

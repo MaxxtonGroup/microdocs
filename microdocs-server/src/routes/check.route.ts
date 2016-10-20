@@ -9,6 +9,7 @@ import {ResponseHelper} from "./responses/response.helper";
 
 /**
  * @controller
+ * @baseUrl /api/v1
  */
 export class CheckRoute extends BaseRoute {
 

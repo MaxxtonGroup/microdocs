@@ -6,8 +6,8 @@ export interface AdvancedCommentTag{
   tagName: string;
   paramName: string;
   text: string;
-  defaultValue?: any;
-  type?: Schema;
+  defaultValue?: string;
+  type?: string;
   optional?:boolean;
 
 }

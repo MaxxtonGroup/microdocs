@@ -9,10 +9,24 @@ import {ProjectChangeRule, Project, ProjectInfo} from 'microdocs-core-ts/dist/do
 import {ReportRepository} from "../repositories/report.repo";
 import {ProjectRepository} from "../repositories/project.repo";
 
+/**
+ * @controller
+ * @baseUrl /api/v1
+ */
 export class EditProjectRoute extends BaseRoute {
   
   mapping = {methods: ['patch'], path: '/projects/:title', handler: this.editProject};
-  
+
+  /**
+   * Update reports
+   * @httpPatch /projects/:title
+   * @httpPath title {string} name of the report
+   * @httpQuery version {string} version of the report
+   * @httpQuery ?env {string} environment to check the project definition against
+   * @httpBody {ProjectChangeRule[]} Rules to alter project(s)
+   * @httpResponse 200 {Project} Updated project
+   * @httpResponse 404
+   */
   public editProject(req:express.Request, res:express.Response, next:express.NextFunction, scope:BaseRoute) {
     var handler = ResponseHelper.getHandler(req);
     try {

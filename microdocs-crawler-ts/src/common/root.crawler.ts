@@ -16,6 +16,9 @@ import {
 import {REST} from 'microdocs-core-ts/dist/domain/dependency/dependency-type.model'
 import {ClassIdentity} from "./domain/class-identity";
 import {CrawlerException} from "./crawler.exception";
+import {ModelCrawler} from "./abstract/model.crawler";
+import {PropertyCrawler} from "./abstract/property.crawler";
+import {ModelCollector} from "./model.collector";
 
 export class RootCrawler {
 
@@ -24,6 +27,8 @@ export class RootCrawler {
   private controllerCrawlers: ControllerCrawler[] = [];
   private clientCrawlers: ClientCrawler[] = [];
   private pathCrawlers: PathCrawler[] = [];
+
+  private modelCollector:ModelCollector = new ModelCollector();
 
   /**
    * Register new crawler
@@ -40,6 +45,10 @@ export class RootCrawler {
       this.componentCrawlers.push(crawler);
     } else if (crawler instanceof PathCrawler) {
       this.pathCrawlers.push(crawler);
+    } else if (crawler instanceof ModelCrawler) {
+      this.modelCollector.addModelCrawler(crawler);
+    } else if (crawler instanceof PropertyCrawler) {
+      this.modelCollector.addPropertyCrawler(crawler);
     } else {
       throw new CrawlerException("Unknown crawler type: " + typeof(crawler));
     }
@@ -51,18 +60,28 @@ export class RootCrawler {
    * @param projectReflection
    * @param declaration
    */
-  public crawl(projectBuilder: ProjectBuilder, projectReflection: ProjectReflection, declaration?: ContainerReflection): void {
-    if (!declaration) {
-      declaration = projectReflection;
-    }
-    if (declaration.children) {
-      declaration.children.forEach(ref => {
-        switch (ref.kind) {
+  public crawl(projectBuilder: ProjectBuilder, projectReflection: ProjectReflection): void {
+    var flatMap:ContainerReflection[] = [];
+    this.collectClasses(projectReflection, flatMap);
+    flatMap.forEach(classReflection => {
+      this.crawlClass(projectBuilder, projectReflection, classReflection);
+    });
+
+    var modelMap = this.modelCollector.collectClasses(flatMap);
+    projectBuilder.project().definitions = modelMap;
+  }
+
+  public collectClasses(declaration: ContainerReflection, flatMap:ContainerReflection[]){
+    if(declaration.children){
+      declaration.children.forEach(child => {
+        switch (child.kind) {
           case ReflectionKind.ExternalModule:
-            this.crawl(projectBuilder, projectReflection, ref);
+            this.collectClasses(child, flatMap);
             break;
+          case ReflectionKind.Interface:
           case ReflectionKind.Class:
-            this.crawlClass(projectBuilder, projectReflection, ref);
+            flatMap.push(child);
+            break;
         }
       });
     }
@@ -98,11 +117,10 @@ export class RootCrawler {
         projectBuilder.dependency(clientBuilder);
       }
     }
-    //todo: crawl models
-    //if (classIdentity.isModel) {
-    //  var model = this.crawlModel(projectReflection, classReflection);
-    //  projectBuilder.model(model);
-    //}
+
+    if (classIdentity.isModel) {
+      this.modelCollector.collectByName(classReflection.name);
+    }
   }
 
   /**
@@ -190,7 +208,7 @@ export class RootCrawler {
    */
   private crawlEndpoint(methodReflection: DeclarationReflection, projectReflection: ProjectReflection, classReflection: ContainerReflection): PathBuilder {
     var pathBuilder = new PathBuilder();
-    this.triggerCrawlers(this.pathCrawlers, crawler => crawler.crawl(pathBuilder, projectReflection, classReflection, methodReflection));
+    this.triggerCrawlers(this.pathCrawlers, crawler => crawler.crawl(pathBuilder, projectReflection, classReflection, methodReflection, this.modelCollector));
 
     return pathBuilder;
   }

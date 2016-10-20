@@ -98,5 +98,9 @@ export function hasDecorator(instance: ContainerReflection, decoratorName: strin
  * @returns {any}
  */
 export function evalArgument(arg: string) {
-  return eval("(" + arg + ")");
+  try {
+    return eval("(" + arg + ")");
+  }catch(e){
+    console.warn(e);
+  }
 }

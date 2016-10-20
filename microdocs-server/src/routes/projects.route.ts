@@ -9,6 +9,7 @@ import {ProjectRepository} from "../repositories/project.repo";
 
 /**
  * @controller
+ * @baseUrl /api/v1
  */
 export class ProjectsRoute extends BaseRoute {
 

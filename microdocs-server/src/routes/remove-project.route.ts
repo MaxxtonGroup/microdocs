@@ -11,10 +11,23 @@ import {ProjectInfo} from 'microdocs-core-ts/dist/domain';
 import {ReportRepository} from "../repositories/report.repo";
 import {AggregationService} from "../services/aggregation.service";
 
+/**
+ * @controller
+ * @baseUrl /api/v1
+ */
 export class RemoveProjectRoute extends BaseRoute {
 
   mapping = {methods: ['delete'], path: '/projects/:title', handler: this.deleteProject};
 
+  /**
+   * Remove a project or only one version of a project
+   * @httpDelete /projects/{title}
+   * @HttpPath title {string} Name of the project
+   * @HttpQuery ?version {string} Specify only one version to be removed
+   * @httpQuery ?env {string} environment to publish the project definition
+   * @httpResponse 200 Removed
+   * @httpResponse 404 Project or version of the project doesn't exists
+   */
   public deleteProject(req: express.Request, res: express.Response, next: express.NextFunction, scope:BaseRoute) {
     var handler = ResponseHelper.getHandler(req);
     try {
