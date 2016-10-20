@@ -3,6 +3,10 @@
 @import "partials/json-view";
 @import "../../../node_modules/@maxxton/components/assets/scss/mxt-components";
 @import "../../panels/sidebar-panel/_sidebar.panel";
+@import "../../panels/import-panel/import.panel";
+@import "../../panels/export-panel/export.panel";
+@import "../../panels/delete-panel/delete.panel";
+@import "../../panels/edit-panel/edit.panel";
 @import "../../routes/project/project.route";
 @import "../../panels/endpoint-group-panel/endpoint-group.panel.scss";
 @import "../../panels/path-highlight-panel/path-highlight.panel";
@@ -393,4 +397,18 @@ welcome-panel h4{
 
 welcome-panel a:hover{
   text-decoration: underline;
+}
+
+.input-field{
+  border: none !important;
+  border-bottom: 1px solid #ccc !important;
+  margin: 0 !important;
+}
+
+.input-field:focus{
+  border-bottom: 1px solid $orange !important;
+}
+
+.modal-overlay .modal{
+  top: 0 !important;
 }

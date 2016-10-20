@@ -13,7 +13,6 @@
     "isolatedModules": false
   },
   "exclude": [
-    "./node_modules",
-    "src/config"
+    "./node_modules"
   ]
 }

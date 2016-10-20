@@ -1,0 +1,37 @@
+<modal [showModal]="showModal" (stateChanges)="setOpened($event)" title="Edit Project" icon="file_download">
+  <h5>Edit Project</h5>
+  <div class="row">
+    <div class="large-4 columns">
+      <label>Project name</label>
+      <input type="text" placeholder="order-service" (change)="setTitle($event.target.value)" (keyup)="setTitle($event.target.value)" [value]="project" name="title"/>
+    </div>
+  </div>
+  <template [ngIf]="projectInfo.title">
+    <div class="row option">
+      <input type="checkbox" [checked]="projectInfo.titleScope === 'project'" (change)="toggleTitleScope()"/>
+      <label (click)="toggleTitleScope()">Rename all versions of this project</label>
+    </div>
+  </template>
+  <div class="row">
+    <div class="large-4 columns">
+      <label>Group</label>
+      <input type="text" placeholder="Services" (change)="setGroup($event.target.value)" (keyup)="setGroup($event.target.value)" [value]="group" name="group"/>
+    </div>
+  </div>
+  <template [ngIf]="projectInfo.group">
+    <div class="row option">
+      <input type="checkbox" [checked]="projectInfo.groupScope === 'group'" (change)="toggleGroupScope()"/>
+      <label (click)="toggleGroupScope()">Move all projects in this group</label>
+    </div>
+  </template>
+  <div class="row">
+    <div class="large-4 columns">
+      <label>Version</label>
+      <input type="text" placeholder="1.0.0" (change)="setVersion($event.target.value)" (keyup)="setVersion($event.target.value)" [value]="version" name="version"/>
+    </div>
+  </div>
+  <div class="row bottom-bar">
+    <button class="button" (click)="onSubmit()">Save</button>
+    <span class="text-danger">{{error}}</span>
+  </div>
+</modal>

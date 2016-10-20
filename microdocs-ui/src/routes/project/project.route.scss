@@ -25,7 +25,6 @@ project-route toolbar-item select{
 
 project-route toolbar-item.align-right{
   position: absolute;
-  right: 0;
   height: 40px;
   padding: 10px;
   margin: 10px;
@@ -34,8 +33,23 @@ project-route toolbar-item.align-right{
   text-align: center;
 }
 
+project-route toolbar-item.align-right.export-button{
+  right: 100px;
+  color: $blue;
+}
+
+project-route toolbar-item.align-right.edit-button{
+  right: 50px;
+  color: $green;
+}
+
+project-route toolbar-item.align-right.delete-button{
+  right: 0px;
+  color: $red;
+}
+
 project-route toolbar-item.align-right:hover{
-  background-color: rgba(0,0,0,0.3);
+  background-color: rgba(0,0,0,0.1);
 }
 
 project-route .project-content{
@@ -116,4 +130,35 @@ project-route .client-problem .client-problem-desc{
 project-route modal .card{
   background-color: white;
   box-shadow: rgba(0, 0, 0, 0.227451) 0px 3px 10px 0px, rgba(0, 0, 0, 0.156863) 0px 3px 10px 0px !important;
+}
+
+project-route .error-page{
+  h1 {
+    padding: 40px;
+    text-align: center;
+    font-size: 2rem;
+    text-transform: capitalize;
+    font-weight: 400;
+    color: $orange;
+  }
+
+  h1.error{
+    color: $red;
+  }
+
+  h1 i {
+    font-size: 40px;
+    height: 40px;
+    width: 40px;
+    position: relative;
+    top: 10px;
+    margin-right: 10px;
+  }
+
+  h2 {
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: #656565;
+  }
 }

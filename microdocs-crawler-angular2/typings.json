@@ -1,0 +1,5 @@
+{
+  "globalDependencies": {
+    "typescript": "registry:dt/typescript#0.4.0+20160317120654"
+  }
+}

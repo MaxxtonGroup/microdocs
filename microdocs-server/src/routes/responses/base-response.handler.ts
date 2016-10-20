@@ -1,6 +1,6 @@
 import * as express from "express";
 import {TreeNode, Problem, Project} from 'microdocs-core-ts/dist/domain';
-import {dump} from 'js-yaml';
+import * as dump from 'js-yaml';
 import * as xml from 'jsontoxml';
 import {ERROR, WARNING} from "microdocs-core-ts/dist/domain/problem/problem-level.model";
 

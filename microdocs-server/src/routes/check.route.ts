@@ -11,10 +11,10 @@ export class CheckRoute extends BaseRoute {
 
   mapping = {methods: ['post'], path: '/check', handler: this.projects};
 
-  public projects(req: express.Request, res: express.Response, next: express.NextFunction) {
+  public projects(req: express.Request, res: express.Response, next: express.NextFunction, scope:BaseRoute) {
     var handler = ResponseHelper.getHandler(req);
     try {
-      var env = CheckRoute.getEnv(req);
+      var env = scope.getEnv(req);
       if (env == null) {
         handler.handleBadRequest(req, res, "env '" + req.query.env + "' doesn't exists");
         return;
@@ -36,7 +36,7 @@ export class CheckRoute extends BaseRoute {
         project.info.version = '9999999999.0.0';
         project.info.versions = ['9999999999.0.0'];
 
-        var problems: Problem[] = AggregationService.bootstrap().checkProject(env, project);
+        var problems: Problem[] = scope.injection.AggregationService().checkProject(env, project);
         handler.handleProblems(req, res, problems, env);
       } else {
         handler.handleBadRequest(req, res, 'Body is missing');

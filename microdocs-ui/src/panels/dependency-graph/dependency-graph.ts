@@ -1,9 +1,10 @@
-import {Component, ViewContainerRef, Input} from "@angular/core";
+import {Component, ViewContainerRef, Input, SimpleChanges} from "@angular/core";
 import {Router} from "@angular/router";
 import * as d3 from 'd3';
 
 import {TreeNode} from "microdocs-core-ts/dist/domain";
-import {Observable} from "rxjs/Observable";
+import {Subject} from "rxjs/Subject";
+import {Subscription} from "rxjs/Subscription";
 
 // import {Observable} from "rxjs";
 
@@ -17,9 +18,10 @@ export class DependencyGraph {
   force:any;
   filteredData:{dependencies:{}};
   data:TreeNode;
+  subscription:Subscription;
 
   @Input()
-  nodes:Observable<TreeNode>;
+  nodes:Subject<TreeNode>;
 
   @Input()
   projectName:string;
@@ -29,37 +31,49 @@ export class DependencyGraph {
 
   constructor(private containerRef:ViewContainerRef, private router:Router) {
   }
+  
+  ngOnChanges(changes: SimpleChanges){
+    this.nodes.next(this.data);
+  }
 
   ngOnInit(){
-    this.nodes.subscribe(data => {
+    this.subscription = this.nodes.subscribe(data => {
       this.data = data;
       var dependencies = {};
-      Object.keys(data.dependencies).forEach(key => dependencies[key] = data.dependencies[key]);
-
-      if(this.projectName){
-        var removeNames = [];
-        for(var key in dependencies){
-          if(key !== this.projectName){
-            if(dependencies[key].dependencies == undefined || dependencies[key].dependencies[this.projectName] == undefined){
-              removeNames.push(key);
-            }else{
-              var removeDeps = [];
-              for(var depName in dependencies[key].dependencies){
-                if(depName != this.projectName){
-                  removeDeps.push(depName);
+      if(data && data.dependencies) {
+        Object.keys(data.dependencies).forEach(key => dependencies[key] = data.dependencies[key]);
+  
+        if (this.projectName) {
+          var removeNames:string[] = [];
+          for (var key in dependencies) {
+            if (key !== this.projectName) {
+              if (dependencies[key].dependencies == undefined || dependencies[key].dependencies[this.projectName] == undefined) {
+                removeNames.push(key);
+              } else {
+                var removeDeps:string[] = [];
+                for (var depName in dependencies[key].dependencies) {
+                  if (depName != this.projectName) {
+                    removeDeps.push(depName);
+                  }
                 }
+                removeDeps.forEach(name => delete dependencies[key].dependencies[name]);
               }
-              removeDeps.forEach(name => delete dependencies[key].dependencies[name]);
             }
           }
+          removeNames.forEach(name => delete dependencies[name]);
         }
-        removeNames.forEach(name => delete dependencies[name]);
       }
       this.filteredData = {dependencies: dependencies};
 
       var transformedData = this.transformData(this.filteredData);
       this.chartData(transformedData);
     });
+  }
+  
+  ngOnDestroy(){
+    if(this.subscription){
+      this.subscription.unsubscribe();
+    }
   }
 
   onResize() {
@@ -87,11 +101,11 @@ export class DependencyGraph {
   transformData(data:{dependencies:{}}) {
     var nodes = {};
     var links = [];
-    if (data.dependencies != undefined) {
+    if (data.dependencies) {
       for (var key in data.dependencies) {
         nodes[key] = ({name: key});
         var node = data.dependencies[key];
-        if (node.dependencies != undefined) {
+        if (node.dependencies) {
           for (var key2 in node.dependencies) {
             var dependency = node.dependencies[key2];
             if(typeof(dependency['$ref']) == 'string' && dependency['$ref'].indexOf('#/dependencies/')){

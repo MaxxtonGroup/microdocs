@@ -13,3 +13,4 @@
 
 /microdocs-server/data/reports
 /microdocs-server/data/database
+!/docs/**/dist

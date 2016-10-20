@@ -1,0 +1,492 @@
+[
+    {
+        "name": "C",
+        "documentation": "Documentation for C",
+        "type": "typeof C",
+        "constructors": [
+            {
+                "parameters": [
+                    {
+                        "name": "a",
+                        "documentation": "my parameter documentation",
+                        "type": "string"
+                    },
+                    {
+                        "name": "b",
+                        "documentation": "another parameter documentation",
+                        "type": "C"
+                    }
+                ],
+                "returnType": "C",
+                "documentation": "constructor documentation"
+            }
+        ]
+    },
+    {
+        "flags": 32,
+        "name": "C",
+        "declarations": [
+            {
+                "kind": 217,
+                "pos": 0,
+                "end": 570,
+                "flags": 2,
+                "parent": {
+                    "kind": 251,
+                    "pos": 0,
+                    "end": 570,
+                    "flags": 0,
+                    "text": "/**\n * Documentation for C\n */\nexport class C {\n  /**\n   * constructor documentation\n   * @param a my parameter documentation\n   * @param b another parameter documentation\n   */\n  constructor(a: string, b: C) { }\n\n  /**\n   * Example function\n   * @param d somestring\n   * @param i a number\n   * @returns {C} a clone\n   */\n  public testFunction(d: string, i: number):C{\n    return null;\n  }\n\n  /**\n   * Example function\n   * @param d somestring\n   * @param i a number\n   * @returns {C} a clone\n   */\n  public testFunction2(d: string, i: number):C{\n    return null;\n  }\n\n}",
+                    "bindDiagnostics": [],
+                    "languageVersion": 1,
+                    "fileName": "test.ts",
+                    "languageVariant": 0,
+                    "scriptKind": 3,
+                    "referencedFiles": [],
+                    "amdDependencies": [],
+                    "statements": [
+                        null
+                    ],
+                    "endOfFileToken": {
+                        "kind": 1,
+                        "pos": 570,
+                        "end": 570,
+                        "flags": 0
+                    },
+                    "nodeCount": 44,
+                    "identifierCount": 14,
+                    "identifiers": {
+                        "C": "C",
+                        "a": "a",
+                        "b": "b",
+                        "testFunction": "testFunction",
+                        "d": "d",
+                        "i": "i",
+                        "testFunction2": "testFunction2"
+                    },
+                    "parseDiagnostics": [],
+                    "path": "c:/users/hermans.s.maxxtonbv/projects/microdocs/microdocs-crawler-angular2/src/test.ts",
+                    "imports": [],
+                    "symbol": {
+                        "flags": 512,
+                        "name": "\"test\"",
+                        "declarations": [
+                            null
+                        ],
+                        "exports": {}
+                    },
+                    "locals": {
+                        "C": {
+                            "flags": 3145728,
+                            "name": "C",
+                            "declarations": [
+                                null
+                            ]
+                        }
+                    },
+                    "symbolCount": 22065,
+                    "classifiableNames": {
+                        "C": "C"
+                    },
+                    "lineMap": [
+                        0,
+                        4,
+                        27,
+                        31,
+                        48,
+                        54,
+                        85,
+                        126,
+                        172,
+                        178,
+                        213,
+                        214,
+                        220,
+                        242,
+                        267,
+                        290,
+                        316,
+                        322,
+                        369,
+                        386,
+                        390,
+                        391,
+                        397,
+                        419,
+                        444,
+                        467,
+                        493,
+                        499,
+                        547,
+                        564,
+                        568,
+                        569
+                    ]
+                },
+                "modifiers": [
+                    {
+                        "kind": 82,
+                        "pos": 0,
+                        "end": 37,
+                        "flags": 0
+                    }
+                ],
+                "name": {
+                    "kind": 69,
+                    "pos": 43,
+                    "end": 45,
+                    "flags": 0,
+                    "text": "C"
+                },
+                "members": [
+                    {
+                        "kind": 145,
+                        "pos": 47,
+                        "end": 212,
+                        "flags": 524288,
+                        "parameters": [
+                            {
+                                "kind": 139,
+                                "pos": 192,
+                                "end": 201,
+                                "flags": 0,
+                                "name": {
+                                    "kind": 69,
+                                    "pos": 192,
+                                    "end": 193,
+                                    "flags": 0,
+                                    "text": "a"
+                                },
+                                "type": {
+                                    "kind": 130,
+                                    "pos": 194,
+                                    "end": 201,
+                                    "flags": 0
+                                },
+                                "symbol": {
+                                    "flags": 1,
+                                    "name": "a",
+                                    "declarations": [
+                                        null
+                                    ],
+                                    "documentationComment": [
+                                        {
+                                            "text": "my parameter documentation",
+                                            "kind": "text"
+                                        }
+                                    ],
+                                    "id": 11
+                                }
+                            },
+                            {
+                                "kind": 139,
+                                "pos": 202,
+                                "end": 207,
+                                "flags": 0,
+                                "name": {
+                                    "kind": 69,
+                                    "pos": 202,
+                                    "end": 204,
+                                    "flags": 0,
+                                    "text": "b"
+                                },
+                                "type": {
+                                    "kind": 152,
+                                    "pos": 205,
+                                    "end": 207,
+                                    "flags": 0,
+                                    "typeName": {
+                                        "kind": 69,
+                                        "pos": 205,
+                                        "end": 207,
+                                        "flags": 0,
+                                        "text": "C"
+                                    },
+                                    "id": 2
+                                },
+                                "symbol": {
+                                    "flags": 1,
+                                    "name": "b",
+                                    "declarations": [
+                                        null
+                                    ],
+                                    "documentationComment": [
+                                        {
+                                            "text": "another parameter documentation",
+                                            "kind": "text"
+                                        }
+                                    ],
+                                    "id": 12
+                                }
+                            }
+                        ],
+                        "body": {
+                            "kind": 195,
+                            "pos": 208,
+                            "end": 212,
+                            "flags": 0,
+                            "statements": []
+                        },
+                        "symbol": {
+                            "flags": 16384,
+                            "name": "__constructor",
+                            "declarations": [
+                                null
+                            ]
+                        },
+                        "locals": {},
+                        "nextContainer": {
+                            "kind": 144,
+                            "pos": 212,
+                            "end": 389,
+                            "flags": 8,
+                            "modifiers": [
+                                {
+                                    "kind": 112,
+                                    "pos": 212,
+                                    "end": 330,
+                                    "flags": 0
+                                }
+                            ],
+                            "name": {
+                                "kind": 69,
+                                "pos": 330,
+                                "end": 343,
+                                "flags": 0,
+                                "text": "testFunction"
+                            },
+                            "parameters": [
+                                {
+                                    "kind": 139,
+                                    "pos": 344,
+                                    "end": 353,
+                                    "flags": 0,
+                                    "name": {
+                                        "kind": 69,
+                                        "pos": 344,
+                                        "end": 345,
+                                        "flags": 0,
+                                        "text": "d"
+                                    },
+                                    "type": {
+                                        "kind": 130,
+                                        "pos": 346,
+                                        "end": 353,
+                                        "flags": 0
+                                    },
+                                    "symbol": {
+                                        "flags": 1,
+                                        "name": "d",
+                                        "declarations": [
+                                            null
+                                        ]
+                                    }
+                                },
+                                {
+                                    "kind": 139,
+                                    "pos": 354,
+                                    "end": 364,
+                                    "flags": 0,
+                                    "name": {
+                                        "kind": 69,
+                                        "pos": 354,
+                                        "end": 356,
+                                        "flags": 0,
+                                        "text": "i"
+                                    },
+                                    "type": {
+                                        "kind": 128,
+                                        "pos": 357,
+                                        "end": 364,
+                                        "flags": 0
+                                    },
+                                    "symbol": {
+                                        "flags": 1,
+                                        "name": "i",
+                                        "declarations": [
+                                            null
+                                        ]
+                                    }
+                                }
+                            ],
+                            "type": {
+                                "kind": 152,
+                                "pos": 366,
+                                "end": 367,
+                                "flags": 0,
+                                "typeName": {
+                                    "kind": 69,
+                                    "pos": 366,
+                                    "end": 367,
+                                    "flags": 0,
+                                    "text": "C"
+                                }
+                            },
+                            "body": {
+                                "kind": 195,
+                                "pos": 367,
+                                "end": 389,
+                                "flags": 0,
+                                "statements": [
+                                    {
+                                        "kind": 207,
+                                        "pos": 368,
+                                        "end": 385,
+                                        "flags": 0,
+                                        "expression": {
+                                            "kind": 93,
+                                            "pos": 379,
+                                            "end": 384,
+                                            "flags": 0
+                                        }
+                                    }
+                                ]
+                            },
+                            "symbol": {
+                                "flags": 8192,
+                                "name": "testFunction",
+                                "declarations": [
+                                    null
+                                ]
+                            },
+                            "locals": {},
+                            "nextContainer": {
+                                "kind": 144,
+                                "pos": 389,
+                                "end": 567,
+                                "flags": 8,
+                                "modifiers": [
+                                    {
+                                        "kind": 112,
+                                        "pos": 389,
+                                        "end": 507,
+                                        "flags": 0
+                                    }
+                                ],
+                                "name": {
+                                    "kind": 69,
+                                    "pos": 507,
+                                    "end": 521,
+                                    "flags": 0,
+                                    "text": "testFunction2"
+                                },
+                                "parameters": [
+                                    {
+                                        "kind": 139,
+                                        "pos": 522,
+                                        "end": 531,
+                                        "flags": 0,
+                                        "name": {
+                                            "kind": 69,
+                                            "pos": 522,
+                                            "end": 523,
+                                            "flags": 0,
+                                            "text": "d"
+                                        },
+                                        "type": {
+                                            "kind": 130,
+                                            "pos": 524,
+                                            "end": 531,
+                                            "flags": 0
+                                        },
+                                        "symbol": {
+                                            "flags": 1,
+                                            "name": "d",
+                                            "declarations": [
+                                                null
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "kind": 139,
+                                        "pos": 532,
+                                        "end": 542,
+                                        "flags": 0,
+                                        "name": {
+                                            "kind": 69,
+                                            "pos": 532,
+                                            "end": 534,
+                                            "flags": 0,
+                                            "text": "i"
+                                        },
+                                        "type": {
+                                            "kind": 128,
+                                            "pos": 535,
+                                            "end": 542,
+                                            "flags": 0
+                                        },
+                                        "symbol": {
+                                            "flags": 1,
+                                            "name": "i",
+                                            "declarations": [
+                                                null
+                                            ]
+                                        }
+                                    }
+                                ],
+                                "type": {
+                                    "kind": 152,
+                                    "pos": 544,
+                                    "end": 545,
+                                    "flags": 0,
+                                    "typeName": {
+                                        "kind": 69,
+                                        "pos": 544,
+                                        "end": 545,
+                                        "flags": 0,
+                                        "text": "C"
+                                    }
+                                },
+                                "body": {
+                                    "kind": 195,
+                                    "pos": 545,
+                                    "end": 567,
+                                    "flags": 0,
+                                    "statements": [
+                                        {
+                                            "kind": 207,
+                                            "pos": 546,
+                                            "end": 563,
+                                            "flags": 0,
+                                            "expression": {
+                                                "kind": 93,
+                                                "pos": 557,
+                                                "end": 562,
+                                                "flags": 0
+                                            }
+                                        }
+                                    ]
+                                },
+                                "symbol": {
+                                    "flags": 8192,
+                                    "name": "testFunction2",
+                                    "declarations": [
+                                        null
+                                    ]
+                                },
+                                "locals": {}
+                            }
+                        },
+                        "id": 1
+                    },
+                    null,
+                    null
+                ]
+            }
+        ],
+        "exports": {
+            "prototype": {
+                "flags": 134217732,
+                "name": "prototype"
+            }
+        },
+        "members": {},
+        "documentationComment": [
+            {
+                "text": "Documentation for C",
+                "kind": "text"
+            }
+        ],
+        "id": 10
+    }
+]
