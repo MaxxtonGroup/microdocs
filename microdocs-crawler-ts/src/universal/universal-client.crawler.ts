@@ -14,6 +14,9 @@ export class UniversalClientCrawler extends ClientCrawler {
       if (comment.hasTag("baseUrl") && comment.getTag("baseUrl").text && comment.getTag("baseUrl").text !== "") {
         dependencyBuilder.baseUrl = classReflection.comment.getTag("baseUrl").text.trim();
       }
+      dependencyBuilder.dependency.component = {
+        $ref: "#/components/" + classReflection.name
+      };
     }
 
   }

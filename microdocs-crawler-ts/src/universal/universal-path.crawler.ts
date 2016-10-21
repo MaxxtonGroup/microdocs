@@ -6,11 +6,11 @@ import {
 } from "typedoc/lib/models";
 import {PathBuilder} from 'microdocs-core-ts/dist/builder';
 import {Parameter, SchemaTypes, ParameterPlacings, Schema, ResponseModel} from 'microdocs-core-ts/dist/domain';
-import {SchemaHelper} from 'microdocs-core-ts/dist/helpers';
 import {HTTP_METHODS} from "../common/domain/http-methods";
 import {AbstractCrawler} from "../common/abstract/abstract.crawler";
 import * as helper from '../common/helpers';
 import {ModelCollector} from "../common/model.collector";
+import {getMethodName} from './universal-component.crawler';
 
 export class UniversalPathCrawler extends PathCrawler {
 
@@ -49,6 +49,15 @@ export class UniversalPathCrawler extends PathCrawler {
             comment.tags.filter(tag => tag.tagName === 'httpresponse').forEach(tag => this.crawlResponse(tag, signature, pathBuilder, modelCollector));
           }
         }
+
+        var controllerName = classReflection.name;
+        var methodName = getMethodName(signature);
+        pathBuilder.endpoint.controller = {
+          $ref: "#/components/" + controllerName
+        };
+        pathBuilder.endpoint.method = {
+          $ref: "#/components/" + controllerName + "/methods/" + methodName
+        };
       });
     }
   }

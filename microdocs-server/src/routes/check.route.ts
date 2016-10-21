@@ -22,7 +22,7 @@ export class CheckRoute extends BaseRoute {
    * @httpQuery ?project {string} name of the project if not already defined in the project definitions
    * @httpQuery ?title {string} alias for project
    * @httpBody {Project} project definitions which will be checked
-   * @httpResponse 200 {Problem[]}
+   * @httpResponse 200 {ProblemResponse}
    * @httpResponse 404 {} Body is missing or project title is missing
    */
   public projects(req: express.Request, res: express.Response, next: express.NextFunction, scope:BaseRoute) {

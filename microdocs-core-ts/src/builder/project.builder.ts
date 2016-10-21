@@ -54,6 +54,9 @@ export class ProjectBuilder implements Builder<Project>{
     if(!componentBuilder.title || componentBuilder.title == ''){
       throw new Error("No title found for component");
     }
+    if(!this._project.components){
+      this._project.components = {};
+    }
     this._project.components[componentBuilder.title] = componentBuilder.build();
   }
   

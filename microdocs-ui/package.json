@@ -1,6 +1,6 @@
 {
-  "name": "microdocs-ui",
-  "version": "1.3.0",
+  "name": "@maxxton/microdocs-ui",
+  "version": "1.4.0",
   "description": "Frontend for the microdocs-server",
   "author": "S. Hermans",
   "repository": {
