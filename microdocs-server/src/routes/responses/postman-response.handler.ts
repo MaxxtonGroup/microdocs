@@ -1,6 +1,6 @@
-import {Project, Schema, Path, ProjectInfo, TreeNode} from "microdocs-core-ts/dist/domain";
-import {QUERY, PATH, BODY} from "microdocs-core-ts/dist/domain/path/parameter-placing.model";
-import {SchemaHelper} from "microdocs-core-ts/dist/helpers/schema/schema.helper";
+import {Project, Schema, Path, ProjectInfo, TreeNode} from "@maxxton/microdocs-core-ts/dist/domain";
+import {QUERY, PATH, BODY} from "@maxxton/microdocs-core-ts/dist/domain/path/parameter-placing.model";
+import {SchemaHelper} from "@maxxton/microdocs-core-ts/dist/helpers/schema/schema.helper";
 import * as uuid from 'uuid';
 
 

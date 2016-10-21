@@ -4,9 +4,9 @@ import * as express from "express";
 
 import {BaseRoute} from "./route";
 import {AggregationService} from '../services/aggregation.service';
-import {Project, ProjectInfo, Problem} from "microdocs-core-ts/dist/domain";
-import {ERROR, WARNING} from "microdocs-core-ts/dist/domain/problem/problem-level.model";
-import {SchemaHelper} from "microdocs-core-ts/dist/helpers/schema/schema.helper";
+import {Project, ProjectInfo, Problem} from "@maxxton/microdocs-core-ts/dist/domain";
+import {ERROR, WARNING} from "@maxxton/microdocs-core-ts/dist/domain/problem/problem-level.model";
+import {SchemaHelper} from "@maxxton/microdocs-core-ts/dist/helpers/schema/schema.helper";
 import {ReportJsonRepository} from "../repositories/json/report-json.repo";
 import {ResponseHelper} from "./responses/response.helper";
 

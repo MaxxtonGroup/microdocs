@@ -3,7 +3,7 @@
 import * as express from "express";
 
 import {BaseRoute} from "./route";
-import {Problem, ProjectInfo, Project} from "microdocs-core-ts/dist/domain";
+import {Problem, ProjectInfo, Project} from "@maxxton/microdocs-core-ts/dist/domain";
 import {AggregationService} from "../services/aggregation.service";
 import {ResponseHelper} from "./responses/response.helper";
 

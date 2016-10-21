@@ -1,9 +1,9 @@
 import {Injectable} from "@angular/core";
 import {Http, Response} from "@angular/http";
-import {Get, Path, Put, Patch, Query, Body,  Map, Produces, MediaType, Client, Delete} from "angular2-rest/angular2-rest";
-import {TreeNode, Project, Environments, ProjectChangeRule} from "microdocs-core-ts/dist/domain";
+import {Get, Path, Put, Patch, Query, Body,  Map, Produces, MediaType, Client, Delete} from "@maxxton/angular2-rest";
+import {TreeNode, Project, Environments, ProjectChangeRule} from "@maxxton/microdocs-core-ts/dist/domain";
 import {Observable} from "rxjs/Observable";
-import {SchemaHelper} from "../../../microdocs-core-ts/dist/helpers/schema/schema.helper";
+import {SchemaHelper} from "@maxxton/microdocs-core-ts/dist/helpers/schema/schema.helper";
 import {ProjectService} from "./project.service";
 import {SnackbarService} from "@maxxton/components/services/snackbar.service";
 

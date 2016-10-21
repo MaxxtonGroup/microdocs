@@ -1,5 +1,5 @@
 import {BaseResponseHandler} from "./base-response.handler";
-import {Project, Schema, Path, ProjectInfo, TreeNode} from "microdocs-core-ts/dist/domain";
+import {Project, Schema, Path, ProjectInfo, TreeNode} from "@maxxton/microdocs-core-ts/dist/domain";
 import * as express from "express";
 import {Config} from "../../config";
 import {ProjectJsonRepository} from "../../repositories/json/project-json.repo";

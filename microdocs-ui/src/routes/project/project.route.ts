@@ -3,9 +3,9 @@ import {ROUTER_DIRECTIVES, ActivatedRoute, Router, Params} from "@angular/router
 
 import {COMPONENTS} from "@maxxton/components/components";
 import {FILTERS} from "@maxxton/components/filters";
-import {Project, Path, Method, Schema, Dependency, TreeNode} from "microdocs-core-ts/dist/domain";
-import {REST, DATABASE, USES, INCLUDES} from "microdocs-core-ts/dist/domain/dependency/dependency-type.model";
-import {SchemaHelper} from "microdocs-core-ts/dist/helpers/schema/schema.helper";
+import {Project, Path, Method, Schema, Dependency, TreeNode} from "@maxxton/microdocs-core-ts/dist/domain";
+import {REST, DATABASE, USES, INCLUDES} from "@maxxton/microdocs-core-ts/dist/domain/dependency/dependency-type.model";
+import {SchemaHelper} from "@maxxton/microdocs-core-ts/dist/helpers/schema/schema.helper";
 
 import {ProjectService} from "../../services/project.service";
 import {EndpointPanel} from "../../panels/endpoint-panel/endpoint.panel";

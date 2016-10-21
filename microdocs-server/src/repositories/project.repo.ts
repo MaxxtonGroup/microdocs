@@ -1,4 +1,4 @@
-import {Project, TreeNode} from "microdocs-core-ts/dist/domain";
+import {Project, TreeNode} from "@maxxton/microdocs-core-ts/dist/domain";
 
 /**
  * @author Steven Hermans

@@ -1,5 +1,5 @@
 
-import {Schema} from 'microdocs-core-ts/dist/domain';
+import {Schema} from '@maxxton/microdocs-core-ts/dist/domain';
 
 export interface AdvancedCommentTag{
 

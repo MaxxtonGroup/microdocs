@@ -1,9 +1,9 @@
 /// <reference path="../../_all.d.ts" />
 
 import * as express from "express";
-import {TreeNode, Problem, Project, Schema} from 'microdocs-core-ts/dist/domain';
-import {SchemaHelper} from 'microdocs-core-ts/dist/helpers';
-import {ERROR, WARNING} from "microdocs-core-ts/dist/domain/problem/problem-level.model";
+import {TreeNode, Problem, Project, Schema} from '@maxxton/microdocs-core-ts/dist/domain';
+import {SchemaHelper} from '@maxxton/microdocs-core-ts/dist/helpers';
+import {ERROR, WARNING} from "@maxxton/microdocs-core-ts/dist/domain/problem/problem-level.model";
 import {Config} from "../../config";
 import * as fs from 'fs';
 import {MicroDocsResponseHandler} from "./microdocs-response.handler";
