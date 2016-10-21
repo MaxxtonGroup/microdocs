@@ -1,7 +1,7 @@
 import {Component} from "@angular/core";
 
 import {COMPONENTS} from "@maxxton/components/components";
-import {TreeNode} from 'microdocs-core-ts/dist/domain';
+import {TreeNode} from '@maxxton/microdocs-core-ts/dist/domain';
 import {DependencyGraph} from '../../panels/dependency-graph/dependency-graph';
 import {ProjectService} from "../../services/project.service";
 import {Subject} from "rxjs/Subject";

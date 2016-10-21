@@ -1,7 +1,7 @@
 import {PathCheck} from "./path-check";
-import {Path, Project} from "microdocs-core-ts/dist/domain";
-import {WARNING, ERROR} from "microdocs-core-ts/dist/domain/problem/problem-level.model";
-import {ProblemReporter}  from 'microdocs-core-ts/dist/helpers';
+import {Path, Project} from "@maxxton/microdocs-core-ts/dist/domain";
+import {WARNING, ERROR} from "@maxxton/microdocs-core-ts/dist/domain/problem/problem-level.model";
+import {ProblemReporter}  from '@maxxton/microdocs-core-ts/dist/helpers';
 
 export class QueryParamsCheck implements PathCheck {
 

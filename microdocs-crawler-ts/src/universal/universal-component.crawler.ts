@@ -2,8 +2,8 @@
 import { ComponentCrawler } from "../common/abstract/component.crawler";
 import { ProjectReflection } from "typedoc";
 import { ContainerReflection, ReflectionKind, SignatureReflection } from "typedoc/lib/models";
-import {ComponentBuilder} from 'microdocs-core-ts/dist/builder';
-import {Method} from 'microdocs-core-ts/dist/domain';
+import {ComponentBuilder} from '@maxxton/microdocs-core-ts/dist/builder';
+import {Method} from '@maxxton/microdocs-core-ts/dist/domain';
 
 export class UniversalComponentCrawler extends ComponentCrawler{
 

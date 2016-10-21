@@ -16,6 +16,7 @@
     "microdocs": "dist/cli.js"
   },
   "dependencies": {
+    "@maxxton/microdocs-core-ts": "1.4.0",
     "chai": "^3.5.0",
     "globby": "^6.0.0",
     "node-rest-client": "^2.0.1",

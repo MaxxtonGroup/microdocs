@@ -1,5 +1,5 @@
-import { Project,ProblemResponse, ProblemLevels } from 'microdocs-core-ts/dist/domain';
-import { ProjectBuilder } from 'microdocs-core-ts/dist/builder/index';
+import { Project,ProblemResponse, ProblemLevels } from '@maxxton/microdocs-core-ts/dist/domain';
+import { ProjectBuilder } from '@maxxton/microdocs-core-ts/dist/builder/index';
 import { Application } from "typedoc";
 import * as fs from 'fs';
 import * as pathUtil from 'path';

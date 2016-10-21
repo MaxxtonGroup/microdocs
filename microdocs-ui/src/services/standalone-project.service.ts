@@ -9,10 +9,10 @@ import {
   Query,
   Map,
   Produces, MediaType, Client
-} from "angular2-rest/angular2-rest";
-import {TreeNode, Project, Environments, ProjectChangeRule} from "microdocs-core-ts/dist/domain";
+} from "@maxxton/angular2-rest";
+import {TreeNode, Project, Environments, ProjectChangeRule} from "@maxxton/microdocs-core-ts/dist/domain";
 import {Observable} from "rxjs/Observable";
-import {SchemaHelper} from "../../../microdocs-core-ts/dist/helpers/schema/schema.helper";
+import {SchemaHelper} from "@maxxton/microdocs-core-ts/dist/helpers/schema/schema.helper";
 import {SnackbarService} from "@maxxton/components/services/snackbar.service";
 
 /**
