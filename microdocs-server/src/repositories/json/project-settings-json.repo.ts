@@ -3,7 +3,7 @@ import * as fs from 'fs';
 
 import {ProjectSettingsRepository} from "../project-settings.repo";
 import {Config} from "../../config";
-import {ProjectSettings, Environments} from 'microdocs-core-ts/dist/domain';
+import {ProjectSettings, Environments} from '@maxxton/microdocs-core-ts/dist/domain';
 
 export class ProjectSettingsJsonRepository implements ProjectSettingsRepository {
 

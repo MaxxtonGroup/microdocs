@@ -12,8 +12,8 @@ import {
   ComponentBuilder,
   PathBuilder,
   ControllerBuilder
-} from 'microdocs-core-ts/dist/builder';
-import {REST} from 'microdocs-core-ts/dist/domain/dependency/dependency-type.model'
+} from '@maxxton/microdocs-core-ts/dist/builder';
+import {REST} from '@maxxton/microdocs-core-ts/dist/domain/dependency/dependency-type.model'
 import {ClassIdentity} from "./domain/class-identity";
 import {CrawlerException} from "./crawler.exception";
 import {ModelCrawler} from "./abstract/model.crawler";

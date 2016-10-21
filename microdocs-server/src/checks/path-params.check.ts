@@ -1,8 +1,8 @@
 import {PathCheck} from "./path-check";
-import {Path, Project, Parameter} from "microdocs-core-ts/dist/domain";
-import {PATH} from "microdocs-core-ts/dist/domain/path/parameter-placing.model";
-import {WARNING, ERROR} from "microdocs-core-ts/dist/domain/problem/problem-level.model";
-import {ProblemReporter}  from 'microdocs-core-ts/dist/helpers';
+import {Path, Project, Parameter} from "@maxxton/microdocs-core-ts/dist/domain";
+import {PATH} from "@maxxton/microdocs-core-ts/dist/domain/path/parameter-placing.model";
+import {WARNING, ERROR} from "@maxxton/microdocs-core-ts/dist/domain/problem/problem-level.model";
+import {ProblemReporter}  from '@maxxton/microdocs-core-ts/dist/helpers';
 
 export class PathParamsCheck implements PathCheck {
 

@@ -1,4 +1,4 @@
-import {ProjectBuilder} from 'microdocs-core-ts/dist/builder';
+import {ProjectBuilder} from '@maxxton/microdocs-core-ts/dist/builder';
 import {ClassCrawler} from "../common/abstract/class.crawler";
 import {ClassIdentity} from "../common/domain/class-identity";
 import {ProjectReflection} from "typedoc";

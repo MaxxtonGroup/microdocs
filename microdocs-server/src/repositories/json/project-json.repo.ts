@@ -5,7 +5,7 @@ import * as mkdir from 'mkdir-p';
 
 import {Config} from "../../config";
 import {ProjectRepository} from "../project.repo";
-import {Project, TreeNode} from "microdocs-core-ts/dist/domain";
+import {Project, TreeNode} from "@maxxton/microdocs-core-ts/dist/domain";
 import * as fsHelper from '../../helpers/file.helper';
 
 export class ProjectJsonRepository implements ProjectRepository {

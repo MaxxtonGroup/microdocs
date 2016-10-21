@@ -4,8 +4,8 @@ import {PrettyJsonComponent} from 'angular2-prettyjson';
 
 import {COMPONENTS} from "@maxxton/components/components";
 import {FILTERS} from "@maxxton/components/filters";
-import {SchemaHelper} from "microdocs-core-ts/dist/helpers/schema/schema.helper";
-import {Schema} from "microdocs-core-ts/dist/domain";
+import {SchemaHelper} from "@maxxton/microdocs-core-ts/dist/helpers/schema/schema.helper";
+import {Schema} from "@maxxton/microdocs-core-ts/dist/domain";
 
 @Component({
   selector: 'model-panel',
