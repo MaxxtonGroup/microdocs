@@ -28,8 +28,8 @@ export class RestProjectService extends ProjectService {
 
   /**
    * Loads all projects
-   * @param env for which environment, default is the current one
-   * @returns projects
+   * @httpQuery env for which environment, default is the current one
+   * @httpResponse 200 {TreeNode}
    */
   @Get("/projects")
   @Map(resp => TreeNode.link(resp.json()))
@@ -39,10 +39,11 @@ export class RestProjectService extends ProjectService {
 
   /**
    * Load project
-   * @param title name of the project
-   * @param version specific version, or if empty the latest
-   * @param env for which environment, default is the current one
-   * @returns project
+   * @httpPath title name of the project
+   * @httpQuery version specific version, or if empty the latest
+   * @httpQuery env for which environment, default is the current one
+   * @httpBody body {Project}
+   * @httpResponse 200 {Project}
    */
   @Get("/projects/{title}")
   @Map(resp => SchemaHelper.resolveObject(resp.json()))
@@ -52,7 +53,7 @@ export class RestProjectService extends ProjectService {
 
   /**
    * Load all the environments
-   * @returns map of environments
+   * @httpResponse 200 {{[key: string]: Environments}}
    */
   @Get("/envs")
   @Map(resp => resp.json())

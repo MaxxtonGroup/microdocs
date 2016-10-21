@@ -91,3 +91,16 @@ export function hasDecorator(instance: ContainerReflection, decoratorName: strin
 
   return false;
 }
+
+/**
+ * Evaluate argument as string
+ * @param arg argument as string
+ * @returns {any}
+ */
+export function evalArgument(arg: string) {
+  try {
+    return eval("(" + arg + ")");
+  }catch(e){
+    console.warn(e);
+  }
+}

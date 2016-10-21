@@ -11,12 +11,25 @@ import {ReportJsonRepository} from "../repositories/json/report-json.repo";
 import {ResponseHelper} from "./responses/response.helper";
 
 /**
- * @author Steven Hermans
+ * @controller
+ * @baseUrl /api/v1
  */
 export class PublishRoute extends BaseRoute {
 
   mapping = {methods: ["put"], path: "/projects/:title", handler: this.publishProject, upload: true};
 
+  /**
+   * Publish new project definitions
+   * @httpPut /projects/{title}
+   * @httpPath title {string} name of the project
+   * @httpQuery ?env {string} environment to publish the project definition
+   * @httpQuery ?failOnProblems {boolean} either to publish when there are problems or
+   * @httpQuery ?title {string} override the info.title in the project definitions
+   * @httpQuery ?group {string} override the info.group in the project definitions
+   * @httpQuery ?version {string} override the info.version in the project definitions
+   * @httpResponse 200 {Problem[]}
+   * @httpResponse 400 Missing title/version/group in the project definitions or missing request body
+   */
   public publishProject(req: express.Request, res: express.Response, next: express.NextFunction, scope:BaseRoute) {
     var handler = ResponseHelper.getHandler(req);
     try {

@@ -34,8 +34,8 @@ export class StandaloneProjectService extends ProjectService{
   }
   /**
    * Loads all projects
-   * @param env for which environment, default is the current one
-   * @returns projects
+   * @httpPath env for which environment, default is the current one
+   * @httpResponse 200 {TreeNode}
    */
   @Get("/projects-{env}.json")
   @Map(resp => TreeNode.link(resp.json()))
@@ -43,18 +43,18 @@ export class StandaloneProjectService extends ProjectService{
 
   /**
    * Load project
-   * @param title name of the project
-   * @param version specific version, or if empty the latest
-   * @param env for which environment, default is the current one
-   * @returns project
+   * @httpPath title name of the project
+   * @httpPath version specific version, or if empty the latest
+   * @httpPath env for which environment, default is the current one
+   * @httpResponse 200 {Project}
    */
-  @Get("/projects/{projectName}-{env}-{version}.json")
+  @Get("/projects/{title}-{env}-{version}.json")
   @Map(resp => SchemaHelper.resolveObject(resp.json()))
   public loadProject(@Path("projectName") projectName:string, @Path("version") version?:string, @Path("env") env: string = this.getSelectedEnv()): Observable<Project>{return null;}
 
   /**
    * Load all the environments
-   * @returns map of environments
+   * @httpResponse 200 {{[key:string]:Environments}} map of environments
    */
   @Get("/envs.json")
   @Map(resp => resp.json())

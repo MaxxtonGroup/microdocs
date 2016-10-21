@@ -4,13 +4,26 @@ import * as express from "express";
 
 import {BaseRoute} from "./route";
 import {ProjectJsonRepository} from "../repositories/json/project-json.repo";
-import {ProjectRepository} from "../repositories/project.repo";
 import {ResponseHelper} from "./responses/response.helper";
 
+/**
+ * @controller
+ * @baseUrl /api/v1
+ */
 export class ProjectRoute extends BaseRoute {
 
   mapping = {methods: ['get'], path: '/projects/:title', handler: this.projects};
 
+  /**
+   * Get project definition
+   * @httpGet /projects/{title}
+   * @httpPath title {string} name of the project
+   * @httpQuery ?version {string} specify a version
+   * @httpQuery ?env {string} environment to find the project definition
+   * @httpResponse 200 {Project}
+   * @httpResponse 400 the environment doesn't exists
+   * @httpResponse 404 Project definitions for the given title/version/env doesn't exists
+   */
   public projects(req: express.Request, res: express.Response, next: express.NextFunction, scope:BaseRoute) {
     var handler = ResponseHelper.getHandler(req);
     try {

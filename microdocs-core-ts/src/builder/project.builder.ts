@@ -5,6 +5,7 @@ import {DependencyBuilder} from "./dependency.builder";
 import {ComponentBuilder} from "./component.builder";
 import {PathBuilder} from "./path.builder";
 import {ControllerBuilder} from "./controller.builder";
+import {Schema} from "../domain/schema/schema.model";
 
 export class ProjectBuilder implements Builder<Project>{
 
@@ -53,20 +54,47 @@ export class ProjectBuilder implements Builder<Project>{
     if(!componentBuilder.title || componentBuilder.title == ''){
       throw new Error("No title found for component");
     }
+    if(!this._project.components){
+      this._project.components = {};
+    }
     this._project.components[componentBuilder.title] = componentBuilder.build();
   }
   
   controller(controllerBuilder:ControllerBuilder):void{
     controllerBuilder.build().forEach(pathBuilder => {
-      this.path(pathBuilder);
+      this.path(pathBuilder, controllerBuilder.baseUrl, controllerBuilder.requestMethods);
     });
   }
-  
-  path(pathBuilder:PathBuilder):void{
-    // if(!componentBuilder.title || componentBuilder.title == ''){
-    //   throw new Error("No title found for component");
-    // }
-    // this._project.components[componentBuilder.title] = componentBuilder.build();
+
+  path(pathBuilder:PathBuilder, basePath:string='', requestMethods:string[]=[]):void{
+    var path = basePath + pathBuilder.path;
+    var requestMethods = pathBuilder.methods.concat(requestMethods).map(method => method.toLowerCase());
+    if(!path || path == ''){
+      throw new Error("No path found for endpoint");
+    }
+    if(!requestMethods || requestMethods.length == 0){
+      throw new Error("No request methods found for endpoint");
+    }
+
+    if(!this._project.paths){
+      this._project.paths = {};
+    }
+    if(!this._project.paths[path]){
+      this._project.paths[path] = {};
+    }
+    requestMethods.forEach(method => {
+      this._project.paths[pathBuilder.path][method] = pathBuilder.build();
+    });
+  }
+
+  model(schema:Schema):void {
+    if (!schema.name || schema.name == '') {
+      throw new Error("No name found for schema");
+    }
+    if (!this._project.definitions) {
+      this._project.definitions = {};
+    }
+    this._project.definitions[schema.name] = schema;
   }
 
 }

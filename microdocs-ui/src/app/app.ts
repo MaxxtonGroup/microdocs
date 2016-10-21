@@ -12,6 +12,11 @@ import {SidebarComponent} from "../panels/sidebar-panel/sidebar.panel";
 import {Subject} from "rxjs/Subject";
 import {Notification} from "rxjs/Notification";
 
+/**
+ * Frontend for MicroDocs
+ * @projectName microdocs-ui
+ * @projectGroup MicroDocs
+ */
 @Component({
   selector: 'app',
   providers: [],
