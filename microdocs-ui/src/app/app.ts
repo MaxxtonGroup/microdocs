@@ -10,7 +10,13 @@ import {DashboardRoute} from "./../routes/dashboard/dashboard";
 import {ProjectService} from "./../services/project.service";
 import {SidebarComponent} from "../panels/sidebar-panel/sidebar.panel";
 import {Subject} from "rxjs/Subject";
+import {Notification} from "rxjs/Notification";
 
+/**
+ * Frontend for MicroDocs
+ * @projectName microdocs-ui
+ * @projectGroup MicroDocs
+ */
 @Component({
   selector: 'app',
   providers: [],
@@ -26,15 +32,12 @@ export class App {
     status: <number|string> null
   };
   
-  projects:Subject<TreeNode> = new Subject();
+  projects:Subject<Notification<TreeNode>> = new Subject<Notification<TreeNode>>();
   envs:string[];
   selectedEnv:string;
-  projectSub:any;
   
   constructor(private image:ImageHelperService, private projectService:ProjectService, private router:Router) {
-    var result = this.projectService.getProjects();
-    if(result)
-      this.projectSub = result.subscribe(node => this.projects.next(node));
+    this.projects = this.projectService.getProjects();
     
     projectService.getEnvs().subscribe((envs) => {
       this.envs = Object.keys(envs);
@@ -43,11 +46,6 @@ export class App {
           if (envs[key].default) {
             projectService.setSelectedEnv(key);
             this.selectedEnv = key;
-  
-            var result = this.projectService.getProjects();
-            if(result)
-              this.projectSub = result.subscribe(node => this.projects.next(node));
-            
             break;
           }
         }
@@ -58,27 +56,15 @@ export class App {
       if (params['env'] && this.projectService.getSelectedEnv() !== params['env']) {
         this.selectedEnv = params['env'];
         this.projectService.setSelectedEnv(params['env']);
-        if (this.projectSub && this.projectSub.unsubscribe) {
-          this.projectSub.unsubscribe();
-        }
-        var result = this.projectService.getProjects();
-        if(result)
-          this.projectSub = result.subscribe(node => this.projects.next(node));
       }
     });
   }
   
-  public onEnvVersion(newEnv) {
+  public onEnvVersion(newEnv:string) {
     this.projectService.setSelectedEnv(newEnv);
     this.selectedEnv = newEnv;
-    if (this.projectSub && this.projectSub.unsubscribe) {
-      this.projectSub.unsubscribe();
-    }
-    var result = this.projectService.getProjects();
-    if(result)
-      this.projectSub = result.subscribe(node => this.projects.next(node));
     
-    this.router.navigateByUrl('/?env=' + newEnv);
+    this.router.navigate(['/dashboard'], {queryParams: {env: newEnv}});
   }
   
   

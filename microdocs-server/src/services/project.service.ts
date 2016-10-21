@@ -9,13 +9,7 @@ export class ProjectService{
 
   private projectRepo:ProjectRepository;
 
-  constructor(){
-    this.projectRepo = ProjectJsonRepository.bootstrap();
-  }
-
-  public static bootstrap():ProjectService {
-    return new ProjectService();
-  }
+  constructor(private projectRepo:ProjectRepository){}
 
   public storeAggregatedProjects(env:string, node:TreeNode) : void{
     this.projectRepo.storeAggregatedProjects(env, node);

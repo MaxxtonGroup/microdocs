@@ -26,18 +26,8 @@ import {ProjectService} from "./project.service";
 export class AggregationService {
 
   private endpointChecks: PathCheck[] = [new QueryParamsCheck(), new BodyParamsCheck(), new PathParamsCheck(), new ResponseCheck()];
-  private reportRepo: ReportRepository;
-  private projectSettingsRepo: ProjectSettingsRepository;
-  private projectService: ProjectService;
 
-  constructor() {
-    this.reportRepo = ReportJsonRepository.bootstrap();
-    this.projectSettingsRepo = ProjectSettingsJsonRepository.bootstrap();
-    this.projectService = ProjectService.bootstrap();
-  }
-
-  public static bootstrap(): AggregationService {
-    return new AggregationService();
+  constructor(private projectService: ProjectService, private reportRepo: ReportRepository, private projectSettingsRepo: ProjectSettingsRepository) {
   }
 
   /**

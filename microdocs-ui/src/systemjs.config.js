@@ -35,6 +35,7 @@
         'angular2-prettyjson': {main: 'index.js', defaultExtension: 'js'},
         'd3': {main: 'd3.min.js', defaultExtension: 'js'},
 
+        'angular2-rest': {main: 'angular2-rest.js', defaultExtension: 'js'},
         'angular2-google-maps/core': {main: 'core.umd.js', defaultExtension: 'js'},
         '@angular/router': {main: 'index.js', defaultExtension: "js"}
     };

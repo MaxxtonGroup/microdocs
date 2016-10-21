@@ -6,14 +6,23 @@ import {BaseRoute} from "./route";
 import {ResponseHelper} from "./responses/response.helper";
 import {ProjectSettingsJsonRepository} from "../repositories/json/project-settings-json.repo";
 
+/**
+ * @controller
+ * @baseUrl /api/v1
+ */
 export class EnvRoute extends BaseRoute {
 
   mapping = {methods: ['get'], path: '/envs', handler: this.projects};
 
-  public projects(req: express.Request, res: express.Response, next: express.NextFunction) {
+  /**
+   * Get all the environments
+   * @httpGet /envs
+   * @httpResponse 200 {{[name: string]: Environments}[]}
+   */
+  public projects(req: express.Request, res: express.Response, next: express.NextFunction, scope:BaseRoute) {
     var handler = ResponseHelper.getDefaultHandler();
     try {
-      var envs = ProjectSettingsJsonRepository.bootstrap().getEnvs();
+      var envs = scope.injection.ProjectSettingsRepository().getEnvs();
       handler.response(req, res, 200, envs);
     } catch (e) {
       ResponseHelper.getHandler(req).handleInternalServerError(req, res, e);

@@ -2,6 +2,7 @@
 
 import {expect, assert} from 'chai';
 import {SchemaHelper} from "../helpers/schema/schema.helper";
+import {SchemaTypes} from "../domain";
 
 describe('#SchemaHelper: ', () => {
   
@@ -119,6 +120,153 @@ describe('#SchemaHelper: ', () => {
 
       expect(result[7].isVar).be.true;
       assert.deepEqual(result[7].expression, "name4");
+    });
+    
+  });
+  
+  describe("#resolveTypeString(): ", () => {
+    
+    it("test unknown type", () => {
+      var input = "this doesnt exists";
+      
+      var func = () => SchemaHelper.resolveTypeString(input);
+      
+      assert.throw(func);
+    });
+    
+    it("test type string", () => {
+      var input = "string";
+      
+      var result = SchemaHelper.resolveTypeString(input);
+      
+      assert.equal(SchemaTypes.STRING, result.type);
+    });
+    
+    it("test type number", () => {
+      var input = "number";
+  
+      var result = SchemaHelper.resolveTypeString(input);
+  
+      assert.equal(SchemaTypes.NUMBER, result.type);
+    });
+  
+    it("test type boolean", () => {
+      var input = "boolean";
+    
+      var result = SchemaHelper.resolveTypeString(input);
+    
+      assert.equal(SchemaTypes.BOOLEAN, result.type);
+    });
+  
+    it("test type bool", () => {
+      var input = "bool";
+    
+      var result = SchemaHelper.resolveTypeString(input);
+    
+      assert.equal(SchemaTypes.BOOLEAN, result.type);
+    });
+  
+    it("test type integer", () => {
+      var input = "integer";
+    
+      var result = SchemaHelper.resolveTypeString(input);
+    
+      assert.equal(SchemaTypes.INTEGER, result.type);
+    });
+  
+    it("test type int", () => {
+      var input = "int";
+    
+      var result = SchemaHelper.resolveTypeString(input);
+    
+      assert.equal(SchemaTypes.INTEGER, result.type);
+    });
+  
+    it("test type date", () => {
+      var input = "date";
+    
+      var result = SchemaHelper.resolveTypeString(input);
+    
+      assert.equal(SchemaTypes.DATE, result.type);
+    });
+  
+    it("test type any", () => {
+      var input = "any";
+    
+      var result = SchemaHelper.resolveTypeString(input);
+    
+      assert.equal(SchemaTypes.ANY, result.type);
+    });
+    
+    it("test type array", () => {
+      var input = "string[]";
+      
+      var result = SchemaHelper.resolveTypeString(input);
+      
+      assert.equal(SchemaTypes.ARRAY, result.type);
+      assert.equal(SchemaTypes.STRING, result.items.type);
+    });
+  
+    it("test type array", () => {
+      var input = "string[]";
+    
+      var result = SchemaHelper.resolveTypeString(input);
+    
+      assert.equal(SchemaTypes.ARRAY, result.type);
+      assert.equal(SchemaTypes.STRING, result.items.type);
+    });
+  
+    it("test type object no props", () => {
+      var input = "{}";
+    
+      var result = SchemaHelper.resolveTypeString(input);
+    
+      assert.equal(SchemaTypes.OBJECT, result.type);
+      assert.deepEqual({}, result.properties);
+    });
+  
+    it("test type object one props", () => {
+      var input = "{test:string}";
+    
+      var result = SchemaHelper.resolveTypeString(input);
+    
+      assert.equal(SchemaTypes.OBJECT, result.type);
+      assert.deepEqual({test:{type:SchemaTypes.STRING}}, result.properties);
+    });
+  
+    it("test type object three props", () => {
+      var input = "{test:string, test2:number, test3:bool}";
+    
+      var result = SchemaHelper.resolveTypeString(input);
+    
+      assert.equal(SchemaTypes.OBJECT, result.type);
+      assert.deepEqual({type:SchemaTypes.STRING}, result.properties['test']);
+      assert.deepEqual({type:SchemaTypes.NUMBER}, result.properties['test2']);
+      assert.deepEqual({type:SchemaTypes.BOOLEAN}, result.properties['test3']);
+    });
+  
+    it("test type enum", () => {
+      var input = "{test, test1, test2}";
+    
+      var result = SchemaHelper.resolveTypeString(input);
+    
+      assert.equal(SchemaTypes.ENUM, result.type);
+      assert.deepEqual(['test', 'test1', 'test2'], result.enum);
+    });
+  
+    it("test type custom type", () => {
+      var input = "Person";
+      var handler = (name:string) => {
+        return {
+          type: SchemaTypes.OBJECT,
+          name: 'Person'
+        };
+      };
+    
+      var result = SchemaHelper.resolveTypeString(input, handler);
+    
+      assert.equal(SchemaTypes.OBJECT, result.type);
+      assert.equal('Person', result.name);
     });
     
   });

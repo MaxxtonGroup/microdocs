@@ -1,6 +1,6 @@
 import * as express from "express";
-import {TreeNode, Problem, Project} from 'microdocs-core-ts/dist/domain';
-import {dump} from 'js-yaml';
+import {TreeNode, Problem, Project, ProblemResponse} from 'microdocs-core-ts/dist/domain';
+import * as dump from 'js-yaml';
 import * as xml from 'jsontoxml';
 import {ERROR, WARNING} from "microdocs-core-ts/dist/domain/problem/problem-level.model";
 
@@ -15,15 +15,15 @@ export class BaseResponseHandler {
   }
 
   handleProblems(req: express.Request, res: express.Response, problems: Problem[], env:string) {
-    var object = {problems: problems};
+    var problemResponse:ProblemResponse = {problems: problems};
     if (problems.filter(problem => problem.level == ERROR || problem.level == WARNING).length == 0){
-      object['status'] = 'ok';
-      object['message'] = 'No problems found';
+      problemResponse.status = 'ok';
+      problemResponse.message = 'No problems found';
     } else {
-      object['status'] = 'failed';
-      object['message'] = problems.length + " problem" + (problems.length > 1 ? 's' : '') + " found";
+      problemResponse.status = 'failed';
+      problemResponse.message = problems.length + " problem" + (problems.length > 1 ? 's' : '') + " found";
     }
-    this.response(req, res, 200, object);
+    this.response(req, res, 200, problemResponse);
   }
 
   handleUnsupportedMediaType(req: express.Request, res: express.Response) {

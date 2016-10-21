@@ -11,16 +11,29 @@ import {ReportJsonRepository} from "../repositories/json/report-json.repo";
 import {ResponseHelper} from "./responses/response.helper";
 
 /**
- * @author Steven Hermans
+ * @controller
+ * @baseUrl /api/v1
  */
 export class PublishRoute extends BaseRoute {
 
   mapping = {methods: ["put"], path: "/projects/:title", handler: this.publishProject, upload: true};
 
-  public publishProject(req: express.Request, res: express.Response, next: express.NextFunction) {
+  /**
+   * Publish new project definitions
+   * @httpPut /projects/{title}
+   * @httpPath title {string} name of the project
+   * @httpQuery ?env {string} environment to publish the project definition
+   * @httpQuery ?failOnProblems {boolean} either to publish when there are problems or
+   * @httpQuery ?title {string} override the info.title in the project definitions
+   * @httpQuery ?group {string} override the info.group in the project definitions
+   * @httpQuery ?version {string} override the info.version in the project definitions
+   * @httpResponse 200 {Problem[]}
+   * @httpResponse 400 Missing title/version/group in the project definitions or missing request body
+   */
+  public publishProject(req: express.Request, res: express.Response, next: express.NextFunction, scope:BaseRoute) {
     var handler = ResponseHelper.getHandler(req);
     try {
-      var env = PublishRoute.getEnv(req);
+      var env = scope.getEnv(req, scope);
       if (env == null) {
         handler.handleBadRequest(req, res, "env '" + req.query.env + "' doesn't exists");
         return;
@@ -76,16 +89,18 @@ export class PublishRoute extends BaseRoute {
         report.info.group = group;
         report.info.title = title;
 
+        var aggregationService = scope.injection.AggregationService();
+        
         // check report
         var reportCopy = JSON.parse(JSON.stringify(report));
-        var problems: Problem[] = AggregationService.bootstrap().checkProject(env, reportCopy);
+        var problems: Problem[] = aggregationService.checkProject(env, reportCopy);
 
         if (!(failOnProblems && problems.filter(problem => problem.level == ERROR || problem.level == WARNING).length > 0)) {
           // save report
-          ReportJsonRepository.bootstrap().storeProject(env, report);
+          scope.injection.ReportRepository().storeProject(env, report);
 
           // run reindex
-          var treeNode = AggregationService.bootstrap().reindex(env);
+          var treeNode = aggregationService.reindex(env);
         } else {
           console.warn("Fail publishing due to problems");
         }

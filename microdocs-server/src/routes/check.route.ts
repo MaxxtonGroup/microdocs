@@ -7,14 +7,28 @@ import {Problem, ProjectInfo, Project} from "microdocs-core-ts/dist/domain";
 import {AggregationService} from "../services/aggregation.service";
 import {ResponseHelper} from "./responses/response.helper";
 
+/**
+ * @controller
+ * @baseUrl /api/v1
+ */
 export class CheckRoute extends BaseRoute {
 
   mapping = {methods: ['post'], path: '/check', handler: this.projects};
 
-  public projects(req: express.Request, res: express.Response, next: express.NextFunction) {
+  /**
+   * Check project definitions for problems
+   * @httpPost /check
+   * @httpQuery ?env {string} environment to check the project definition against
+   * @httpQuery ?project {string} name of the project if not already defined in the project definitions
+   * @httpQuery ?title {string} alias for project
+   * @httpBody {Project} project definitions which will be checked
+   * @httpResponse 200 {ProblemResponse}
+   * @httpResponse 404 {} Body is missing or project title is missing
+   */
+  public projects(req: express.Request, res: express.Response, next: express.NextFunction, scope:BaseRoute) {
     var handler = ResponseHelper.getHandler(req);
     try {
-      var env = CheckRoute.getEnv(req);
+      var env = scope.getEnv(req, scope);
       if (env == null) {
         handler.handleBadRequest(req, res, "env '" + req.query.env + "' doesn't exists");
         return;
@@ -36,7 +50,7 @@ export class CheckRoute extends BaseRoute {
         project.info.version = '9999999999.0.0';
         project.info.versions = ['9999999999.0.0'];
 
-        var problems: Problem[] = AggregationService.bootstrap().checkProject(env, project);
+        var problems: Problem[] = scope.injection.AggregationService().checkProject(env, project);
         handler.handleProblems(req, res, problems, env);
       } else {
         handler.handleBadRequest(req, res, 'Body is missing');

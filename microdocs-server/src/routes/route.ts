@@ -1,13 +1,16 @@
 /// <reference path="../_all.d.ts" />
 
-import {RequestHandler, Request} from 'express';
+import {RequestHandler, Request, Response, NextFunction} from 'express';
 import {ProjectSettingsJsonRepository} from "../repositories/json/project-settings-json.repo";
+import {Injection} from "../injections";
 
 /**
  * Base route
  * Adds mapping to the route itself
  */
-export class BaseRoute {
+export abstract class BaseRoute {
+  
+  constructor(public injection:Injection){}
 
   /**
    * The mapping of this route
@@ -34,7 +37,7 @@ export class BaseRoute {
    * Function which handles the request
    * @returns {RequestHandler}
    */
-  public handler(): RequestHandler {
+  public handler(): (req: Request, res: Response, next: NextFunction, scope:BaseRoute) => any {
     return this.mapping.handler;
   }
 
@@ -42,9 +45,9 @@ export class BaseRoute {
     return this.mapping.upload;
   }
 
-  protected static getEnv(req:Request):string{
+  public getEnv(req:Request, scope:BaseRoute):string{
     var env = req.query.env;
-    var envs = ProjectSettingsJsonRepository.bootstrap().getEnvs();
+    var envs = scope.injection.ProjectSettingsRepository().getEnvs();
 
     if(env == undefined){
       for(var envName in envs){
@@ -69,7 +72,7 @@ export interface RequestMapping {
 
   path: string;
   methods: string[];
-  handler: RequestHandler;
+  handler: (req: Request, res: Response, next: NextFunction, scope:BaseRoute) => any;
   upload?: boolean
 
 }

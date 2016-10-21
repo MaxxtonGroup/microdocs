@@ -1,7 +1,7 @@
 /// <reference path="_all.d.ts" />
 "use strict";
 
-import * as yaml_config from "node-yaml-config";
+import * as yamlConfig from "node-yaml-config";
 
 /**
  * Server configuration
@@ -20,7 +20,7 @@ export class Config {
      */
     public static reload(){
         console.info("load config");
-        Config.config = yaml_config.load(Config.configFile);
+        Config.config = (<any>yamlConfig).load(Config.configFile);
     }
 
     /**

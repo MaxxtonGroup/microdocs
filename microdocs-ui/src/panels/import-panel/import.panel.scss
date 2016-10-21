@@ -1,0 +1,32 @@
+
+import-panel h6{
+  color: $green !important;
+  padding: 5px 20px;
+}
+
+import-panel h6 i{
+  position: relative;
+  top: 5px;
+  height: 21px;
+  margin-right: 10px;
+  font-size: 24px;
+}
+
+import-panel h5{
+    color: $blue !important;
+}
+
+import-panel textarea{
+    resize: none;
+    font-family: monospace;
+}
+
+import-panel label{
+    color: $blue !important;
+    cursor: default !important;
+}
+
+import-panel .text-danger{
+  color: $red;
+  height: 30px;
+}

@@ -1,12 +1,12 @@
 {
-  "name": "microdocs-core-ts",
-  "version": "1.3.0",
+  "name": "@maxxton/microdocs-core-ts",
+  "version": "1.4.0",
   "description": "Shared code for the microdocs-server and microdocs-ui",
   "repository": {
     "type": "git",
     "url": "https://github.com/MaxxtonGroup/microdocs"
   },
-  "author": "Steven Hermans (s.hermans@maxxton.com",
+  "author": "Steven Hermans (s.hermans@maxxton.com)",
   "license": "MIT",
   "scripts": {
     "postinstall": "typings install",
