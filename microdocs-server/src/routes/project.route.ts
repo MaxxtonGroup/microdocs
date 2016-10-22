@@ -28,13 +28,8 @@ export class ProjectRoute extends BaseRoute {
       // load latest version if not specified
       if (version == undefined) {
         var rootNode = projectRepo.getAggregatedProjects(env);
-        if (rootNode != null && rootNode.dependencies != undefined) {
-          for (var key in rootNode.dependencies) {
-            if (key == title) {
-              version = rootNode.dependencies[key].version;
-              break;
-            }
-          }
+        if (rootNode) {
+          rootNode.projects.filter(project => project.title === title.toLowerCase()).forEach(project => version = project.version);
         }
       }
 

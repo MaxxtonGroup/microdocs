@@ -4,14 +4,14 @@ import * as express from "express";
 
 import {BaseRoute} from "./route";
 import {ResponseHelper} from "./responses/response.helper";
-import {TreeNode} from 'microdocs-core-ts/dist/domain';
+import {RootNode, ProjectNode, DependencyNode} from 'microdocs-core-ts/dist/domain';
 import {ProjectRepository} from "../repositories/project.repo";
 
 export class ProjectsRoute extends BaseRoute {
-
+  
   mapping = {methods: ['get'], path: '/projects', handler: this.projects};
-
-  public projects(req: express.Request, res: express.Response, next: express.NextFunction, scope:BaseRoute) {
+  
+  public projects(req:express.Request, res:express.Response, next:express.NextFunction, scope:BaseRoute) {
     var handler = ResponseHelper.getHandler(req);
     try {
       var env = scope.getEnv(req, scope);
@@ -19,79 +19,90 @@ export class ProjectsRoute extends BaseRoute {
         handler.handleBadRequest(req, res, "env '" + req.query.env + "' doesn't exists");
         return;
       }
-
-      var projects = scope.injection.ProjectRepository().getAggregatedProjects(env);
-      if (projects == null) {
-        projects = new TreeNode();
+      
+      var rootNode = scope.injection.ProjectRepository().getAggregatedProjects(env);
+      if (rootNode == null) {
+        rootNode = new RootNode();
       }
-
-      var groups: string[] = [];
-      var titles: string[] = [];
+      
+      var groups:string[] = [];
+      var titles:string[] = [];
       if (req.query.groups != undefined) {
         groups = req.query.groups.split(',');
       }
       if (req.query.projects != undefined) {
         titles = req.query.projects.split(',');
       }
-      projects = ProjectsRoute.filterProjects(projects, groups, titles);
-
-      ResponseHelper.getHandler(req).handleProjects(req, res, projects, env);
+      rootNode = filterRoot(rootNode, groups, titles);
+      
+      ResponseHelper.getHandler(req).handleProjects(req, res, rootNode, env);
     } catch (e) {
       ResponseHelper.getHandler(req).handleInternalServerError(req, res, e);
     }
   }
+}
 
-  private static filterProjects(project: TreeNode, groups: string[], projects: string[]): TreeNode {
-    // find removed projects
-    var removedProjects: string[] = [];
-    if (project.dependencies != undefined) {
-      for (var title in project.dependencies) {
-        var filter = false;
+function filterRoot(root:RootNode, groups:string[], projects:string[]):RootNode{
+  var removeProjects:ProjectNode[] = [];
+  root.projects.forEach(project => {
+    if(filterProject(project, groups, projects)){
+      removeProjects.push(project);
+    }else{
+      filterProjects(project, groups, projects);
+    }
+  });
+  removeProjects.forEach(project => delete root.projects[root.projects.indexOf(project)]);
+  
+  return root;
+}
 
-        // filter project
-        projects.forEach(fTitle => {
-          if (fTitle.indexOf('!') == 0) {
-            //ignore
-            fTitle = fTitle.substring(1);
-            if (title == fTitle) {
-              filter = true;
-            }
-          } else {
-            //select
-            if (title != fTitle) {
-              filter = true;
-            }
-          }
-        });
+function filterProjects(projectNode:ProjectNode, groups:string[], projects:string[]):ProjectNode{
+  var removeDependency:DependencyNode[] = [];
+  projectNode.dependencies.forEach(dependency => {
+    if(filterProject(dependency.item, groups, projects)){
+      removeDependency.push(dependency);
+    }else{
+      filterProject(dependency.item, groups, projects);
+    }
+  });
+  removeDependency.forEach(dependency => delete projectNode.dependencies[projectNode.dependencies.indexOf(dependency)]);
+  
+  return projectNode;
+}
 
-        // filter groups
-        groups.forEach(group => {
-          if (group.indexOf('!') == 0) {
-            //ignore
-            group = group.substring(1);
-            if (project.dependencies[title].group == group) {
-              filter = true;
-            }
-          } else {
-            //select
-            if (project.dependencies[title].group != group) {
-              filter = true;
-            }
-          }
-        });
-
-        if (filter) {
-          removedProjects.push(title);
-        } else {
-          ProjectsRoute.filterProjects(project.dependencies[title], projects, groups);
-        }
+function filterProject(project:ProjectNode, groups:string[], projects:string[]):boolean {
+  var filter = false;
+  
+  // filter project
+  projects.forEach(fTitle => {
+    if (fTitle.indexOf('!') == 0) {
+      //ignore
+      fTitle = fTitle.substring(1);
+      if (project.title == fTitle) {
+        filter = true;
+      }
+    } else {
+      //select
+      if (project.title != fTitle) {
+        filter = true;
       }
     }
-
-    // remove projects
-    removedProjects.forEach(title => delete project.dependencies[title]);
-
-    // return filtered projects
-    return project;
-  }
+  });
+  
+  // filter groups
+  groups.forEach(group => {
+    if (group.indexOf('!') == 0) {
+      //ignore
+      group = group.substring(1);
+      if (project.group == group) {
+        filter = true;
+      }
+    } else {
+      //select
+      if (project.group != group) {
+        filter = true;
+      }
+    }
+  });
+  return filter;
 }

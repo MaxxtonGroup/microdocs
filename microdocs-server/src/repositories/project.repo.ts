@@ -1,4 +1,4 @@
-import {Project, TreeNode} from "microdocs-core-ts/dist/domain";
+import {Project, RootNode} from "microdocs-core-ts/dist/domain";
 
 /**
  * @author Steven Hermans
@@ -9,7 +9,7 @@ export interface ProjectRepository {
    * Load the projects index
    * @param env for which env to load
    */
-  getAggregatedProjects(env:string):TreeNode;
+  getAggregatedProjects(env:string):RootNode;
   
   /**
    * Load project
@@ -22,7 +22,7 @@ export interface ProjectRepository {
    * @param env for which env to load
    * @param treeNode project index
    */
-  storeAggregatedProjects(env:string, treeNode:TreeNode):void;
+  storeAggregatedProjects(env:string, treeNode:RootNode):void;
   
   /**
    * Save project

@@ -1,19 +1,21 @@
 
 import {Node} from "./node.model";
 import {RootNode} from "./root-node.model";
-import {ProjectNodeDependency} from "./project-node-dependency.model";
-import {Project} from "gulp-typescript/release/project";
+import {DependencyNode} from "./dependency-node.model";
 
 export class ProjectNode extends Node{
+  
+  public dependencies:DependencyNode[] = [];
 
-  constructor(public parent:Node = null,
-              public dependencies:ProjectNodeDependency[] = [],
+  constructor(public title?:string,
+              public parent:Node = null,
               public group?:string,
               public version?:string,
               public versions?:string[],
               public problems?:number,
               public reference?:string,
               public tags?:string[]) {
+    super();
   }
 
   public getRoot():RootNode {
@@ -23,8 +25,8 @@ export class ProjectNode extends Node{
   public findNodePath(title:string, version:string):string {
     for(var i = 0; i < this.dependencies.length; i++){
       var dependency = this.dependencies[i];
-      if (dependency.title === title && dependency.item.version == version) {
-        return "/dependencies/" + title;
+      if (dependency.item.title === title && dependency.item.version == version) {
+        return "/dependencies/" + title + "/item";
       }
       var path = dependency.item.findNodePath(title, version);
       if (path != null) {
@@ -52,7 +54,7 @@ export class ProjectNode extends Node{
       if(dependency.type){
         child['type'] = dependency.type;
       }
-      dependencies[dependency.title] = child;
+      dependencies[dependency.item.title] = child;
     });
     
     var node = {};
@@ -77,44 +79,37 @@ export class ProjectNode extends Node{
     return node;
   }
   
-  public static linkProject(unlinkedProject:{}):ProjectNode{
-    
-  }
-  
-  public static linkDependency(unlinkedDependency:{}):ProjectNodeDependency{
-    
-  }
-
-  public static link(unlinkedNode:{}, root:boolean = true):ProjectNode {
-    var node:ProjectNode = new ProjectNode();
-    var dependencyNode = (root ? unlinkedNode : unlinkedNode['dependencies']);
-    if (dependencyNode != undefined) {
-      for (var key in dependencyNode) {
-        node.dependencies[key] = ProjectNode.link(dependencyNode[key], false);
-        node.dependencies[key].parent = node;
+  public static link(unlinkedProject:{}, title:string):ProjectNode{
+    var project = new ProjectNode(title);
+    if(unlinkedProject['dependencies']){
+      for(let key in unlinkedProject['dependencies']){
+        let unlinkedDependency = unlinkedProject['dependencies'][key];
+        let dependency = DependencyNode.link(unlinkedDependency, key);
+        if(dependency.item){
+          dependency.item.parent = project;
+        }
+        project.dependencies.push(dependency);
       }
     }
-    if (!root) {
-      if (unlinkedNode['group'] != undefined) {
-        node.group = unlinkedNode['group'];
-      }
-      if (unlinkedNode['version'] != undefined) {
-        node.version = unlinkedNode['version'];
-      }
-      if (unlinkedNode['versions'] != undefined) {
-        node.versions = unlinkedNode['versions'];
-      }
-      if (unlinkedNode['problems'] != undefined) {
-        node.problems = unlinkedNode['problems'];
-      }
-      if (unlinkedNode['$ref'] != undefined) {
-        node.reference = "#/dependencies" + unlinkedNode['$ref'].substring(1);
-      }
-      if (unlinkedNode['tags'] != undefined) {
-        node.tags = unlinkedNode['tags'];
-      }
+    if (unlinkedProject['group']) {
+      project.group = unlinkedProject['group'];
     }
-    return node;
+    if (unlinkedProject['version']) {
+      project.version = unlinkedProject['version'];
+    }
+    if (unlinkedProject['versions']) {
+      project.versions = unlinkedProject['versions'];
+    }
+    if (unlinkedProject['problems']) {
+      project.problems = unlinkedProject['problems'];
+    }
+    if (unlinkedProject['$ref']) {
+      project.reference = "#/dependencies" + unlinkedProject['$ref'].substring(1);
+    }
+    if (unlinkedProject['tags']) {
+      project.tags = unlinkedProject['tags'];
+    }
+    return project;
   }
 
 }

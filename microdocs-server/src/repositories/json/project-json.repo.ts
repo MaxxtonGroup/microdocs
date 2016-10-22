@@ -5,7 +5,7 @@ import * as mkdir from 'mkdir-p';
 
 import {Config} from "../../config";
 import {ProjectRepository} from "../project.repo";
-import {Project, TreeNode} from "microdocs-core-ts/dist/domain";
+import {Project, RootNode} from "microdocs-core-ts/dist/domain";
 import * as fsHelper from '../../helpers/file.helper';
 
 export class ProjectJsonRepository implements ProjectRepository {
@@ -34,14 +34,14 @@ export class ProjectJsonRepository implements ProjectRepository {
     return false;
   }
   
-  public getAggregatedProjects(env:string):TreeNode {
+  public getAggregatedProjects(env:string):RootNode {
     console.info("Load metadata");
     var dataFolder:string = __dirname + '/../../../' + Config.get("dataFolder") + "/database/" + env;
     var metaFile:string = dataFolder + "/projects.json";
     if (fs.existsSync(metaFile)) {
       var string = fs.readFileSync(metaFile).toString();
       var json = JSON.parse(string);
-      return TreeNode.link(json);
+      return RootNode.link(json);
     }
     return null;
   }
@@ -60,7 +60,7 @@ export class ProjectJsonRepository implements ProjectRepository {
     return null;
   }
   
-  public storeAggregatedProjects(env:string, node:TreeNode):void {
+  public storeAggregatedProjects(env:string, node:RootNode):void {
     console.info("Store metadata");
     var dataFolder:string = __dirname + '/../../../' + Config.get("dataFolder") + "/database/" + env;
     var metaFile:string = dataFolder + "/projects.json";

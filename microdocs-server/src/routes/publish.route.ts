@@ -35,9 +35,9 @@ export class PublishRoute extends BaseRoute {
       }
 
       //get body
-      var body = null;
-      if (req.get('content-type') == 'application/json') {
-        body = req.body;
+      var report:Project = null;
+      if (req.get('content-type') === 'application/json') {
+        report = req.body;
       } else {
         handler.handleUnsupportedMediaType(req, res);
         return;
@@ -45,9 +45,7 @@ export class PublishRoute extends BaseRoute {
 
 
       //check request body
-      if (body != null) {
-        var report = req.body as Project;
-
+      if (report) {
         //check version is provided
         if (version == undefined || version == "") {
           version = SchemaHelper.resolveReference("info.version", report);

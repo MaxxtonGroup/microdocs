@@ -4,21 +4,21 @@ import {ProjectNode} from "./project-node.model";
 
 export class RootNode extends Node{
   
-  public projects:{[key:string]:ProjectNode} = {};
+  public projects:ProjectNode[] = [];
   
   public getRoot():RootNode {
     return this;
   }
   
   public findNodePath(title:string, version:string):string {
-    for(var key in this.projects){
-      var project = this.projects[key];
-      if (key === title && project.version == version) {
-        return "/dependencies/" + title;
+    for(var i = 0; i < this.projects.length; i++){
+      var project = this.projects[i];
+      if (project.title === title && project.version == version) {
+        return "/" + title;
       }
       var path = project.findNodePath(title, version);
-      if (path != null) {
-        return "/dependencies/" + title + '/item' + path;
+      if (path) {
+        return "/" + title + path;
       }
     }
     return null;
@@ -26,10 +26,22 @@ export class RootNode extends Node{
   
   public unlink():{}{
     var dependencies:{[title:string]:{}} = {};
-    for (var key in this.projects) {
-      var child = this.projects[key];
-      dependencies[key] = child.unlink();
-    }
+    this.projects.forEach(project => {
+      dependencies[project.title] = project.unlink();
+    });
     return dependencies;
+  }
+  
+  public static link(unlinkedRoot:{}):RootNode{
+    var root = new RootNode();
+    if(unlinkedRoot) {
+      for (let key in unlinkedRoot) {
+        let unlinkedProject = unlinkedRoot[key];
+        let projectNode = ProjectNode.link(unlinkedProject, key);
+        projectNode.parent = root;
+        root.projects.push(projectNode);
+      }
+    }
+    return root;
   }
 }
