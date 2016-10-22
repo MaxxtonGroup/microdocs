@@ -4,7 +4,7 @@ import {ROUTER_DIRECTIVES, Router} from "@angular/router";
 
 import {COMPONENTS} from "@maxxton/components/components";
 import {ImageHelperService} from "@maxxton/components/helpers";
-import {TreeNode} from "microdocs-core-ts/dist/domain";
+import {TreeNode} from "@maxxton/microdocs-core-ts/dist/domain";
 
 import {DashboardRoute} from "./../routes/dashboard/dashboard";
 import {ProjectService} from "./../services/project.service";
@@ -12,6 +12,11 @@ import {SidebarComponent} from "../panels/sidebar-panel/sidebar.panel";
 import {Subject} from "rxjs/Subject";
 import {Notification} from "rxjs/Notification";
 
+/**
+ * Frontend for MicroDocs
+ * @projectName microdocs-ui
+ * @projectGroup MicroDocs
+ */
 @Component({
   selector: 'app',
   providers: [],

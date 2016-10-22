@@ -1,0 +1,39 @@
+{
+  "name": "@maxxton/microdocs-crawler-ts",
+  "version": "1.4.0",
+  "description": "MicroDocs crawler for typescript projects",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MaxxtonGroup/microdocs"
+  },
+  "author": "Steven Hermans (s.hermans@maxxton.com)",
+  "license": "MIT",
+  "scripts": {
+    "postinstall": "typings install",
+    "prepublish": "gulp prepublish"
+  },
+  "bin": {
+    "microdocs": "dist/cli.js"
+  },
+  "dependencies": {
+    "@maxxton/microdocs-core-ts": "1.4.0",
+    "chai": "^3.5.0",
+    "globby": "^6.0.0",
+    "node-rest-client": "^2.0.1",
+    "typedoc": "^0.4.5",
+    "typescript": "^1.8.10"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-angular-embed-templates": "^2.3.0",
+    "gulp-browserify": "^0.5.1",
+    "gulp-clean": "^0.3.2",
+    "gulp-mocha": "^3.0.1",
+    "gulp-plumber": "^1.1.0",
+    "gulp-typescript": "^2.14.1",
+    "gulp-uglify": "^2.0.0",
+    "gulp-util": "^3.0.7",
+    "merge2": "^1.0.2",
+    "run-sequence": "^1.2.2"
+  }
+}

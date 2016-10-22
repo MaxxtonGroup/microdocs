@@ -1,9 +1,9 @@
 import {Injectable} from "@angular/core";
 import {Http, Response} from "@angular/http";
-import {Get, Path, Put, Patch, Query, Body,  Map, Produces, MediaType, Client, Delete} from "angular2-rest/angular2-rest";
-import {TreeNode, Project, Environments, ProjectChangeRule} from "microdocs-core-ts/dist/domain";
+import {Get, Path, Put, Patch, Query, Body,  Map, Produces, MediaType, Client, Delete} from "@maxxton/angular2-rest";
+import {TreeNode, Project, Environments, ProjectChangeRule} from "@maxxton/microdocs-core-ts/dist/domain";
 import {Observable} from "rxjs/Observable";
-import {SchemaHelper} from "../../../microdocs-core-ts/dist/helpers/schema/schema.helper";
+import {SchemaHelper} from "@maxxton/microdocs-core-ts/dist/helpers/schema/schema.helper";
 import {ProjectService} from "./project.service";
 import {SnackbarService} from "@maxxton/components/services/snackbar.service";
 
@@ -28,8 +28,8 @@ export class RestProjectService extends ProjectService {
 
   /**
    * Loads all projects
-   * @param env for which environment, default is the current one
-   * @returns projects
+   * @httpQuery env for which environment, default is the current one
+   * @httpResponse 200 {TreeNode}
    */
   @Get("/projects")
   @Map(resp => TreeNode.link(resp.json()))
@@ -39,10 +39,11 @@ export class RestProjectService extends ProjectService {
 
   /**
    * Load project
-   * @param title name of the project
-   * @param version specific version, or if empty the latest
-   * @param env for which environment, default is the current one
-   * @returns project
+   * @httpPath title name of the project
+   * @httpQuery version specific version, or if empty the latest
+   * @httpQuery env for which environment, default is the current one
+   * @httpBody body {Project}
+   * @httpResponse 200 {Project}
    */
   @Get("/projects/{title}")
   @Map(resp => SchemaHelper.resolveObject(resp.json()))
@@ -52,7 +53,7 @@ export class RestProjectService extends ProjectService {
 
   /**
    * Load all the environments
-   * @returns map of environments
+   * @httpResponse 200 {{[key: string]: Environments}}
    */
   @Get("/envs")
   @Map(resp => resp.json())

@@ -1,6 +1,6 @@
 {
-  "name": "microdocs-server",
-  "version": "1.3.0",
+  "name": "@maxxton/microdocs-server",
+  "version": "1.4.0",
   "description": "MicroDocs server, see https://microdocs.io, (depends on microdocs-ui)",
   "repository": {
     "type": "git",
@@ -8,10 +8,10 @@
   },
   "main": "index.js",
   "scripts": {
-    "linkDevelopment": "npm link microdocs-core-ts",
-    "unlinkDevelopment": "npm unlink microdocs-core-ts",
-    "link": "npm link microdocs-core-ts",
-    "unlink": "npm unlink microdocs-core-ts",
+    "linkDevelopment": "npm link @maxxton/microdocs-core-ts",
+    "unlinkDevelopment": "npm unlink @maxxton/microdocs-core-ts",
+    "link": "npm link @maxxton/microdocs-core-ts",
+    "unlink": "npm unlink @maxxton/microdocs-core-ts",
     "start": "node index.js",
     "debug": "nodemon --debug-brk index.js",
     "test": "mocha",
@@ -21,6 +21,7 @@
   "author": "Steven Hermans (s.hermans@maxxton.com",
   "license": "MIT",
   "dependencies": {
+    "@maxxton/microdocs-core-ts": "1.4.0",
     "async": "^2.0.1",
     "body-parser": "^1.15.2",
     "chai": "^3.5.0",

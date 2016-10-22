@@ -6,7 +6,7 @@ import {ROUTER_DIRECTIVES} from "@angular/router";
 import {COMPONENTS} from "@maxxton/components/components";
 import {Notification} from "rxjs/Notification";
 import {Observable} from "rxjs/Observable";
-import {TreeNode} from 'microdocs-core-ts/dist/domain';
+import {TreeNode} from '@maxxton/microdocs-core-ts/dist/domain';
 import {DashboardRoute} from "../../routes/dashboard/dashboard";
 import {ImportPanel} from "../import-panel/import.panel";
 import {ExportPanel} from "../export-panel/export.panel";

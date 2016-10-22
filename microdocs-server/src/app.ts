@@ -21,8 +21,9 @@ import {RemoveProjectRoute} from "./routes/remove-project.route";
 import {EditProjectRoute} from "./routes/edit-project.route";
 
 /**
- * The server.
- *
+ * The MicroDocs server
+ * @projectName microdocs-server
+ * @projectGroup MicroDocs
  * @class Server
  */
 class Server {

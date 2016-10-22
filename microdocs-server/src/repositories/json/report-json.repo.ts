@@ -4,7 +4,7 @@ import * as path from 'path';
 
 import {Config} from "../../config";
 import {ReportRepository} from "../report.repo";
-import {Project, ProjectInfo} from "microdocs-core-ts/dist/domain";
+import {Project, ProjectInfo} from "@maxxton/microdocs-core-ts/dist/domain";
 import * as mkdir from 'mkdir-p';
 import * as fsHelper from '../../helpers/file.helper';
 

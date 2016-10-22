@@ -12,6 +12,7 @@ var runSequence = require('run-sequence');
 var plumber = require('gulp-plumber');
 var tscConfig = require('./src/tsconfig.json');
 var fs = require('fs');
+var mocha = require('gulp-mocha');
 
 var settings = {
   distFolder: 'dist'
@@ -50,7 +51,9 @@ gulp.task('clean', [], function () {
 });
 
 gulp.task('test', [], function () {
-
+  return gulp.src(['dist/test/*.js'], { read: false })
+      .pipe(mocha({ reporter: 'list' }))
+      .on('error', gutil.log);
 });
 
 /**

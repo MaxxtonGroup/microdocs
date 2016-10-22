@@ -3,14 +3,28 @@
 import * as express from "express";
 
 import {BaseRoute} from "./route";
-import {Problem, ProjectInfo, Project} from "microdocs-core-ts/dist/domain";
+import {Problem, ProjectInfo, Project} from "@maxxton/microdocs-core-ts/dist/domain";
 import {AggregationService} from "../services/aggregation.service";
 import {ResponseHelper} from "./responses/response.helper";
 
+/**
+ * @controller
+ * @baseUrl /api/v1
+ */
 export class CheckRoute extends BaseRoute {
 
   mapping = {methods: ['post'], path: '/check', handler: this.projects};
 
+  /**
+   * Check project definitions for problems
+   * @httpPost /check
+   * @httpQuery ?env {string} environment to check the project definition against
+   * @httpQuery ?project {string} name of the project if not already defined in the project definitions
+   * @httpQuery ?title {string} alias for project
+   * @httpBody {Project} project definitions which will be checked
+   * @httpResponse 200 {ProblemResponse}
+   * @httpResponse 404 {} Body is missing or project title is missing
+   */
   public projects(req: express.Request, res: express.Response, next: express.NextFunction, scope:BaseRoute) {
     var handler = ResponseHelper.getHandler(req);
     try {

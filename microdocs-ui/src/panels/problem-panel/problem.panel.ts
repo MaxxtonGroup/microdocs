@@ -1,7 +1,7 @@
 
 import {Component, Input} from "@angular/core";
 
-import {Problem} from "microdocs-core-ts/dist/domain";
+import {Problem} from "@maxxton/microdocs-core-ts/dist/domain";
 import {FILTERS} from "@maxxton/components/filters";
 
 

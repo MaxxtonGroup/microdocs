@@ -1,5 +1,5 @@
-import {Path, Project} from "microdocs-core-ts/dist/domain";
-import {ProblemReporter}  from 'microdocs-core-ts/dist/helpers';
+import {Path, Project} from "@maxxton/microdocs-core-ts/dist/domain";
+import {ProblemReporter}  from '@maxxton/microdocs-core-ts/dist/helpers';
 
 export interface PathCheck {
 

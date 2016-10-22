@@ -9,8 +9,8 @@ export interface Component{
     type?:string;
     description?:string;
     authors?:string[];
-    annotations?:{[name:string]:Annotation[]};
-    methods?:{[name:string]:Method[]};
+    annotations?:{[name:string]:Annotation};
+    methods?:{[name:string]:Method};
     dependencies?:Component[];
     problems?:Array<Problem>;
 

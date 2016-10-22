@@ -4,14 +4,30 @@ import * as express from "express";
 
 import {BaseRoute} from "./route";
 import {ResponseHelper} from "./responses/response.helper";
-import {RootNode, ProjectNode, DependencyNode} from 'microdocs-core-ts/dist/domain';
+import {RootNode, ProjectNode, DependencyNode} from '@maxxton/microdocs-core-ts/dist/domain';
 import {ProjectRepository} from "../repositories/project.repo";
 
+/**
+ * @controller
+ * @baseUrl /api/v1
+ */
 export class ProjectsRoute extends BaseRoute {
   
   mapping = {methods: ['get'], path: '/projects', handler: this.projects};
+<<<<<<< HEAD
   
   public projects(req:express.Request, res:express.Response, next:express.NextFunction, scope:BaseRoute) {
+=======
+
+  /**
+   * @httpGet /projects
+   * @httpQuery ?env {string}
+   * @httpQuery ?groups {string[]} filter to include or exclude groups with a '!' in front
+   * @httpQuery ?projects {string[]} filter to include or exclude groups with a '!' in front
+   * @httpResponse 200 {TreeNode}
+   */
+  public projects(req: express.Request, res: express.Response, next: express.NextFunction, scope:BaseRoute) {
+>>>>>>> development
     var handler = ResponseHelper.getHandler(req);
     try {
       var env = scope.getEnv(req, scope);

@@ -6,8 +6,10 @@ export class DependencyBuilder implements Builder<Dependency> {
 
   private _dependency: Dependency;
   private _title: string;
+  public baseUrl:string = '';
+  public requestMethods:string[] = [];
 
-  constructor(type?: string) {
+  constructor(type:string = undefined) {
     this._dependency = {type: type};
   }
 
@@ -28,6 +30,17 @@ export class DependencyBuilder implements Builder<Dependency> {
   }
 
   path(pathBuilder: PathBuilder): void {
+    var path = this.basePath + pathBuilder.path;
+    var requestMethods = pathBuilder.methods.concat(this.requestMethods).map(method => method.toLowerCase());
+
+    if(!path || path == ''){
+      throw new Error("No path found for endpoint");
+    }
+    if(!requestMethods || requestMethods.length == 0){
+      throw new Error("No request methods found for endpoint");
+    }
+
+
     if (!this._dependency.paths) {
       this._dependency.paths = {};
     }

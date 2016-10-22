@@ -2,7 +2,7 @@ import {Component, ViewContainerRef, Input, SimpleChanges} from "@angular/core";
 import {Router} from "@angular/router";
 import * as d3 from 'd3';
 
-import {TreeNode} from "microdocs-core-ts/dist/domain";
+import {TreeNode} from "@maxxton/microdocs-core-ts/dist/domain";
 import {Subject} from "rxjs/Subject";
 import {Subscription} from "rxjs/Subscription";
 
