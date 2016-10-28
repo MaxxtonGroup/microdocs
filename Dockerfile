@@ -20,12 +20,12 @@ RUN npm install
 # Build microdocs-ui
 WORKDIR /microdocs/microdocs-ui
 ADD ./microdocs-ui /microdocs/microdocs-ui
-RUN npm run link && npm run package-distribution
+RUN npm run package-distribution
 
 # Build microdocs-server
 WORKDIR /microdocs/microdocs-server
 ADD ./microdocs-server /microdocs/microdocs-server
-RUN npm run link && npm run package-distribution
+RUN npm run package-distribution
 
 EXPOSE 3000
 
