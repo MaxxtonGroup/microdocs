@@ -2,7 +2,7 @@
 import { Problem } from "./problem.model";
 export interface ProblemResponse{
 
-  problems:Problem[];
+  problems?:Problem[];
   status?:string;
   message?:string;
 

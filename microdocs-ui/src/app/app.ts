@@ -4,7 +4,7 @@ import {ROUTER_DIRECTIVES, Router} from "@angular/router";
 
 import {COMPONENTS} from "@maxxton/components/components";
 import {ImageHelperService} from "@maxxton/components/helpers";
-import {TreeNode} from "@maxxton/microdocs-core-ts/dist/domain";
+import {TreeNode} from "@maxxton/microdocs-core/domain";
 
 import {DashboardRoute} from "./../routes/dashboard/dashboard";
 import {ProjectService} from "./../services/project.service";
