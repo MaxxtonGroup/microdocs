@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Output, Input} from "@angular/core";
 import {COMPONENTS} from "@maxxton/components/components";
 import {Observable} from "rxjs/Observable";
-import {TreeNode} from "@maxxton/microdocs-core-ts/dist/domain";
+import {TreeNode} from "@maxxton/microdocs-core/domain";
 import {ProjectService} from "../../services/project.service";
 
 /**

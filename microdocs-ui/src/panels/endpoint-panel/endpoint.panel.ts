@@ -3,7 +3,7 @@ import {ROUTER_DIRECTIVES, ActivatedRoute, Router} from "@angular/router";
 
 import {COMPONENTS} from "@maxxton/components/components";
 import {FILTERS} from "@maxxton/components/filters";
-import {Path, Schema, Project, Method} from '@maxxton/microdocs-core-ts/dist/domain';
+import {Path, Schema, Project, Method} from '@maxxton/microdocs-core/domain';
 
 import {BodyRenderPanel} from '../body-render/body-render.panel';
 import {ProblemPanel} from "../problem-panel/problem.panel";

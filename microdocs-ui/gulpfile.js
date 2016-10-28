@@ -62,3 +62,13 @@ gulp.task('package-distribution-production', function (cb) {
 gulp.task('lint', function (cb) {
   mxtBuilder.lint(cb);
 });
+
+gulp.task('buildMicroDocs', function(){
+  mxtBuilder.buildMicroDocs();
+});
+
+gulp.task('checkMicroDocs', function(){
+  mxtBuilder.checkMicroDocs({
+    url: 'https://microdocs.maxxton.com'
+  });
+});
