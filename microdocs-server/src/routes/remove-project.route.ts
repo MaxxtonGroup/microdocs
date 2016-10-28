@@ -7,7 +7,7 @@ import {ProjectJsonRepository} from "../repositories/json/project-json.repo";
 import {ProjectRepository} from "../repositories/project.repo";
 import {ResponseHelper} from "./responses/response.helper";
 import {ReportJsonRepository} from "../repositories/json/report-json.repo";
-import {ProjectInfo} from '@maxxton/microdocs-core-ts/dist/domain';
+import {ProjectInfo} from '@maxxton/microdocs-core/domain';
 import {ReportRepository} from "../repositories/report.repo";
 import {AggregationService} from "../services/aggregation.service";
 

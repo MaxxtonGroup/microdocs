@@ -21,7 +21,7 @@
   "author": "Steven Hermans (s.hermans@maxxton.com",
   "license": "MIT",
   "dependencies": {
-    "@maxxton/microdocs-core-ts": "1.4.0",
+    "@maxxton/microdocs-core": "1.4.0",
     "async": "^2.0.1",
     "body-parser": "^1.15.2",
     "chai": "^3.5.0",

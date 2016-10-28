@@ -1,8 +1,8 @@
 
 import {PathCheck} from "./path-check";
-import {Path, Project, Schema} from '@maxxton/microdocs-core-ts/dist/domain';
-import {WARNING, ERROR} from "@maxxton/microdocs-core-ts/dist/domain/problem/problem-level.model";
-import {ProblemReporter}  from '@maxxton/microdocs-core-ts/dist/helpers';
+import {Path, Project, Schema} from '@maxxton/microdocs-core/domain';
+import {WARNING, ERROR} from "@maxxton/microdocs-core/domain/problem/problem-level.model";
+import {ProblemReporter}  from '@maxxton/microdocs-core/helpers';
 
 export class ResponseCheck implements PathCheck{
 

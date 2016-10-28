@@ -1,9 +1,9 @@
 import {PathCheck} from "./path-check";
-import {Project, Path, Schema} from "@maxxton/microdocs-core-ts/dist/domain";
-import {SchemaHelper, ProblemReporter} from "@maxxton/microdocs-core-ts/dist/helpers";
-import {WARNING, ERROR} from "@maxxton/microdocs-core-ts/dist/domain/problem/problem-level.model";
-import {BODY} from '@maxxton/microdocs-core-ts/dist/domain/path/parameter-placing.model';
-import {OBJECT, ARRAY} from '@maxxton/microdocs-core-ts/dist/domain/schema/schema-type.model';
+import {Project, Path, Schema} from "@maxxton/microdocs-core/domain";
+import {SchemaHelper, ProblemReporter} from "@maxxton/microdocs-core/helpers";
+import {WARNING, ERROR} from "@maxxton/microdocs-core/domain/problem/problem-level.model";
+import {BODY} from '@maxxton/microdocs-core/domain/path/parameter-placing.model';
+import {OBJECT, ARRAY} from '@maxxton/microdocs-core/domain/schema/schema-type.model';
 
 export class BodyParamsCheck implements PathCheck {
 

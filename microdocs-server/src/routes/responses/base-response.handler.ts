@@ -1,8 +1,8 @@
 import * as express from "express";
-import {TreeNode, Problem, Project, ProblemResponse} from '@maxxton/microdocs-core-ts/dist/domain';
+import {TreeNode, Problem, Project, ProblemResponse} from '@maxxton/microdocs-core/domain';
 import * as dump from 'js-yaml';
 import * as xml from 'jsontoxml';
-import {ERROR, WARNING} from "@maxxton/microdocs-core-ts/dist/domain/problem/problem-level.model";
+import {ERROR, WARNING} from "@maxxton/microdocs-core/domain/problem/problem-level.model";
 
 export class BaseResponseHandler {
 

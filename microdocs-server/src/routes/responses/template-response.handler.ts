@@ -1,9 +1,9 @@
 /// <reference path="../../_all.d.ts" />
 
 import * as express from "express";
-import {TreeNode, Problem, Project, Schema} from '@maxxton/microdocs-core-ts/dist/domain';
-import {SchemaHelper} from '@maxxton/microdocs-core-ts/dist/helpers';
-import {ERROR, WARNING} from "@maxxton/microdocs-core-ts/dist/domain/problem/problem-level.model";
+import {TreeNode, Problem, Project, Schema} from '@maxxton/microdocs-core/domain';
+import {SchemaHelper} from '@maxxton/microdocs-core/helpers';
+import {ERROR, WARNING} from "@maxxton/microdocs-core/domain/problem/problem-level.model";
 import {Config} from "../../config";
 import * as fs from 'fs';
 import {MicroDocsResponseHandler} from "./microdocs-response.handler";
@@ -23,7 +23,7 @@ export class TemplateResponseHandler extends MicroDocsResponseHandler {
       var global = this.getGlobalInfo();
       var projects = [];
       for (var title in treeNode.dependencies) {
-        var project = ProjectJsonRepository.bootstrap().getAggregatedProject(env, title, treeNode.dependencies[title].version);
+        var project = new ProjectJsonRepository().getAggregatedProject(env, title, treeNode.dependencies[title].version);
 
         if(req.query['method']){
           var filterMethods = req.query['method'].split(',');

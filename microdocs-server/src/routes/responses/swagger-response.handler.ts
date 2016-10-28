@@ -1,6 +1,6 @@
 import {BaseResponseHandler} from "./base-response.handler";
-import {Project, Schema, Path, ProjectInfo, TreeNode} from "@maxxton/microdocs-core-ts/dist/domain";
-import {DATE, STRING} from "@maxxton/microdocs-core-ts/dist/domain/schema/schema-type.model";
+import {Project, Schema, Path, ProjectInfo, TreeNode} from "@maxxton/microdocs-core/domain";
+import {DATE, STRING} from "@maxxton/microdocs-core/domain/schema/schema-type.model";
 import * as express from "express";
 import {MicroDocsResponseHandler} from "./microdocs-response.handler";
 
