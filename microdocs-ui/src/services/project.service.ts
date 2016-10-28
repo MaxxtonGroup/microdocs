@@ -5,7 +5,7 @@ import {Notification} from "rxjs/Notification";
 import {Http, Response} from "@angular/http";
 import {RestClient} from "@maxxton/angular2-rest";
 import {SnackbarService} from "@maxxton/components/services/snackbar.service";
-import {TreeNode, Project, Environments, ProjectChangeRule} from "@maxxton/microdocs-core-ts/dist/domain";
+import {TreeNode, Project, Environments, ProjectChangeRule} from "@maxxton/microdocs-core/domain";
 
 const TIMEOUT:number = 1000;
 
