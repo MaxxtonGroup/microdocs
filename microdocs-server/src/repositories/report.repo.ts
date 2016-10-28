@@ -1,4 +1,4 @@
-import {Project, ProjectInfo} from "@maxxton/microdocs-core-ts/dist/domain";
+import {Project, ProjectInfo} from "@maxxton/microdocs-core/domain";
 
 /**
  * @author Steven Hermans

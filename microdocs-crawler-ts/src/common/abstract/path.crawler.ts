@@ -1,7 +1,7 @@
 import {AbstractCrawler} from "./abstract.crawler";
 import {ProjectReflection} from "typedoc";
 import {ContainerReflection, DeclarationReflection} from "typedoc/lib/models";
-import {PathBuilder} from '@maxxton/microdocs-core-ts/dist/builder';
+import {PathBuilder} from '@maxxton/microdocs-core/builder';
 import {ModelCollector} from "../model.collector";
 
 export abstract class PathCrawler extends AbstractCrawler{

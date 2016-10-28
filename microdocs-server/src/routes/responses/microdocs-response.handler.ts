@@ -1,5 +1,5 @@
 import {BaseResponseHandler} from "./base-response.handler";
-import {Project, Schema, Path, ProjectInfo, TreeNode} from "@maxxton/microdocs-core-ts/dist/domain";
+import {Project, Schema, Path, ProjectInfo, TreeNode} from "@maxxton/microdocs-core/domain";
 import * as express from "express";
 import {Config} from "../../config";
 import {ProjectJsonRepository} from "../../repositories/json/project-json.repo";
@@ -30,7 +30,7 @@ export class MicroDocsResponseHandler extends BaseResponseHandler {
     project.definitions = {};
     project.paths = {};
     for (var title in node.dependencies) {
-      var subProject = ProjectJsonRepository.bootstrap().getAggregatedProject(env, title, node.dependencies[title].version);
+      var subProject = new ProjectJsonRepository().getAggregatedProject(env, title, node.dependencies[title].version);
       this.filterMethods(subProject, filterMethods);
 
       if (subProject.definitions != undefined) {

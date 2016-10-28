@@ -1,6 +1,6 @@
-import {Project, Schema, Path, ProjectInfo, TreeNode} from "@maxxton/microdocs-core-ts/dist/domain";
-import {QUERY, PATH, BODY} from "@maxxton/microdocs-core-ts/dist/domain/path/parameter-placing.model";
-import {SchemaHelper} from "@maxxton/microdocs-core-ts/dist/helpers/schema/schema.helper";
+import {Project, Schema, Path, ProjectInfo, TreeNode} from "@maxxton/microdocs-core/domain";
+import {QUERY, PATH, BODY} from "@maxxton/microdocs-core/domain/path/parameter-placing.model";
+import {SchemaHelper} from "@maxxton/microdocs-core/helpers/schema/schema.helper";
 import * as uuid from 'uuid';
 
 
@@ -14,7 +14,7 @@ export class PostmanResponseHandler extends MicroDocsResponseHandler {
   handleProjects(req: express.Request, res: express.Response, projects: TreeNode, env:string) {
     if(Object.keys(projects.dependencies).length == 1){
       var name = Object.keys(projects.dependencies)[0];
-      var project = ProjectJsonRepository.bootstrap().getAggregatedProject(env, name, projects.dependencies[name].version);
+      var project = new ProjectJsonRepository().getAggregatedProject(env, name, projects.dependencies[name].version);
 
       if(req.query['method']){
         var filterMethods = req.query['method'].split(',');
@@ -38,7 +38,7 @@ export class PostmanResponseHandler extends MicroDocsResponseHandler {
     var collection = this.getPostmanBase();
 
     for(var name in projects.dependencies){
-      var project = ProjectJsonRepository.bootstrap().getAggregatedProject(env, name, projects.dependencies[name].version);
+      var project = new ProjectJsonRepository().getAggregatedProject(env, name, projects.dependencies[name].version);
       var subCollection = this.getPostmanItems(project);
       collection['item'].push({
         name: name,

@@ -2,7 +2,7 @@
 import {PathCrawler} from "../common/abstract/path.crawler";
 import {ProjectReflection} from "typedoc";
 import {ContainerReflection, DeclarationReflection, IDecorator} from "typedoc/lib/models";
-import {PathBuilder} from '@maxxton/microdocs-core-ts/dist/builder';
+import {PathBuilder} from '@maxxton/microdocs-core/builder';
 import * as helper from '../common/helpers/crawler.helper';
 
 const HTTP_METHODS = ['get', 'post', 'push', 'delete', 'put', 'head', 'options'];

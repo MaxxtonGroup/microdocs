@@ -9,12 +9,12 @@ import {
   Path,
   Problem,
   ProjectInfo
-} from "@maxxton/microdocs-core-ts/dist/domain";
-import {NOTICE, ERROR, WARNING} from "@maxxton/microdocs-core-ts/dist/domain/problem/problem-level.model";
-import {REST} from "@maxxton/microdocs-core-ts/dist/domain/dependency/dependency-type.model";
+} from "@maxxton/microdocs-core/domain";
+import {NOTICE, ERROR, WARNING} from "@maxxton/microdocs-core/domain/problem/problem-level.model";
+import {REST} from "@maxxton/microdocs-core/domain/dependency/dependency-type.model";
 
-import {ProblemReporter, SchemaHelper, MicroDocsPreProcessor} from "@maxxton/microdocs-core-ts/dist/helpers";
-import {getProblemsInProject, getProblemsInDependency} from "@maxxton/microdocs-core-ts/dist/helpers";
+import {ProblemReporter, SchemaHelper, MicroDocsPreProcessor} from "@maxxton/microdocs-core/helpers";
+import {getProblemsInProject, getProblemsInDependency} from "@maxxton/microdocs-core/helpers";
 
 import {PathCheck} from "../checks/path-check";
 import {QueryParamsCheck} from "../checks/query-params.check";

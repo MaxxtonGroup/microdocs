@@ -1,7 +1,7 @@
 
-import {Schema, SchemaTypes} from '@maxxton/microdocs-core-ts/dist/domain';
-import {PropertyBuilder, ModelBuilder} from '@maxxton/microdocs-core-ts/dist/builder';
-import {SchemaHelper} from '@maxxton/microdocs-core-ts/dist/helpers';
+import {Schema, SchemaTypes} from '@maxxton/microdocs-core/domain';
+import {PropertyBuilder, ModelBuilder} from '@maxxton/microdocs-core/builder';
+import {SchemaHelper} from '@maxxton/microdocs-core/helpers';
 import {ContainerReflection, Reflection, ReflectionKind, ReflectionFlag} from "typedoc/lib/models";
 import {AbstractCrawler} from "./abstract/abstract.crawler";
 import {ModelCrawler} from "./abstract/model.crawler";

@@ -4,7 +4,7 @@ import * as express from "express";
 
 import {BaseRoute} from "./route";
 import {ResponseHelper} from "./responses/response.helper";
-import {TreeNode} from '@maxxton/microdocs-core-ts/dist/domain';
+import {TreeNode} from '@maxxton/microdocs-core/domain';
 import {ProjectRepository} from "../repositories/project.repo";
 
 /**

@@ -1,8 +1,8 @@
 
 import {ProjectRepository} from '../repositories/project.repo';
 import {ProjectJsonRepository} from '../repositories/json/project-json.repo';
-import {SchemaHelper} from "@maxxton/microdocs-core-ts/dist/helpers/schema/schema.helper";
-import {TreeNode, Project, Schema, ProjectInfo} from "@maxxton/microdocs-core-ts/dist/domain";
+import {SchemaHelper} from "@maxxton/microdocs-core/helpers/schema/schema.helper";
+import {TreeNode, Project, Schema, ProjectInfo} from "@maxxton/microdocs-core/domain";
 import {Config} from "../config";
 
 export class ProjectService{

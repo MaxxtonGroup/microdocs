@@ -4,8 +4,8 @@ import * as express from "express";
 
 import {BaseRoute} from "./route";
 import {ResponseHelper} from "./responses/response.helper";
-import {SchemaHelper} from "@maxxton/microdocs-core-ts/dist/helpers";
-import {ProjectChangeRule, Project, ProjectInfo} from '@maxxton/microdocs-core-ts/dist/domain';
+import {SchemaHelper} from "@maxxton/microdocs-core/helpers";
+import {ProjectChangeRule, Project, ProjectInfo} from '@maxxton/microdocs-core/domain';
 import {ReportRepository} from "../repositories/report.repo";
 import {ProjectRepository} from "../repositories/project.repo";
 
