@@ -3,11 +3,8 @@
 import * as express from "express";
 
 import {BaseRoute} from "./route";
-import {AggregationService} from '../services/aggregation.service';
-import {Project, ProjectInfo, Problem} from "@maxxton/microdocs-core/domain";
-import {ERROR, WARNING} from "@maxxton/microdocs-core/domain/problem/problem-level.model";
-import {SchemaHelper} from "@maxxton/microdocs-core/helpers/schema/schema.helper";
-import {ReportJsonRepository} from "../repositories/json/report-json.repo";
+import {Project, ProjectInfo, Problem, ProblemLevels} from "@maxxton/microdocs-core/domain";
+import {SchemaHelper} from "@maxxton/microdocs-core/helpers";
 import {ResponseHelper} from "./responses/response.helper";
 
 /**
@@ -95,7 +92,7 @@ export class PublishRoute extends BaseRoute {
         var reportCopy = JSON.parse(JSON.stringify(report));
         var problems: Problem[] = aggregationService.checkProject(env, reportCopy);
 
-        if (!(failOnProblems && problems.filter(problem => problem.level == ERROR || problem.level == WARNING).length > 0)) {
+        if (!(failOnProblems && problems.filter(problem => problem.level == ProblemLevels.ERROR || problem.level == ProblemLevels.WARNING).length > 0)) {
           // save report
           scope.injection.ReportRepository().storeProject(env, report);
 

@@ -5,7 +5,7 @@ import {COMPONENTS} from "@maxxton/components/components";
 import {FILTERS} from "@maxxton/components/filters";
 import {Project, Path, Method, Schema, Dependency, TreeNode} from "@maxxton/microdocs-core/domain";
 import {REST, DATABASE, USES, INCLUDES} from "@maxxton/microdocs-core/domain/dependency/dependency-type.model";
-import {SchemaHelper} from "@maxxton/microdocs-core/helpers/schema/schema.helper";
+import {SchemaHelper} from "@maxxton/microdocs-core/helpers";
 
 import {ProjectService} from "../../services/project.service";
 import {EndpointPanel} from "../../panels/endpoint-panel/endpoint.panel";
