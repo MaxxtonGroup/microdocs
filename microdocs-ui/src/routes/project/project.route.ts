@@ -6,9 +6,8 @@ import {Subscription} from "rxjs/Subscription";
 
 import {COMPONENTS} from "@maxxton/components/components";
 import {FILTERS} from "@maxxton/components/filters";
-import {Project, Path, Method, Schema, Dependency, TreeNode} from "@maxxton/microdocs-core-ts/dist/domain";
-import {REST, DATABASE, USES, INCLUDES} from "@maxxton/microdocs-core-ts/dist/domain/dependency/dependency-type.model";
-import {SchemaHelper} from "@maxxton/microdocs-core-ts/dist/helpers/schema/schema.helper";
+import {Project, Path, Method, Schema, Dependency, ProjectTree, DependencyTypes} from "@maxxton/microdocs-core/domain";
+import {SchemaHelper} from "@maxxton/microdocs-core/helpers/schema/schema.helper";
 
 import {ProjectService} from "../../services/project.service";
 import {EndpointPanel} from "../../panels/endpoint-panel/endpoint.panel";
@@ -33,8 +32,8 @@ export class ProjectRoute {
   
   config = MicroDocsConfig;
   
-  private projects:TreeNode;
-  private nodes:Subject<TreeNode> = new ReplaySubject<TreeNode>(1);
+  private projects:ProjectTree;
+  private nodes:Subject<ProjectTree> = new ReplaySubject<ProjectTree>(1);
   
   private title:string;
   private version:string;
@@ -71,10 +70,10 @@ export class ProjectRoute {
     'purple': ['y', 'z']
   };
   
-  private rest = REST;
-  private database = DATABASE;
-  private uses = USES;
-  private includes = INCLUDES;
+  private rest = DependencyTypes.REST;
+  private database = DependencyTypes.DATABASE;
+  private uses = DependencyTypes.USES;
+  private includes = DependencyTypes.INCLUDES;
   
   constructor(private projectService:ProjectService,
               private route:ActivatedRoute,
@@ -196,20 +195,15 @@ export class ProjectRoute {
   
   updateNodes() {
     if (this.projects) {
-      if (this.projects.dependencies != undefined) {
-        for (var key in this.projects.dependencies) {
-          if (key == this.title) {
-            this.versions = this.projects.dependencies[key].versions;
-            if(this.version && this.versions.indexOf(this.version) == -1){
-              this.versions.push(this.version);
-            }
-            this.versions = this.versions.sort();
-            break;
+      this.projects.projects.forEach(project => {
+        if (project.title === this.title) {
+          this.versions = project.versions;
+          if(this.version && this.versions.indexOf(this.version) == -1){
+            this.versions.push(this.version);
           }
+          this.versions = this.versions.sort();
         }
-        // update nodes
-        this.nodes.next(this.projects);
-      }
+      });
     }
   }
   

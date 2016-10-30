@@ -3,8 +3,7 @@
 import * as express from "express";
 
 import {BaseRoute} from "./route";
-import {ResponseHelper} from "./responses/response.helper";
-import {RootNode, ProjectNode, DependencyNode} from '@maxxton/microdocs-core-ts/dist/domain';
+import {ProjectTree, ProjectNode, DependencyNode} from '@maxxton/microdocs-core/domain';
 import {ProjectRepository} from "../repositories/project.repo";
 
 /**
@@ -14,11 +13,7 @@ import {ProjectRepository} from "../repositories/project.repo";
 export class ProjectsRoute extends BaseRoute {
   
   mapping = {methods: ['get'], path: '/projects', handler: this.projects};
-<<<<<<< HEAD
   
-  public projects(req:express.Request, res:express.Response, next:express.NextFunction, scope:BaseRoute) {
-=======
-
   /**
    * @httpGet /projects
    * @httpQuery ?env {string}
@@ -27,8 +22,7 @@ export class ProjectsRoute extends BaseRoute {
    * @httpResponse 200 {TreeNode}
    */
   public projects(req: express.Request, res: express.Response, next: express.NextFunction, scope:BaseRoute) {
->>>>>>> development
-    var handler = ResponseHelper.getHandler(req);
+    var handler = scope.getHandler(req);
     try {
       var env = scope.getEnv(req, scope);
       if (env == null) {
@@ -38,7 +32,7 @@ export class ProjectsRoute extends BaseRoute {
       
       var rootNode = scope.injection.ProjectRepository().getAggregatedProjects(env);
       if (rootNode == null) {
-        rootNode = new RootNode();
+        rootNode = new ProjectTree();
       }
       
       var groups:string[] = [];
@@ -51,14 +45,14 @@ export class ProjectsRoute extends BaseRoute {
       }
       rootNode = filterRoot(rootNode, groups, titles);
       
-      ResponseHelper.getHandler(req).handleProjects(req, res, rootNode, env);
+      handler.handleProjects(req, res, rootNode, env);
     } catch (e) {
-      ResponseHelper.getHandler(req).handleInternalServerError(req, res, e);
+      scope.getDefaultHandler().handleInternalServerError(req, res, e);
     }
   }
 }
 
-function filterRoot(root:RootNode, groups:string[], projects:string[]):RootNode{
+function filterRoot(root:ProjectTree, groups:string[], projects:string[]):ProjectTree{
   var removeProjects:ProjectNode[] = [];
   root.projects.forEach(project => {
     if(filterProject(project, groups, projects)){

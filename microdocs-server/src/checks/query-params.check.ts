@@ -1,7 +1,6 @@
 import {PathCheck} from "./path-check";
-import {Path, Project} from "@maxxton/microdocs-core-ts/dist/domain";
-import {WARNING, ERROR} from "@maxxton/microdocs-core-ts/dist/domain/problem/problem-level.model";
-import {ProblemReporter}  from '@maxxton/microdocs-core-ts/dist/helpers';
+import {Path, Project, ProblemLevels} from "@maxxton/microdocs-core/domain";
+import {ProblemReporter}  from '@maxxton/microdocs-core/helpers';
 
 export class QueryParamsCheck implements PathCheck {
 
@@ -25,13 +24,13 @@ export class QueryParamsCheck implements PathCheck {
           if(producerParam.name == clientParam.name && producerParam.in == clientParam.in){
             exists = true;
             if(producerParam.type != clientParam.type){
-              problemReport.report(WARNING, "Type mismatches query parameter '" + producerParam.name + "', expected: '" + producerParam.type + "', found: '" + clientParam.type + "'");
+              problemReport.report(ProblemLevels.WARNING, "Type mismatches query parameter '" + producerParam.name + "', expected: '" + producerParam.type + "', found: '" + clientParam.type + "'");
             }
             return true;
           }
         });
         if(!exists && producerParam.required){
-          problemReport.report(ERROR, "Missing query parameter '" + producerParam.name + "'");
+          problemReport.report(ProblemLevels.ERROR, "Missing query parameter '" + producerParam.name + "'");
         }
       }
     });

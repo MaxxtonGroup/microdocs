@@ -1,17 +1,16 @@
 import {BaseResponseHandler} from "./base-response.handler";
-import {Project, Schema, Path, ProjectInfo, TreeNode} from "@maxxton/microdocs-core-ts/dist/domain";
-import {DATE, STRING} from "@maxxton/microdocs-core-ts/dist/domain/schema/schema-type.model";
+import {Project, Schema, Path, ProjectInfo, ProjectTree, SchemaTypes} from "@maxxton/microdocs-core/domain";
 import * as express from "express";
 import {MicroDocsResponseHandler} from "./microdocs-response.handler";
 
 export class SwaggerResponseHandler extends MicroDocsResponseHandler {
 
-  handleProjects(req: express.Request, res: express.Response, projects: TreeNode, env:string) {
+  handleProjects(req: express.Request, res: express.Response, projectTree: ProjectTree, env:string) {
     var filterMethods = [];
     if(req.query['method']){
       filterMethods = req.query['method'].split(',');
     }
-    var project = this.mergeProjects(projects, filterMethods, env);
+    var project = this.mergeProjects(projectTree, filterMethods, env);
 
     this.response(req, res, 200, this.swagger(project));
   }
@@ -93,8 +92,8 @@ export class SwaggerResponseHandler extends MicroDocsResponseHandler {
     if(schema.items != undefined){
       this.convertDefinition(schema.items);
     }
-    if(schema.type == DATE){
-      schema.type = STRING;
+    if(schema.type == SchemaTypes.DATE){
+      schema.type = SchemaTypes.STRING;
     }
   }
 

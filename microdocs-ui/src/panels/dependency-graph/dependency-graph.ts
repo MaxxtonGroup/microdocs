@@ -2,9 +2,10 @@ import {Component, ViewContainerRef, Input, SimpleChanges} from "@angular/core";
 import {Router} from "@angular/router";
 import * as d3 from 'd3';
 
-import {TreeNode} from "@maxxton/microdocs-core-ts/dist/domain";
+import {ProjectTree} from "@maxxton/microdocs-core/domain";
 import {Subject} from "rxjs/Subject";
 import {Subscription} from "rxjs/Subscription";
+import { ProjectService } from "../../services/project.service";
 
 // import {Observable} from "rxjs";
 
@@ -17,11 +18,11 @@ export class DependencyGraph {
   error:string;
   force:any;
   filteredData:{dependencies:{}};
-  data:TreeNode;
+  data:ProjectTree;
   subscription:Subscription;
 
   @Input()
-  nodes:Subject<TreeNode>;
+  nodes:Subject<ProjectTree>;
 
   @Input()
   projectName:string;
@@ -29,7 +30,7 @@ export class DependencyGraph {
   @Input()
   env:string;
 
-  constructor(private containerRef:ViewContainerRef, private router:Router) {
+  constructor(private containerRef:ViewContainerRef, private router:Router, private projectService:ProjectService) {
   }
   
   ngOnChanges(changes: SimpleChanges){
@@ -40,9 +41,9 @@ export class DependencyGraph {
     this.subscription = this.nodes.subscribe(data => {
       this.data = data;
       var dependencies = {};
-      if(data && data.dependencies) {
-        Object.keys(data.dependencies).forEach(key => dependencies[key] = data.dependencies[key]);
-  
+      if(data && data.projects) {
+        data.projects.forEach(projectNode => dependencies[projectNode.title] = projectNode);
+
         if (this.projectName) {
           var removeNames:string[] = [];
           for (var key in dependencies) {
@@ -52,7 +53,7 @@ export class DependencyGraph {
               } else {
                 var removeDeps:string[] = [];
                 for (var depName in dependencies[key].dependencies) {
-                  if (depName != this.projectName) {
+                  if (depName !== this.projectName) {
                     removeDeps.push(depName);
                   }
                 }
@@ -89,12 +90,11 @@ export class DependencyGraph {
   }
 
   navigate(name:string){
-    var project = this.data.dependencies[name];
-    if(project == undefined){
+    var results = this.data.projects.filter(projectNode => projectNode.title === name);
+    if(results.length == 0){
       console.error('could not find project ' + name);
     }else{
-      var envString = (this.env ? '?env=' + this.env : '');
-      this.router.navigateByUrl('/projects/' + project.group + "/" + name + envString);
+      this.router.navigate(['/projects/' + name], {queryParams: {version: results[0].version, env: this.projectService.getSelectedEnv()}});
     }
   }
 
@@ -106,14 +106,12 @@ export class DependencyGraph {
         nodes[key] = ({name: key});
         var node = data.dependencies[key];
         if (node.dependencies) {
-          for (var key2 in node.dependencies) {
-            var dependency = node.dependencies[key2];
-            if(typeof(dependency['$ref']) == 'string' && dependency['$ref'].indexOf('#/dependencies/')){
-              var name = dependency['$ref'].substring('#/dependencies/'.length);
-              dependency = data.dependencies[name];
+          node.dependencies.forEach(dependency => {
+            if(typeof(dependency.item['$ref']) === 'string' && dependency.item['$ref'].indexOf('#/projects/') == 0){
+
             }
-            links.push({source: key, target: key2, type: 'rest'});
-          }
+            links.push({source: key, target: dependency.item.title, type: dependency.type});
+          });
         }
       }
     }

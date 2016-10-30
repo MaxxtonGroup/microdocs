@@ -2,18 +2,24 @@
 import {Node} from "./node.model";
 import {ProjectNode} from "./project-node.model";
 
-export class RootNode extends Node{
+export class ProjectTree extends Node{
   
   public projects:ProjectNode[] = [];
+
+  public addProject(projectNode:ProjectNode):void{
+    var removeList = this.projects.filter(node => node.title === projectNode.title);
+    removeList.forEach(node => delete this.projects[this.projects.indexOf(node)]);
+    this.projects.push(projectNode);
+  }
   
-  public getRoot():RootNode {
+  public getRoot():ProjectTree {
     return this;
   }
   
   public findNodePath(title:string, version:string):string {
     for(var i = 0; i < this.projects.length; i++){
       var project = this.projects[i];
-      if (project.title === title && project.version == version) {
+      if (project.title === title && project.version === version) {
         return "/" + title;
       }
       var path = project.findNodePath(title, version);
@@ -32,8 +38,8 @@ export class RootNode extends Node{
     return dependencies;
   }
   
-  public static link(unlinkedRoot:{}):RootNode{
-    var root = new RootNode();
+  public static link(unlinkedRoot:{}):ProjectTree{
+    var root = new ProjectTree();
     if(unlinkedRoot) {
       for (let key in unlinkedRoot) {
         let unlinkedProject = unlinkedRoot[key];

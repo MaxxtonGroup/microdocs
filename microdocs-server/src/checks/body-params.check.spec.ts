@@ -1,10 +1,9 @@
 /// <reference path="../../typings/index.d.ts" />
 import {expect} from 'chai';
-import {ProblemReporter, SchemaHelper} from "@maxxton/microdocs-core-ts/dist/helpers";
-import {Path, Parameter, Schema} from "@maxxton/microdocs-core-ts/dist/domain";
-import {OBJECT, INTEGER, BOOLEAN, ARRAY} from "@maxxton/microdocs-core-ts/dist/domain/schema/schema-type.model";
+import {ProblemReporter} from "@maxxton/microdocs-core/helpers";
+import {Path, Parameter, Schema, SchemaTypes} from "@maxxton/microdocs-core/domain";
 
-import {BodyParamsCheck} from "../checks/body-params.check";
+import {BodyParamsCheck} from "./body-params.check";
 
 describe('#body-params check:', () => {
 
@@ -28,7 +27,7 @@ describe('#body-params check:', () => {
           'in': 'body',
           name: 'body',
           schema: {
-            type: BOOLEAN
+            type: SchemaTypes.BOOLEAN
           }
         }
       ]
@@ -51,7 +50,7 @@ describe('#body-params check:', () => {
           'in': 'body',
           name: 'body',
           schema: {
-            type: INTEGER
+            type: SchemaTypes.INTEGER
           }
         }
       ]
@@ -64,7 +63,7 @@ describe('#body-params check:', () => {
           'in': 'body',
           name: 'body',
           schema: {
-            type: BOOLEAN
+            type: SchemaTypes.BOOLEAN
           }
         }
       ]
@@ -87,24 +86,24 @@ describe('#body-params check:', () => {
           'in': 'body',
           name: 'body',
           schema: <Schema>{
-            type: OBJECT,
+            type: SchemaTypes.OBJECT,
             properties: {
               "array": <Schema>{
-                type: ARRAY,
+                type: SchemaTypes.ARRAY,
                 items: <Schema>{
-                  type: INTEGER
+                  type: SchemaTypes.INTEGER
                 }
               },
               "object": <Schema>{
-                type: OBJECT,
+                type: SchemaTypes.OBJECT,
                 properties: {
                   'test': <Schema>{
-                    type: INTEGER
+                    type: SchemaTypes.INTEGER
                   }
                 }
               },
               "boolean": <Schema>{
-                type: BOOLEAN
+                type: SchemaTypes.BOOLEAN
               }
             }
           }
@@ -119,24 +118,24 @@ describe('#body-params check:', () => {
           'in': 'body',
           name: 'body',
           schema: <Schema>{
-            type: OBJECT,
+            type: SchemaTypes.OBJECT,
             properties: {
               "array": <Schema>{
-                type: ARRAY,
+                type: SchemaTypes.ARRAY,
                 items: <Schema>{
-                  type: INTEGER
+                  type: SchemaTypes.INTEGER
                 }
               },
               "object": <Schema>{
-                type: OBJECT,
+                type: SchemaTypes.OBJECT,
                 properties: {
                   'test': <Schema>{
-                    type: INTEGER
+                    type: SchemaTypes.INTEGER
                   }
                 }
               },
               "boolean": <Schema>{
-                type: BOOLEAN
+                type: SchemaTypes.BOOLEAN
               }
             }
           }
@@ -161,10 +160,10 @@ describe('#body-params check:', () => {
           'in': 'body',
           name: 'body',
           schema: <Schema>{
-            type: OBJECT,
+            type: SchemaTypes.OBJECT,
             properties: {
               "boolean": <Schema>{
-                type: INTEGER
+                type: SchemaTypes.INTEGER
               }
             }
           }
@@ -179,10 +178,10 @@ describe('#body-params check:', () => {
           'in': 'body',
           name: 'body',
           schema: <Schema>{
-            type: OBJECT,
+            type: SchemaTypes.OBJECT,
             properties: {
               "boolean": <Schema>{
-                type: BOOLEAN
+                type: SchemaTypes.BOOLEAN
               }
             }
           }

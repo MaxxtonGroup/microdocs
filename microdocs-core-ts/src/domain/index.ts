@@ -22,8 +22,7 @@ export {ParameterPlacings};
 import * as RequestMethods from './path/request-method.model';
 export {RequestMethods};
 
-export {ProblemReporter} from '../helpers/problem/problem-reporter.helper';
-export {Problem, ProblemClient} from "../domain/problem/problem.model";
+export {Problem, ProblemClient} from "./problem/problem.model";
 import * as ProblemLevels from './problem/problem-level.model';
 export {ProblemLevels};
 export {ProblemResponse} from './problem/problem-response.model';
@@ -34,7 +33,7 @@ export {SchemaTypes};
 
 export {Node} from './tree/node.model';
 export {ProjectNode} from './tree/project-node.model';
-export {RootNode} from './tree/root-node.model';
+export {ProjectTree} from './tree/project-tree.model';
 export {DependencyNode} from './tree/dependency-node.model';
 
 export {ProjectSettings, Environments} from './settings/project-settings.model';

@@ -1,7 +1,8 @@
 
 import {Node} from "./node.model";
-import {RootNode} from "./root-node.model";
+import {ProjectTree} from "./project-tree.model";
 import {DependencyNode} from "./dependency-node.model";
+import { SchemaHelper } from "../../helpers/schema/schema.helper";
 
 export class ProjectNode extends Node{
   
@@ -18,14 +19,20 @@ export class ProjectNode extends Node{
     super();
   }
 
-  public getRoot():RootNode {
+  public addDependency( dependencyNode:DependencyNode):void{
+    var removeList = this.dependencies.filter(node => node.item.title === dependencyNode.item.title);
+    removeList.forEach(node => delete this.dependencies[this.dependencies.indexOf(node)]);
+    this.dependencies.push(dependencyNode);
+  }
+
+  public getRoot():ProjectTree {
     return this.parent.getRoot();
   }
 
   public findNodePath(title:string, version:string):string {
     for(var i = 0; i < this.dependencies.length; i++){
       var dependency = this.dependencies[i];
-      if (dependency.item.title === title && dependency.item.version == version) {
+      if (dependency.item.title === title && dependency.item.version === version) {
         return "/dependencies/" + title + "/item";
       }
       var path = dependency.item.findNodePath(title, version);
@@ -36,17 +43,29 @@ export class ProjectNode extends Node{
     return null;
   }
 
+  public resolve(){
+    if(this.reference){
+      var ref = '#/projects/' + this.reference.substr(2);
+      var result = SchemaHelper.resolveReference(ref, this.getRoot());
+      if(result == null){
+        throw new Error("Unknown dependency reference: " + this.reference);
+      }
+      return result;
+    }
+    return this;
+  }
+
   public unlink():{} {
     if (this.reference) {
       return {
-        '$ref': "#" + this.reference.substring("#/dependencies".length)
+        '$ref': this.reference
       };
     }
     
     var dependencies:{[title:string]:{}} = {};
     this.dependencies.forEach(dependency => {
       var child = {
-        item: dependency.item
+        item: dependency.item.unlink()
       };
       if(dependency.problems){
         child['problems'] = dependency.problems;

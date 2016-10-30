@@ -1,9 +1,9 @@
 
-import {RootNode} from "./root-node.model";
+import {ProjectTree} from "./project-tree.model";
 
 export abstract class Node{
   
-  public abstract getRoot():RootNode;
+  public abstract getRoot():ProjectTree;
   
   public abstract findNodePath(title:string, version:string):string;
   

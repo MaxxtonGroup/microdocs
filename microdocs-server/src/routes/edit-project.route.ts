@@ -3,9 +3,8 @@
 import * as express from "express";
 
 import {BaseRoute} from "./route";
-import {ResponseHelper} from "./responses/response.helper";
-import {SchemaHelper} from "@maxxton/microdocs-core-ts/dist/helpers";
-import {ProjectChangeRule, Project, ProjectInfo} from '@maxxton/microdocs-core-ts/dist/domain';
+import {SchemaHelper} from "@maxxton/microdocs-core/helpers";
+import {ProjectChangeRule, Project, ProjectInfo} from '@maxxton/microdocs-core/domain';
 import {ReportRepository} from "../repositories/report.repo";
 import {ProjectRepository} from "../repositories/project.repo";
 
@@ -28,7 +27,7 @@ export class EditProjectRoute extends BaseRoute {
    * @httpResponse 404
    */
   public editProject(req:express.Request, res:express.Response, next:express.NextFunction, scope:BaseRoute) {
-    var handler = ResponseHelper.getHandler(req);
+    var handler = scope.getHandler(req);
     try {
       var env = scope.getEnv(req, scope);
       if (env == null) {
@@ -115,8 +114,8 @@ export class EditProjectRoute extends BaseRoute {
     } catch (e) {
       // Make sure to reindex, some aggregated project may have already been cleaned up
       scope.injection.AggregationService().reindex(env);
-      
-      ResponseHelper.getHandler(req).handleInternalServerError(req, res, e);
+
+      scope.getDefaultHandler().handleInternalServerError(req, res, e);
     }
   }
 }

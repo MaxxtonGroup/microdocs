@@ -5,16 +5,16 @@ import {Notification} from "rxjs/Notification";
 import {Http, Response} from "@angular/http";
 import {RestClient} from "@maxxton/angular2-rest";
 import {SnackbarService} from "@maxxton/components/services/snackbar.service";
-import {TreeNode, Project, Environments, ProjectChangeRule} from "@maxxton/microdocs-core-ts/dist/domain";
+import {ProjectTree, Project, Environments, ProjectChangeRule} from "@maxxton/microdocs-core/domain";
 
 const TIMEOUT:number = 1000;
 
 export abstract class ProjectService extends RestClient {
   
   private env:string;
-  private projects:Subject<Notification<TreeNode>> = new ReplaySubject <Notification<TreeNode>>(1);
+  private projects:Subject<Notification<ProjectTree>> = new ReplaySubject <Notification<ProjectTree>>(1);
   private project:Subject<Notification<Project>> = new ReplaySubject <Notification<Project>>(1);
-  private lastProjectsValue:TreeNode;
+  private lastProjectsValue:ProjectTree;
   private lastProjectValue:Project;
   private lastProjectsRefresh:number = 0;
   private lastProjectRefresh:number = 0;
@@ -27,7 +27,7 @@ export abstract class ProjectService extends RestClient {
     this.project.subscribe(project => this.lastProjectValue = project);
   }
   
-  public getProjects(env:string = this.getSelectedEnv()):Observable<Notification<TreeNode>> {
+  public getProjects(env:string = this.getSelectedEnv()):Observable<Notification<ProjectTree>> {
     this.refreshProjects(env);
     return this.projects;
   }
@@ -44,7 +44,7 @@ export abstract class ProjectService extends RestClient {
     }
   }
   
-  public abstract loadProjects(env:string):Observable<TreeNode>;
+  public abstract loadProjects(env:string):Observable<ProjectTree>;
   
   public getProject(name:string, version?:string, env?:string = this.getSelectedEnv()):Observable<Notification<Project>> {
     this.refreshProject(name, version, env);
