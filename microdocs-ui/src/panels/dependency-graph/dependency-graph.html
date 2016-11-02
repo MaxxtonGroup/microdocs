@@ -1,0 +1,27 @@
+<div class="graph">
+  <div class="container" (window:resize)="onResize($event)"></div>
+  <div class="option-bar">
+    <div class="dropdown" [class.expanded]="dropdownExpanded">
+      <div class="dropdown-header" (click)="dropdownExpanded = !dropdownExpanded">
+        <i class="icon">keyboard_arrow_up</i>
+        <span>Groups</span>
+      </div>
+      <div class="overlay-wrapper">
+        <div class="overlay">
+          <div class="overlay-item" *ngFor="let group of groupToggles" (click)="toggleGroup(group)">
+            <i class="icon">{{group.visible ? 'check_box' : 'check_box_outline_blank'}}</i>
+            <span class="title">{{group.name}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="show-versions-button option-button" [class.selected]="showVersions" (click)="showVersions = !showVersions">
+      <i class="icon">{{showVersions ? 'call_split' : 'call_merge'}}</i>
+      <span>Show different used versions if present</span>
+    </div>
+    <div class="show-inherit-button option-button" [class.selected]="showInheritance" (click)="showInheritance = !showInheritance">
+      <i class="icon">{{showInheritance ? 'device_hub' : 'fiber_manual_record'}}</i>
+      <span>Combine inheritance into one node</span>
+    </div>
+  </div>
+</div>

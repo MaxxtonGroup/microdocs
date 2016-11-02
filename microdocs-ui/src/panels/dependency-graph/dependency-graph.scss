@@ -1,0 +1,182 @@
+dependency-graph {
+
+  .graph {
+    position: relative;
+
+    .option-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 50px;
+      background-color: white;
+
+      .dropdown {
+        position: absolute;
+        left: 0;
+        height: 100%;
+        width: 200px;
+
+        .dropdown-header {
+          position: absolute;
+          z-index: 1;
+          display: inline-block;
+          padding: 14px 10px;
+          font-size: 1.5em;
+          cursor: pointer;
+
+          .icon {
+            position: relative;
+            top: 5px;
+            transition: 0.2s ease transform;
+          }
+        }
+
+        .overlay-wrapper{
+          display: block;
+          position: absolute;
+          bottom: 0;
+          padding-bottom: 50px;
+          width: 200px;
+          box-shadow: none;
+          background-color: white;
+          transition: 0.2s ease box-shadow;
+
+          .overlay{
+            overflow: hidden;
+            height: auto;
+            max-height: 0px;
+            transition: 0s ease max-height;
+
+            .overlay-item{
+              padding: 5px 10px;
+              cursor: pointer;
+              position: relative;
+              color: $blue;
+
+              .icon{
+                position: relative;
+                top: 4px;
+              }
+              .title{
+                font-size: 1.3em;
+                position: absolute;
+                top: 13px;
+                left: 35px;
+                right: 10px;
+              }
+            }
+          }
+        }
+      }
+      .dropdown.expanded {
+        .dropdown-header .icon {
+          transform: rotate(180deg);
+        }
+        .overlay-wrapper{
+          box-shadow: rgba(0, 0, 0, 0.227451) 0px 3px 10px 0px, rgba(0, 0, 0, 0.156863) 0px 3px 10px 0px !important;
+
+          .overlay{
+            max-height: 500px;
+            transition: 0.5s ease max-height;
+          }
+        }
+      }
+
+      .option-button{
+        position: absolute;
+        right: 0;
+        height: 50px;
+        width: 50px;
+        padding: 10px;
+        border-radius: 100%;
+        cursor: pointer;
+
+        .icon{
+          font-size: 30px;
+          height: 30px;
+          width: 30px;
+        }
+      }
+      .option-button:hover{
+        background-color: rgba(0,0,0,0.1);
+      }
+      .option-button.selected{
+        background-color: rgba(0,0,0,0.1);
+        color: $blue;
+      }
+
+      .show-versions-button{
+        right: 0;
+      }
+
+      .show-inherit-button{
+        right: 60px;
+      }
+    }
+
+    .container {
+
+      svg {
+        .pink {
+          fill: $pink;
+        }
+
+        .red {
+          fill: $red;
+        }
+
+        .orange {
+          fill: $orange;
+        }
+
+        .amber {
+          fill: $amber;
+          stroke-width: 0.5px;
+        }
+
+        .yellow {
+          stroke-width: 0.5px;
+          fill: $yellow;
+        }
+
+        .lime {
+          stroke-width: 0.5px;
+          fill: $lime;
+        }
+
+        .green {
+          fill: $green;
+        }
+
+        .teal {
+          fill: $teal;
+        }
+
+        .cyan {
+          fill: $cyan;
+        }
+
+        .light-blue {
+          fill: $light-blue;
+        }
+
+        .blue {
+          fill: $blue;
+        }
+
+        .indigo {
+          fill: $indigo;
+        }
+
+        .purple {
+          fill: $purple;
+        }
+
+        .blue-gray {
+          fill: $blue-gray;
+        }
+      }
+    }
+  }
+}

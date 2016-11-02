@@ -3,6 +3,7 @@
 @import "partials/json-view";
 @import "../../../node_modules/@maxxton/components/assets/scss/mxt-components";
 @import "../../panels/sidebar-panel/_sidebar.panel";
+@import "../../panels/dependency-graph/dependency-graph";
 @import "../../panels/import-panel/import.panel";
 @import "../../panels/export-panel/export.panel";
 @import "../../panels/delete-panel/delete.panel";
@@ -366,7 +367,7 @@ dependency-graph path {
 dependency-graph circle {
   fill: #FF9800;
   stroke: #333;
-  stroke-width: 1px;
+  stroke-width: 0px;
 }
 
 dependency-graph text {

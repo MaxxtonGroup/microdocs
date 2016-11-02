@@ -21,6 +21,7 @@
         'filters': {defaultExtension: 'js'},
         'config': {defaultExtension: 'js'},
         'pipes': {defaultExtension: 'js'},
+        'helpers': {defaultExtension: 'js'},
 
         '@maxxton/components': {defaultExtension: 'js'},
         '@maxxton/components/helpers': {main: 'index.js', defaultExtension: 'js'},

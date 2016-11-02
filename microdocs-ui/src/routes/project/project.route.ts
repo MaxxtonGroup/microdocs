@@ -20,6 +20,7 @@ import {ExportPanel} from "../../panels/export-panel/export.panel";
 import {DeletePanel} from "../../panels/delete-panel/delete.panel";
 import {EditPanel} from "../../panels/edit-panel/edit.panel";
 import {MicroDocsConfig} from '../../config/config';
+import * as colorHelper from '../../helpers/color.helper';
 
 
 @Component({
@@ -54,21 +55,6 @@ export class ProjectRoute {
   private pathParams:Params;
   
   private color = 'blue-gray';
-  private colorRanges = {
-    'pink': ['a', 'b'],
-    'red': ['c', 'd'],
-    'orange': ['e', 'f'],
-    'amber': ['g', 'h'],
-    'yellow': ['i', 'j'],
-    'lime': ['k', 'l'],
-    'green': ['m', 'n'],
-    'teal': ['o', 'p'],
-    'cyan': ['q', 'r'],
-    'light-blue': ['s', 't'],
-    'blue': ['u', 'v'],
-    'indigo': ['w', 'x'],
-    'purple': ['y', 'z']
-  };
   
   private rest = DependencyTypes.REST;
   private database = DependencyTypes.DATABASE;
@@ -117,26 +103,9 @@ export class ProjectRoute {
   init() {
     this.version = this.queryParams['version'];
     this.title = this.pathParams['project'];
-    this.color = this.getColorByTitle(this.title);
+    this.color = colorHelper.getColorByTitle(this.title);
     this.updateNodes();
     this.loadProject(this.title, this.version);
-  }
-  
-  getColorByTitle(title:string):string {
-    let selectedColor;
-    var first = title.substr(0, 1);
-    for (var color in this.colorRanges) {
-      this.colorRanges[color].forEach(char => {
-        if (char == first) {
-          selectedColor = color;
-          return false;
-        }
-      });
-      if (selectedColor) {
-        return selectedColor;
-      }
-    }
-    return 'blue-gray';
   }
   
   loadProject(title:string, version:string) {
