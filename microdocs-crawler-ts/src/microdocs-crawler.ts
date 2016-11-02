@@ -64,7 +64,7 @@ export class MicroDocsCrawler {
     fs.writeFileSync( outputFile, json );
   }
 
-  public check( sources: string[], checkOptions: CheckOptions, tsConfig: {} = {}, callback:(ProblemResponse)=>void, frameworks: Framework[] = FRAMEWORKS ): void {
+  public check( sources: string[], checkOptions: CheckOptions, tsConfig: {} = {}, callback:(ProblemResponse)=>void = this.printProblemResponse, frameworks: Framework[] = FRAMEWORKS ): void {
     var project = this.crawl( sources, tsConfig, frameworks );
 
     var errorHandler = error => {
@@ -99,7 +99,7 @@ export class MicroDocsCrawler {
     }).on('error', errorHandler);
   }
 
-  public publish( sources: string[], publishOptions: PublishOptions, tsConfig: {} = {}, callback:(ProblemResponse)=>void, frameworks: Framework[] = FRAMEWORKS ): void {
+  public publish( sources: string[], publishOptions: PublishOptions, tsConfig: {} = {}, callback:(ProblemResponse)=>void = this.printProblemResponse, frameworks: Framework[] = FRAMEWORKS ): void {
     var project = this.crawl( sources, tsConfig, frameworks );
 
     var errorHandler = error => {
@@ -150,7 +150,7 @@ export class MicroDocsCrawler {
     return client;
   }
 
-  public printProblemResponse(response:ProblemResponse, folders:string[]):boolean{
+  public printProblemResponse(response:ProblemResponse, folders:string[] = [process.cwd()]):boolean{
     var hasProblems = response.status !== 'ok';
     var errorCount = 0;
     var warningCount = 0;
