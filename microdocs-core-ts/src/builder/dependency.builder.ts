@@ -30,7 +30,7 @@ export class DependencyBuilder implements Builder<Dependency> {
   }
 
   path(pathBuilder: PathBuilder): void {
-    var path = this.basePath + pathBuilder.path;
+    var path = this.baseUrl + pathBuilder.path;
     var requestMethods = pathBuilder.methods.concat(this.requestMethods).map(method => method.toLowerCase());
 
     if(!path || path == ''){

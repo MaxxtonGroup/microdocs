@@ -1,15 +1,11 @@
 *
-!microdocs-core-ts/src
-!microdocs-core-ts/gulpfile.js
-!microdocs-core-ts/package.json
-!microdocs-core-ts/typings.json
-
 !microdocs-server/src
 !microdocs-server/gulpfile.js
 !microdocs-server/package.json
 !microdocs-server/typings.json
 !microdocs-server/config.yml
 !microdocs-server/index.js
+!microdocs-server/.npmrc
 
 !microdocs-ui/src
 !microdocs-ui/gulpfile.js

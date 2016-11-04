@@ -12,7 +12,7 @@
     "unlinkDevelopment": "npm unlink @maxxton/microdocs-core-ts",
     "link": "npm link @maxxton/microdocs-core-ts",
     "unlink": "npm unlink @maxxton/microdocs-core-ts",
-    "start": "node index.js",
+    "start": "node dist/index.js",
     "debug": "nodemon --debug-brk index.js",
     "test": "mocha",
     "postinstall": "typings install",

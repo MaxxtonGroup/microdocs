@@ -1,6 +1,4 @@
-import {Project, Schema, Path, ProjectInfo, TreeNode} from "@maxxton/microdocs-core/domain";
-import {QUERY, PATH, BODY} from "@maxxton/microdocs-core/domain/path/parameter-placing.model";
-import {SchemaHelper} from "@maxxton/microdocs-core/helpers/schema/schema.helper";
+import {Project, Path, TreeNode, ParameterPlacings} from "@maxxton/microdocs-core/domain";
 import * as uuid from 'uuid';
 
 
@@ -76,7 +74,7 @@ export class PostmanResponseHandler extends MicroDocsResponseHandler {
     var responses = [];
     if(endpoint.parameters != undefined){
       //replace path variables
-      endpoint.parameters.filter(param => param.in == PATH).forEach(param => {
+      endpoint.parameters.filter(param => param.in == ParameterPlacings.PATH).forEach(param => {
         var generatedValue = '{{' + param.name + '}}';
         if(param.default != undefined){
           generatedValue = param.default;
@@ -85,7 +83,7 @@ export class PostmanResponseHandler extends MicroDocsResponseHandler {
       });
 
       // replace query params
-      endpoint.parameters.filter(param => param.in == QUERY).forEach(param => {
+      endpoint.parameters.filter(param => param.in == ParameterPlacings.QUERY).forEach(param => {
         var generatedValue = '{{' + param.name + '}}';
         if(param.default != undefined){
           generatedValue = param.default;
@@ -99,7 +97,7 @@ export class PostmanResponseHandler extends MicroDocsResponseHandler {
       });
 
       // add body
-      endpoint.parameters.filter(param => param.in == BODY).forEach(param => {
+      endpoint.parameters.filter(param => param.in == ParameterPlacings.BODY).forEach(param => {
         body = {
           mode: 'raw',
           raw: JSON.stringify(param.default, null, '  ')
