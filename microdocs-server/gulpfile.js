@@ -135,3 +135,14 @@ gulp.task('package-distribution-production', [], function (done) {
 gulp.task('package-distribution', [], function () {
   return gulp.src(['node_modules/**/*.d.ts', 'node_modules/**/*.js', 'node_modules/**/*.js.map', '!node_modules/**/node_modules', '!node_modules/**/node_modules/**']).pipe(gulp.dest("dist"));
 });
+
+
+gulp.task('buildMicroDocs', function(){
+  mxtBuilder.buildMicroDocs();
+});
+
+gulp.task('checkMicroDocs', function(){
+  mxtBuilder.checkMicroDocs({
+    url: 'https://microdocs.maxxton.com'
+  });
+});

@@ -22,8 +22,9 @@ import {EditProjectRoute} from "./routes/edit-project.route";
 
 /**
  * The MicroDocs server
- * @projectName microdocs-server
+ * @application microdocs-server
  * @projectGroup MicroDocs
+ * @projectInclude @maxxton/microdocs-core
  * @class Server
  */
 class Server {

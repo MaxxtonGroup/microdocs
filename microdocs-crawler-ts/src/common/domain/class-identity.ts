@@ -6,5 +6,6 @@ export class ClassIdentity{
   isService:boolean = false;
   isController:boolean = false;
   isComponent:boolean = false;
+  isMain:boolean = false;
 
 }

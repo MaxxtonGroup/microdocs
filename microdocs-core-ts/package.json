@@ -12,10 +12,10 @@
     "postinstall": "typings install",
     "prepublish": "gulp prepublish"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
+    "@maxxton/gulp-builder": "1.3.16",
     "gulp": "^3.9.0",
-    "@maxxton/gulp-builder": "1.3.16"
+    "yargs": "^6.3.0"
   }
 }
