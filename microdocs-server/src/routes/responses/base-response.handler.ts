@@ -1,15 +1,8 @@
 import * as express from "express";
-<<<<<<< HEAD
 import {ProjectTree, Problem, Project, ProblemResponse, ProblemLevels} from '@maxxton/microdocs-core/domain';
 import * as dump from 'js-yaml';
 import * as xml from 'jsontoxml';
 import {Injection} from "../../injections";
-=======
-import {TreeNode, Problem, Project, ProblemResponse} from '@maxxton/microdocs-core/domain';
-import * as dump from 'js-yaml';
-import * as xml from 'jsontoxml';
-import {ERROR, WARNING} from "@maxxton/microdocs-core/domain/problem/problem-level.model";
->>>>>>> development
 
 export class BaseResponseHandler {
   
