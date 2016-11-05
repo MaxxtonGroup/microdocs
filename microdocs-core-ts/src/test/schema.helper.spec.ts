@@ -268,6 +268,24 @@ describe('#SchemaHelper: ', () => {
       assert.equal(SchemaTypes.OBJECT, result.type);
       assert.equal('Person', result.name);
     });
+
+    it("test generic type", () => {
+      var input = "Array<string>";
+
+      var result = SchemaHelper.resolveTypeString(input);
+
+      assert.equal(SchemaTypes.ARRAY, result.type);
+      assert.equal(SchemaTypes.STRING, result.items.type);
+    });
+
+    it("test multi generic type", () => {
+      var input = "Map<string, int>";
+
+      var result = SchemaHelper.resolveTypeString(input);
+
+      assert.equal(SchemaTypes.OBJECT, result.type);
+      assert.equal(SchemaTypes.INTEGER, result.additonalProperties.type);
+    });
     
   });
   
