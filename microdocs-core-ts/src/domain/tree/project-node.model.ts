@@ -21,8 +21,21 @@ export class ProjectNode extends Node{
 
   public addDependency( dependencyNode:DependencyNode):void{
     var removeList = this.dependencies.filter(node => node.item.title === dependencyNode.item.title);
-    removeList.forEach(node => delete this.dependencies[this.dependencies.indexOf(node)]);
+    removeList.forEach(node => this.removeDependency(node));
     this.dependencies.push(dependencyNode);
+    if(dependencyNode.item){
+      dependencyNode.item.parent = this;
+    }
+  }
+
+  public removeDependency(dependencyNode:DependencyNode):void{
+    let index = this.dependencies.indexOf(dependencyNode);
+    if(index > -1){
+      this.dependencies.splice(index, 1);
+    }
+    if(dependencyNode.item){
+      dependencyNode.item.parent = null;
+    }
   }
 
   public getRoot():ProjectTree {
@@ -33,11 +46,11 @@ export class ProjectNode extends Node{
     for(var i = 0; i < this.dependencies.length; i++){
       var dependency = this.dependencies[i];
       if (dependency.item.title === title && dependency.item.version === version) {
-        return "/dependencies/" + title + "/item";
+        return title + "/item";
       }
       var path = dependency.item.findNodePath(title, version);
       if (path != null) {
-        return "/dependencies/" + title + '/item' + path;
+        return title + '/item/dependencies/' + path;
       }
     }
     return null;
@@ -45,14 +58,40 @@ export class ProjectNode extends Node{
 
   public resolve(){
     if(this.reference){
-      var ref = '#/projects/' + this.reference.substr(2);
-      var result = SchemaHelper.resolveReference(ref, this.getRoot());
+      var result = this.resolveReference(this.reference);
       if(result == null){
         throw new Error("Unknown dependency reference: " + this.reference);
       }
       return result;
     }
     return this;
+  }
+
+  public resolveReference(reference:string):Node{
+    if(reference.indexOf('#/') == 0){
+      return this.getRoot().resolveReference(reference);
+    }
+    if(reference.indexOf('dependencies/') == 0){
+      reference = reference.substr('dependencies/'.length);
+      var match = reference.match(/^(.*?)\/(.+)$/);
+      if(match && match.length >= 2){
+        var title = match[1];
+        var results = this.dependencies.filter(dependencyNode => dependencyNode.item.title === title);
+        if(results.length > 0){
+          if(match.length > 2){
+            return results[0].resolveReference(match[2]);
+          }else{
+            return results[0];
+          }
+        }
+      }else{
+        var results = this.dependencies.filter(dependencyNode => dependencyNode.item.title === reference);
+        if(results.length > 0){
+          return results[0];
+        }
+      }
+    }
+    return null;
   }
 
   public unlink():{} {
@@ -123,7 +162,7 @@ export class ProjectNode extends Node{
       project.problems = unlinkedProject['problems'];
     }
     if (unlinkedProject['$ref']) {
-      project.reference = "#/dependencies" + unlinkedProject['$ref'].substring(1);
+      project.reference = unlinkedProject['$ref'];
     }
     if (unlinkedProject['tags']) {
       project.tags = unlinkedProject['tags'];

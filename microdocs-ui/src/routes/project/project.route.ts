@@ -173,6 +173,7 @@ export class ProjectRoute {
           this.versions = this.versions.sort();
         }
       });
+      this.nodes.next(this.projects);
     }
   }
   

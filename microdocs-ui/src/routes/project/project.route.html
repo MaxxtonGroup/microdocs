@@ -41,7 +41,7 @@
             </li>
           </ul>
         </div>
-        <dependency-graph class="small" [nodes]="nodes" [env]="env" [projectName]="title"></dependency-graph>
+        <dependency-graph class="small" [nodes]="nodes" [env]="env" [projectName]="title" [showOptionBar]="false" [showVersions]="true" [showInheritance]="true"></dependency-graph>
       </card>
       <card title="Endpoints" [sectionClass]="'card-section content'" [canFullscreen]="false"
             *ngIf="project.paths | notEmpty">

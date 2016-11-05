@@ -8,12 +8,45 @@ export class ProjectTree extends Node{
 
   public addProject(projectNode:ProjectNode):void{
     var removeList = this.projects.filter(node => node.title === projectNode.title);
-    removeList.forEach(node => delete this.projects[this.projects.indexOf(node)]);
+    removeList.forEach(node => this.removeProject(node));
     this.projects.push(projectNode);
+    projectNode.parent = this;
+  }
+
+  public removeProject(projectNode:ProjectNode):void{
+    let index = this.projects.indexOf(projectNode);
+    if(index > -1){
+      this.projects.splice(index, 1);
+    }
+    projectNode.parent = null;
   }
   
   public getRoot():ProjectTree {
     return this;
+  }
+
+  public resolveReference( reference:string ):Node {
+    if(reference.indexOf('#/') == 0){
+      reference = reference.substr(2);
+    }
+    var match = reference.match(/^(.*?)\/(.+)$/);
+    if(match && match.length >= 2){
+      var title = match[1];
+      var results = this.projects.filter(projectNode => projectNode.title == title);
+      if(results.length > 0){
+        if(match.length > 2){
+          return results[0].resolveReference(reference);
+        }else{
+          return results[0];
+        }
+      }
+    }else{
+      var results = this.projects.filter(projectNode => projectNode.title === reference);
+      if(results.length > 0){
+        return results[0];
+      }
+    }
+    return null;
   }
   
   public findNodePath(title:string, version:string):string {
