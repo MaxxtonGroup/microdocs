@@ -2,7 +2,7 @@
 import {ControllerCrawler} from "../common/abstract/controller.crawler";
 import {ProjectReflection} from "typedoc";
 import {ContainerReflection} from "typedoc/lib/models";
-import {ControllerBuilder} from '@maxxton/microdocs-core-ts/dist/builder';
+import {ControllerBuilder} from '@maxxton/microdocs-core/builder';
 
 export class UniversalControllerCrawler extends ControllerCrawler{
 

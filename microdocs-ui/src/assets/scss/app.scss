@@ -74,6 +74,17 @@ a {
     color: $accent-color-secondary;
   }
 }
+/* Default Link Styles */
+a {
+  color: #2196F3;
+  text-decoration: none;
+  line-height: inherit; }
+a[ui-sref] {
+  cursor: pointer; }
+a:hover, a:focus {
+  color: #0c83e1; }
+a img {
+  border: none; }
 
 .label.padding {
   padding: .8rem;

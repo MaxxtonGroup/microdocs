@@ -3,8 +3,8 @@ import {ClassCrawler} from "../common/abstract/class.crawler";
 import {ClassIdentity} from "../common/domain/class-identity";
 import {ProjectReflection} from "typedoc";
 import {ContainerReflection} from "typedoc/lib/models";
-import {ProjectBuilder} from '@maxxton/microdocs-core-ts/dist/builder';
-import {ProjectInfo} from '@maxxton/microdocs-core-ts/dist/domain';
+import {ProjectBuilder} from '@maxxton/microdocs-core/builder';
+import {ProjectInfo} from '@maxxton/microdocs-core/domain';
 
 export class UniversalClassCrawler extends ClassCrawler{
 

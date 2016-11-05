@@ -11,6 +11,9 @@
     "start": "node dist/index.js",
     "debug": "nodemon --debug-brk dist/index.js",
     "test": "gulp test",
+    "linkDevelopment": "npm link @maxxton/microdocs-core-ts",
+    "unlinkDevelopment": "npm unlink @maxxton/microdocs-core-ts",
+
     "postinstall": "typings install",
     "package-distribution": "gulp package-distribution-production"
   },
