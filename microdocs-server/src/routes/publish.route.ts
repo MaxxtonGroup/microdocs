@@ -80,11 +80,11 @@ export class PublishRoute extends BaseRoute {
         if (report.info == undefined) {
           report.info = new ProjectInfo(undefined, undefined, undefined, undefined);
         }
-        console.info(report.info);
         report.info.version = version;
         report.info.versions = [version];
         report.info.group = group;
         report.info.title = title;
+        report.info.publishTime = new Date().toISOString();
 
         var aggregationService = scope.injection.AggregationService();
         
