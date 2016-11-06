@@ -617,7 +617,7 @@ export class SchemaHelper {
     }
 
     if ( resolveUnknownObject ) {
-      return resolveUnknownObject( string, genericTypes);
+      return resolveUnknownObject( input, genericTypes);
     }
 
     throw SchemaHelper.resolveTypeError( "Unknown type", string, originalString, cursor );
