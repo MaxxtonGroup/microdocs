@@ -3,7 +3,7 @@
 import {expect, assert} from 'chai';
 import {SchemaHelper} from "../helpers/schema/schema.helper";
 import {Project} from "../domain/project.model";
-import {MicroDocsPreProcessor} from "../helpers/pre-processor/pre-processor";
+import {MicroDocsPreProcessor} from "../pre-processor/microdocs.pre-processor";
 
 describe('#MicroDocsPreProcessor: ', () => {
 
@@ -13,7 +13,7 @@ describe('#MicroDocsPreProcessor: ', () => {
       var project :Project = <Project>{};
       var settings = {};
 
-      var result = MicroDocsPreProcessor.process(project, settings);
+      var result = new MicroDocsPreProcessor().process(project, settings);
 
       expect(result).to.deep.eq({});
     });
@@ -22,7 +22,7 @@ describe('#MicroDocsPreProcessor: ', () => {
       var project :Project = <Project>{};
       var settings = {test:true};
 
-      var result = MicroDocsPreProcessor.process(project, settings);
+      var result = new MicroDocsPreProcessor().process(project, settings);
 
       expect(result).to.deep.eq({test:true});
     });
@@ -31,7 +31,7 @@ describe('#MicroDocsPreProcessor: ', () => {
       var project :Project = <Project>{};
       var settings = {obj:{test:true}};
 
-      var result = MicroDocsPreProcessor.process(project, settings);
+      var result = new MicroDocsPreProcessor().process(project, settings);
 
       expect(result).to.deep.eq({obj:{test:true}});
     });
@@ -40,7 +40,7 @@ describe('#MicroDocsPreProcessor: ', () => {
       var project :Project = <Project>{obj: 'lalala'};
       var settings = {obj:{test:true}};
 
-      var result = MicroDocsPreProcessor.process(project, settings);
+      var result = new MicroDocsPreProcessor().process(project, settings);
 
       expect(result).to.deep.eq({obj:{test:true}});
     });
@@ -49,7 +49,7 @@ describe('#MicroDocsPreProcessor: ', () => {
       var project :Project = <Project>{array:[]};
       var settings = {array:['item', 'item']};
 
-      var result = MicroDocsPreProcessor.process(project, settings);
+      var result = new MicroDocsPreProcessor().process(project, settings);
 
       expect(result).to.deep.eq({array:['item', 'item']});
     });
@@ -58,7 +58,7 @@ describe('#MicroDocsPreProcessor: ', () => {
       var project :Project = <Project>{myvar:'helloWorld'};
       var settings = {resolved: '$project.myvar'};
 
-      var result = MicroDocsPreProcessor.process(project, settings);
+      var result = new MicroDocsPreProcessor().process(project, settings);
       expect(result).to.deep.eq({myvar:'helloWorld', resolved: 'helloWorld'});
     });
 
@@ -66,7 +66,7 @@ describe('#MicroDocsPreProcessor: ', () => {
       var project :Project = <Project>{myvar:'helloWorld'};
       var settings = {resolved: '$myvar'};
 
-      var result = MicroDocsPreProcessor.process(project, settings);
+      var result = new MicroDocsPreProcessor().process(project, settings);
       expect(result).to.deep.eq({myvar:'helloWorld'});
     });
 
@@ -74,7 +74,7 @@ describe('#MicroDocsPreProcessor: ', () => {
       var project :Project = <Project>{array:[{name:'john'},{name:'alice'}]};
       var settings = {array:{'{i}': {index: '$i'}}};
 
-      var result = MicroDocsPreProcessor.process(project, settings);
+      var result = new MicroDocsPreProcessor().process(project, settings);
       expect(result).to.deep.eq({array:[{name:'john', index: 0},{name:'alice', index: 1}]});
     });
 
@@ -82,7 +82,7 @@ describe('#MicroDocsPreProcessor: ', () => {
       var project :Project = <Project>{object:{"john":{age:15},'alice':{age:20}}};
       var settings = {object:{'{i}': {name: '$i'}}};
 
-      var result = MicroDocsPreProcessor.process(project, settings);
+      var result = new MicroDocsPreProcessor().process(project, settings);
       expect(result).to.deep.eq({object:{"john":{age:15,name:'john'},'alice':{age:20, name: 'alice'}}});
     });
 

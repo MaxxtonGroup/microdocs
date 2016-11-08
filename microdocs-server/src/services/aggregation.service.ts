@@ -11,7 +11,7 @@ import {
   ProjectInfo
 } from "@maxxton/microdocs-core/domain";
 import {NOTICE, ERROR, WARNING} from "@maxxton/microdocs-core/domain/problem/problem-level.model";
-import {REST} from "@maxxton/microdocs-core/domain/dependency/dependency-type.model";
+import {REST, INCLUDES} from "@maxxton/microdocs-core/domain/dependency/dependency-type.model";
 
 import {ProblemReporter, SchemaHelper, MicroDocsPreProcessor} from "@maxxton/microdocs-core/helpers";
 import {getProblemsInProject, getProblemsInDependency} from "@maxxton/microdocs-core/helpers";
