@@ -1,7 +1,7 @@
 
 import {ProjectRepository} from '../repositories/project.repo';
-import {SchemaHelper} from "@maxxton/microdocs-core/helpers";
-import {TreeNode, Project, Schema, ProjectInfo} from "@maxxton/microdocs-core/domain";
+import {SchemaHelper} from "@maxxton/microdocs-core/helpers/schema/schema.helper";
+import {ProjectTree, Project} from "@maxxton/microdocs-core/domain";
 
 export class ProjectService{
 
@@ -9,8 +9,8 @@ export class ProjectService{
 
   constructor(private projectRepo:ProjectRepository){}
 
-  public storeAggregatedProjects(env:string, node:TreeNode) : void{
-    this.projectRepo.storeAggregatedProjects(env, node);
+  public storeAggregatedProjects(env:string, projectTree:ProjectTree) : void{
+    this.projectRepo.storeAggregatedProjects(env, projectTree);
   }
 
   public storeAggregatedProject(env:string, project:Project) : void{

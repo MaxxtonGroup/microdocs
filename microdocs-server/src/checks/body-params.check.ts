@@ -1,9 +1,6 @@
 import {PathCheck} from "./path-check";
-import {Project, Path, Schema} from "@maxxton/microdocs-core/domain";
+import {Project, Path, Schema, ProblemLevels, ParameterPlacings, SchemaTypes} from "@maxxton/microdocs-core/domain";
 import {SchemaHelper, ProblemReporter} from "@maxxton/microdocs-core/helpers";
-import {WARNING, ERROR} from "@maxxton/microdocs-core/domain/problem/problem-level.model";
-import {BODY} from '@maxxton/microdocs-core/domain/path/parameter-placing.model';
-import {OBJECT, ARRAY} from '@maxxton/microdocs-core/domain/schema/schema-type.model';
 
 export class BodyParamsCheck implements PathCheck {
 
@@ -21,7 +18,7 @@ export class BodyParamsCheck implements PathCheck {
       clientParams = [];
     }
     producerParams.forEach(producerParam => {
-      if (producerParam.in == BODY) {
+      if (producerParam.in == ParameterPlacings.BODY) {
         var exists = false;
         clientParams.forEach(clientParam => {
           if (producerParam.in == clientParam.in) {
@@ -33,7 +30,7 @@ export class BodyParamsCheck implements PathCheck {
           }
         });
         if (!exists && producerParam.required) {
-          problemReport.report(ERROR, "Missing request body");
+          problemReport.report(ProblemLevels.ERROR, "Missing request body");
         }
       }
     });
@@ -47,22 +44,22 @@ export class BodyParamsCheck implements PathCheck {
           if(path != ''){
             position = ' at ' + path;
           }
-          problemReport.report(WARNING, "Type mismatches in request body" + position + ", expected: " + producerSchema.type + ", found: " + clientSchema.type);
+          problemReport.report(ProblemLevels.WARNING, "Type mismatches in request body" + position + ", expected: " + producerSchema.type + ", found: " + clientSchema.type);
         }else{
-          if(producerSchema.type == OBJECT){
+          if(producerSchema.type == SchemaTypes.OBJECT){
             var producerProperties = producerSchema.properties;
             var clientProperties = clientSchema.properties;
             for(var key in producerProperties){
               this.checkSchema(clientProperties[key], producerProperties[key], problemReport, path + (path == '' ? '' : '.') + key);
             }
-          }else if(producerSchema.type == ARRAY){
+          }else if(producerSchema.type == SchemaTypes.ARRAY){
             var producerItems = producerSchema.items;
             var clientItems = clientSchema.items;
             this.checkSchema(clientItems, producerItems, problemReport, path + (path == '' ? '' : '.') + "0");
           }
         }
       }else if(producerSchema.required){
-        problemReport.report(ERROR, "Missing required value at " + path);
+        problemReport.report(ProblemLevels.ERROR, "Missing required value at " + path);
       }
     }
   }

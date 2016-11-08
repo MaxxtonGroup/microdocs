@@ -1,8 +1,7 @@
 /// <reference path="../../typings/index.d.ts" />
 import {expect} from 'chai';
-import {ProblemReporter, SchemaHelper} from "@maxxton/microdocs-core/helpers";
-import {Path, Parameter, Schema} from "@maxxton/microdocs-core/domain";
-import {STRING, INTEGER, BOOLEAN} from "@maxxton/microdocs-core/domain/schema/schema-type.model";
+import {ProblemReporter} from "@maxxton/microdocs-core/helpers";
+import {Path} from "@maxxton/microdocs-core/domain";
 
 import {QueryParamsCheck} from "../checks/query-params.check";
 

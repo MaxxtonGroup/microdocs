@@ -1,4 +1,6 @@
-import {Project, Path, TreeNode, ParameterPlacings} from "@maxxton/microdocs-core/domain";
+
+import {Project, Schema, Path, ProjectInfo, ProjectTree, ParameterPlacings} from "@maxxton/microdocs-core/domain";
+
 import * as uuid from 'uuid';
 
 
@@ -9,18 +11,18 @@ import {ProjectJsonRepository} from "../../repositories/json/project-json.repo";
 
 export class PostmanResponseHandler extends MicroDocsResponseHandler {
 
-  handleProjects(req: express.Request, res: express.Response, projects: TreeNode, env:string) {
-    if(Object.keys(projects.dependencies).length == 1){
-      var name = Object.keys(projects.dependencies)[0];
-      var project = new ProjectJsonRepository().getAggregatedProject(env, name, projects.dependencies[name].version);
+  handleProjects( req:express.Request, res:express.Response, projectTree:ProjectTree, env:string ) {
+    if ( projectTree.projects.length == 1 ) {
+      var projectNode = projectTree.projects[ 0 ];
+      var project     = this.injection.ProjectRepository().getAggregatedProject( env, projectNode.title, projectNode.version );
 
-      if(req.query['method']){
-        var filterMethods = req.query['method'].split(',');
-        this.filterMethods(project, filterMethods);
+      if ( req.query[ 'method' ] ) {
+        var filterMethods = req.query[ 'method' ].split( ',' );
+        this.filterMethods( project, filterMethods );
       }
-      this.response(req, res, 200, this.postman(project));
-    }else {
-      this.response(req, res, 200, this.postmans(projects, env));
+      this.response( req, res, 200, this.postman( project ) );
+    } else {
+      this.response( req, res, 200, this.postmans( projectTree, env ) );
     }
   }
 
@@ -32,18 +34,18 @@ export class PostmanResponseHandler extends MicroDocsResponseHandler {
     this.response(req, res, 200, this.postman(project));
   }
 
-  postmans(projects: TreeNode, env:string):{}{
+  postmans(projectTree: ProjectTree, env:string):{}{
     var collection = this.getPostmanBase();
 
-    for(var name in projects.dependencies){
-      var project = new ProjectJsonRepository().getAggregatedProject(env, name, projects.dependencies[name].version);
+    projectTree.projects.forEach(projectNode => {
+      var project = this.injection.ProjectRepository().getAggregatedProject(env, projectNode.title, projectNode.version);
       var subCollection = this.getPostmanItems(project);
       collection['item'].push({
-        name: name,
-        description: 'Folder for ' + name,
+        name: projectNode.title,
+        description: project.info && project.info.description ? project.info.description : 'Folder for ' + projectNode.title,
         item: subCollection
       })
-    }
+    });
 
     return collection;
   }

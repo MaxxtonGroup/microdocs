@@ -4,8 +4,6 @@ import * as express from "express";
 
 import {BaseRoute} from "./route";
 import {Problem, ProjectInfo, Project} from "@maxxton/microdocs-core/domain";
-import {AggregationService} from "../services/aggregation.service";
-import {ResponseHelper} from "./responses/response.helper";
 
 /**
  * @controller
@@ -26,7 +24,7 @@ export class CheckRoute extends BaseRoute {
    * @httpResponse 404 {} Body is missing or project title is missing
    */
   public projects(req: express.Request, res: express.Response, next: express.NextFunction, scope:BaseRoute) {
-    var handler = ResponseHelper.getHandler(req);
+    var handler = scope.getHandler(req);
     try {
       var env = scope.getEnv(req, scope);
       if (env == null) {
@@ -56,7 +54,7 @@ export class CheckRoute extends BaseRoute {
         handler.handleBadRequest(req, res, 'Body is missing');
       }
     } catch (e) {
-      handler.handleInternalServerError(req, res, e);
+      scope.getDefaultHandler().handleInternalServerError(req, res, e);
     }
   }
 }

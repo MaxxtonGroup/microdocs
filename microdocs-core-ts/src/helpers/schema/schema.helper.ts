@@ -512,7 +512,7 @@ export class SchemaHelper {
       var schema:Schema = {};
       var objContent    = isObjectMatch[ 1 ];
       var regExp        = new RegExp( REGEX_TYPE_OBJECT, 'g' );
-      var propMatch;
+      var propMatch:RegExpExecArray;
       while ( propMatch = regExp.exec( objContent ) ) {
         var key   = propMatch[ 1 ];
         var value = propMatch[ 3 ];

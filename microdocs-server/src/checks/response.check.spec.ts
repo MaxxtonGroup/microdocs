@@ -1,8 +1,7 @@
 /// <reference path="../../typings/index.d.ts" />
 import {expect} from 'chai';
-import {ProblemReporter, SchemaHelper} from "@maxxton/microdocs-core/helpers";
-import {Path, Parameter, Schema} from "@maxxton/microdocs-core/domain";
-import {STRING, INTEGER, BOOLEAN, OBJECT} from "@maxxton/microdocs-core/domain/schema/schema-type.model";
+import {ProblemReporter} from "@maxxton/microdocs-core/helpers";
+import {Path, SchemaTypes} from "@maxxton/microdocs-core/domain";
 
 import {ResponseCheck} from "../checks/response.check";
 
@@ -45,7 +44,7 @@ describe('#response check:', () => {
       responses: {
         "default": {
           schema: {
-            type: INTEGER
+            type: SchemaTypes.INTEGER
           }
         }
       }
@@ -66,7 +65,7 @@ describe('#response check:', () => {
       responses: {
         "default": {
           schema: {
-            type: INTEGER
+            type: SchemaTypes.INTEGER
           }
         }
       }
@@ -91,7 +90,7 @@ describe('#response check:', () => {
       responses: {
         "default": {
           schema: {
-            type: INTEGER
+            type: SchemaTypes.INTEGER
           }
         }
       }
@@ -102,7 +101,7 @@ describe('#response check:', () => {
       responses: {
         "default": {
           schema: {
-            type: BOOLEAN
+            type: SchemaTypes.BOOLEAN
           }
         }
       }
@@ -123,10 +122,10 @@ describe('#response check:', () => {
       responses: {
         "default": {
           schema: {
-            type: OBJECT,
+            type: SchemaTypes.OBJECT,
             properties: {
               "test1": {
-                type: STRING,
+                type: SchemaTypes.STRING,
                 required: true
               }
             }
@@ -140,10 +139,10 @@ describe('#response check:', () => {
       responses: {
         "default": {
           schema: {
-            type: OBJECT,
+            type: SchemaTypes.OBJECT,
             properties: {
               "test2": {
-                type: STRING
+                type: SchemaTypes.STRING
               }
             }
           }
