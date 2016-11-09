@@ -335,7 +335,7 @@ export class DependencyGraph {
 
     // Per-type markers, as they don't inherit styles.
     container.append( "defs" ).selectAll( "marker" )
-        .data( [ "marker-end", "marker-end-problems" ] )
+        .data( [ "marker-end", "marker-end-problems", "marker-end-uses" ] )
         .enter().append( "marker" )
         .attr( "id", function ( d ) {
           return d;
@@ -349,7 +349,9 @@ export class DependencyGraph {
         .append( "path" )
         .attr( 'class', function ( d ) {
           if ( d === 'marker-end-problems' ) {
-            return 'problems';
+            return 'marker-end-problems';
+          }else if(d === 'marker-end-uses'){
+            return 'marker-end-uses';
           }
         } )
         .attr( "d", "M0,-5L10,0L0,5" );
@@ -362,8 +364,14 @@ export class DependencyGraph {
           return "overview-link " + d.type + problems;
         } )
         .attr( "marker-end", function ( d ) {
-          var problems = d.problems && d.problems > 0 ? '-problems' : '';
-          return "url(#marker-end" + problems + ")";
+          let hasProblems = d.problems && d.problems > 0;
+          let suffix = '';
+          if(hasProblems){
+            suffix = '-problems';
+          } else if(d.type === DependencyTypes.USES){
+            suffix = '-uses';
+          }
+          return "url(#marker-end" + suffix + ")";
         } );
 
     var circle = container.append( "g" ).selectAll( "circle" )

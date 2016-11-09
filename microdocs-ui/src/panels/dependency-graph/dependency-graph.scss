@@ -154,12 +154,21 @@ dependency-graph {
           stroke-width: 1.5px;
         }
 
-        path.problems {
-          stroke: $red;
-        }
-
         path.includes {
           stroke-dasharray: 4, 3;
+        }
+
+        path.uses{
+          stroke: $gray-dark;
+          stroke-dasharray: 4, 3;
+        }
+
+        path.marker-end-uses{
+          stroke: $gray-dark;
+        }
+
+        path.problems, path.marker-end-problems {
+          stroke: $red;
         }
 
         circle {
