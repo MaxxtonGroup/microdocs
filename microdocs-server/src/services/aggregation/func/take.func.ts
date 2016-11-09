@@ -1,54 +1,35 @@
 import { AggregationPipeline } from "./../aggregation-pipeline";
-import { Project } from "@maxxton/microdocs-core/domain/project.model";
-import { ReportRepository } from "../../../repositories/report.repo";
-import { preProcess } from "./pre-process.func";
-
-/**
- * Add report as input for the pipeline
- * @param pipeline
- * @param report
- * @return {AggregationPipeline}
- */
-export function take(pipeline:AggregationPipeline, report:Project):AggregationPipeline{
-  let processedReport = preProcess(pipeline, report)
-  pipeline.getResult().push(report);
-  return pipeline;
-}
+import { Pipe } from "../pipe";
 
 /**
  * Add all stored reports as input for the pipeline
- * @param pipeline
- * @param reportRepository
+ * @param pipe
  * @return {AggregationPipeline}
  */
-export function takeEverything(pipeline:AggregationPipeline):AggregationPipeline{
-  var projects = pipeline.getReportRepository().getProjects(pipeline.getEnv());
-  projects.forEach(projectInfo => {
+export function takeEverything(pipe:Pipe){
+  pipe.projects.forEach( projectInfo => {
     projectInfo.versions.forEach(version => {
       projectInfo.version = version;
-      let report = pipeline.getReportRepository().getProject(pipeline.getEnv(), projectInfo);
-      take(pipeline, report);
+      let report = pipe.reportRepo.getProject(pipe.env, projectInfo);
+      pipe.result.pushProject(report);
     })
   });
-  return pipeline;
 }
 
 /**
  * Add latest version(s) stored reports as input for the pipeline
- * @param pipeline
- * @param reportRepository
- * @param maxAmount amount of versions per project
+ * @param pipe
+ * @param versionAmount amount of versions per project
  * @return {AggregationPipeline}
  */
-export function takeLatest(pipeline:AggregationPipeline, maxAmount:number):AggregationPipeline{
-  var projects = pipeline.getReportRepository().getProjects(pipeline.getEnv());
-  projects.forEach(projectInfo => {
-    projectInfo.versions.forEach(version => {
+export function takeLatest(pipe:Pipe, versionAmount:number):void{
+  pipe.projects.forEach(projectInfo => {
+    var latestVersions = projectInfo.versions.reverse().slice(0, versionAmount);
+    latestVersions.forEach(version => {
       projectInfo.version = version;
-      let report = pipeline.getReportRepository().getProject(pipeline.getEnv(), projectInfo);
-      take(pipeline, report);
+      let report = pipe.reportRepo.getProject(pipe.env, projectInfo);
+      pipe.result.pushProject(report);
     })
   });
-  return pipeline;
 }
 

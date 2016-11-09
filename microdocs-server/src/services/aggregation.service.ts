@@ -13,10 +13,9 @@ import {
     ProblemLevels,
     DependencyTypes
 } from "@maxxton/microdocs-core/domain";
-import {NOTICE, ERROR, WARNING} from "@maxxton/microdocs-core/domain/problem/problem-level.model";
-import {REST, INCLUDES} from "@maxxton/microdocs-core/domain/dependency/dependency-type.model";
 
-import { ProblemReporter, SchemaHelper, MicroDocsPreProcessor } from "@maxxton/microdocs-core/helpers";
+import { ProblemReporter, SchemaHelper } from "@maxxton/microdocs-core/helpers";
+import { MicroDocsPreProcessor } from "@maxxton/microdocs-core/pre-processor";
 import * as helpers from "@maxxton/microdocs-core/helpers";
 
 import { PathCheck } from "../checks/path-check";
@@ -504,7 +503,7 @@ export class AggregationService {
    */
   private applyProjectSettings( project:Project, env:string ):Project {
     var settings   = this.projectSettingsRepo.getSettings();
-    var newProject = MicroDocsPreProcessor.processProject( settings, project, env );
+    var newProject = new MicroDocsPreProcessor().processProject( settings, project, env );
     return newProject;
   }
 }

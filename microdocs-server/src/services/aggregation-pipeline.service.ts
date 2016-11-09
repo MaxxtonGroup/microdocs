@@ -1,5 +1,5 @@
-import { Project, Problem } from "@maxxton/microdocs-core/domain";
-import { pipe, defaultPreProcessor } from "./aggregation/aggregation-pipeline";
+import { Project, Problem, ProjectTree } from "@maxxton/microdocs-core/domain";
+import { pipe } from "./aggregation/aggregation-pipeline";
 import { Injection } from "../injections";
 /**
  * @author Steven Hermans
@@ -10,10 +10,10 @@ export class AggregationPipelineService {
 
   reindex( env:string, ):ProjectTree {
     return pipe( this.injection, env )
-        .setPreProcessor(defaultPreProcessor())
         .takeLatest()
+        .preProcess()
         .combineIncludes()
-        .resolveDependencies()
+        .resolveRestDependencies()
         .storeIndex()
         .storeProjects()
         .asTree();
@@ -22,20 +22,28 @@ export class AggregationPipelineService {
   reindexAll( env:string ):ProjectTree {
     return pipe( this.injection, env )
         .takeEverything()
+        .preProcess()
         .combineIncludes()
-        .resolveDependencies()
+        .resolveRestDependencies()
         .storeIndex()
         .storeProjects()
         .asTree();
   }
 
   check( env:string, report:Project ):Problem[] {
-    return pipe( this.injection, env )
+    let problems = pipe( this.injection, env )
         .take( report )
+        .preProcess()
         .combineIncludes()
-        .resolveDependencies()
-        .resolveInvertDependencies()
+        .resolveRestDependencies(report)
         .asProblems();
+    let reverseProblems = pipe(this.injection, env)
+        .takeLatest()
+        .preProcess()
+        .combineIncludes()
+        .resolveRestDependencies(report)
+        .asProblems();
+    return problems.concat(reverseProblems);
   }
 
 }

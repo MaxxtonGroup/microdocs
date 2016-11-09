@@ -6,7 +6,6 @@ export class AggregationResult{
 
   private _result:Project[] = [];
 
-
   public pushProject(project:Project):void{
     if(this.getProject(project.info.title, project.info.version) == null){
       this._result.push(project);
@@ -34,7 +33,6 @@ export class AggregationResult{
     }
     return null;
   }
-
 
   get projectList():Project[] {
     return this._result;

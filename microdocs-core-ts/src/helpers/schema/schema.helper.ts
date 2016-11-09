@@ -483,6 +483,26 @@ export class SchemaHelper {
     return object;
   }
 
+  /**
+   * Merge remote into base, without override existing properties
+   * @param base
+   * @param remote
+   */
+  public static merge(base:{}, remote:{}){
+    for(let key in remote){
+      let remoteProp = remote[key];
+      if(base[key] == undefined){
+        base[key] = remoteProp;
+      }else{
+        let baseProp = base[key];
+        if(typeof(remoteProp) === 'object' && !Array.isArray(remoteProp) &&
+            typeof(baseProp) === 'object' && !Array.isArray(baseProp)){
+          SchemaHelper.merge(baseProp, remoteProp);
+        }
+      }
+    }
+  }
+
 
   /**
    * Resolve a type string, eg. '{id:number,items:Product[],category:{Indoor, Outdoor},tags:Array<string>}[]'

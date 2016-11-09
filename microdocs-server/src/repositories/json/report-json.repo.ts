@@ -182,8 +182,22 @@ export class ReportJsonRepository implements ReportRepository {
   private loadProject(projectFile:string):Project {
     var string = fs.readFileSync(projectFile).toString();
     var json = JSON.parse(string);
-    var project:Project = json;
+    var project = this.fixDependencyUpperCase(json);
     return project;
+  }
+
+  /**
+   * Fix uppercase dependency names
+   * @param project
+   */
+  private fixDependencyUpperCase( project:Project ) {
+    if ( project.dependencies ) {
+      var fixedDependencies = {};
+      for ( var name in project.dependencies ) {
+        fixedDependencies[ name.toLowerCase() ] = project.dependencies[ name ];
+      }
+      project.dependencies = fixedDependencies;
+    }
   }
   
 }

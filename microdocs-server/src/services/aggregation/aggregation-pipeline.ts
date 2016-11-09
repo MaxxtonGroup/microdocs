@@ -1,113 +1,105 @@
-import { Project } from "@maxxton/microdocs-core/domain/project.model";
-import { PreProcessor, MicroDocsPreProcessor } from "@maxxton/microdocs-core/pre-processor";
-
-
-import { AggregationResult } from "./aggregation-result";
-import * as funcs from  './func';
-import { Project } from "@maxxton/microdocs-core/domain/project.model";
 import { ReportRepository } from "../../repositories/report.repo";
 import { ProjectService } from "../project.service";
 import { ProjectSettingsRepository } from "../../repositories/project-settings.repo";
 import { Injection } from "../../injections";
+import { TakePipe } from "./pipes/take.pipe";
+import { Pipe } from "./pipe";
+import { ProjectInfo, Problem, Project } from "@maxxton/microdocs-core/domain";
 
 /**
  * @author Steven Hermans
  */
 export class AggregationPipeline {
 
-  private projectService:ProjectService;
-  private reportRepo:ReportRepository;
-  private projectSettingsRepo:ProjectSettingsRepository;
-  private preProcessor:PreProcessor = null;
-
-  private env:string;
-  private result:AggregationResult;
-
-  private prev:AggregationPipeline;
-  private next:AggregationPipeline;
-  private action:()=>any;
+  private _projectService:ProjectService;
+  private _reportRepo:ReportRepository;
+  private _projectSettingsRepo:ProjectSettingsRepository;
+  private _env:string;
+  private _projects:ProjectInfo[];
+  private _scope:Project;
+  private _problems:Problem[];
 
   private constructor( env:string, projectService:ProjectService, reportRepo:ReportRepository, projectSettingsRepo:ProjectSettingsRepository ) {
-    this.env = env;
-    this.projectService = projectService;
-    this.reportRepo = reportRepo;
-    this.projectSettingsRepo = projectSettingsRepo;
-  }
+    this._env                 = env;
+    this._projectService      = projectService;
+    this._reportRepo          = reportRepo;
+    this._projectSettingsRepo = projectSettingsRepo;
 
-  /**
-   * Add report as input for the pipeline
-   * @param report
-   */
-  public take = ( report:Project ):AggregationPipeline => funcs.take( this, report );
-
-  /**
-   * Add report as input for the pipeline
-   */
-  public takeEverything = ():AggregationPipeline => funcs.takeEverything( this );
-
-  /**
-   * Add report as input for the pipeline
-   * @param maxAmount
-   */
-  public takeLatest = ( maxAmount:number = 1 ):AggregationPipeline => funcs.takeLatest( this, maxAmount );
-
-  /**
-   * PreProcess a report based on the project settings
-   * @param report project to be processed
-   */
-  public preProcess = ( project:Project ):Project => funcs.preProcess( this, project );
-
-  /**
-   * Set the PreProcessor to use, null is none
-   * @param preProcessor
-   * @return {AggregationPipeline}
-   */
-  public setPreProcessor( preProcessor:PreProcessor ):AggregationPipeline {
-    this.preProcessor = preProcessor;
-    return this;
-  }
-
-  /**
-   * Get the PreProcessor, null is none
-   * @return {PreProcessor}
-   */
-  public getPreProcessor():PreProcessor {
-    return this.preProcessor;
-  }
-
-  /**
-   * Get the aggregation result
-   * @return {AggregationResult}
-   */
-  public getResult():AggregationResult {
-    return this.result;
+    // preload all projectInfo's
+    this._projects = this._reportRepo.getProjects( env );
   }
 
   /**
    * Get current environment
    * @return {string}
    */
-  public getEnv():string {
-    return this.env;
+  get env():string {
+    return this._env;
   }
 
-  public getReportRepository():ReportRepository{
-    return this.reportRepo;
+  get projectService():ProjectService {
+    return this._projectService;
   }
 
-  public getProjectService():ProjectService{
-    return this.projectService;
+  get reportRepo():ReportRepository {
+    return this._reportRepo;
   }
 
-  public getProjectSettingsRepository():ProjectSettingsRepository {
-    return this.projectSettingsRepo;
+  get projectSettingsRepo():ProjectSettingsRepository {
+    return this._projectSettingsRepo;
   }
 
+
+  /**
+   * Add report as input for the pipeline
+   * @param report
+   */
+  public take = ( report:Project ):Pipe => {
+    this._scope = report;
+    return new TakePipe( this, report ).process();
+  };
+
+  /**
+   * Add report as input for the pipeline
+   */
+  public takeEverything = ():Pipe => {
+    return new TakePipe( this ).process();
+  };
+
+  /**
+   * Add report as input for the pipeline
+   * @param maxAmount
+   */
+  public takeLatest = ( maxAmount:number = 1 ):Pipe => {
+    return new TakePipe( this, maxAmount ).process();
+  };
+
+  /**
+   * Get preloaded project info's
+   * @return {ProjectInfo[]}
+   */
+  get projects():ProjectInfo[] {
+    return this._projects;
+  }
+
+  /**
+   * Get the project scope
+   * @return {Project}
+   */
+  get scope():Project {
+    return this._scope;
+  }
+
+  get problems():Problem[] {
+    return this._problems;
+  }
+
+  public problems( problems:Problem[] ):void {
+    problems.forEach( problem => this._problems.push( problem ) );
+  }
 
 }
 
 export function pipe( injection:Injection, env:string ):AggregationPipeline {
   return new AggregationPipeline( env, injection.ProjectService(), injection.ReportRepository(), injection.ProjectSettingsRepository() );
 }
-
-export const defaultPreProcessor:()=>PreProcessor = () => new MicroDocsPreProcessor();
