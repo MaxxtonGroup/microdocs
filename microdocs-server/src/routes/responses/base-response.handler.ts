@@ -1,13 +1,15 @@
 import * as express from "express";
-import {TreeNode, Problem, Project, ProblemResponse} from '@maxxton/microdocs-core/domain';
+import {ProjectTree, Problem, Project, ProblemResponse, ProblemLevels} from '@maxxton/microdocs-core/domain';
 import * as dump from 'js-yaml';
 import * as xml from 'jsontoxml';
-import {ERROR, WARNING} from "@maxxton/microdocs-core/domain/problem/problem-level.model";
+import {Injection} from "../../injections";
 
 export class BaseResponseHandler {
+  
+  constructor(protected injection:Injection){}
 
-  handleProjects(req: express.Request, res: express.Response, treeNode: TreeNode, env:string) {
-    this.response(req, res, 200, treeNode.unlink());
+  handleProjects(req: express.Request, res: express.Response, projectTree: ProjectTree, env:string) {
+    this.response(req, res, 200, projectTree.unlink());
   }
 
   handleProject(req: express.Request, res: express.Response, project: Project, env:string) {
@@ -16,7 +18,7 @@ export class BaseResponseHandler {
 
   handleProblems(req: express.Request, res: express.Response, problems: Problem[], env:string) {
     var problemResponse:ProblemResponse = {problems: problems};
-    if (problems.filter(problem => problem.level == ERROR || problem.level == WARNING).length == 0){
+    if (problems.filter(problem => problem.level == ProblemLevels.ERROR || problem.level == ProblemLevels.WARNING).length == 0){
       problemResponse.status = 'ok';
       problemResponse.message = 'No problems found';
     } else {

@@ -8,16 +8,16 @@ import { Problem } from "../problem/problem.model";
  */
 export interface Dependency {
 
-  dependencyName?: string;
-  description?: string;
-  group?: string;
-  version?: string;
-  latestVersion?: string;
-  type: string;
-  protocol?: string;
-  import?: DependencyImport;
-  paths?: {[path: string]: {[method: string]: Path}};
-  component?: Component;
-  problems?: Array<Problem>;
+  description?:string;
+  group?:string;
+  version?:string;
+  latestVersion?:string;
+  deprecatedVersions?:string[];
+  type:string;
+  protocol?:string;
+  import?:DependencyImport;
+  paths?:{[path:string]:{[method:string]:Path}};
+  component?:Component;
+  problems?:Array<Problem>;
 
 }

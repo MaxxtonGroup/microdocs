@@ -1,13 +1,11 @@
 /// <reference path="../../_all.d.ts" />
 
 import * as express from "express";
-import {TreeNode, Problem, Project, Schema} from '@maxxton/microdocs-core/domain';
+import {ProjectTree, Problem, Project, Schema, ProblemLevels} from '@maxxton/microdocs-core/domain';
 import {SchemaHelper} from '@maxxton/microdocs-core/helpers';
-import {ERROR, WARNING} from "@maxxton/microdocs-core/domain/problem/problem-level.model";
 import {Config} from "../../config";
 import * as fs from 'fs';
 import {MicroDocsResponseHandler} from "./microdocs-response.handler";
-import {ProjectJsonRepository} from "../../repositories/json/project-json.repo";
 import * as Handlebars from 'handlebars';
 
 export class TemplateResponseHandler extends MicroDocsResponseHandler {
@@ -15,30 +13,30 @@ export class TemplateResponseHandler extends MicroDocsResponseHandler {
   constructor(private templateName: string) {
   }
 
-  handleProjects(req: express.Request, res: express.Response, treeNode: TreeNode, env: string) {
+  handleProjects(req: express.Request, res: express.Response, projectTree: ProjectTree, env: string) {
     res.header('Access-Control-Allow-Origin', '*');
     res.setHeader('Content-Type', 'text/plain');
 
     if (this.existView('projects')) {
       var global = this.getGlobalInfo();
       var projects = [];
-      for (var title in treeNode.dependencies) {
-        var project = new ProjectJsonRepository().getAggregatedProject(env, title, treeNode.dependencies[title].version);
+      projectTree.projects.forEach(projectNode => {
+        var project = this.injection.ProjectRepository().getAggregatedProject(env, projectNode.title, projectNode.version);
 
         if(req.query['method']){
           var filterMethods = req.query['method'].split(',');
           this.filterMethods(project, filterMethods);
         }
         projects.push(project);
-      }
-      res.render(this.getViewFile('projects'), {projects: projects, global: global, node: treeNode, env: env});
+      });
+      res.render(this.getViewFile('projects'), {projects: projects, global: global, node: projectTree, env: env});
 
     } else if (this.existView('project')){
       var filterMethods = [];
       if(req.query['method']) {
         filterMethods = req.query['method'].split(',');
       }
-      var project = this.mergeProjects(treeNode, filterMethods, env);
+      var project = this.mergeProjects(projectTree, filterMethods, env);
       this.handleProject(req, res, project, env);
 
     } else {
@@ -65,7 +63,7 @@ export class TemplateResponseHandler extends MicroDocsResponseHandler {
     res.setHeader('Content-Type', 'text/plain');
     if (this.existView('problems')) {
       var object = {problems: problems};
-      if (problems.filter(problem => problem.level == ERROR || problem.level == WARNING).length == 0) {
+      if (problems.filter(problem => problem.level == ProblemLevels.ERROR || problem.level == ProblemLevels.WARNING).length == 0) {
         object['status'] = 'ok';
         object['message'] = 'No problems found';
       } else {

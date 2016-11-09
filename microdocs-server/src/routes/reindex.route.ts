@@ -3,8 +3,6 @@
 import * as express from "express";
 
 import {BaseRoute} from "./route";
-import {AggregationService} from '../services/aggregation.service';
-import {ResponseHelper} from "./responses/response.helper";
 
 /**
  * @controller
@@ -21,7 +19,7 @@ export class ReindexRoute extends BaseRoute {
    * @httpResponse 200 {Problem[]}
    */
   public reindex(req: express.Request, res: express.Response, next: express.NextFunction, scope:BaseRoute) {
-    var handler = ResponseHelper.getHandler(req);
+    var handler = scope.getHandler(req);
     try {
       var env = scope.getEnv(req, scope);
       if (env == null) {
@@ -32,7 +30,7 @@ export class ReindexRoute extends BaseRoute {
       var nodes = scope.injection.AggregationService().reindex(env);
       handler.handleProjects(req, res, nodes, env);
     } catch (e) {
-      handler.handleInternalServerError(req, res, e);
+      scope.getDefaultHandler().handleInternalServerError(req, res, e);
     }
   }
 

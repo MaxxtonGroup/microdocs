@@ -3,6 +3,7 @@
 @import "partials/json-view";
 @import "../../../node_modules/@maxxton/components/assets/scss/mxt-components";
 @import "../../panels/sidebar-panel/_sidebar.panel";
+@import "../../panels/dependency-graph/dependency-graph";
 @import "../../panels/import-panel/import.panel";
 @import "../../panels/export-panel/export.panel";
 @import "../../panels/delete-panel/delete.panel";
@@ -356,34 +357,6 @@ endpoint .mime{
 
 .response-status{
   color: #2196F3;
-}
-
-dependency-graph svg{
-  width: 100%;
-  height: 75vh;
-}
-
-dependency-graph.small svg{
-  width: 100%;
-  height: 200px;
-}
-
-dependency-graph path {
-  fill: none;
-  stroke: #2A9AF3;
-  stroke-width: 1.5px;
-}
-
-dependency-graph circle {
-  fill: #FF9800;
-  stroke: #333;
-  stroke-width: 1px;
-}
-
-dependency-graph text {
-  font-size: 10px;
-  text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
-  cursor: pointer;
 }
 
 .version-box select{

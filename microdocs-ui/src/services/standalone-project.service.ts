@@ -1,8 +1,16 @@
 import {ProjectService} from "./project.service";
 import {Injectable} from "@angular/core";
 import {Http, Response} from "@angular/http";
-import {Get, Path, Map, Client } from "@maxxton/angular2-rest";
-import {TreeNode, Project, Environments, ProjectChangeRule} from "@maxxton/microdocs-core/domain";
+import {
+  RestClient,
+  HttpClient,
+  Get,
+  Path,
+  Query,
+  Map,
+  Produces, MediaType, Client
+} from "@maxxton/angular2-rest";
+import {ProjectTree, Project, Environments, ProjectChangeRule} from "@maxxton/microdocs-core/domain";
 import {Observable} from "rxjs/Observable";
 import {SchemaHelper} from "@maxxton/microdocs-core/helpers/schema/schema.helper";
 import {SnackbarService} from "@maxxton/components/services/snackbar.service";
@@ -30,8 +38,8 @@ export class StandaloneProjectService extends ProjectService{
    * @httpResponse 200 {TreeNode}
    */
   @Get("/projects-{env}.json")
-  @Map(resp => TreeNode.link(resp.json()))
-  public loadProjects(@Path("env") env: string = this.getSelectedEnv()): Observable<TreeNode>{return null;}
+  @Map(resp => ProjectTree.link(resp.json()))
+  public loadProjects(@Path("env") env: string = this.getSelectedEnv()): Observable<ProjectTree>{return null;}
 
   /**
    * Load project

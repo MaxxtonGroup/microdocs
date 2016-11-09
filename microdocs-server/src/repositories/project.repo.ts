@@ -1,4 +1,5 @@
-import {Project, TreeNode} from "@maxxton/microdocs-core/domain";
+
+import {Project, ProjectTree} from "@maxxton/microdocs-core/domain"
 
 /**
  * @author Steven Hermans
@@ -9,7 +10,7 @@ export interface ProjectRepository {
    * Load the projects index
    * @param env for which env to load
    */
-  getAggregatedProjects(env:string):TreeNode;
+  getAggregatedProjects(env:string):ProjectTree;
   
   /**
    * Load project
@@ -22,7 +23,7 @@ export interface ProjectRepository {
    * @param env for which env to load
    * @param treeNode project index
    */
-  storeAggregatedProjects(env:string, treeNode:TreeNode):void;
+  storeAggregatedProjects(env:string, treeNode:ProjectTree):void;
   
   /**
    * Save project

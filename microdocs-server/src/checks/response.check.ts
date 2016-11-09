@@ -1,7 +1,6 @@
 
 import {PathCheck} from "./path-check";
-import {Path, Project, Schema} from '@maxxton/microdocs-core/domain';
-import {WARNING, ERROR} from "@maxxton/microdocs-core/domain/problem/problem-level.model";
+import {Path, Project, Schema, ProblemLevels} from '@maxxton/microdocs-core/domain';
 import {ProblemReporter}  from '@maxxton/microdocs-core/helpers';
 
 export class ResponseCheck implements PathCheck{
@@ -23,7 +22,7 @@ export class ResponseCheck implements PathCheck{
         var clientSchema = clientEndpoint.responses['default'].schema;
         this.checkSchema(producerSchema, clientSchema, problemReport, '');
       }else{
-        problemReport.report(ERROR, "There is no response body");
+        problemReport.report(ProblemLevels.ERROR, "There is no response body");
       }
     }
   }
@@ -36,7 +35,7 @@ export class ResponseCheck implements PathCheck{
           if(path != ''){
             position = ' at ' + path;
           }
-          problemReport.report(WARNING, "Type mismatches in response body" + position + ", expected: " + clientSchema.type + ", found: " + producerSchema.type);
+          problemReport.report(ProblemLevels.WARNING, "Type mismatches in response body" + position + ", expected: " + clientSchema.type + ", found: " + producerSchema.type);
         } else {
           if (clientSchema.type == "object") {
             var producerProperties = clientSchema.properties;
@@ -51,7 +50,7 @@ export class ResponseCheck implements PathCheck{
           }
         }
       } else if (clientSchema.required) {
-        problemReport.report(ERROR, "Missing required value at " + path);
+        problemReport.report(ProblemLevels.ERROR, "Missing required value at " + path);
       }
     }
   }

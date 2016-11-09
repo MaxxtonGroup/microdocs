@@ -1,7 +1,7 @@
 import {Component} from "@angular/core";
 
 import {COMPONENTS} from "@maxxton/components/components";
-import {TreeNode} from '@maxxton/microdocs-core/domain';
+import {ProjectTree} from '@maxxton/microdocs-core/domain';
 import {DependencyGraph} from '../../panels/dependency-graph/dependency-graph';
 import {ProjectService} from "../../services/project.service";
 import {Subject} from "rxjs/Subject";
@@ -25,14 +25,14 @@ import {WelcomePanel} from "../../panels/welcome-panel/welcome.panel";
 export class DashboardRoute {
 
   empty:boolean = false;
-  nodes:Subject<TreeNode> = new ReplaySubject<TreeNode>(1);
+  nodes:Subject<ProjectTree> = new ReplaySubject<ProjectTree>(1);
 
   constructor(private projectService:ProjectService, private router:Router){
     this.projectService.getProjects().subscribe(notification => {
       notification.do(data => {
-        this.nodes.next(data as TreeNode);
-        if ((data as TreeNode).dependencies) {
-          this.empty = Object.keys((data as TreeNode).dependencies).length == 0;
+        this.nodes.next(data as ProjectTree);
+        if ((data as ProjectTree).projects) {
+          this.empty = (data as ProjectTree).projects.length == 0;
         } else {
           this.empty = true;
         }
