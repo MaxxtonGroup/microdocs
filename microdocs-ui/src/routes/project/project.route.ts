@@ -21,6 +21,7 @@ import {DeletePanel} from "../../panels/delete-panel/delete.panel";
 import {EditPanel} from "../../panels/edit-panel/edit.panel";
 import {MicroDocsConfig} from '../../config/config';
 import * as colorHelper from '../../helpers/color.helper';
+import { ProjectChangeRule } from "@maxxton/microdocs-core/domain/settings/project-change-rule.model";
 
 
 @Component({
@@ -176,5 +177,14 @@ export class ProjectRoute {
       this.nodes.next(this.projects);
     }
   }
-  
+
+  toggleDeprecated(){
+    this.project.deprecated = !this.project.deprecated;
+    let rules = [
+        new ProjectChangeRule('deprecated', ProjectChangeRule.TYPE_ALTER, this.project.deprecated, ProjectChangeRule.SCOPE_VERSION)
+    ];
+    this.projectService.updateProject(this.title, rules, this.version).subscribe(resp => {
+      this.projectService.refreshProject(this.title, this.version);
+    });
+  }
 }
