@@ -6,14 +6,8 @@ import {Subscription} from "rxjs/Subscription";
 
 import {COMPONENTS} from "@maxxton/components/components";
 import {FILTERS} from "@maxxton/components/filters";
-<<<<<<< HEAD
 import {Project, Path, Method, Schema, Dependency, ProjectTree, DependencyTypes} from "@maxxton/microdocs-core/domain";
 import {SchemaHelper} from "@maxxton/microdocs-core/helpers/schema/schema.helper";
-=======
-import {Project, Path, Method, Schema, Dependency, TreeNode} from "@maxxton/microdocs-core/domain";
-import {REST, DATABASE, USES, INCLUDES} from "@maxxton/microdocs-core/domain/dependency/dependency-type.model";
-import {SchemaHelper} from "@maxxton/microdocs-core/helpers";
->>>>>>> development
 
 import {ProjectService} from "../../services/project.service";
 import {EndpointPanel} from "../../panels/endpoint-panel/endpoint.panel";

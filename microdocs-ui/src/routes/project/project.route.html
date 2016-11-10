@@ -31,6 +31,8 @@
           </div>
         </template>
         <div *ngIf="project | notEmpty:'info.description'" class="project-desc">{{project.info.description}}</div>
+        <div *ngIf="project | notEmpty:'info.publishTime'" class="project-time">Published on {{project.info.publishTime | date:'hh:mm dd-MM-yyyy'}}</div>
+        <div *ngIf="project | notEmpty:'info.updateTime'" class="project-time">Updated on {{project.info.updateTime | date:'hh:mm dd-MM-yyyy'}}</div>
         <div *ngIf="project | notEmpty:'info.links'" class="project-links">
           <ul>
             <li *ngFor="let link of project.info.links">
