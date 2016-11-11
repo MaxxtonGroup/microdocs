@@ -36,7 +36,7 @@
         <template [ngIf]="project.deprecated === true">
           <div class="problem-box">
             <span class="icon">error</span>
-            <span class="problem">This project is marked as Deprecated</span>
+            <span class="problem">This version is marked as Deprecated</span>
           </div>
         </template>
         <div *ngIf="project | notEmpty:'info.description'" class="project-desc">{{project.info.description}}</div>
