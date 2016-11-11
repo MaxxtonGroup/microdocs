@@ -18,6 +18,7 @@ ADD ./microdocs-server/.npmrc /microdocs/microdocs-server/
 ADD ./microdocs-server/package.json /microdocs/microdocs-server/
 ADD ./microdocs-server/typings.json /microdocs/microdocs-server/
 RUN npm install
+RUN /microdocs/microdocs-server/node_modules/.bin/typings install
 
 # Build microdocs-ui
 WORKDIR /microdocs/microdocs-ui
