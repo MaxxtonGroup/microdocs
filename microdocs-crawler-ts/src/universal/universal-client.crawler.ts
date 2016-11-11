@@ -1,7 +1,7 @@
 import {ClientCrawler} from "../common/abstract/client.crawler";
 import {ProjectReflection} from "typedoc";
 import {ContainerReflection} from "typedoc/lib/models";
-import {DependencyBuilder} from '@maxxton/microdocs-core-ts/dist/builder';
+import {DependencyBuilder} from '@maxxton/microdocs-core/builder';
 
 export class UniversalClientCrawler extends ClientCrawler {
 

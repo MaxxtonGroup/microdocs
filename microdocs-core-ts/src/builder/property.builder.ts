@@ -11,9 +11,9 @@ export class PropertyBuilder implements Builder<Property> {
 }
 
 export class Property {
-  public name?:string;
-  public type?: string;
-  public defaultValue?: string;
-  public description?: string;
-  public required?: boolean = null;
+  public name:string;
+  public type: string;
+  public defaultValue: string;
+  public description: string;
+  public required: boolean;
 }

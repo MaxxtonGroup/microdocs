@@ -1,6 +1,6 @@
-import {Project, Schema, Path, ProjectInfo, TreeNode} from "@maxxton/microdocs-core-ts/dist/domain";
-import {QUERY, PATH, BODY} from "@maxxton/microdocs-core-ts/dist/domain/path/parameter-placing.model";
-import {SchemaHelper} from "@maxxton/microdocs-core-ts/dist/helpers/schema/schema.helper";
+
+import {Project, Schema, Path, ProjectInfo, ProjectTree, ParameterPlacings} from "@maxxton/microdocs-core/domain";
+
 import * as uuid from 'uuid';
 
 
@@ -11,18 +11,18 @@ import {ProjectJsonRepository} from "../../repositories/json/project-json.repo";
 
 export class PostmanResponseHandler extends MicroDocsResponseHandler {
 
-  handleProjects(req: express.Request, res: express.Response, projects: TreeNode, env:string) {
-    if(Object.keys(projects.dependencies).length == 1){
-      var name = Object.keys(projects.dependencies)[0];
-      var project = ProjectJsonRepository.bootstrap().getAggregatedProject(env, name, projects.dependencies[name].version);
+  handleProjects( req:express.Request, res:express.Response, projectTree:ProjectTree, env:string ) {
+    if ( projectTree.projects.length == 1 ) {
+      var projectNode = projectTree.projects[ 0 ];
+      var project     = this.injection.ProjectRepository().getAggregatedProject( env, projectNode.title, projectNode.version );
 
-      if(req.query['method']){
-        var filterMethods = req.query['method'].split(',');
-        this.filterMethods(project, filterMethods);
+      if ( req.query[ 'method' ] ) {
+        var filterMethods = req.query[ 'method' ].split( ',' );
+        this.filterMethods( project, filterMethods );
       }
-      this.response(req, res, 200, this.postman(project));
-    }else {
-      this.response(req, res, 200, this.postmans(projects, env));
+      this.response( req, res, 200, this.postman( project ) );
+    } else {
+      this.response( req, res, 200, this.postmans( projectTree, env ) );
     }
   }
 
@@ -34,18 +34,18 @@ export class PostmanResponseHandler extends MicroDocsResponseHandler {
     this.response(req, res, 200, this.postman(project));
   }
 
-  postmans(projects: TreeNode, env:string):{}{
+  postmans(projectTree: ProjectTree, env:string):{}{
     var collection = this.getPostmanBase();
 
-    for(var name in projects.dependencies){
-      var project = ProjectJsonRepository.bootstrap().getAggregatedProject(env, name, projects.dependencies[name].version);
+    projectTree.projects.forEach(projectNode => {
+      var project = this.injection.ProjectRepository().getAggregatedProject(env, projectNode.title, projectNode.version);
       var subCollection = this.getPostmanItems(project);
       collection['item'].push({
-        name: name,
-        description: 'Folder for ' + name,
+        name: projectNode.title,
+        description: project.info && project.info.description ? project.info.description : 'Folder for ' + projectNode.title,
         item: subCollection
       })
-    }
+    });
 
     return collection;
   }
@@ -76,7 +76,7 @@ export class PostmanResponseHandler extends MicroDocsResponseHandler {
     var responses = [];
     if(endpoint.parameters != undefined){
       //replace path variables
-      endpoint.parameters.filter(param => param.in == PATH).forEach(param => {
+      endpoint.parameters.filter(param => param.in == ParameterPlacings.PATH).forEach(param => {
         var generatedValue = '{{' + param.name + '}}';
         if(param.default != undefined){
           generatedValue = param.default;
@@ -85,7 +85,7 @@ export class PostmanResponseHandler extends MicroDocsResponseHandler {
       });
 
       // replace query params
-      endpoint.parameters.filter(param => param.in == QUERY).forEach(param => {
+      endpoint.parameters.filter(param => param.in == ParameterPlacings.QUERY).forEach(param => {
         var generatedValue = '{{' + param.name + '}}';
         if(param.default != undefined){
           generatedValue = param.default;
@@ -99,7 +99,7 @@ export class PostmanResponseHandler extends MicroDocsResponseHandler {
       });
 
       // add body
-      endpoint.parameters.filter(param => param.in == BODY).forEach(param => {
+      endpoint.parameters.filter(param => param.in == ParameterPlacings.BODY).forEach(param => {
         body = {
           mode: 'raw',
           raw: JSON.stringify(param.default, null, '  ')

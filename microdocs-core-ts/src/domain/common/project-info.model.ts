@@ -1,12 +1,15 @@
 import {ProjectLink} from "./project-link.model";
 export class ProjectInfo {
+
   constructor(public title: string,
               public group: string,
               public version: string,
               public versions: string[],
               public links ?: ProjectLink[],
               public description?: string,
-              public sourceLink?: string) {
+              public sourceLink?: string,
+              public publishTime?:string,
+              public updateTime?:string) {
   }
 
   /**

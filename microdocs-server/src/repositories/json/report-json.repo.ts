@@ -4,7 +4,7 @@ import * as path from 'path';
 
 import {Config} from "../../config";
 import {ReportRepository} from "../report.repo";
-import {Project, ProjectInfo} from "@maxxton/microdocs-core-ts/dist/domain";
+import {Project, ProjectInfo} from "@maxxton/microdocs-core/domain";
 import * as mkdir from 'mkdir-p';
 import * as fsHelper from '../../helpers/file.helper';
 
@@ -100,6 +100,9 @@ export class ReportJsonRepository implements ReportRepository {
    */
   public storeProject(env:string, project:Project):void {
     console.info("Store report: " + project.info.title + ":" + project.info.version);
+    // set update time
+    project.info.updateTime = new Date().toISOString();
+
     var dataFolder:string = __dirname + '/../../../' + Config.get("dataFolder") + "/reports/" + env;
     var groupFolder:string = dataFolder + "/" + project.info.group.toLowerCase();
     var projectFolder:string = groupFolder + "/" + project.info.title.toLowerCase();

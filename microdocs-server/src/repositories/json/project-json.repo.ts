@@ -5,7 +5,7 @@ import * as mkdir from 'mkdir-p';
 
 import {Config} from "../../config";
 import {ProjectRepository} from "../project.repo";
-import {Project, TreeNode} from "@maxxton/microdocs-core-ts/dist/domain";
+import {Project, ProjectTree} from "@maxxton/microdocs-core/domain";
 import * as fsHelper from '../../helpers/file.helper';
 
 export class ProjectJsonRepository implements ProjectRepository {
@@ -34,14 +34,14 @@ export class ProjectJsonRepository implements ProjectRepository {
     return false;
   }
   
-  public getAggregatedProjects(env:string):TreeNode {
+  public getAggregatedProjects(env:string):ProjectTree {
     console.info("Load metadata");
     var dataFolder:string = __dirname + '/../../../' + Config.get("dataFolder") + "/database/" + env;
     var metaFile:string = dataFolder + "/projects.json";
     if (fs.existsSync(metaFile)) {
       var string = fs.readFileSync(metaFile).toString();
       var json = JSON.parse(string);
-      return TreeNode.link(json);
+      return ProjectTree.link(json);
     }
     return null;
   }
@@ -60,14 +60,14 @@ export class ProjectJsonRepository implements ProjectRepository {
     return null;
   }
   
-  public storeAggregatedProjects(env:string, node:TreeNode):void {
+  public storeAggregatedProjects(env:string, projectTree:ProjectTree):void {
     console.info("Store metadata");
     var dataFolder:string = __dirname + '/../../../' + Config.get("dataFolder") + "/database/" + env;
     var metaFile:string = dataFolder + "/projects.json";
     
     mkdir.sync(dataFolder);
     
-    var json = JSON.stringify(node.unlink());
+    var json = JSON.stringify(projectTree.unlink());
     fs.writeFileSync(metaFile, json);
   }
   

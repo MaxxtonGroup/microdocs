@@ -12,8 +12,9 @@ import {
   ComponentBuilder,
   PathBuilder,
   ControllerBuilder
-} from '@maxxton/microdocs-core-ts/dist/builder';
-import {REST} from '@maxxton/microdocs-core-ts/dist/domain/dependency/dependency-type.model'
+} from '@maxxton/microdocs-core/builder';
+import {REST} from '@maxxton/microdocs-core/domain/dependency/dependency-type.model'
+import {ProjectInfo} from '@maxxton/microdocs-core/domain';
 import {ClassIdentity} from "./domain/class-identity";
 import {CrawlerException} from "./crawler.exception";
 import {ModelCrawler} from "./abstract/model.crawler";
@@ -61,6 +62,14 @@ export class RootCrawler {
    * @param declaration
    */
   public crawl(projectBuilder: ProjectBuilder, projectReflection: ProjectReflection): void {
+    if(!projectBuilder.project().info){
+      projectBuilder.project().info = <ProjectInfo>{};
+    }
+    if(projectReflection.packageInfo){
+      this.crawlPackageInfo(projectBuilder, projectReflection.packageInfo);
+    }
+
+
     var flatMap:ContainerReflection[] = [];
     this.collectClasses(projectReflection, flatMap);
     flatMap.forEach(classReflection => {
@@ -84,6 +93,19 @@ export class RootCrawler {
             break;
         }
       });
+    }
+  }
+
+  private crawlPackageInfo(projectBuilder: ProjectBuilder, packageInfo:any){
+    if(packageInfo.name){
+      var splitted = packageInfo.name.split('/');
+      projectBuilder.project().info.title = splitted[splitted.length-1];
+    }
+    if(packageInfo.version){
+      projectBuilder.project().info.version = packageInfo.version;
+    }
+    if(packageInfo.description){
+      projectBuilder.project().info.description = packageInfo.description;
     }
   }
 

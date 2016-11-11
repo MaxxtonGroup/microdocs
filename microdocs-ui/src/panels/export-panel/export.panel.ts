@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Output, Input} from "@angular/core";
 import {COMPONENTS} from "@maxxton/components/components";
 import {Observable} from "rxjs/Observable";
-import {TreeNode} from "@maxxton/microdocs-core/domain";
+import {ProjectNode} from "@maxxton/microdocs-core/domain";
 import {ProjectService} from "../../services/project.service";
 
 /**
@@ -33,20 +33,19 @@ export class ExportPanel {
   
   constructor(private projectService:ProjectService) {
     projectService.getProjects().subscribe(notification => {
-      notification.do(projects => {
+      notification.do(projectTree => {
         this.allSelected = true;
         this.groupItems = [];
         this.projectItems = [];
-        if (projects.dependencies) {
-          for (var title in projects.dependencies) {
-            var node = projects.dependencies[title];
-            if(node.group && node.group.length > 0) {
-              this.projectItems.push(new Item(title, node.group));
-              if (this.groupItems.filter(group => group.name.toLowerCase() === node.group.toLowerCase()).length == 0) {
-                this.groupItems.push(new Item(node.group));
+        if (projectTree.projects) {
+          projectTree.projects.forEach(projectNode => {
+            if(projectNode.group && projectNode.group.length > 0) {
+              this.projectItems.push(new Item(projectNode.title, projectNode.group));
+              if (this.groupItems.filter(group => group.name.toLowerCase() === projectNode.group.toLowerCase()).length == 0) {
+                this.groupItems.push(new Item(projectNode.group));
               }
             }
-          }
+          });
         }
       });
     });

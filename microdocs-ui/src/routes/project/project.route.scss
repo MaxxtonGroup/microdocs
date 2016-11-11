@@ -48,7 +48,16 @@ project-route toolbar-item.align-right.delete-button{
   color: $red;
 }
 
+project-route toolbar-item.align-right.deprecate-button{
+  right: 150px;
+  color: $blue-gray;
+}
+
 project-route toolbar-item.align-right:hover{
+  background-color: rgba(0,0,0,0.1);
+}
+
+project-route toolbar-item.align-right.selected{
   background-color: rgba(0,0,0,0.1);
 }
 

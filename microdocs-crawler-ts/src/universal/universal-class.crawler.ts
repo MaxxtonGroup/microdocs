@@ -3,8 +3,8 @@ import {ClassCrawler} from "../common/abstract/class.crawler";
 import {ClassIdentity} from "../common/domain/class-identity";
 import {ProjectReflection} from "typedoc";
 import {ContainerReflection} from "typedoc/lib/models";
-import {ProjectBuilder} from '@maxxton/microdocs-core-ts/dist/builder';
-import {ProjectInfo} from '@maxxton/microdocs-core-ts/dist/domain';
+import {ProjectBuilder, DependencyBuilder} from '@maxxton/microdocs-core/builder';
+import {ProjectInfo, DependencyTypes} from '@maxxton/microdocs-core/domain';
 
 export class UniversalClassCrawler extends ClassCrawler{
 
@@ -21,20 +21,32 @@ export class UniversalClassCrawler extends ClassCrawler{
         classIdentity.isComponent = true;
       } else if (this.isModel(classReflection)) {
         classIdentity.isModel = true;
-      }
+      } else if (this.isMain(classReflection)) {
+        classIdentity.isMain = true;
 
-      var comment = classReflection.comment;
-      if(comment.hasTag("projectname") || comment.hasTag("projectgroup")){
-        if(!projectBuilder.project().info){
-          projectBuilder.project().info = <ProjectInfo>{};
+        var comment = classReflection.comment;
+        var applicationName = comment.getTag('application').text.trim();
+        if(applicationName && applicationName !== ''){
+          var splitted = applicationName.split('/');
+          projectBuilder.project().info.title = splitted[splitted.length-1];
         }
-        projectBuilder.project().info.description = comment.shortText;
-        if(comment.hasTag("projectname")) {
-          projectBuilder.project().info.title = comment.getTag("projectname").text.trim();
-        }
+
         if(comment.hasTag("projectgroup")) {
           projectBuilder.project().info.group = comment.getTag("projectgroup").text.trim();
         }
+        if(comment.hasTag("projectinclude")) {
+          var dependencyName = comment.getTag('projectinclude').text.trim();
+          var splitted = dependencyName.split('/');
+          var dependendyBuilder = new DependencyBuilder(DependencyTypes.INCLUDES);
+          dependendyBuilder.title = splitted[splitted.length-1];
+          dependendyBuilder.dependency.dependencyName = dependencyName;
+          var version = this.findDependency(dependencyName, projectReflection);
+          if(version){
+            dependendyBuilder.dependency.version;
+          }
+          projectBuilder.dependency(dependendyBuilder);
+        }
+
       }
     }
   }
@@ -54,6 +66,25 @@ export class UniversalClassCrawler extends ClassCrawler{
 
   private isModel(classReflection: ContainerReflection): boolean {
     return classReflection.comment.hasTag("model");
+  }
+
+  private isMain(classReflection: ContainerReflection): boolean {
+    return classReflection.comment.hasTag("application");
+  }
+
+  private findDependency(title:string, projectReflection: ProjectReflection):string{
+    if(projectReflection.packageInfo){
+      if(projectReflection.packageInfo.dependencies && projectReflection.packageInfo.dependencies[title]){
+        return projectReflection.packageInfo.dependencies[title];
+      }
+      if(projectReflection.packageInfo.devDependencies && projectReflection.packageInfo.devDependencies[title]){
+        return projectReflection.packageInfo.devDependencies[title];
+      }
+      if(projectReflection.packageInfo.peerDependencies && projectReflection.packageInfo.peerDependencies[title]){
+        return projectReflection.packageInfo.peerDependencies[title];
+      }
+    }
+    return null;
   }
 
 }

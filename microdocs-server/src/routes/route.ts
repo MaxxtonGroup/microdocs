@@ -3,6 +3,23 @@
 import {RequestHandler, Request, Response, NextFunction} from 'express';
 import {ProjectSettingsJsonRepository} from "../repositories/json/project-settings-json.repo";
 import {Injection} from "../injections";
+import { BaseResponseHandler } from "./responses/base-response.handler";
+import { MicroDocsResponseHandler } from "./responses/microdocs-response.handler";
+import { SwaggerResponseHandler } from "./responses/swagger-response.handler";
+import { PostmanResponseHandler } from "./responses/postman-response.handler";
+import { TemplateResponseHandler } from "./responses/template-response.handler";
+
+const baseResponse = BaseResponseHandler;
+const microDocsResponse = MicroDocsResponseHandler;
+const swaggerResponse = SwaggerResponseHandler;
+const postmanResponse = PostmanResponseHandler;
+
+const responses:{[key:string]:new (Injection)=>BaseResponseHandler} = {
+  "default": baseResponse,
+  "swagger": swaggerResponse,
+  "microdocs": microDocsResponse,
+  "postman": postmanResponse
+};
 
 /**
  * Base route
@@ -31,6 +48,25 @@ export abstract class BaseRoute {
    */
   public methods(): string[] {
     return this.mapping.methods;
+  }
+
+  public getDefaultHandler():BaseResponseHandler{
+    return new baseResponse(this.injection);
+  }
+
+  public getHandler(req: Request):BaseResponseHandler{
+    var exportType = req.query.export;
+    if(exportType == undefined){
+      exportType = req.header('export');
+      if(exportType == undefined){
+        exportType = 'default';
+      }
+    }
+    var response:new (Injection)=>BaseResponseHandler = responses[exportType.toLowerCase()];
+    if(response == undefined){
+      return new TemplateResponseHandler(exportType.toLowerCase());
+    }
+    return new response(this.injection);
   }
 
   /**

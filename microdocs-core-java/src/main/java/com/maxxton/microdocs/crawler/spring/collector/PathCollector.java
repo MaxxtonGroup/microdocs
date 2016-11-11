@@ -56,6 +56,7 @@ public class PathCollector implements Collector<PathBuilder> {
     private List<PathBuilder> collectPaths(ReflectClass<?> controller, ReflectMethod method) {
         ReflectAnnotation controllerRequestMapping = controller.getAnnotation(requestMapping);
         ReflectAnnotation methodRequestMapping = method.getAnnotation(requestMapping);
+        List<Parameter> parameters = new ArrayList();
 
         // find uri
         String controllerPath = getPath(controllerRequestMapping);
@@ -69,8 +70,22 @@ public class PathCollector implements Collector<PathBuilder> {
         }
         String path;
         if (fullPath.contains("?")) {
-            path = fullPath.split("\\?")[0];
-            //todo: parse parameters
+            String[] pathSplit = fullPath.split("\\?");
+            path = pathSplit[0];
+            String paramsSplit = pathSplit[1];
+
+            String[] params = paramsSplit.split("&");
+            for(String param : params){
+                String[] paramSplit = param.split("=");
+                ParameterVariable parameter = new ParameterVariable();
+                parameter.setIn(ParameterPlacing.QUERY);
+                parameter.setName(paramSplit[0]);
+                parameter.setRequired(true);
+                if(paramSplit.length > 1) {
+                    parameter.setDefaultValue(paramSplit[1]);
+                }
+                parameters.add(parameter);
+            }
         } else {
             path = fullPath;
         }
@@ -102,8 +117,6 @@ public class PathCollector implements Collector<PathBuilder> {
         }
         consumes.addAll(getCondumes(controllerRequestMapping));
         consumes.addAll(getCondumes(methodRequestMapping));
-
-        List<Parameter> parameters = new ArrayList();
 
         for(ReflectParameter parameter : method.getParameters()){
             if(parameter.getType() != null && parameter.getType().getClassType() != null) {

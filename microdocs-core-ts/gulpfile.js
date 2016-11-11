@@ -27,7 +27,7 @@ gulp.task('bundle-javascript', function (cb) {
 });
 
 gulp.task('test', function (cb) {
-  mxtBuilder.test(cb);
+  mxtBuilder.test(cb, 'mocha');
 });
 
 /**

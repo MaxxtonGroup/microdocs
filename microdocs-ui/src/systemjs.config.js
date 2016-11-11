@@ -21,6 +21,7 @@
         'filters': {defaultExtension: 'js'},
         'config': {defaultExtension: 'js'},
         'pipes': {defaultExtension: 'js'},
+        'helpers': {defaultExtension: 'js'},
 
         '@maxxton/components': {defaultExtension: 'js'},
         '@maxxton/components/helpers': {main: 'index.js', defaultExtension: 'js'},
@@ -28,9 +29,9 @@
         '@maxxton/components/services': {main: 'index.js', defaultExtension: 'js'},
         '@maxxton/components/filters': {main: 'index.js', defaultExtension: 'js'},
 
-        '@maxxton/microdocs-core-ts': {defaultExtension: 'js'},
-        '@maxxton/microdocs-core-ts/dist/domain': {main: 'index.js', defaultExtension: 'js'},
-        '@maxxton/microdocs-core-ts/dist/helpers': {main: 'index.js', defaultExtension: 'js'},
+        '@maxxton/microdocs-core': {defaultExtension: 'js'},
+        '@maxxton/microdocs-core/domain': {main: 'index.js', defaultExtension: 'js'},
+        '@maxxton/microdocs-core/helpers': {main: 'index.js', defaultExtension: 'js'},
 
         'angular2-prettyjson': {main: 'index.js', defaultExtension: 'js'},
         'd3': {main: 'd3.min.js', defaultExtension: 'js'},

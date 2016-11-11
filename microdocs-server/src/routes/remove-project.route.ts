@@ -3,13 +3,9 @@
 import * as express from "express";
 
 import {BaseRoute} from "./route";
-import {ProjectJsonRepository} from "../repositories/json/project-json.repo";
 import {ProjectRepository} from "../repositories/project.repo";
-import {ResponseHelper} from "./responses/response.helper";
-import {ReportJsonRepository} from "../repositories/json/report-json.repo";
-import {ProjectInfo} from '@maxxton/microdocs-core-ts/dist/domain';
+import {ProjectInfo} from '@maxxton/microdocs-core/domain';
 import {ReportRepository} from "../repositories/report.repo";
-import {AggregationService} from "../services/aggregation.service";
 
 /**
  * @controller
@@ -29,7 +25,7 @@ export class RemoveProjectRoute extends BaseRoute {
    * @httpResponse 404 Project or version of the project doesn't exists
    */
   public deleteProject(req: express.Request, res: express.Response, next: express.NextFunction, scope:BaseRoute) {
-    var handler = ResponseHelper.getHandler(req);
+    var handler = scope.getHandler(req);
     try {
       var env = scope.getEnv(req, scope);
       if (env == null) {
@@ -85,7 +81,7 @@ export class RemoveProjectRoute extends BaseRoute {
       var nodes = scope.injection.AggregationService().reindex(env);
       handler.handleProjects(req, res, nodes, env);
     } catch (e) {
-      ResponseHelper.getHandler(req).handleInternalServerError(req, res, e);
+      scope.getDefaultHandler().handleInternalServerError(req, res, e);
     }
   }
 }
