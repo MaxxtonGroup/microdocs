@@ -1,6 +1,9 @@
 import { Project, ProjectSettings } from "../../domain";
 import { SchemaHelper } from "../schema/schema.helper";
 
+const VARIABLES_PLACEHOLDER = "~~~VARIABLES";
+const IF_PLACEHOLDER = "~~~IF";
+
 /**
  * Helper for applying custom settings
  * @author Steven Hermans
@@ -17,21 +20,21 @@ export class MicroDocsPreProcessor {
   public static processProject( settings:ProjectSettings, project:Project, env:string ):Project {
     // load variables
     var variables = {};
-    if ( settings.global && settings.global[ '_variables' ] ) {
-      Object.assign( variables, settings.global[ '_variables' ] );
-      delete settings.global[ '_variables' ];
+    if ( settings.global && settings.global[ VARIABLES_PLACEHOLDER ] ) {
+      Object.assign( variables, settings.global[ VARIABLES_PLACEHOLDER ] );
+      delete settings.global[ VARIABLES_PLACEHOLDER ];
     }
-    if ( settings.environments && settings.environments[ env ] && settings.environments[ env ][ '_variables' ] ) {
-      Object.assign( variables, settings.environments[ env ][ '_variables' ] );
-      delete settings.environments[ env ][ '_variables' ];
+    if ( settings.environments && settings.environments[ env ] && settings.environments[ env ][ VARIABLES_PLACEHOLDER ] ) {
+      Object.assign( variables, settings.environments[ env ][ VARIABLES_PLACEHOLDER ] );
+      delete settings.environments[ env ][ VARIABLES_PLACEHOLDER ];
     }
-    if ( project.info && project.info.group && settings.groups && settings.groups[ project.info.group ] && settings.groups[ project.info.group ][ '_variables' ] ) {
-      Object.assign( variables, settings.groups[ project.info.group ][ '_variables' ] );
-      delete settings.groups[ project.info.group ][ '_variables' ];
+    if ( project.info && project.info.group && settings.groups && settings.groups[ project.info.group ] && settings.groups[ project.info.group ][ VARIABLES_PLACEHOLDER ] ) {
+      Object.assign( variables, settings.groups[ project.info.group ][ VARIABLES_PLACEHOLDER ] );
+      delete settings.groups[ project.info.group ][ VARIABLES_PLACEHOLDER ];
     }
-    if ( project.info && project.info.title && settings.projects && settings.projects[ project.info.title ] && settings.projects[ project.info.title ][ '_variables' ] ) {
-      Object.assign( variables, settings.projects[ project.info.title ][ '_variables' ] );
-      delete settings.projects[ project.info.title ][ '_variables' ];
+    if ( project.info && project.info.title && settings.projects && settings.projects[ project.info.title ] && settings.projects[ project.info.title ][ VARIABLES_PLACEHOLDER ] ) {
+      Object.assign( variables, settings.projects[ project.info.title ][ VARIABLES_PLACEHOLDER ] );
+      delete settings.projects[ project.info.title ][ VARIABLES_PLACEHOLDER ];
     }
 
     console.error( variables );
@@ -97,7 +100,7 @@ export class MicroDocsPreProcessor {
         if ( !newSettingsScope ) {
           newSettingsScope = {};
         }
-        if ( key === '~~~IF' ) {
+        if ( key === IF_PLACEHOLDER ) {
           let condition = newSettingsScope[ 'condition' ];
           if ( condition ) {
             var result = SchemaHelper.resolveCondition( condition, variables );
