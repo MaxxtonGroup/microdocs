@@ -483,6 +483,18 @@ export class SchemaHelper {
     return object;
   }
 
+  public static resolveCondition(condition:string, vars:{scope:{},project:{},settings:{},settingsScope:{}}):boolean{
+    var result;
+    (function(){
+      var scope = vars.scope;
+      var project = vars.project;
+      var settings = vars.settings;
+      var settingsScope = vars.settingsScope;
+      result = eval(condition);
+    })();
+    return result;
+  }
+
 
   /**
    * Resolve a type string, eg. '{id:number,items:Product[],category:{Indoor, Outdoor},tags:Array<string>}[]'
