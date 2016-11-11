@@ -15,7 +15,7 @@
     "unlinkDevelopment": "npm unlink @maxxton/microdocs-core-ts",
 
     "postinstall": "typings install",
-    "package-distribution": "gulp package-distribution-production"
+    "package-distribution": "gulp prepublish"
   },
   "author": "Steven Hermans (s.hermans@maxxton.com",
   "license": "MIT",
