@@ -121,6 +121,32 @@ describe( '#MicroDocsPreProcessor: ', () => {
       } );
     } );
 
+    it( "Test scope", () => {
+      var project:Project = <Project>{
+        object: {
+          "john": {
+            age: 15
+          },
+          'alice': { age: 20 }
+        }
+      };
+      var settings        = {
+        object: {
+          '{i}': {
+            "description": "${i} is ${scope.age} years old"
+          }
+        }
+      };
+
+      var result = MicroDocsPreProcessor.process( project, settings );
+      expect( result ).to.deep.eq( {
+        object: {
+          "john": { age: 15, description: "john is 15 years old" },
+          'alice': { age: 20, description: "alice is 20 years old" }
+        }
+      } );
+    } );
+
   } );
 
 } );

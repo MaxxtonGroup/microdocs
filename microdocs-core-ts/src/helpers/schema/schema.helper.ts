@@ -490,6 +490,7 @@ export class SchemaHelper {
       var project = vars.project;
       var settings = vars.settings;
       var settingsScope = vars.settingsScope;
+      var _ = vars;
       result = eval(condition);
     })();
     return result;
