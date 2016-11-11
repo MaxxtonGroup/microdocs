@@ -6,10 +6,11 @@ import {ROUTER_DIRECTIVES} from "@angular/router";
 import {COMPONENTS} from "@maxxton/components/components";
 import {Notification} from "rxjs/Notification";
 import {Observable} from "rxjs/Observable";
-import {TreeNode} from '@maxxton/microdocs-core/domain';
+import {ProjectTree} from '@maxxton/microdocs-core/domain';
 import {DashboardRoute} from "../../routes/dashboard/dashboard";
 import {ImportPanel} from "../import-panel/import.panel";
 import {ExportPanel} from "../export-panel/export.panel";
+import {MicroDocsConfig} from '../../config/config';
 
 @Component({
   selector: 'sidebar-component',
@@ -18,6 +19,9 @@ import {ExportPanel} from "../export-panel/export.panel";
 })
 
 export class SidebarComponent {
+  
+  config = MicroDocsConfig;
+  
   private user = {};
   showImportModal = false;
   showExportModal = false;
@@ -28,7 +32,7 @@ export class SidebarComponent {
   
   
   @Input()
-  projects:Observable<Notification<TreeNode>>;
+  projects:Observable<Notification<ProjectTree>>;
   
   menu:Object = [];
   
@@ -40,7 +44,7 @@ export class SidebarComponent {
   @Input()
   selectedEnv:string;
   
-  node:TreeNode;
+  node:ProjectTree;
   
   @Output('envChange')
   change = new EventEmitter();
@@ -74,9 +78,8 @@ export class SidebarComponent {
       icon: 'home'
     }];
     var filteredNodes = this.filterNodes(this.node, this.searchQuery);
-    for (var title in filteredNodes.dependencies) {
-      var p = filteredNodes.dependencies[title];
-      var groupName = p.group;
+    filteredNodes.projects.forEach(projectNode => {
+      var groupName = projectNode.group;
       if (groupName == undefined) {
         groupName = "default";
       }
@@ -85,7 +88,7 @@ export class SidebarComponent {
         menus.push({name: groupName, icon: 'folder', iconOpen: 'folder_open', inactive: true, children: [], childrenVisible: true});
       }
       // add project
-      var problems = p.problems;
+      var problems = projectNode.problems;
       var icon = null;
       var iconColor = 'red';
       if (problems != undefined && problems != null && problems > 0) {
@@ -93,31 +96,31 @@ export class SidebarComponent {
       }
       var groupRoute = menus.filter(group => group.name == groupName)[0];
       groupRoute.children.push({
-        path: pathPrefix + title,
-        pathParams: {version: p.version, env: this.selectedEnv},
-        name: title,
+        path: pathPrefix + projectNode.title,
+        pathParams: {version: projectNode.version, env: this.selectedEnv},
+        name: projectNode.title,
         postIcon: icon,
         postIconColor: iconColor,
         generateIcon: true
       });
-    }
+    });
     console.info(menus);
     this.menu = menus;
   }
   
-  private filterNodes(node:TreeNode, query:string):TreeNode {
-    var newNode = new TreeNode();
+  private filterNodes(projectTree:ProjectTree, query:string):ProjectTree {
+    var newNode = new ProjectTree();
     var keywords = query.split(' ');
-    for (var title in node.dependencies) {
+    projectTree.projects.forEach(projectNode => {
       var hit = true;
       if (!query || query.trim().length == 0) {
         hit = true;
       } else {
         for (var i = 0; i < keywords.length; i++) {
-          if(title.toLowerCase().indexOf(keywords[i].toLowerCase()) == -1) {
+          if(projectNode.title.toLowerCase().indexOf(keywords[i].toLowerCase()) == -1) {
             hit = false;
-            if (node.dependencies[title]['tags']) {
-              node.dependencies[title]['tags'].forEach(tag => {
+            if (projectNode.tags) {
+              projectNode.tags.forEach(tag => {
                 if (tag.toLowerCase().indexOf(keywords[i].toLowerCase()) != -1) {
                   hit = true;
                 }
@@ -127,9 +130,9 @@ export class SidebarComponent {
         }
       }
       if (hit) {
-        newNode.dependencies[title] = node.dependencies[title];
+        newNode.projects.push(projectNode);
       }
-    }
+    });
     return newNode;
   }
   

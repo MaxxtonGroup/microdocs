@@ -3,8 +3,6 @@
 import * as express from "express";
 
 import {BaseRoute} from "./route";
-import {ProjectJsonRepository} from "../repositories/json/project-json.repo";
-import {ResponseHelper} from "./responses/response.helper";
 
 /**
  * @controller
@@ -25,7 +23,7 @@ export class ProjectRoute extends BaseRoute {
    * @httpResponse 404 Project definitions for the given title/version/env doesn't exists
    */
   public projects(req: express.Request, res: express.Response, next: express.NextFunction, scope:BaseRoute) {
-    var handler = ResponseHelper.getHandler(req);
+    var handler = scope.getHandler(req);
     try {
       var env = scope.getEnv(req, scope);
       if (env == null) {
@@ -41,13 +39,8 @@ export class ProjectRoute extends BaseRoute {
       // load latest version if not specified
       if (version == undefined) {
         var rootNode = projectRepo.getAggregatedProjects(env);
-        if (rootNode != null && rootNode.dependencies != undefined) {
-          for (var key in rootNode.dependencies) {
-            if (key == title) {
-              version = rootNode.dependencies[key].version;
-              break;
-            }
-          }
+        if (rootNode) {
+          rootNode.projects.filter(project => project.title === title.toLowerCase()).forEach(project => version = project.version);
         }
       }
 
@@ -57,15 +50,15 @@ export class ProjectRoute extends BaseRoute {
 
         // return project
         if (project == null) {
-          ResponseHelper.getHandler(req).handleNotFound(req, res);
+          handler.handleNotFound(req, res);
         } else {
-          ResponseHelper.getHandler(req).handleProject(req, res, project, env);
+          handler.handleProject(req, res, project, env);
         }
       } else {
-        ResponseHelper.getHandler(req).handleNotFound(req, res);
+        handler.handleNotFound(req, res);
       }
     } catch (e) {
-      ResponseHelper.getHandler(req).handleInternalServerError(req, res, e);
+      scope.getDefaultHandler().handleInternalServerError(req, res, e);
     }
   }
 }

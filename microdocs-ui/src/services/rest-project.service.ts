@@ -1,9 +1,9 @@
 import {Injectable} from "@angular/core";
 import {Http, Response} from "@angular/http";
-import {Get, Path, Put, Patch, Query, Body,  Map, Client, Delete} from "@maxxton/angular2-rest";
-import {TreeNode, Project, Environments, ProjectChangeRule} from "@maxxton/microdocs-core/domain";
+import {Get, Path, Put, Patch, Query, Body,  Map, Produces, MediaType, Client, Delete} from "@maxxton/angular2-rest";
+import {ProjectTree, Project, Environments, ProjectChangeRule} from "@maxxton/microdocs-core/domain";
 import {Observable} from "rxjs/Observable";
-import {SchemaHelper} from "@maxxton/microdocs-core/helpers";
+import {SchemaHelper} from "@maxxton/microdocs-core/helpers/schema/schema.helper";
 import {ProjectService} from "./project.service";
 import {SnackbarService} from "@maxxton/components/services/snackbar.service";
 
@@ -32,8 +32,8 @@ export class RestProjectService extends ProjectService {
    * @httpResponse 200 {TreeNode}
    */
   @Get("/projects")
-  @Map(resp => TreeNode.link(resp.json()))
-  public loadProjects(@Query("env") env: string = this.getSelectedEnv()): Observable<TreeNode> {
+  @Map(resp => ProjectTree.link(resp.json()))
+  public loadProjects(@Query("env") env: string = this.getSelectedEnv()): Observable<ProjectTree> {
     return null;
   }
 

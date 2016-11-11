@@ -1,5 +1,5 @@
 import {Component, Input} from "@angular/core";
-import {PrettyJsonComponent} from 'angular2-prettyjson';
+import {PrettyJsonComponent} from 'angular2-prettyjson/src/prettyjson.component';
 
 import {SchemaHelper} from '@maxxton/microdocs-core/helpers';
 import {Schema} from '@maxxton/microdocs-core/domain';

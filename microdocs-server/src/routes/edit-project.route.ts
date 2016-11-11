@@ -3,7 +3,6 @@
 import * as express from "express";
 
 import {BaseRoute} from "./route";
-import {ResponseHelper} from "./responses/response.helper";
 import {SchemaHelper} from "@maxxton/microdocs-core/helpers";
 import {ProjectChangeRule, Project, ProjectInfo} from '@maxxton/microdocs-core/domain';
 import {ReportRepository} from "../repositories/report.repo";
@@ -28,7 +27,7 @@ export class EditProjectRoute extends BaseRoute {
    * @httpResponse 404
    */
   public editProject(req:express.Request, res:express.Response, next:express.NextFunction, scope:BaseRoute) {
-    var handler = ResponseHelper.getHandler(req);
+    var handler = scope.getHandler(req);
     try {
       var env = scope.getEnv(req, scope);
       if (env == null) {
@@ -78,7 +77,7 @@ export class EditProjectRoute extends BaseRoute {
           errors.push("Unknown 'type' at item " + i + ", expected: " + ProjectChangeRule.TYPE_ALTER + " or " + ProjectChangeRule.TYPE_DELETE);
         } else if (item['scope'] && item['scope'] !== ProjectChangeRule.SCOPE_VERSION && item['scope'] !== ProjectChangeRule.SCOPE_PROJECT && item['scope'] !== ProjectChangeRule.SCOPE_GROUP) {
           errors.push("Unknown 'scope' at item " + i + ", expected: " + ProjectChangeRule.SCOPE_VERSION + ", " + ProjectChangeRule.SCOPE_PROJECT + " or " + ProjectChangeRule.SCOPE_GROUP);
-        } else if (item['type'] == ProjectChangeRule.TYPE_ALTER && !item['value']) {
+        } else if (item['type'] == ProjectChangeRule.TYPE_ALTER && item['value'] === undefined) {
           errors.push("Missing 'value' at item " + i);
         } else {
           rules.push(new ProjectChangeRule(item['key'], item['type'], item['value'], item['scope'] ? item['scope'] : ProjectChangeRule.SCOPE_VERSION));
@@ -115,8 +114,8 @@ export class EditProjectRoute extends BaseRoute {
     } catch (e) {
       // Make sure to reindex, some aggregated project may have already been cleaned up
       scope.injection.AggregationService().reindex(env);
-      
-      ResponseHelper.getHandler(req).handleInternalServerError(req, res, e);
+
+      scope.getDefaultHandler().handleInternalServerError(req, res, e);
     }
   }
 }
