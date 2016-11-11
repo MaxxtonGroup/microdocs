@@ -14,7 +14,7 @@
     "unlinkDevelopment": "npm unlink @maxxton/components && npm unlink @maxxton/microdocs-core",
     "link": "npm link @maxxton/microdocs-core",
     "unlink": "npm unlink @maxxton/microdocs-core",
-    "postinstall": "typings install",
+    "postinstall": "node_modules/.bin/typings install",
     "package-distribution": "gulp package-distribution-production"
   },
   "dependencies": {

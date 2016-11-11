@@ -9,12 +9,14 @@ RUN mkdir -p /microdocs/microdocs-ui
 WORKDIR /microdocs/microdocs-ui
 ADD ./microdocs-ui/.npmrc /microdocs/microdocs-ui/
 ADD ./microdocs-ui/package.json /microdocs/microdocs-ui/
+ADD ./microdocs-ui/typings.json /microdocs/microdocs-ui/
 RUN npm install
 
 # Get dependencies for microdocs-server
 WORKDIR /microdocs/microdocs-server
 ADD ./microdocs-server/.npmrc /microdocs/microdocs-server/
 ADD ./microdocs-server/package.json /microdocs/microdocs-server/
+ADD ./microdocs-server/typings.json /microdocs/microdocs-server/
 RUN npm install
 
 # Build microdocs-ui
