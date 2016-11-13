@@ -76,6 +76,8 @@ export abstract class ProjectService extends RestClient {
   public abstract deleteProject(name:string, version?:string, env?:string):Observable<Response>;
   
   public abstract updateProject(name:string, rules:ProjectChangeRule[], version?:string, env?:string):Observable<Response>;
+
+  public abstract reindex(env?:string):Observable<Response>;
   
   public setSelectedEnv(env:string) {
     this.env = env;
@@ -91,7 +93,7 @@ export abstract class ProjectService extends RestClient {
   abstract getEnvs():Observable<{[key:string]:Environments}>;
   
   private handleError(error:Response, friendlyMessage:string):void{
-    this.snackbarService.addNotification(friendlyMessage, undefined, undefined, undefined, undefined);
+    this.snackbarService.addNotification(friendlyMessage, undefined, undefined, 'error_outline', undefined);
     try{
       var body = error.json();
       var e = body.error;

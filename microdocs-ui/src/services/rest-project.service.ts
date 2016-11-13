@@ -76,4 +76,10 @@ export class RestProjectService extends ProjectService {
     return null;
   }
 
+
+  @Put("/reindex")
+  reindex( @Query('env') env?:string = this.getSelectedEnv() ):Observable<Response> {
+    return null;
+  }
+
 }
