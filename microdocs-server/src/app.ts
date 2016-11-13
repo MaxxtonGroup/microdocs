@@ -85,6 +85,7 @@ class Server {
     if (Config.has("viewFolder")) {
       viewFolder = Config.get("viewFolder");
     }
+    var dataFolder = '../' + Config.get("dataFolder") + "/config/templates";
     this.app.engine('handlebars', exphbs());
     this.app.set('views', path.join(__dirname, viewFolder));
     this.app.set('view engine', 'handlebars');

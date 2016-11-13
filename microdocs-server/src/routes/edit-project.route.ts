@@ -109,7 +109,7 @@ export class EditProjectRoute extends BaseRoute {
   
       scope.injection.AggregationService().reindex(env);
       var project = projectRepository.getAggregatedProject(env, report.info ? report.info.title : title, report.info ? report.info.version : version);
-      handler.handleProject(req, res, project, env);
+      handler.handleProject(req, res, project, env, scope.injection);
       
     } catch (e) {
       // Make sure to reindex, some aggregated project may have already been cleaned up

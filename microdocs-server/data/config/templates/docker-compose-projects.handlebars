@@ -1,0 +1,10 @@
+version: '2'
+services:{{#each projectNodesFlat as |projectNode|}}{{#if projectNode.title}}
+  {{projectNode.title}}_{{{resolveProjectVersion projectNode}}}:
+    image: {{projectNode.title}}:{{{resolveProjectVersion projectNode}}}
+    ports:
+      - "{{randomPort}}:8080"{{#ifNotEmpty projectNode.dependencies}}
+    depends_on:{{#each projectNode.dependencies as |dependencyNode|}}
+      - {{dependencyNode.item.title}}_{{{resolveProjectVersion dependencyNode.item}}}{{/each}}
+    links:{{#each projectNode.dependencies as |dependencyNode|}}
+      - {{dependencyNode.item.title}}_{{{resolveProjectVersion dependencyNode.item}}}:{{dependencyNode.item.title}}{{/each}}{{/ifNotEmpty}}{{/if}}{{/each}}

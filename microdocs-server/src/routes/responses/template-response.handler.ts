@@ -1,146 +1,139 @@
 /// <reference path="../../_all.d.ts" />
 
 import * as express from "express";
-import {ProjectTree, Problem, Project, Schema, ProblemLevels} from '@maxxton/microdocs-core/domain';
-import {SchemaHelper} from '@maxxton/microdocs-core/helpers';
-import {Config} from "../../config";
+import { ProjectTree, Problem, Project, Schema, ProblemLevels } from '@maxxton/microdocs-core/domain';
+import { Config } from "../../config";
 import * as fs from 'fs';
-import {MicroDocsResponseHandler} from "./microdocs-response.handler";
-import * as Handlebars from 'handlebars';
+import * as path from 'path';
+import { MicroDocsResponseHandler } from "./microdocs-response.handler";
+import { Injection } from "../../injections";
+import * as fsHelper from '../../helpers/file.helper';
+import { ProjectNode } from "@maxxton/microdocs-core/domain/tree/project-node.model";
 
 export class TemplateResponseHandler extends MicroDocsResponseHandler {
 
-  constructor(private templateName: string) {
+  constructor( private templateName:string ) {
+    // Load handlebar functions
+    let srcView      = path.join( __dirname, '../../views' );
+    let externalView = path.join( __dirname, '../../../' + Config.get( "dataFolder" ) + '/config/templates' );
+    let srcFuncs = path.join(srcView, 'handlebars-functions.js');
+    let externalFuncs = path.join(externalView, 'handlebars-functions.js');
+    if(fs.existsSync(srcFuncs)){
+      require(srcFuncs);
+    }
+    if(fs.existsSync(externalFuncs)){
+      require(externalFuncs);
+    }
   }
 
-  handleProjects(req: express.Request, res: express.Response, projectTree: ProjectTree, env: string) {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.setHeader('Content-Type', 'text/plain');
+  handleProjects( req:express.Request, res:express.Response, projectTree:ProjectTree, env:string, injection:Injection ) {
+    res.header( 'Access-Control-Allow-Origin', '*' );
+    res.setHeader( 'Content-Type', 'text/plain' );
 
-    if (this.existView('projects')) {
-      var global = this.getGlobalInfo();
+    let projectsViewFile = this.findViewFile( 'projects' );
+    let projectViewFile  = this.findViewFile( 'project' );
+    if ( projectsViewFile != null ) {
+      var global   = this.getGlobalInfo();
       var projects = [];
-      projectTree.projects.forEach(projectNode => {
-        var project = this.injection.ProjectRepository().getAggregatedProject(env, projectNode.title, projectNode.version);
+      projectTree.projects.forEach( projectNode => {
+        var project = injection.ProjectRepository().getAggregatedProject( env, projectNode.title, projectNode.version );
 
-        if(req.query['method']){
-          var filterMethods = req.query['method'].split(',');
-          this.filterMethods(project, filterMethods);
+        if ( req.query[ 'method' ] ) {
+          var filterMethods = req.query[ 'method' ].split( ',' );
+          this.filterMethods( project, filterMethods );
         }
-        projects.push(project);
-      });
-      res.render(this.getViewFile('projects'), {projects: projects, global: global, node: projectTree, env: env});
+        projects.push( project );
+      } );
+      res.render( projectsViewFile, {
+        projects: projects,
+        info: global,
+        projectNodes: projectTree.projects,
+        projectNodesFlat: projectTree.toFlatList(),
+        env: env
+      } );
 
-    } else if (this.existView('project')){
+    } else if ( projectViewFile != null ) {
       var filterMethods = [];
-      if(req.query['method']) {
-        filterMethods = req.query['method'].split(',');
+      if ( req.query[ 'method' ] ) {
+        filterMethods = req.query[ 'method' ].split( ',' );
       }
-      var project = this.mergeProjects(projectTree, filterMethods, env);
-      this.handleProject(req, res, project, env);
+      var project = this.mergeProjects( projectTree, filterMethods, env, injection );
+      this.handleProject( req, res, project, env, injection );
 
     } else {
-      this.handleBadRequest(req, res, "Unknown export type: " + this.templateName);
+      this.handleBadRequest( req, res, "Unknown export type: " + this.templateName );
     }
   }
 
-  handleProject(req: express.Request, res: express.Response, project: Project, env: string) {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.setHeader('Content-Type', 'text/plain');
-    if (this.existView('project')) {
-      if(req.query['method']){
-        var filterMethods = req.query['method'].split(',');
-        this.filterMethods(project, filterMethods);
+  handleProject( req:express.Request, res:express.Response, project:Project, env:string, injection:Injection ) {
+    res.header( 'Access-Control-Allow-Origin', '*' );
+    res.setHeader( 'Content-Type', 'text/plain' );
+
+    let projectTree = injection.ProjectRepository().getAggregatedProjects( env );
+    let projectsViewFile = this.findViewFile( 'projects' );
+    let projectViewFile  = this.findViewFile( 'project' );
+    if (projectViewFile != null || projectsViewFile != null) {
+      if ( req.query[ 'method' ] ) {
+        var filterMethods = req.query[ 'method' ].split( ',' );
+        this.filterMethods( project, filterMethods );
       }
-      res.render(this.getViewFile('project'), {project: project, env: env});
-    } else {
-      this.handleBadRequest(req, res, "Unknown export type: " + this.templateName);
+
+      let excludeSelf = false;
+      if ( req.query[ 'exclude-self' ] === 'true' ) {
+        excludeSelf = true;
+      }
+
+      let nodePath    = projectTree.findNodePath( project.info.title, project.info.version );
+      let projectNode = <ProjectNode>projectTree.resolveReference( '#' + nodePath );
+      let projectNodes = projectNode != null ? [projectNode] : [];
+      let flatList = projectNode != null ? projectNode.toFlatList( excludeSelf ) : [];
+
+      res.render( projectViewFile != null ? projectViewFile : projectsViewFile, {
+        info: project,
+        env: env,
+        projectNodes: projectNodes,
+        projectNodesFlat: flatList
+      } );
+    }else{
+      this.handleBadRequest( req, res, "Unknown export type: " + this.templateName );
     }
   }
 
-  handleProblems(req: express.Request, res: express.Response, problems: Problem[], env: string) {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.setHeader('Content-Type', 'text/plain');
-    if (this.existView('problems')) {
-      var object = {problems: problems};
-      if (problems.filter(problem => problem.level == ProblemLevels.ERROR || problem.level == ProblemLevels.WARNING).length == 0) {
-        object['status'] = 'ok';
-        object['message'] = 'No problems found';
+  handleProblems( req:express.Request, res:express.Response, problems:Problem[], env:string ) {
+    res.header( 'Access-Control-Allow-Origin', '*' );
+    res.setHeader( 'Content-Type', 'text/plain' );
+    let problemsViewFile = this.findViewFile( 'problems' );
+    if ( problemsViewFile != null ) {
+      var object = { problems: problems };
+      if ( problems.filter( problem => problem.level == ProblemLevels.ERROR || problem.level == ProblemLevels.WARNING ).length == 0 ) {
+        object[ 'status' ]  = 'ok';
+        object[ 'message' ] = 'No problems found';
       } else {
-        object['status'] = 'failed';
-        object['message'] = problems.length + " problem" + (problems.length > 1 ? 's' : '') + " found";
+        object[ 'status' ]  = 'failed';
+        object[ 'message' ] = problems.length + " problem" + (problems.length > 1 ? 's' : '') + " found";
       }
-      res.render(this.getViewFile('problems'), object);
+      res.render( problemsViewFile, object );
     } else {
-      this.handleBadRequest(req, res, "Unknown export type: " + this.templateName);
+      this.handleBadRequest( req, res, "Unknown export type: " + this.templateName );
     }
   }
 
-  private existView(type: string): boolean {
-    return fs.existsSync('dist/' + Config.get('viewFolder') + '/' + this.getViewFile(type) + '.handlebars');
-  }
+  private findViewFile( type:string ):string {
+    let externalView = path.join( __dirname, '../../../' + Config.get( "dataFolder" ) + '/config/templates' );
+    let srcView      = path.join( __dirname, '../../views' );
 
-  private getViewFile(type: string): string {
-    return this.templateName + "-" + type;
+    let externalViews   = fsHelper.getFiles( externalView );
+    let externalResults = externalViews.filter( view => view.indexOf( this.templateName ) == 0 && view.lastIndexOf( '-' + type + '.handlebars' ) == view.length - ('-' + type + '.handlebars').length );
+    if ( externalResults.length > 0 ) {
+      return path.join( externalView, externalResults[ 0 ] );
+    }
+
+    let srcViews   = fsHelper.getFiles( srcView );
+    let srcResults = srcViews.filter( view => view.indexOf( this.templateName ) == 0 && view.lastIndexOf( '-' + type + '.handlebars' ) == view.length - ('-' + type + '.handlebars').length );
+    if ( srcResults.length > 0 ) {
+      return path.join( __dirname, '../../views', srcResults[ 0 ] );
+    }
+    return null;
   }
 
 }
-
-Handlebars.registerHelper('toUpperCase', function(str) {
-  return str.toUpperCase();
-});
-Handlebars.registerHelper('ifEq', function(v1, v2, options) {
-  if(v1 === v2) {
-    return options.fn(this);
-  }
-  return options.inverse(this);
-});
-Handlebars.registerHelper('ifEq', function(v1, v2, options) {
-  if(v1 === v2) {
-    return options.fn(this);
-  }
-  return options.inverse(this);
-});
-Handlebars.registerHelper('ifNotEmpty', function(v1, options) {
-  if(v1) {
-    if(typeof(v1) === 'string'){
-      if(v1.length > 0){
-        return options.fn(this);
-      }
-    }else if(Array.isArray(v1)){
-      if(v1.length > 0){
-        return options.fn(this);
-      }
-    }else if(typeof(v1) === 'object'){
-      if(Object.keys(v1).length > 0){
-        return options.fn(this);
-      }
-    }else{
-      return options.fn(this);
-    }
-  }
-  return options.inverse(this);
-});
-
-Handlebars.registerHelper('schemaResolver', function(schema:Schema, rootObject:{}, offset?:number) {
-  return asJson(SchemaHelper.resolveObject(schema, rootObject), offset);
-});
-
-Handlebars.registerHelper('schemaExample', function(schema:Schema, rootObject:{}, offset?:number) {
-  var example = SchemaHelper.generateExample(schema, undefined, [], rootObject);
-  console.info(example);
-  return asJson(example, offset);
-});
-
-var asJson = function(object:any, offset?:number) {
-  var spaces = '';
-  for(var i = 0; i < offset; i++){
-    spaces += ' ';
-  }
-  var json = JSON.stringify(object, undefined, 4);
-  if(json){
-    return json.replace(/\n/g, '\n' + spaces);
-  }
-  return '';
-};
-Handlebars.registerHelper('asJson', asJson);

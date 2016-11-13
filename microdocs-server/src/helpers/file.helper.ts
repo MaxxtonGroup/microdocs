@@ -1,4 +1,5 @@
 import * as fs from 'fs';
+import * as path from 'path';
 
 /**
  * Remove empty folders in directory
@@ -35,4 +36,32 @@ export function deleteFolderRecursive(path:string):void {
     });
     fs.rmdirSync(path);
   }
+}
+
+/**
+ * Get folders in a directory
+ * @param srcpath directory
+ * @return {string[]} list of folder names
+ */
+export function getDirectories(dir:string):string[] {
+  if (fs.existsSync(dir)) {
+    return fs.readdirSync(dir).filter(function (file) {
+      return fs.statSync(path.join(dir, file)).isDirectory();
+    });
+  }
+  return [];
+}
+
+/**
+ * Get folders in a directory
+ * @param srcpath directory
+ * @return {string[]} list of folder names
+ */
+export function getFiles(dir:string):string[] {
+  if (fs.existsSync(dir)) {
+    return fs.readdirSync(dir).filter(function (file) {
+      return fs.statSync(path.join(dir, file)).isFile();
+    });
+  }
+  return [];
 }

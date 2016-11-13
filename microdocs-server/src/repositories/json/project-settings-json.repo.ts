@@ -1,6 +1,7 @@
 /// <reference path="../../_all.d.ts" />
 import * as fs from 'fs';
 import * as path from 'path';
+import * as fsHelper from '../../helpers/file.helper';
 
 import {ProjectSettingsRepository} from "../project-settings.repo";
 import {Config} from "../../config";
@@ -38,7 +39,7 @@ export class ProjectSettingsJsonRepository implements ProjectSettingsRepository 
 
     // Load envs
     var envFolder:string = dataFolder + "/envs";
-    var envs = this.getDirectories(envFolder);
+    var envs = fsHelper.getDirectories(envFolder);
     if(envs){
       envs.forEach(env => {
         let envFile = envFolder + '/' + env;
@@ -51,7 +52,7 @@ export class ProjectSettingsJsonRepository implements ProjectSettingsRepository 
 
     // Load groups
     var groupsFolder:string = dataFolder + "/groups";
-    var groups = this.getDirectories(groupsFolder);
+    var groups = fsHelper.getDirectories(groupsFolder);
     if(groups){
       groups.forEach(group => {
         let groupFile = groupsFolder + '/' + group;
@@ -64,7 +65,7 @@ export class ProjectSettingsJsonRepository implements ProjectSettingsRepository 
 
     // Load Projects
     var projectsFolder:string = dataFolder + "/projects";
-    var projects = this.getDirectories(projectsFolder);
+    var projects = fsHelper.getDirectories(projectsFolder);
     if(projects){
       projects.forEach(project => {
         let projectFile = projectsFolder + '/' + project;
@@ -76,20 +77,6 @@ export class ProjectSettingsJsonRepository implements ProjectSettingsRepository 
     }
 
     return settings;
-  }
-
-  /**
-   * Get folders in a directory
-   * @param srcpath directory
-   * @return {string[]} list of folder names
-   */
-  private getDirectories(dir:string):string[] {
-    if (fs.existsSync(dir)) {
-      return fs.readdirSync(dir).filter(function (file) {
-        return fs.statSync(path.join(dir, file)).isDirectory();
-      });
-    }
-    return [];
   }
 
 }

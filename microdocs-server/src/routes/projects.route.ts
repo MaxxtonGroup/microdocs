@@ -23,6 +23,7 @@ export class ProjectsRoute extends BaseRoute {
    */
   public projects(req: express.Request, res: express.Response, next: express.NextFunction, scope:BaseRoute) {
     var handler = scope.getHandler(req);
+    console.info("handler: " + handler);
     try {
       var env = scope.getEnv(req, scope);
       if (env == null) {
@@ -45,7 +46,7 @@ export class ProjectsRoute extends BaseRoute {
       }
       rootNode = filterRoot(rootNode, groups, titles);
       
-      handler.handleProjects(req, res, rootNode, env);
+      handler.handleProjects(req, res, rootNode, env, scope.injection);
     } catch (e) {
       scope.getDefaultHandler().handleInternalServerError(req, res, e);
     }

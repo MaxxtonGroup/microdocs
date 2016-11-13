@@ -8,11 +8,11 @@ export class BaseResponseHandler {
   
   constructor(protected injection:Injection){}
 
-  handleProjects(req: express.Request, res: express.Response, projectTree: ProjectTree, env:string) {
+  handleProjects(req: express.Request, res: express.Response, projectTree: ProjectTree, env:string, injection:Injection) {
     this.response(req, res, 200, projectTree.unlink());
   }
 
-  handleProject(req: express.Request, res: express.Response, project: Project, env:string) {
+  handleProject(req: express.Request, res: express.Response, project: Project, env:string, injection:Injection) {
     this.response(req, res, 200, project);
   }
 

@@ -2,20 +2,21 @@ import { BaseResponseHandler } from "./base-response.handler";
 import { Project, ProjectInfo, ProjectTree } from "@maxxton/microdocs-core/domain";
 import * as express from "express";
 import { Config } from "../../config";
+import { Injection } from "../../injections";
 
 export class MicroDocsResponseHandler extends BaseResponseHandler {
 
-  handleProjects( req:express.Request, res:express.Response, projectTree:ProjectTree, env:string ) {
+  handleProjects( req:express.Request, res:express.Response, projectTree:ProjectTree, env:string, injection:Injection ) {
     var filterMethods = [];
     if ( req.query[ 'method' ] ) {
       filterMethods = req.query[ 'method' ].split( ',' );
     }
-    var project = this.mergeProjects( projectTree, filterMethods, env );
+    var project = this.mergeProjects( projectTree, filterMethods, env, injection );
 
     this.response( req, res, 200, project );
   }
 
-  handleProject( req:express.Request, res:express.Response, project:Project, env:string ) {
+  handleProject( req:express.Request, res:express.Response, project:Project, env:string, injection:Injection ) {
     if ( req.query[ 'method' ] ) {
       var filterMethods = req.query[ 'method' ].split( ',' );
       this.filterMethods( project, filterMethods );
@@ -23,13 +24,13 @@ export class MicroDocsResponseHandler extends BaseResponseHandler {
     this.response( req, res, 200, project );
   }
 
-  protected mergeProjects( projectTree:ProjectTree, filterMethods:string[], env:string ):Project {
+  protected mergeProjects( projectTree:ProjectTree, filterMethods:string[], env:string, injection:Injection):Project {
     var combinedProject:Project = this.getGlobalInfo();
     combinedProject.definitions = {};
     combinedProject.paths       = {};
 
     projectTree.projects.forEach( projectNode => {
-      var project = this.injection.ProjectRepository().getAggregatedProject( env, projectNode.title, projectNode.version );
+      var project = injection.ProjectRepository().getAggregatedProject( env, projectNode.title, projectNode.version );
       this.filterMethods( project, filterMethods );
 
       if ( project.definitions ) {
@@ -40,7 +41,7 @@ export class MicroDocsResponseHandler extends BaseResponseHandler {
 
       if ( project.paths) {
         for ( var path in project.paths ) {
-          if ( combinedProject.paths[ path ]) {
+          if ( !combinedProject.paths[ path ]) {
             combinedProject.paths[ path ] = {};
           }
           for ( var method in project.paths[ path ] ) {
@@ -87,7 +88,7 @@ export class MicroDocsResponseHandler extends BaseResponseHandler {
             }
           }
         }
-        removeMethods.forEach( removeMethod => delete project.paths[ path ][ method ] );
+        removeMethods.forEach( removeMethod => delete project.paths[ path ][ removeMethod ] );
         if ( Object.keys( project.paths[ path ] ).length == 0 ) {
           removePaths.push( path );
         }

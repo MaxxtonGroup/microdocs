@@ -1,6 +1,7 @@
 
 import {Node} from "./node.model";
 import {ProjectNode} from "./project-node.model";
+import { FlatList } from "./flat-list.model";
 
 export class ProjectTree extends Node{
   
@@ -82,5 +83,13 @@ export class ProjectTree extends Node{
       }
     }
     return root;
+  }
+
+  public toFlatList():FlatList{
+    let flatList = new FlatList();
+    this.projects.forEach(projectNode => {
+      projectNode.toFlatList(false, flatList);
+    });
+    return flatList;
   }
 }
