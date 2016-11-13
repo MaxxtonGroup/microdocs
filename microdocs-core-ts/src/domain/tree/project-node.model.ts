@@ -166,13 +166,17 @@ export class ProjectNode extends Node {
     return project;
   }
 
-  public toFlatList( excludeSelf:boolean = false, flatList:FlatList = new FlatList() ):FlatList {
+  public toFlatList( excludeSelf:boolean = false, flatList:FlatList = new FlatList(), includeProject:string[] = [] ):FlatList {
     if(!excludeSelf) {
       flatList.addProject( this );
     }
-    this.dependencies.filter( dependencyNode => dependencyNode.type !== DependencyTypes.INCLUDES ).forEach( dependencyNode => {
-      dependencyNode.item.toFlatList(false, flatList);
+    this.dependencies.forEach( dependencyNode => {
+      dependencyNode.item.toFlatList(dependencyNode.type === DependencyTypes.INCLUDES, flatList, includeProject);
+      if(dependencyNode.type === DependencyTypes.INCLUDES) {
+        includeProject.push( dependencyNode.item.title );
+      }
     } );
+    this.dependencies = this.dependencies.filter(dependencyNode => dependencyNode.type !== DependencyTypes.INCLUDES);
     return flatList;
   }
 }

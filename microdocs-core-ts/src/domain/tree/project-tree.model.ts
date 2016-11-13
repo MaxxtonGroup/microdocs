@@ -87,9 +87,10 @@ export class ProjectTree extends Node{
 
   public toFlatList():FlatList{
     let flatList = new FlatList();
+    let includeProjects:string[] = [];
     this.projects.forEach(projectNode => {
-      projectNode.toFlatList(false, flatList);
+      projectNode.toFlatList(false, flatList, includeProjects);
     });
-    return flatList;
+    return <FlatList>flatList.filter(projectNode => includeProjects.filter(includeProject => projectNode.title === includeProject).length == 0);
   }
 }
