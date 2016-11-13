@@ -17,7 +17,7 @@ export class AggregationPipeline {
   private _env:string;
   private _projects:ProjectInfo[];
   private _scope:Project;
-  private _problems:Problem[];
+  private _problems:Problem[] = [];
 
   private constructor( env:string, projectService:ProjectService, reportRepo:ReportRepository, projectSettingsRepo:ProjectSettingsRepository ) {
     this._env                 = env;
@@ -54,7 +54,7 @@ export class AggregationPipeline {
    * Add report as input for the pipeline
    * @param report
    */
-  public take = ( report:Project ):Pipe => {
+  public take = ( report:Project ):Pipe<any> => {
     this._scope = report;
     return new TakePipe( this, report ).process();
   };
@@ -62,7 +62,7 @@ export class AggregationPipeline {
   /**
    * Add report as input for the pipeline
    */
-  public takeEverything = ():Pipe => {
+  public takeEverything = ():Pipe<any> => {
     return new TakePipe( this ).process();
   };
 
@@ -70,7 +70,7 @@ export class AggregationPipeline {
    * Add report as input for the pipeline
    * @param maxAmount
    */
-  public takeLatest = ( maxAmount:number = 1 ):Pipe => {
+  public takeLatest = ( maxAmount:number = 1 ):Pipe<any> => {
     return new TakePipe( this, maxAmount ).process();
   };
 
@@ -94,7 +94,7 @@ export class AggregationPipeline {
     return this._problems;
   }
 
-  public problems( problems:Problem[] ):void {
+  public addProblems( problems:Problem[] ):void {
     problems.forEach( problem => this._problems.push( problem ) );
   }
 

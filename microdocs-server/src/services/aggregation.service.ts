@@ -137,7 +137,7 @@ export class AggregationService {
    */
   private fixDependencyUpperCase( project:Project ) {
     if ( project.dependencies ) {
-      var fixedDependencies = {};
+      var fixedDependencies:{[key:string]:Dependency} = {};
       for ( var name in project.dependencies ) {
         fixedDependencies[ name.toLowerCase() ] = project.dependencies[ name ];
       }
@@ -458,7 +458,7 @@ export class AggregationService {
    * @returns {null,Path} returns Path or null if it does not exists
    */
   private findEndpoint( clientEndpoint:Path, clientPath:string, clientMethod:string, project:Project ):Path {
-    var bestMatch = null;
+    var bestMatch:Path = null;
     var errorCount = 0;
     var warningCount = 0;
     for ( var producerPath in project.paths ) {
@@ -482,7 +482,7 @@ export class AggregationService {
 
           // set as best match if there is no match or it has the fewest problems
           if(bestMatch == null || resultErrorCount > errorCount || (resultErrorCount == errorCount && resultWarningCount > warningCount)){
-            var bestMatch = endpoint;
+            bestMatch = endpoint;
             errorCount = resultErrorCount;
             warningCount = resultWarningCount;
           }

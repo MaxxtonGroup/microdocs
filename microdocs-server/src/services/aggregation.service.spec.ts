@@ -4,7 +4,7 @@ import { Project, ProjectInfo, DependencyTypes, SchemaTypes } from "@maxxton/mic
 import { ReportRepository } from "../repositories/report.repo";
 import { ProjectSettingsRepository } from "../repositories/project-settings.repo";
 import { ProjectSettings } from "@maxxton/microdocs-core/domain/settings/project-settings.model";
-import { AggregationService } from "./aggregation.service";
+import { AggregationPipelineService as AggregationService } from "./aggregation-pipeline.service";
 import { Schema } from "@maxxton/microdocs-core/domain/schema/schema.model";
 
 describe( '#AggregationService:', () => {
@@ -26,7 +26,7 @@ describe( '#AggregationService:', () => {
 
     it( "#convert project to ProjectTree", () => {
       // Arrange
-      var target = new AggregationService( null, null, null);
+      var target = new AggregationService( null );
       var project1 = { info: new ProjectInfo('order-project', 'group3', '3.0.0', ['3.0.0', '2.0.0', '1.0.0'])  };
       var project2 = { info: new ProjectInfo('customer-project', 'group2', '3.0.1', ['3.0.1', '2.0.1', '1.0.1'])  };
       var projectCache = {

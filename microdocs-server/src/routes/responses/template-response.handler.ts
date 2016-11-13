@@ -7,10 +7,12 @@ import {Config} from "../../config";
 import * as fs from 'fs';
 import {MicroDocsResponseHandler} from "./microdocs-response.handler";
 import * as Handlebars from 'handlebars';
+import { Injection } from "../../injections";
 
 export class TemplateResponseHandler extends MicroDocsResponseHandler {
 
-  constructor(private templateName: string) {
+  constructor(injection:Injection, private templateName: string) {
+    super(injection);
   }
 
   handleProjects(req: express.Request, res: express.Response, projectTree: ProjectTree, env: string) {
@@ -19,7 +21,7 @@ export class TemplateResponseHandler extends MicroDocsResponseHandler {
 
     if (this.existView('projects')) {
       var global = this.getGlobalInfo();
-      var projects = [];
+      var projects:Project[] = [];
       projectTree.projects.forEach(projectNode => {
         var project = this.injection.ProjectRepository().getAggregatedProject(env, projectNode.title, projectNode.version);
 
@@ -32,7 +34,7 @@ export class TemplateResponseHandler extends MicroDocsResponseHandler {
       res.render(this.getViewFile('projects'), {projects: projects, global: global, node: projectTree, env: env});
 
     } else if (this.existView('project')){
-      var filterMethods = [];
+      var filterMethods:string[] = [];
       if(req.query['method']) {
         filterMethods = req.query['method'].split(',');
       }
@@ -86,22 +88,22 @@ export class TemplateResponseHandler extends MicroDocsResponseHandler {
 
 }
 
-Handlebars.registerHelper('toUpperCase', function(str) {
+Handlebars.registerHelper('toUpperCase', function(str:string) {
   return str.toUpperCase();
 });
-Handlebars.registerHelper('ifEq', function(v1, v2, options) {
+Handlebars.registerHelper('ifEq', function(v1:any, v2:any, options:any) {
   if(v1 === v2) {
     return options.fn(this);
   }
   return options.inverse(this);
 });
-Handlebars.registerHelper('ifEq', function(v1, v2, options) {
+Handlebars.registerHelper('ifEq', function(v1:any, v2:any, options:any) {
   if(v1 === v2) {
     return options.fn(this);
   }
   return options.inverse(this);
 });
-Handlebars.registerHelper('ifNotEmpty', function(v1, options) {
+Handlebars.registerHelper('ifNotEmpty', function(v1:any, options:any) {
   if(v1) {
     if(typeof(v1) === 'string'){
       if(v1.length > 0){

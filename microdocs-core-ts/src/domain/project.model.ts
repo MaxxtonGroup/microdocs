@@ -22,4 +22,5 @@ export interface Project{
     components?:{[key:string]:Component};
     problems?:Array<Problem>;
     problemCount?:number;
+    deprecated?:boolean;
 }

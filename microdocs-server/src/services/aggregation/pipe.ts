@@ -4,25 +4,17 @@ import { ProjectService } from "../project.service";
 import { ReportRepository } from "../../repositories/report.repo";
 import { ProjectSettingsRepository } from "../../repositories/project-settings.repo";
 import { AggregationPipeline } from "./aggregation-pipeline";
-import { TreePipe } from "./pipes/tree.pipe";
-import { PreProcessPipe } from "./pipes/pre-process.pipe";
-import { IncludesPipe } from "./pipes/includes.pipe";
-import { RestDependenciesPipe } from "./pipes/rest-dependencies.pipe";
-import { StoreIndexPipe } from "./pipes/store-index.pipe";
-import { StoreProjectsPipe } from "./pipes/store-projects.pipe";
-import { ProblemsPipe } from "./pipes/problems.pipe";
 /**
  * @author Steven Hermans
  */
-export abstract class Pipe<T>{
+export abstract class Pipe<T> {
 
   private _pipeline:AggregationPipeline;
-  private _prev:Pipe;
-  private _next:Pipe;
-  private _action:(pipe:Pipe) => T;
+  private _prev:Pipe<any>;
+  private _next:Pipe<any>;
   private _result:AggregationResult = new AggregationResult();
 
-  constructor(pipeline:AggregationPipeline){
+  constructor( pipeline:AggregationPipeline ) {
     this._pipeline = pipeline;
   }
 
@@ -30,7 +22,7 @@ export abstract class Pipe<T>{
    * Get previous pipe
    * @return {Pipe} previous pipe or null if this is the first one
    */
-  get prev():Pipe{
+  get prev():Pipe<any> {
     return this._prev;
   }
 
@@ -38,7 +30,7 @@ export abstract class Pipe<T>{
    * Get next pipe
    * @return {Pipe} next pipe or null if this is the last one
    */
-  get next():Pipe{
+  get next():Pipe<any> {
     return this._prev;
   }
 
@@ -46,8 +38,8 @@ export abstract class Pipe<T>{
    * Get the first pipe
    * @return {Pipe}
    */
-  get first():Pipe{
-    if(this._prev){
+  get first():Pipe<any> {
+    if ( this._prev ) {
       return this._prev.first;
     }
     return this;
@@ -57,8 +49,8 @@ export abstract class Pipe<T>{
    * Get the last pipe
    * @return {Pipe}
    */
-  get last():Pipe{
-    if(this._next){
+  get last():Pipe<any> {
+    if ( this._next ) {
       return this._next.last;
     }
     return this;
@@ -76,12 +68,12 @@ export abstract class Pipe<T>{
    * Process this pipe
    * @return {T}
    */
-  public process():T{
-    if(this._prev){
+  public process():T {
+    if ( this._prev ) {
       this._prev.process();
     }
 
-    let result = this._action(this);
+    let result = this.run();
 
     return result;
   }
@@ -97,17 +89,49 @@ export abstract class Pipe<T>{
    * @param version
    * @return {Project}
    */
-  public getPrevProject(title:string, version:string):Project{
-    if(this._prev){
-      return this._prev._result.getProject(title, version);
+  public getPrevProject( title:string, version:string ):Project {
+    if ( this._prev ) {
+      return this._prev._result.getProject( title, version );
     }
+    return null;
+  }
+
+  /**
+   * Find next version of the project which is not deprecated
+   * @param title
+   * @param lastVersion
+   * @return {Project} or null
+   */
+  public getPrevProjectVersion( title:string, lastVersion?:string ):Project {
+    if ( this._prev ) {
+      let projectInfos = this.projects.filter( info => info.title === title );
+      if ( projectInfos != null ) {
+        let versions = projectInfos[ 0 ].versions;
+        this._prev.result.getProjectVersions( title );
+        let nextVersion = versions[ versions.length - 1 ];
+        if ( lastVersion ) {
+          let index = versions.indexOf( lastVersion );
+          if ( index > -1 ) {
+            if ( index - 1 >= 0 ) {
+              nextVersion = versions[ index - 1 ];
+            }
+          }
+        }
+        let project = this._prev.result.getProject( title, nextVersion );
+        if ( !project || project.deprecated === true ) {
+          return this.getPrevProjectVersion( title, nextVersion );
+        }
+        return project;
+      }
+    }
+    return null;
   }
 
   /**
    * Get current environment
    * @return {string}
    */
-  get env():string{
+  get env():string {
     return this.pipeline.env;
   }
 
@@ -128,14 +152,14 @@ export abstract class Pipe<T>{
    * @return {string}
    */
   get pipeline():AggregationPipeline {
-    return this.pipeline;
+    return this._pipeline;
   }
 
   /**
    * Get preloaded project info's
    * @return {ProjectInfo[]}
    */
-  get projects():ProjectInfo[]{
+  get projects():ProjectInfo[] {
     return this.pipeline.projects;
   }
 
@@ -143,8 +167,8 @@ export abstract class Pipe<T>{
    * PreProcess each project
    * @return {Pipe}
    */
-  public preProcess():Pipe{
-    let pipe = new PreProcessPipe(this.pipeline);
+  public preProcess():Pipe<any> {
+    let pipe   = new PreProcessPipe( this.pipeline );
     pipe._prev = this;
     this._next = pipe;
     return pipe.process();
@@ -154,8 +178,8 @@ export abstract class Pipe<T>{
    * Resolve include dependencies
    * @return {Pipe}
    */
-  public combineIncludes():Pipe{
-    let pipe = new IncludesPipe(this.pipeline);
+  public combineIncludes():Pipe<any> {
+    let pipe   = new IncludesPipe( this.pipeline );
     pipe._prev = this;
     this._next = pipe;
     return pipe.process();
@@ -166,8 +190,8 @@ export abstract class Pipe<T>{
    * @param scope only check dependencies for this scope if present
    * @return {Pipe}
    */
-  public resolveRestDependencies(scope?:Project):Pipe{
-    let pipe = new RestDependenciesPipe(this.pipeline, scope);
+  public resolveRestDependencies( scope?:Project ):Pipe<any> {
+    let pipe   = new RestDependenciesPipe( this.pipeline, scope );
     pipe._prev = this;
     this._next = pipe;
     return pipe.process();
@@ -177,8 +201,8 @@ export abstract class Pipe<T>{
    * Resolve REST dependencies
    * @return {Pipe}
    */
-  public storeIndex():Pipe{
-    let pipe = new StoreIndexPipe(this.pipeline);
+  public storeIndex():Pipe<any> {
+    let pipe   = new StoreIndexPipe( this.pipeline );
     pipe._prev = this;
     this._next = pipe;
     return pipe.process();
@@ -188,8 +212,19 @@ export abstract class Pipe<T>{
    * Resolve REST dependencies
    * @return {Pipe}
    */
-  public storeProjects():Pipe{
-    let pipe = new StoreProjectsPipe(this.pipeline);
+  public storeProjects():Pipe<any> {
+    let pipe   = new StoreProjectsPipe( this.pipeline );
+    pipe._prev = this;
+    this._next = pipe;
+    return pipe.process();
+  }
+
+  /**
+   * Build tags
+   * @return {Pipe}
+   */
+  public buildTags():Pipe<any> {
+    let pipe   = new BuildTagsPipe( this.pipeline );
     pipe._prev = this;
     this._next = pipe;
     return pipe.process();
@@ -199,8 +234,8 @@ export abstract class Pipe<T>{
    * Return result as project tree
    * @return {ProjectTree}
    */
-  public asTree():ProjectTree{
-    let pipe = new TreePipe(this.pipeline);
+  public asTree():ProjectTree {
+    let pipe   = new TreePipe( this.pipeline );
     pipe._prev = this;
     this._next = pipe;
     return pipe.process();
@@ -210,10 +245,13 @@ export abstract class Pipe<T>{
    * Return all found problems
    * @return {Problem[]}
    */
-  public asProblems():Problem[]{
-    let pipe = new ProblemsPipe(this.pipeline);
+  public asProblems():Problem[] {
+    let pipe   = new ProblemsPipe( this.pipeline );
     pipe._prev = this;
     this._next = pipe;
     return pipe.process();
   }
 }
+
+// This needs to be at the end, because these are inheritance of Pipe, so Pipe has te be initialized first
+import { PreProcessPipe, IncludesPipe, RestDependenciesPipe, StoreIndexPipe, StoreProjectsPipe, ProblemsPipe, BuildTagsPipe, TreePipe } from "./pipes";

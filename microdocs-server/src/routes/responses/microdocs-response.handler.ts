@@ -6,7 +6,7 @@ import { Config } from "../../config";
 export class MicroDocsResponseHandler extends BaseResponseHandler {
 
   handleProjects( req:express.Request, res:express.Response, projectTree:ProjectTree, env:string ) {
-    var filterMethods = [];
+    var filterMethods:string[] = [];
     if ( req.query[ 'method' ] ) {
       filterMethods = req.query[ 'method' ].split( ',' );
     }

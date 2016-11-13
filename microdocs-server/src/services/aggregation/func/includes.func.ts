@@ -9,7 +9,7 @@ import { SchemaHelper } from "@maxxton/microdocs-core/helpers/schema/schema.help
  * @param pipe
  * @param project
  */
-export function combineIncludes( pipe:Pipe, project:Project ):void {
+export function combineIncludes( pipe:Pipe<any>, project:Project ):void {
   if ( project.dependencies ) {
     for ( var depTitle in project.dependencies ) {
       var dependency = project.dependencies[ depTitle ];
@@ -18,7 +18,7 @@ export function combineIncludes( pipe:Pipe, project:Project ):void {
         includeProject( pipe, reporter, project, dependency, depTitle );
         if(reporter.hasProblems()){
           reporter.publish(dependency, project);
-          pipe.pipeline.problems(reporter.getProblems());
+          pipe.pipeline.addProblems(reporter.getProblems());
         }
       }
     }
@@ -32,20 +32,16 @@ export function combineIncludes( pipe:Pipe, project:Project ):void {
  * @param dependency
  * @param depTitle
  */
-function includeProject( pipe:Pipe, reporter:ProblemReporter, project:Project, dependency:Dependency, depTitle:string ) {
+function includeProject( pipe:Pipe<any>, reporter:ProblemReporter, project:Project, dependency:Dependency, depTitle:string ) {
   // Find the matching version
-  let version = dependency.version;
-  if ( !version ) {
-    let results = pipe.projects.filter( info => info.title === depTitle ).map( info => info.versions );
-    if ( results.length == 0 ) {
-      reporter.report( ProblemLevels.ERROR, "Unknown project: " + depTitle, dependency.component);
-      return;
-    }
-    version = results[ 0 ][ results[ 0 ].length - 1 ];
+  let depProject:Project;
+  if(dependency.version){
+    depProject = pipe.getPrevProject(depTitle, dependency.version);
+  }
+  if ( !project ) {
+    depProject = pipe.getPrevProjectVersion(depTitle, dependency.version);
   }
 
-  // Load project and resolve includes first before moving on
-  let depProject = pipe.getPrevProject(depTitle, version);
   if(depProject == null){
     reporter.report( ProblemLevels.ERROR, "Unknown project: " + depTitle, dependency.component);
     return;

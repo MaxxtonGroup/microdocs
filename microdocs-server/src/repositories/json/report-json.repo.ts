@@ -7,6 +7,7 @@ import {ReportRepository} from "../report.repo";
 import {Project, ProjectInfo} from "@maxxton/microdocs-core/domain";
 import * as mkdir from 'mkdir-p';
 import * as fsHelper from '../../helpers/file.helper';
+import { Dependency } from "@maxxton/microdocs-core/domain/dependency/dependency.model";
 
 /**
  * Json file based repository.
@@ -182,7 +183,8 @@ export class ReportJsonRepository implements ReportRepository {
   private loadProject(projectFile:string):Project {
     var string = fs.readFileSync(projectFile).toString();
     var json = JSON.parse(string);
-    var project = this.fixDependencyUpperCase(json);
+    let project = <Project>json;
+    this.fixDependencyUpperCase(project);
     return project;
   }
 
@@ -192,7 +194,7 @@ export class ReportJsonRepository implements ReportRepository {
    */
   private fixDependencyUpperCase( project:Project ) {
     if ( project.dependencies ) {
-      var fixedDependencies = {};
+      var fixedDependencies:{[key:string]:Dependency} = {};
       for ( var name in project.dependencies ) {
         fixedDependencies[ name.toLowerCase() ] = project.dependencies[ name ];
       }

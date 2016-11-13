@@ -6,14 +6,16 @@ import { Injection } from "../injections";
  */
 export class AggregationPipelineService {
 
-  constructor(private injection:Injection){}
+  constructor( private injection:Injection ) {
+  }
 
-  reindex( env:string, ):ProjectTree {
+  reindex( env:string, maxAmount:number = 1 ):ProjectTree {
     return pipe( this.injection, env )
-        .takeLatest()
+        .takeLatest( maxAmount )
         .preProcess()
         .combineIncludes()
         .resolveRestDependencies()
+        .buildTags()
         .storeIndex()
         .storeProjects()
         .asTree();
@@ -25,25 +27,26 @@ export class AggregationPipelineService {
         .preProcess()
         .combineIncludes()
         .resolveRestDependencies()
+        .buildTags()
         .storeIndex()
         .storeProjects()
         .asTree();
   }
 
-  check( env:string, report:Project ):Problem[] {
-    let problems = pipe( this.injection, env )
+  checkProject( env:string, report:Project ):Problem[] {
+    let problems        = pipe( this.injection, env )
         .take( report )
         .preProcess()
         .combineIncludes()
-        .resolveRestDependencies(report)
+        .resolveRestDependencies( report )
         .asProblems();
-    let reverseProblems = pipe(this.injection, env)
+    let reverseProblems = pipe( this.injection, env )
         .takeLatest()
         .preProcess()
         .combineIncludes()
-        .resolveRestDependencies(report)
+        .resolveRestDependencies( report )
         .asProblems();
-    return problems.concat(reverseProblems);
+    return problems.concat( reverseProblems );
   }
 
 }

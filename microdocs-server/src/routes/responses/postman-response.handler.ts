@@ -58,7 +58,7 @@ export class PostmanResponseHandler extends MicroDocsResponseHandler {
   }
 
   getPostmanItems(project: Project): {}[] {
-    var items = [];
+    var items:{}[] = [];
     if (project.paths != undefined) {
       for(var path in project.paths){
         for(var method in project.paths[path]){
@@ -71,9 +71,9 @@ export class PostmanResponseHandler extends MicroDocsResponseHandler {
   }
 
   getPostmanItem(path:string, method:string, endpoint:Path):{}{
-    var url = "{{baseUrl}}" + path;
-    var body = {};
-    var responses = [];
+    var url:string = "{{baseUrl}}" + path;
+    var body:{} = {};
+    var responses:{}[] = [];
     if(endpoint.parameters != undefined){
       //replace path variables
       endpoint.parameters.filter(param => param.in == ParameterPlacings.PATH).forEach(param => {
@@ -110,14 +110,14 @@ export class PostmanResponseHandler extends MicroDocsResponseHandler {
     if(endpoint.responses != undefined){
       var defaultResponse = endpoint.responses['default'];
       if(Object.keys(endpoint.responses).length == 1 && defaultResponse != undefined){
-        var response = {};
+        var response:{} = {};
         if(defaultResponse.schema != undefined && defaultResponse.schema.default != undefined){
           response['body'] = JSON.stringify(defaultResponse.schema.default, null, '  ');
         }
         responses.push(response);
       }else{
         for(var status in endpoint.responses){
-          var response = {status: status};
+          var response:{} = {status: status};
           if(endpoint.responses[status].schema != undefined && endpoint.responses[status].schema.default != undefined){
             response['body'] = JSON.stringify(endpoint.responses[status].schema.default, null, '  ');
           }else if(defaultResponse.schema != undefined && defaultResponse.schema.default != undefined){
@@ -141,7 +141,7 @@ export class PostmanResponseHandler extends MicroDocsResponseHandler {
   }
 
   getPostmanBase(project?:Project): {} {
-    var collection = {item: [], info:{}};
+    var collection:{item:any[], info:{}} = {item: [], info:{}};
     if(project){
       collection['info'] = {
         name: project.info.title,
@@ -159,10 +159,10 @@ export class PostmanResponseHandler extends MicroDocsResponseHandler {
     collection.info['_postman_id'] = uuid['v4']();
 
     // get base url
-    var schema = Config.get('application-schema');
-    var host = Config.get('application-host');
-    var basePath = Config.get('application-basePath');
-    var host = "localhost:8080";
+    var schema:string = Config.get('application-schema');
+    var host:string = Config.get('application-host');
+    var basePath:string = Config.get('application-basePath');
+    var host:string = "localhost:8080";
     while (basePath.indexOf('/') == 0) {
       basePath = basePath.substr(1);
     }

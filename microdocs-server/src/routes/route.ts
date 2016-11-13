@@ -14,7 +14,7 @@ const microDocsResponse = MicroDocsResponseHandler;
 const swaggerResponse = SwaggerResponseHandler;
 const postmanResponse = PostmanResponseHandler;
 
-const responses:{[key:string]:new (Injection)=>BaseResponseHandler} = {
+const responses:{[key:string]:new (injection:Injection)=>BaseResponseHandler} = {
   "default": baseResponse,
   "swagger": swaggerResponse,
   "microdocs": microDocsResponse,
@@ -62,9 +62,9 @@ export abstract class BaseRoute {
         exportType = 'default';
       }
     }
-    var response:new (Injection)=>BaseResponseHandler = responses[exportType.toLowerCase()];
+    var response:new (injection:Injection)=>BaseResponseHandler = responses[exportType.toLowerCase()];
     if(response == undefined){
-      return new TemplateResponseHandler(exportType.toLowerCase());
+      return new TemplateResponseHandler(this.injection, exportType.toLowerCase());
     }
     return new response(this.injection);
   }

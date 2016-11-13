@@ -3,11 +3,11 @@ import { Project } from "@maxxton/microdocs-core/domain/project.model";
 /**
  * @author Steven Hermans
  */
-export abstract class ProcessPipe extends Pipe<Pipe> {
+export abstract class ProcessPipe extends Pipe<any> {
 
-  protected run():Pipe {
-    this.prev.result.getProjects().forEach( title => {
-      this.prev.result.getProjectVersions( title ).forEach( version => {
+  protected run():Pipe<any> {
+    this.prev.result.getProjects().forEach( (title:string) => {
+      this.prev.result.getProjectVersions( title ).forEach( (version:string) => {
         this.getPrevProject(title, version);
       } );
     } );
@@ -18,8 +18,10 @@ export abstract class ProcessPipe extends Pipe<Pipe> {
     let result = this.result.getProject(title, version);
     if(result == null) {
       let project = this.prev.result.getProject( title, version );
-      result  = this.runEach( project );
-      this.result.pushProject( result );
+      if(project) {
+        result = this.runEach( project );
+        this.result.pushProject( result );
+      }
     }
     return result;
   }

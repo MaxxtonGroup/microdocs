@@ -6,6 +6,8 @@ import {AggregationService} from "./services/aggregation.service";
 import {ProjectJsonRepository} from "./repositories/json/project-json.repo";
 import {ReportJsonRepository} from "./repositories/json/report-json.repo";
 import {ProjectSettingsJsonRepository} from "./repositories/json/project-settings-json.repo";
+import { AggregationPipeline } from "./services/aggregation/aggregation-pipeline";
+import { AggregationPipelineService } from "./services/aggregation-pipeline.service";
 /**
  * @author Steven Hermans
  */
@@ -16,7 +18,7 @@ export interface InjectionConfig {
   reportRepository:new () => ReportRepository;
   
   projectService:new (projectRepo:ProjectRepository) => ProjectService;
-  aggregationService:new (projectService:ProjectService, reportRepository:ReportRepository, projectSettingsRepository:ProjectSettingsRepository) => AggregationService;
+  aggregationService:new (injection:Injection) => AggregationPipelineService;
   
 }
 
@@ -26,7 +28,7 @@ export class DefaultInjectionConfig implements InjectionConfig{
   projectSettingsRepository = ProjectSettingsJsonRepository;
   reportRepository = ReportJsonRepository;
   projectService = ProjectService;
-  aggregationService = AggregationService;
+  aggregationService = AggregationPipelineService;
   
 }
 
@@ -52,12 +54,8 @@ export class Injection{
     );
   }
   
-  public AggregationService():AggregationService{
-    return new this.config.aggregationService(
-      this.ProjectService(),
-      this.ReportRepository(),
-      this.ProjectSettingsRepository()
-    );
+  public AggregationService():AggregationPipelineService{
+    return new this.config.aggregationService(this);
   }
   
 }
