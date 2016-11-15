@@ -103,26 +103,23 @@ export abstract class Pipe<T> {
    * @return {Project} or null
    */
   public getPrevProjectVersion( title:string, lastVersion?:string ):Project {
-    if ( this._prev ) {
-      let projectInfos = this.projects.filter( info => info.title === title );
-      if ( projectInfos != null ) {
-        let versions = projectInfos[ 0 ].versions;
-        this._prev.result.getProjectVersions( title );
-        let nextVersion = versions[ versions.length - 1 ];
-        if ( lastVersion ) {
-          let index = versions.indexOf( lastVersion );
-          if ( index > -1 ) {
-            if ( index - 1 >= 0 ) {
-              nextVersion = versions[ index - 1 ];
-            }
+    let projectInfos = this.projects.filter( info => info.title === title );
+    if ( projectInfos.length > 0 ) {
+      let versions    = projectInfos[ 0 ].versions;
+      let nextVersion = versions[ versions.length - 1 ];
+      if ( lastVersion ) {
+        let index = versions.indexOf( lastVersion );
+        if ( index > -1 ) {
+          if ( index - 1 >= 0 ) {
+            nextVersion = versions[ index - 1 ];
           }
         }
-        let project = this._prev.result.getProject( title, nextVersion );
-        if ( !project || project.deprecated === true ) {
-          return this.getPrevProjectVersion( title, nextVersion );
-        }
-        return project;
       }
+      let project = this.getPrevProject( title, nextVersion );
+      if ( !project || project.deprecated === true ) {
+        return this.getPrevProjectVersion( title, nextVersion );
+      }
+      return project;
     }
     return null;
   }
@@ -254,4 +251,13 @@ export abstract class Pipe<T> {
 }
 
 // This needs to be at the end, because these are inheritance of Pipe, so Pipe has te be initialized first
-import { PreProcessPipe, IncludesPipe, RestDependenciesPipe, StoreIndexPipe, StoreProjectsPipe, ProblemsPipe, BuildTagsPipe, TreePipe } from "./pipes";
+import {
+    PreProcessPipe,
+    IncludesPipe,
+    RestDependenciesPipe,
+    StoreIndexPipe,
+    StoreProjectsPipe,
+    ProblemsPipe,
+    BuildTagsPipe,
+    TreePipe
+} from "./pipes";

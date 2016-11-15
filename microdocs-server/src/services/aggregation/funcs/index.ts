@@ -5,3 +5,4 @@ export {preProcess} from './pre-process.func';
 export {resolveRestDependencies} from './rest-dependencies.func';
 export {buildTree} from './tree.func';
 export {combineIncludes} from './includes.func';
+export {buildTags} from './build-tags.func';

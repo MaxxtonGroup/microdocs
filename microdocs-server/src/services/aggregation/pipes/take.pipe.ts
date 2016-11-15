@@ -1,7 +1,7 @@
 import { Pipe } from "../pipe";
 import { Project } from "@maxxton/microdocs-core/domain/project.model";
 import { AggregationPipeline } from "../aggregation-pipeline";
-import { takeEverything, takeLatest } from "../func/take.func";
+import { takeEverything, takeLatest } from "../funcs/take.func";
 /**
  * @author Steven Hermans
  */

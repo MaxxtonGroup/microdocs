@@ -1,7 +1,7 @@
 
 import { ProcessPipe } from "./process.pipe";
 import { Project, Tag } from "@maxxton/microdocs-core/domain";
-import { buildTags } from "../func/build-tags.func";
+import { buildTags } from "../funcs";
 
 export class BuildTagsPipe extends ProcessPipe{
 

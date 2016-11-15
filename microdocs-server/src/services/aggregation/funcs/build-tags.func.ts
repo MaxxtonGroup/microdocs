@@ -12,10 +12,20 @@ export function buildTags(project:Project):string[]{
       let segments = path.split( '/' );
       segments.forEach( segment => {
         let trimSegment = segment.trim();
-        if ( trimSegment && trimSegment.length > 0 && (trimSegment.indexOf( '{' ) != 0 || trimSegment.indexOf( '}' ) != trimSegment.length - 1) ) {
+        if ( trimSegment && trimSegment.indexOf('{') == -1){
           tags[ trimSegment.toLowerCase() ] = null;
         }
       } );
+      for(let method in project.paths[path]){
+        let endpoint = project.paths[path][method];
+        if(endpoint.parameters){
+          endpoint.parameters.forEach(parameter => {
+            if(parameter.name){
+              tags[parameter.name.toLowerCase()] = null;
+            }
+          })
+        }
+      }
     }
   }
   if ( project.definitions ) {

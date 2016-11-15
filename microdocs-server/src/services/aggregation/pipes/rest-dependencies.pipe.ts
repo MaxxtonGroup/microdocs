@@ -1,6 +1,6 @@
 import { ProcessPipe } from "./process.pipe";
 import { Project } from "@maxxton/microdocs-core/domain/project.model";
-import { resolveRestDependencies } from "../func";
+import { resolveRestDependencies } from "../funcs";
 import { AggregationPipeline } from "../aggregation-pipeline";
 /**
  * @author Steven Hermans

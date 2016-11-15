@@ -38,7 +38,7 @@ function includeProject( pipe:Pipe<any>, reporter:ProblemReporter, project:Proje
   if(dependency.version){
     depProject = pipe.getPrevProject(depTitle, dependency.version);
   }
-  if ( !project ) {
+  if ( !depProject || depProject.deprecated === true ) {
     depProject = pipe.getPrevProjectVersion(depTitle, dependency.version);
   }
 
@@ -46,6 +46,8 @@ function includeProject( pipe:Pipe<any>, reporter:ProblemReporter, project:Proje
     reporter.report( ProblemLevels.ERROR, "Unknown project: " + depTitle, dependency.component);
     return;
   }
+  dependency.version = depProject.info.version;
+
   // Resolve nested includes dependencies first
   combineIncludes(pipe, depProject);
 
@@ -67,12 +69,15 @@ function includeProject( pipe:Pipe<any>, reporter:ProblemReporter, project:Proje
 
   // Merge dependencies
   if(depProject.dependencies){
+    if(!project.dependencies){
+      project.dependencies = {};
+    }
     for(let key in depProject.dependencies){
       if(depProject.dependencies[key].type !== DependencyTypes.INCLUDES){
         if(!project.dependencies[key]){
-          project.definitions[key] = <Dependency>{inherit: true};
+          project.dependencies[key] = <Dependency>{inherit: true};
         }
-        SchemaHelper.merge( project.definitions[key], depProject.definitions[key]);
+        SchemaHelper.merge( project.dependencies[key], depProject.dependencies[key]);
       }
     }
   }

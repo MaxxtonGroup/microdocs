@@ -11,7 +11,7 @@ export class ProblemReporter {
   }
 
   public report(level: string, description: string, component?: Component, method?: Method, clientRootObject?: {}, clientTitle?: string, clientVersion?: string, clientComponent?: Component, clientMethod?: Method) {
-    console.warn(level + ": " + description);
+    //console.warn(level + ": " + description);
     var problem: Problem = {level: level, message: description};
 
     // log component info

@@ -26,7 +26,7 @@ export class AggregationPipeline {
     this._projectSettingsRepo = projectSettingsRepo;
 
     // preload all projectInfo's
-    this._projects = this._reportRepo.getProjects( env );
+    this._projects = this._reportRepo && this._reportRepo.getProjects( env );
   }
 
   /**

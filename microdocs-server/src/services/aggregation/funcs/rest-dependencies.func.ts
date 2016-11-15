@@ -42,7 +42,7 @@ function resolveRestClient( pipe:Pipe<any>, reporter:ProblemReporter, project:Pr
   if ( dependency.version ) {
     depProject = pipe.getPrevProject( depTitle, dependency.version );
   }
-  if ( !project ) {
+  if ( !depProject || depProject.deprecated === true ) {
     depProject = pipe.getPrevProjectVersion( depTitle, dependency.version );
   }
 

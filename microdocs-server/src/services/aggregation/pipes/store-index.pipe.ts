@@ -1,5 +1,5 @@
 import { Pipe } from "../pipe";
-import { buildTree } from "../func/tree.func";
+import { buildTree } from "../funcs/tree.func";
 /**
  * @author Steven Hermans
  */
