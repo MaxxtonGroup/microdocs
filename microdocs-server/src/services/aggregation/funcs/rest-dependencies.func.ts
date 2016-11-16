@@ -10,7 +10,7 @@ import { BodyParamsCheck } from "../../../checks/body-params.check";
 import { ResponseCheck } from "../../../checks/response.check";
 
 const pathParamsCheck:PathCheck  = new PathParamsCheck();
-const endpointChecks:PathCheck[] = [ new QueryParamsCheck(), new BodyParamsCheck(), this.pathParamsCheck, new ResponseCheck() ];
+const endpointChecks:PathCheck[] = [ new QueryParamsCheck(), new BodyParamsCheck(), pathParamsCheck, new ResponseCheck() ];
 
 /**
  * Resolve Rest dependencies with other projects

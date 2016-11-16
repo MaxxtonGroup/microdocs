@@ -36,9 +36,9 @@ function buildNode( pipe:Pipe<any>, projectInfo:ProjectInfo ):ProjectNode {
         if ( dependency.inherit !== true ) {
           let depProject:Project = pipe.getPrevProject( depTitle, dependency.version );
           if(depProject) {
-            let projectNode    = buildNode( pipe, depProject.info );
+            let depProjectNode    = buildNode( pipe, depProject.info );
             let problemCount   = dependency.problems ? dependency.problems.length : 0;
-            let dependencyNode = new DependencyNode( projectNode, dependency.type, problemCount );
+            let dependencyNode = new DependencyNode( depProjectNode, dependency.type, problemCount );
             projectNode.addDependency( dependencyNode );
           }
         }
