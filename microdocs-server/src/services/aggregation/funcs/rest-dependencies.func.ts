@@ -60,9 +60,8 @@ function resolveRestClient( pipe:Pipe<any>, reporter:ProblemReporter, project:Pr
       compatible = checkDependencyCompatible(depTitle, dependency, olderDepProject, project, new ProblemReporter());
       olderDepProject = pipe.getPrevProjectVersion(depTitle, olderDepProject.info.version);
     }
-    if(compatible){
-      dependency.version = depProject.info.version;
-    }else{
+    dependency.version = depProject.info.version;
+    if(!compatible){
       reporter.report( ProblemLevels.ERROR, "Not compatible with: " + depTitle, dependency.component );
     }
   }

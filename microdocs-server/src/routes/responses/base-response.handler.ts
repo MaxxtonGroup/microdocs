@@ -94,7 +94,7 @@ export class BaseResponseHandler {
   protected responseYaml(res: express.Response, status: number, object: any) {
     res
       .header('Access-Control-Allow-Origin', '*')
-      .header('content-type', 'application/yaml')
+      .header('content-type', 'application/x-yaml')
       .status(status)
       .send((<any>yaml).dump(object));
   }
