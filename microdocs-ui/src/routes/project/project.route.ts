@@ -6,14 +6,8 @@ import {Subscription} from "rxjs/Subscription";
 
 import {COMPONENTS} from "@maxxton/components/components";
 import {FILTERS} from "@maxxton/components/filters";
-<<<<<<< HEAD
 import {Project, Path, Method, Schema, Dependency, ProjectTree, DependencyTypes} from "@maxxton/microdocs-core/domain";
 import {SchemaHelper} from "@maxxton/microdocs-core/helpers/schema/schema.helper";
-=======
-import {Project, Path, Method, Schema, Dependency, TreeNode} from "@maxxton/microdocs-core/domain";
-import {REST, DATABASE, USES, INCLUDES} from "@maxxton/microdocs-core/domain/dependency/dependency-type.model";
-import {SchemaHelper} from "@maxxton/microdocs-core/helpers";
->>>>>>> development
 
 import {ProjectService} from "../../services/project.service";
 import {EndpointPanel} from "../../panels/endpoint-panel/endpoint.panel";
@@ -27,6 +21,7 @@ import {DeletePanel} from "../../panels/delete-panel/delete.panel";
 import {EditPanel} from "../../panels/edit-panel/edit.panel";
 import {MicroDocsConfig} from '../../config/config';
 import * as colorHelper from '../../helpers/color.helper';
+import { ProjectChangeRule } from "@maxxton/microdocs-core/domain/settings/project-change-rule.model";
 
 
 @Component({
@@ -182,5 +177,14 @@ export class ProjectRoute {
       this.nodes.next(this.projects);
     }
   }
-  
+
+  toggleDeprecated(){
+    this.project.deprecated = !this.project.deprecated;
+    let rules = [
+        new ProjectChangeRule('deprecated', ProjectChangeRule.TYPE_ALTER, this.project.deprecated, ProjectChangeRule.SCOPE_VERSION)
+    ];
+    this.projectService.updateProject(this.title, rules, this.version).subscribe(resp => {
+      this.projectService.refreshProject(this.title, this.version);
+    });
+  }
 }

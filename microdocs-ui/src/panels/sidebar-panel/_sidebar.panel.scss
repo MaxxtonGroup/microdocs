@@ -62,20 +62,20 @@ sidebar-component {
       background-color: #eee;
     }
     a.import-button{
+      display: none;
       color: $green;
-      width: 100%;
+      width: 33%;
+      left: 0%;
     }
     a.export-button{
-      display: none;
       color: $blue;
-      width: 50%;
-      left: 50%;
+      width: 100%;
     }
-    a.settings-button{
+    a.reindex-button{
       display: none;
       color: $blue-gray;
-      right: 0;
-      width: 100%;
+      width: 33%;
+      left: 67%;
     }
   }
 
@@ -232,14 +232,12 @@ sidebar-component {
             display: inline-block;
           }
         }
-        .import-button, .export-button{
+        .import-button, .export-button, .reindex-button{
           display: inline-block;
         }
-        .import-button{
-          width: 50%;
-        }
-        .settings-button{
-          width: 33%;
+        .export-button{
+          left: 33%;
+          width: 34%;
         }
       }
       vertical-menu {

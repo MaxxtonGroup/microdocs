@@ -77,7 +77,7 @@ export class EditProjectRoute extends BaseRoute {
           errors.push("Unknown 'type' at item " + i + ", expected: " + ProjectChangeRule.TYPE_ALTER + " or " + ProjectChangeRule.TYPE_DELETE);
         } else if (item['scope'] && item['scope'] !== ProjectChangeRule.SCOPE_VERSION && item['scope'] !== ProjectChangeRule.SCOPE_PROJECT && item['scope'] !== ProjectChangeRule.SCOPE_GROUP) {
           errors.push("Unknown 'scope' at item " + i + ", expected: " + ProjectChangeRule.SCOPE_VERSION + ", " + ProjectChangeRule.SCOPE_PROJECT + " or " + ProjectChangeRule.SCOPE_GROUP);
-        } else if (item['type'] == ProjectChangeRule.TYPE_ALTER && !item['value']) {
+        } else if (item['type'] == ProjectChangeRule.TYPE_ALTER && item['value'] === undefined) {
           errors.push("Missing 'value' at item " + i);
         } else {
           rules.push(new ProjectChangeRule(item['key'], item['type'], item['value'], item['scope'] ? item['scope'] : ProjectChangeRule.SCOPE_VERSION));
@@ -109,7 +109,7 @@ export class EditProjectRoute extends BaseRoute {
   
       scope.injection.AggregationService().reindex(env);
       var project = projectRepository.getAggregatedProject(env, report.info ? report.info.title : title, report.info ? report.info.version : version);
-      handler.handleProject(req, res, project, env);
+      handler.handleProject(req, res, project, env, scope.injection);
       
     } catch (e) {
       // Make sure to reindex, some aggregated project may have already been cleaned up

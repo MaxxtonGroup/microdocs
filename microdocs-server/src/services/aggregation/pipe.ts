@@ -69,13 +69,10 @@ export abstract class Pipe<T> {
    * @return {T}
    */
   public process():T {
-    if ( this._prev ) {
-      this._prev.process();
-    }
 
-    let result = this.run();
+    let out = this.run();
 
-    return result;
+    return out;
   }
 
   /**
@@ -112,6 +109,8 @@ export abstract class Pipe<T> {
         if ( index > -1 ) {
           if ( index - 1 >= 0 ) {
             nextVersion = versions[ index - 1 ];
+          }else{
+            return null; // no versions
           }
         }
       }
@@ -165,6 +164,7 @@ export abstract class Pipe<T> {
    * @return {Pipe}
    */
   public preProcess():Pipe<any> {
+    console.info('preProcess');
     let pipe   = new PreProcessPipe( this.pipeline );
     pipe._prev = this;
     this._next = pipe;
@@ -176,6 +176,7 @@ export abstract class Pipe<T> {
    * @return {Pipe}
    */
   public combineIncludes():Pipe<any> {
+    console.info('combine Includes');
     let pipe   = new IncludesPipe( this.pipeline );
     pipe._prev = this;
     this._next = pipe;
@@ -188,6 +189,7 @@ export abstract class Pipe<T> {
    * @return {Pipe}
    */
   public resolveRestDependencies( scope?:Project ):Pipe<any> {
+    console.info('resolve Rest Dependencies');
     let pipe   = new RestDependenciesPipe( this.pipeline, scope );
     pipe._prev = this;
     this._next = pipe;
@@ -199,6 +201,7 @@ export abstract class Pipe<T> {
    * @return {Pipe}
    */
   public storeIndex():Pipe<any> {
+    console.info('store Index');
     let pipe   = new StoreIndexPipe( this.pipeline );
     pipe._prev = this;
     this._next = pipe;
@@ -210,6 +213,7 @@ export abstract class Pipe<T> {
    * @return {Pipe}
    */
   public storeProjects():Pipe<any> {
+    console.info('store Projects');
     let pipe   = new StoreProjectsPipe( this.pipeline );
     pipe._prev = this;
     this._next = pipe;
@@ -221,6 +225,7 @@ export abstract class Pipe<T> {
    * @return {Pipe}
    */
   public buildTags():Pipe<any> {
+    console.info('build Tags');
     let pipe   = new BuildTagsPipe( this.pipeline );
     pipe._prev = this;
     this._next = pipe;
@@ -232,6 +237,7 @@ export abstract class Pipe<T> {
    * @return {ProjectTree}
    */
   public asTree():ProjectTree {
+    console.info('as Tree');
     let pipe   = new TreePipe( this.pipeline );
     pipe._prev = this;
     this._next = pipe;
@@ -243,6 +249,7 @@ export abstract class Pipe<T> {
    * @return {Problem[]}
    */
   public asProblems():Problem[] {
+    console.info('as Problems');
     let pipe   = new ProblemsPipe( this.pipeline );
     pipe._prev = this;
     this._next = pipe;

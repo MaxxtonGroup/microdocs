@@ -1,6 +1,10 @@
+
 import {Project, ProjectSettings} from "../domain";
 import {SchemaHelper} from "../helpers/schema/schema.helper";
 import { PreProcessor } from "./pre-processor";
+
+const VARIABLES_PLACEHOLDER = "~~~VARIABLES";
+const IF_PLACEHOLDER = "~~~IF";
 
 /**
  * Helper for applying custom settings
@@ -18,24 +22,24 @@ export class MicroDocsPreProcessor implements PreProcessor{
   public processProject(settings: ProjectSettings, project: Project, env: string): Project {
     // load variables
     var variables = {};
-    if (settings.global && settings.global['_variables']) {
-      Object.assign(variables, settings.global['_variables']);
-      delete settings.global['_variables'];
+    if ( settings.global && settings.global[ VARIABLES_PLACEHOLDER ] ) {
+      Object.assign( variables, settings.global[ VARIABLES_PLACEHOLDER ] );
+      delete settings.global[ VARIABLES_PLACEHOLDER ];
     }
-    if (settings.environments && settings.environments[env] && settings.environments[env]['_variables']) {
-      Object.assign(variables, settings.environments[env]['_variables']);
-      delete settings.environments[env]['_variables'];
+    if ( settings.environments && settings.environments[ env ] && settings.environments[ env ][ VARIABLES_PLACEHOLDER ] ) {
+      Object.assign( variables, settings.environments[ env ][ VARIABLES_PLACEHOLDER ] );
+      delete settings.environments[ env ][ VARIABLES_PLACEHOLDER ];
     }
-    if (project.info && project.info.group && settings.groups && settings.groups[project.info.group] && settings.groups[project.info.group]['_variables']) {
-      Object.assign(variables, settings.groups[project.info.group]['_variables']);
-      delete settings.groups[project.info.group]['_variables'];
+    if ( project.info && project.info.group && settings.groups && settings.groups[ project.info.group ] && settings.groups[ project.info.group ][ VARIABLES_PLACEHOLDER ] ) {
+      Object.assign( variables, settings.groups[ project.info.group ][ VARIABLES_PLACEHOLDER ] );
+      delete settings.groups[ project.info.group ][ VARIABLES_PLACEHOLDER ];
     }
-    if (project.info && project.info.title && settings.projects && settings.projects[project.info.title] && settings.projects[project.info.title]['_variables']) {
-      Object.assign(variables, settings.projects[project.info.title]['_variables']);
-      delete settings.projects[project.info.title]['_variables'];
+    if ( project.info && project.info.title && settings.projects && settings.projects[ project.info.title ] && settings.projects[ project.info.title ][ VARIABLES_PLACEHOLDER ] ) {
+      Object.assign( variables, settings.projects[ project.info.title ][ VARIABLES_PLACEHOLDER ] );
+      delete settings.projects[ project.info.title ][ VARIABLES_PLACEHOLDER ];
     }
 
-    console.error(variables);
+    console.error( variables );
 
     // process project
     if (settings.global) {
@@ -63,20 +67,23 @@ export class MicroDocsPreProcessor implements PreProcessor{
    * @param variables
    * @returns {any}
    */
-  public process(project: Project, settings: {}, variables: {} = {}, projectScope?: any, settingsScope?: any): any {
+  public process(project: Project, settings: {},  variables:{scope?:{},project?:{},settings?:{},settingsScope?:{}} = {}, projectScope?: any, settingsScope?: any, prevScope?:{}): any {
     if (settingsScope === undefined) {
       settingsScope = settings;
     }
-    if (projectScope === undefined) {
+    if ( projectScope === undefined ) {
       projectScope = project;
     }
-    variables['project'] = project;
-    variables['scope'] = projectScope;
-    variables['settingsScope'] = settingsScope;
-    variables['settings'] = settings;
+    if(prevScope === undefined){
+      prevScope = projectScope;
+    }
+    variables.project       = project;
+    variables.scope         = projectScope;
+    variables.settingsScope = settingsScope;
+    variables.settings      = settings;
 
-    if (Array.isArray(settingsScope)) {
-      if (projectScope == null) {
+    if ( Array.isArray( settingsScope ) ) {
+      if ( projectScope == null ) {
         projectScope = [];
       }
       if (Array.isArray(projectScope)) {
@@ -84,53 +91,97 @@ export class MicroDocsPreProcessor implements PreProcessor{
           projectScope.push(this.process(project, settings, variables, null, settingsScope[i]));
         }
       } else {
-        console.warn('Could not process array when it is not one');
+        console.warn( 'Could not process array when it is not one' );
       }
-    } else if (typeof(settingsScope) == "object") {
-      if (projectScope == null || typeof(projectScope) !== 'object') {
+    } else if ( typeof(settingsScope) == "object" ) {
+      if ( projectScope == null || typeof(projectScope) !== 'object' ) {
         projectScope = {};
       }
-      for (var key in settingsScope) {
-        var newSettingsScope = settingsScope[key];
-        if (!newSettingsScope) {
+      for ( var key in settingsScope ) {
+        var newSettingsScope = settingsScope[ key ];
+        if ( !newSettingsScope ) {
           newSettingsScope = {};
         }
-        var resolvedKey = SchemaHelper.resolveString(key, variables);
-        if (resolvedKey) {
-          if (resolvedKey.indexOf('{') == 0 && resolvedKey.indexOf('}') == resolvedKey.length - 1) {
-            var variableName = resolvedKey.substring(1, resolvedKey.length - 1);
-            var oldVarValue = variables[variableName];
-            if (Array.isArray(projectScope)) {
-              let newProjectScopes:any[] = [];
-              for (let existingKey = 0; existingKey < projectScope.length; existingKey++) {
-                variables[variableName] = existingKey;
-                var newProjectScope = projectScope[existingKey];
-                if (!newProjectScope) {
-                  newProjectScope = null;
-                }
-
-                newProjectScope = this.process(project, settings, variables, newProjectScope, newSettingsScope);
-                newProjectScopes.push(newProjectScope);
-
-                // clean up
-                if (oldVarValue) {
-                  variables[variableName] = oldVarValue;
-                } else {
-                  delete variables[variableName];
-                }
+        if ( key === IF_PLACEHOLDER ) {
+          let condition = newSettingsScope[ 'condition' ];
+          if ( condition ) {
+            var result = SchemaHelper.resolveCondition( condition, variables );
+            if(result){
+              if(newSettingsScope['then']){
+                SchemaHelper.resolveCondition( newSettingsScope['then'], variables );
+              }else{
+                console.warn( "No 'then' in ~~~IF statement" );
               }
-              projectScope = newProjectScopes;
+            }else{
+              if(newSettingsScope['else']){
+                SchemaHelper.resolveCondition( newSettingsScope['else'], variables );
+              }else{
+                console.warn( "No 'else' in ~~~IF statement" );
+              }
+            }
+          } else {
+            console.warn( 'No condition in ~~~IF statement' );
+          }
+        } else {
+          var resolvedKey = SchemaHelper.resolveString( key, variables );
+          if ( resolvedKey ) {
+            if ( resolvedKey.indexOf( '{' ) == 0 && resolvedKey.indexOf( '}' ) == resolvedKey.length - 1 ) {
+              var variableName = resolvedKey.substring( 1, resolvedKey.length - 1 );
+              var oldVarValue  = variables[ variableName ];
+              if ( Array.isArray( projectScope ) ) {
+                let newProjectScopes:any[] = [];
+                for ( let existingKey = 0; existingKey < projectScope.length; existingKey++ ) {
+                  variables[ variableName ] = existingKey;
+                  var newProjectScope       = projectScope[ existingKey ];
+                  if ( !newProjectScope ) {
+                    newProjectScope = null;
+                  }
+
+                  newProjectScope = this.process( project, settings, variables, newProjectScope, newSettingsScope, projectScope );
+                  newProjectScopes.push( newProjectScope );
+
+                  // clean up
+                  if ( oldVarValue ) {
+                    variables[ variableName ] = oldVarValue;
+                  } else {
+                    delete variables[ variableName ];
+                  }
+                }
+                projectScope = newProjectScopes;
+              } else {
+                let newProjectScopes:{} = {};
+                for ( let existingKey in projectScope ) {
+                  variables[ variableName ] = existingKey;
+                  var newProjectScope       = projectScope[ existingKey ];
+                  if ( !newProjectScope ) {
+                    newProjectScope = null;
+                  }
+
+                newProjectScope = this.process(project, settings, variables, newProjectScope, newSettingsScope, projectScope);
+                  newProjectScopes[ existingKey ] = newProjectScope;
+
+                  // clean up
+                  if ( oldVarValue ) {
+                    variables[ variableName ] = oldVarValue;
+                  } else {
+                    delete variables[ variableName ];
+                  }
+                }
+                projectScope = newProjectScopes;
+              }
             } else {
-              let newProjectScopes:{} = {};
-              for (let existingKey in projectScope) {
-                variables[variableName] = existingKey;
-                var newProjectScope = projectScope[existingKey];
-                if (!newProjectScope) {
+              if ( Array.isArray( projectScope ) ) {
+                console.warn( "Could process array as object" );
+              } else {
+                var newProjectScope = projectScope[ resolvedKey ];
+                if ( !newProjectScope ) {
                   newProjectScope = null;
                 }
 
-                newProjectScope = this.process(project, settings, variables, newProjectScope, newSettingsScope);
-                newProjectScopes[existingKey] = newProjectScope;
+                newProjectScope = this.process(project, settings, variables, newProjectScope, newSettingsScope, projectScope);
+                if ( newProjectScope != undefined ) {
+                  projectScope[ resolvedKey ] = newProjectScope;
+                }
 
                 // clean up
                 if (oldVarValue) {
@@ -139,7 +190,6 @@ export class MicroDocsPreProcessor implements PreProcessor{
                   delete variables[variableName];
                 }
               }
-              projectScope = newProjectScopes;
             }
           } else {
             if (Array.isArray(projectScope)) {
@@ -157,9 +207,14 @@ export class MicroDocsPreProcessor implements PreProcessor{
           }
         }
       }
-    } else if (typeof(settingsScope) === 'string') {
-      var resolvedValue = SchemaHelper.resolveString(settingsScope, variables);
-      if (resolvedValue != undefined) {
+    } else if ( typeof(settingsScope) === 'string' ) {
+      let varCopy:{scope?:{},project?:{},settings?:{},settingsScope?:{}} = {};
+      for(let key in variables){
+        varCopy[key] = variables[key];
+      }
+      varCopy.scope = prevScope;
+      var resolvedValue = SchemaHelper.resolveString( settingsScope, varCopy );
+      if ( resolvedValue != undefined ) {
         projectScope = resolvedValue;
       }
     } else {
@@ -167,5 +222,6 @@ export class MicroDocsPreProcessor implements PreProcessor{
     }
     return projectScope;
   }
+
 
 }

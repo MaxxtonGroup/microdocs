@@ -33,6 +33,6 @@ bootstrap( App, [
   //   deps: [ Http ]
   // } ),
   provideRouter( MicrodocsRoutes ),
-  provide( APP_BASE_HREF, { useValue: MicroDocsConfig.basePath } ),
+  provide( APP_BASE_HREF, { useValue: MicroDocsConfig.basepath } ),
   provide(LocationStrategy, {useClass: HashLocationStrategy})
 ] ).catch( err => console.error( err ) );

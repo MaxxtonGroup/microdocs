@@ -5,6 +5,10 @@ import { ProjectTree } from "./project-tree.model";
 
 export class DependencyNode extends Node{
 
+  constructor(public item?:ProjectNode, public type?:string, public problems:number = 0) {
+    super();
+  }
+
   getRoot():ProjectTree {
     return this.item.getRoot();
   }
@@ -26,9 +30,6 @@ export class DependencyNode extends Node{
       return this.item.resolveReference(reference);
     }
     return null;
-  }
-  
-  constructor(public item?:ProjectNode, public type?:string, public problems:number = 0) {
   }
   
   public static link(unlinkedDependency:{}, title:string):DependencyNode{

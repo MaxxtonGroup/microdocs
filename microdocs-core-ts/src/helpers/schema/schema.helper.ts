@@ -488,19 +488,32 @@ export class SchemaHelper {
    * @param base
    * @param remote
    */
-  public static merge(base:{}, remote:{}){
-    for(let key in remote){
-      let remoteProp = remote[key];
-      if(base[key] == undefined){
-        base[key] = remoteProp;
-      }else{
-        let baseProp = base[key];
-        if(typeof(remoteProp) === 'object' && !Array.isArray(remoteProp) &&
-            typeof(baseProp) === 'object' && !Array.isArray(baseProp)){
-          SchemaHelper.merge(baseProp, remoteProp);
+  public static merge(base:{}, remote:{}) {
+    for ( let key in remote ) {
+      let remoteProp = remote[ key ];
+      if ( base[ key ] == undefined ) {
+        base[ key ] = remoteProp;
+      } else {
+        let baseProp = base[ key ];
+        if ( typeof(remoteProp) === 'object' && !Array.isArray( remoteProp ) &&
+            typeof(baseProp) === 'object' && !Array.isArray( baseProp ) ) {
+          SchemaHelper.merge( baseProp, remoteProp );
         }
       }
     }
+  }
+
+  public static resolveCondition(condition:string, vars:{scope?:{},project?:{},settings?:{},settingsScope?:{}}):boolean{
+    var result:boolean;
+    (function(){
+      var scope = vars.scope;
+      var project = vars.project;
+      var settings = vars.settings;
+      var settingsScope = vars.settingsScope;
+      var _ = vars;
+      result = eval(condition);
+    })();
+    return result;
   }
 
 
@@ -607,7 +620,7 @@ export class SchemaHelper {
     }
 
     if ( input === 'Array' ) {
-      var genericSchema;
+      var genericSchema:Schema;
       if ( genericTypes.length >= 1 ) {
         genericSchema = genericTypes[ 0 ];
       } else {
@@ -622,7 +635,7 @@ export class SchemaHelper {
     }
 
     if ( input === 'Map' ) {
-      var genericSchema;
+      var genericSchema:Schema;
       if ( genericTypes.length >= 2 ) {
         genericSchema = genericTypes[ 1 ];
       } else {

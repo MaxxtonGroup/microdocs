@@ -52,7 +52,7 @@ export class ProjectRoute extends BaseRoute {
         if (project == null) {
           handler.handleNotFound(req, res);
         } else {
-          handler.handleProject(req, res, project, env);
+          handler.handleProject(req, res, project, env, scope.injection);
         }
       } else {
         handler.handleNotFound(req, res);

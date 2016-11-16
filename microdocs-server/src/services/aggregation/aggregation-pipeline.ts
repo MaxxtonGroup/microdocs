@@ -55,6 +55,7 @@ export class AggregationPipeline {
    * @param report
    */
   public take = ( report:Project ):Pipe<any> => {
+    console.info('take ' + report.info.title);
     this._scope = report;
     return new TakePipe( this, report ).process();
   };
@@ -63,6 +64,7 @@ export class AggregationPipeline {
    * Add report as input for the pipeline
    */
   public takeEverything = ():Pipe<any> => {
+    console.info('take everything');
     return new TakePipe( this ).process();
   };
 
@@ -71,6 +73,7 @@ export class AggregationPipeline {
    * @param maxAmount
    */
   public takeLatest = ( maxAmount:number = 1 ):Pipe<any> => {
+    console.info('take latest ' + maxAmount);
     return new TakePipe( this, maxAmount ).process();
   };
 

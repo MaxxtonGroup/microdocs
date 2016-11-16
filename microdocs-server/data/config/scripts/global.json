@@ -1,0 +1,16 @@
+{
+  "dependencies": {
+    "{dependencyTitle}": {
+      "paths": {
+        "{path}": {
+          "{method}": {
+            "~~~IF": {
+              "condition": "scope.parameters.filter(function(param){return param.name === 'fields';}).length > 0",
+              "then": "scope.responses = {}"
+            }
+          }
+        }
+      }
+    }
+  }
+}

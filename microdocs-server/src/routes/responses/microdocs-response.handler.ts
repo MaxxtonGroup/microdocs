@@ -40,7 +40,7 @@ export class MicroDocsResponseHandler extends BaseResponseHandler {
 
       if ( project.paths) {
         for ( var path in project.paths ) {
-          if ( combinedProject.paths[ path ]) {
+          if ( !combinedProject.paths[ path ]) {
             combinedProject.paths[ path ] = {};
           }
           for ( var method in project.paths[ path ] ) {

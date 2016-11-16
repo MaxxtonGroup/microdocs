@@ -11,6 +11,8 @@ import {DashboardRoute} from "../../routes/dashboard/dashboard";
 import {ImportPanel} from "../import-panel/import.panel";
 import {ExportPanel} from "../export-panel/export.panel";
 import {MicroDocsConfig} from '../../config/config';
+import { ProjectService } from "../../services/project.service";
+import { SnackbarService } from "@maxxton/components/services/snackbar.service";
 
 @Component({
   selector: 'sidebar-component',
@@ -48,6 +50,8 @@ export class SidebarComponent {
   
   @Output('envChange')
   change = new EventEmitter();
+
+  constructor(private projectService:ProjectService, private snackbarService:SnackbarService){}
   
   ngOnInit() {
     this.projects.subscribe(notification => {
@@ -135,5 +139,13 @@ export class SidebarComponent {
     });
     return newNode;
   }
-  
+
+  doReindex(){
+    let notification = this.snackbarService.addNotification("Reindexing " + this.projectService.getSelectedEnv() + " environment", undefined, undefined, 'refresh', undefined);
+    this.projectService.reindex().subscribe(resp => {
+      this.snackbarService.removeNotificationById(notification.id);
+      this.projectService.refreshProjects();
+    });
+  }
+
 }

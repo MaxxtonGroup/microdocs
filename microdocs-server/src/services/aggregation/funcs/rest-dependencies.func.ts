@@ -58,7 +58,7 @@ function resolveRestClient( pipe:Pipe<any>, reporter:ProblemReporter, project:Pr
     let olderDepProject = pipe.getPrevProjectVersion(depTitle, depProject.info.version);
     while(!compatible && olderDepProject != null){
       compatible = checkDependencyCompatible(depTitle, dependency, olderDepProject, project, new ProblemReporter());
-      olderDepProject = pipe.getPrevProjectVersion(depTitle, depProject.info.version);
+      olderDepProject = pipe.getPrevProjectVersion(depTitle, olderDepProject.info.version);
     }
     if(compatible){
       dependency.version = depProject.info.version;

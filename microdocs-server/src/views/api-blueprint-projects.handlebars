@@ -1,12 +1,12 @@
 FORMAT: 1A
-HOST: {{global.schemas.[0]}}://{{global.host}}{{global.baseUrl}}
+HOST: {{info.schemas.[0]}}://{{info.host}}{{info.baseUrl}}
 
-# {{global.info.title}}
+# {{info.info.title}}
 
-{{global.info.description}}
+{{info.info.description}}
 
 {{#each projects as |project index|}}
-# Group {{project.info.title}}
+# Group {{info.info.title}}
 
 {{#each project.paths}}
 ## {{@key}}

@@ -1,8 +1,8 @@
-/// <reference path="../../typings/index.d.ts" />
+/// <reference path="../../../typings/index.d.ts" />
 
 import {expect, assert} from 'chai';
-import {SchemaHelper} from "../helpers/schema/schema.helper";
-import {SchemaTypes} from "../domain";
+import {SchemaHelper} from "./schema.helper";
+import {SchemaTypes} from "../../domain";
 
 describe('#SchemaHelper: ', () => {
   
@@ -288,5 +288,41 @@ describe('#SchemaHelper: ', () => {
     });
     
   });
-  
+
+  describe("#resolveCondition(): ", () => {
+
+    it("Test true condition", () => {
+      let vars = {
+        scope: {value:5},
+        project: {},
+        settings: {},
+        settingsScope: {}
+      };
+
+
+      let result = SchemaHelper.resolveCondition("scope.value == 5", vars);
+
+      assert.isTrue(result);
+    });
+
+  });
+
+  describe("#resolveCondition(): ", () => {
+
+    it("Test false condition", () => {
+      let vars = {
+        scope: {value:5},
+        project: {},
+        settings: {},
+        settingsScope: {}
+      };
+
+
+      let result = SchemaHelper.resolveCondition("scope.value > 5", vars);
+
+      assert.isFalse(result);
+    });
+
+  });
+
 });

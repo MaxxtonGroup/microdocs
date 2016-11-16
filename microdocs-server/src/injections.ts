@@ -6,8 +6,6 @@ import {AggregationService} from "./services/aggregation.service";
 import {ProjectJsonRepository} from "./repositories/json/project-json.repo";
 import {ReportJsonRepository} from "./repositories/json/report-json.repo";
 import {ProjectSettingsJsonRepository} from "./repositories/json/project-settings-json.repo";
-import { AggregationPipeline } from "./services/aggregation/aggregation-pipeline";
-import { AggregationService } from "./services/aggregation.service";
 /**
  * @author Steven Hermans
  */
