@@ -27,7 +27,7 @@ export class ReindexRoute extends BaseRoute {
         return;
       }
 
-      var nodes = scope.injection.AggregationService().reindex(env);
+      var nodes = scope.injection.AggregationService().reindexAll(env);
       handler.handleProjects(req, res, nodes, env);
     } catch (e) {
       scope.getDefaultHandler().handleInternalServerError(req, res, e);
