@@ -236,6 +236,18 @@ dependency-graph {
           fill: $blue-gray;
         }
 
+        circle.gray {
+          fill: $gray;
+        }
+
+        circle.light-gray {
+          fill: $gray-light;
+        }
+
+        circle.dark-gray {
+          fill: $gray-dark;
+        }
+
         text {
           font-size: 10px;
           text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;

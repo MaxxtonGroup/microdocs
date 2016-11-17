@@ -5,6 +5,7 @@ import { PreProcessor } from "./pre-processor";
 
 const VARIABLES_PLACEHOLDER = "~~~VARIABLES";
 const IF_PLACEHOLDER = "~~~IF";
+const COMMENT_PLACEHOLDER = "~~~#";
 
 /**
  * Helper for applying custom settings
@@ -122,6 +123,8 @@ export class MicroDocsPreProcessor implements PreProcessor{
           } else {
             console.warn( 'No condition in ~~~IF statement' );
           }
+        } else if ( key === COMMENT_PLACEHOLDER ) {
+          continue;
         } else {
           var resolvedKey = SchemaHelper.resolveString( key, variables );
           if ( resolvedKey ) {

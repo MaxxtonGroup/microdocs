@@ -183,6 +183,7 @@ export class TemplateResponseHandler extends MicroDocsResponseHandler {
     if(!result.extension){
       result.extension = 'text';
     }
+    res.header('Content-Disposition', 'inline; filename="' + this.templateName + '.' + result.extension);
     switch(result.extension.toLowerCase()){
       case 'text':
         this.responseText(res, 200, result.body);

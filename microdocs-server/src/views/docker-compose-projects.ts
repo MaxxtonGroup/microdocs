@@ -68,7 +68,7 @@ export default function ( env:string, projects:Project[], projectNodes:ProjectNo
 
   // Return docker compose as an object
   return {
-    extension: 'yaml',
+    extension: 'yml',
     body: {
       version: '2',
       services: services
