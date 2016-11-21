@@ -121,6 +121,27 @@ describe( '#MicroDocsPreProcessor: ', () => {
       } );
     } );
 
+    it( "Test comment", () => {
+      var project:Project = <Project>{
+        object: {
+          'hello': 'bye'
+        }
+      };
+      var settings        = {
+        object: {
+          '~~~#': "Ignore me"
+        }
+      };
+
+      var result = new MicroDocsPreProcessor().process( project, settings );
+
+      expect( result ).to.deep.eq( {
+        object: {
+          'hello': 'bye'
+        }
+      } );
+    } );
+
     it( "Test scope", () => {
       var project:Project = <Project>{
         object: {

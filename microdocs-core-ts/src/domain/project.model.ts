@@ -27,6 +27,6 @@ export interface Project {
   problems?:Array<Problem>;
   problemCount?:number;
   deprecated?:boolean;
-  deploy:Deploy;
+  deploy?:Deploy;
 
 }

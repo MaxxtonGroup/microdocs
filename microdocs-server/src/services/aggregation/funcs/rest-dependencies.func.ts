@@ -55,12 +55,20 @@ function resolveRestClient( pipe:Pipe<any>, reporter:ProblemReporter, project:Pr
   if(compatible){
     dependency.version = depProject.info.version;
   }else{
-    let olderDepProject = pipe.getPrevProjectVersion(depTitle, depProject.info.version);
-    while(!compatible && olderDepProject != null){
-      compatible = checkDependencyCompatible(depTitle, dependency, olderDepProject, project, new ProblemReporter());
-      olderDepProject = pipe.getPrevProjectVersion(depTitle, olderDepProject.info.version);
+    let first = true;
+    let olderDepProject = null;
+    while(!compatible && (olderDepProject != null || first)){
+      first = false;
+      olderDepProject = pipe.getPrevProjectVersion(depTitle, olderDepProject ? olderDepProject.info.version : depProject.info.version);
+      if(olderDepProject) {
+        compatible = checkDependencyCompatible( depTitle, dependency, olderDepProject, project, new ProblemReporter() );
+      }
     }
-    dependency.version = depProject.info.version;
+    if(olderDepProject && olderDepProject.info && olderDepProject.info.version){
+      dependency.version = olderDepProject.info.version;
+    }else{
+      dependency.version = depProject.info.version;
+    }
     if(!compatible){
       reporter.report( ProblemLevels.ERROR, "Not compatible with: " + depTitle, dependency.component );
     }
