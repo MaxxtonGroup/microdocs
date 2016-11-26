@@ -84,7 +84,7 @@ export class ImportPanel{
     this.projectService.importProject(this.project, this.projectInfo.title, this.projectInfo.group, this.projectInfo.version).subscribe(resp => {
       var url = "/projects/" + this.projectInfo.group + "/" + this.projectInfo.title + "?version=" + this.projectInfo.version + "&env=" + this.projectService.getSelectedEnv();
       this.setOpened(false);
-      this.projectService.refreshProjects();
+      this.projectService.refreshProjects(this.projectService.getSelectedEnv(), true);
       this.router.navigateByUrl(url);
     }, error => {
       this.generalError = "Something went wrong";

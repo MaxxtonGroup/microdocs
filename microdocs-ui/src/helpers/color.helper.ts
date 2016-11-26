@@ -16,11 +16,11 @@ const colorRanges = {
 };
 
 export function getColorByTitle(title:string):string {
-  let selectedColor;
+  let selectedColor:string;
   var first = title.substr(0, 1);
   for (var color in colorRanges) {
-    colorRanges[color].forEach(char => {
-      if (char == first) {
+    colorRanges[color].forEach((char:string) => {
+      if (char === first) {
         selectedColor = color;
         return false;
       }

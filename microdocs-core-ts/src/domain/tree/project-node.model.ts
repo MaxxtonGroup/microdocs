@@ -38,6 +38,22 @@ export class ProjectNode extends Node {
     return this.parent.getRoot();
   }
 
+  public getParent():Node{
+    return this.parent;
+  }
+
+  /**
+   * Get the reference from the root of the tree to this node
+   * @return {string}
+   */
+  public getReference():string{
+    if(this.parent === this.getRoot()){
+      return this.parent.getReference() + '/' + this.title;
+    }else{
+      return this.parent.getReference() + '/dependencies/' + this.title + '/item';
+    }
+  }
+
   public findNodePath( title:string, version:string ):string {
     for ( var i = 0; i < this.dependencies.length; i++ ) {
       var dependency = this.dependencies[ i ];
@@ -61,6 +77,27 @@ export class ProjectNode extends Node {
       return result;
     }
     return this;
+  }
+
+  /**
+   * Find dependencies that uses the given reference
+   * @param reference {string} eg. '#/example-project/dependencies/item/child-project'
+   * @return {DepencencyNode[]}
+   */
+  public findReverseDependencies(reference:string):DependencyNode[]{
+    let dependencyNodes:DependencyNode[] = [];
+    if(this.dependencies) {
+      this.dependencies.forEach( dependencyNode => {
+        if ( dependencyNode.item ) {
+          if ( dependencyNode.item.reference === reference ) {
+            dependencyNodes.push( dependencyNode );
+          } else {
+            dependencyNodes = dependencyNode.item.findReverseDependencies(reference).concat(dependencyNodes);
+          }
+        }
+      } );
+    }
+    return dependencyNodes;
   }
 
   public resolveReference( reference:string ):Node {
@@ -88,6 +125,10 @@ export class ProjectNode extends Node {
       }
     }
     return null;
+  }
+
+  public toJson():string{
+    return JSON.stringify(this.unlink());
   }
 
   public unlink():{} {

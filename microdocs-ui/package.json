@@ -46,7 +46,7 @@
     "zone.js": "0.6.12"
   },
   "devDependencies": {
-    "@maxxton/gulp-builder": "1.5.1",
+    "@maxxton/gulp-builder": "1.5.13",
     "async": "^2.1.2",
     "gulp": "3.9.1",
     "gulp-angular-embed-templates": "2.2.0",

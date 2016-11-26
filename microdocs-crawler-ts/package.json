@@ -25,6 +25,6 @@
   },
   "devDependencies": {
     "gulp": "^3.9.0",
-    "@maxxton/gulp-builder": "1.5.1"
+    "@maxxton/gulp-builder": "1.5.13"
   }
 }

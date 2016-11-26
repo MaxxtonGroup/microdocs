@@ -1,4 +1,3 @@
-import { ProjectService } from "./project.service";
 import { Injectable } from "@angular/core";
 import { Http, Response } from "@angular/http";
 import {
@@ -14,6 +13,7 @@ import { ProjectTree, Project, Environments, ProjectChangeRule } from "@maxxton/
 import { Observable } from "rxjs/Observable";
 import { SchemaHelper } from "@maxxton/microdocs-core/helpers/schema/schema.helper";
 import { SnackbarService } from "@maxxton/components/services/snackbar.service";
+import { ProjectClient } from "./project.client";
 
 /**
  * Client for the standalone implementation.
@@ -28,10 +28,10 @@ import { SnackbarService } from "@maxxton/components/services/snackbar.service";
   }
 } )
 @Injectable()
-export class StandaloneProjectService extends ProjectService {
+export class StandaloneProjectClient extends RestClient implements ProjectClient{
 
-  constructor( private http:Http, private snackbarService:SnackbarService ) {
-    super( http, snackbarService );
+  constructor( private http:Http ) {
+    super(http);
   }
 
   /**
@@ -41,7 +41,7 @@ export class StandaloneProjectService extends ProjectService {
    */
   @Get( "/projects-{env}.json" )
   @Map( resp => ProjectTree.link( resp.json() ) )
-  public loadProjects( @Path( "env" ) env:string = this.getSelectedEnv() ):Observable<ProjectTree> {
+  public loadProjects( @Path( "env" ) env:string ):Observable<ProjectTree> {
     return null;
   }
 
@@ -54,7 +54,7 @@ export class StandaloneProjectService extends ProjectService {
    */
   @Get( "/projects/{title}-{env}-{version}.json" )
   @Map( resp => SchemaHelper.resolveObject( resp.json() ) )
-  public loadProject( @Path( "projectName" ) projectName:string, @Path( "version" ) version?:string, @Path( "env" ) env:string = this.getSelectedEnv() ):Observable<Project> {
+  public loadProject( @Path( "env" ) env:string, @Path( "projectName" ) projectName:string, @Path( "version" ) version?:string ):Observable<Project> {
     return null;
   }
 
@@ -68,19 +68,19 @@ export class StandaloneProjectService extends ProjectService {
     return null
   }
 
-  importProject( project:Project, name:string, group:string, version:string, env?:string ):Observable<Response> {
+  public importProject( env:string, project:Project, name:string, group:string, version:string ):Observable<Response> {
     throw new Error( 'Import project is not supported in standalone' );
   }
 
-  deleteProject( name:string, version?:string, env?:string ):Observable<Response> {
+  public deleteProject( env:string, name:string, version?:string ):Observable<Response> {
     throw new Error( 'Delete project is not supported in standalone' );
   }
 
-  updateProject( name:string, rules:ProjectChangeRule[], version?:string, env?:string ):Observable<Response> {
+  public updateProject( env:string, name:string, rules:ProjectChangeRule[], version?:string ):Observable<Response> {
     throw new Error( 'Update project is not supported in standalone' );
   }
 
-  reindex( env?:string ):Observable<Response> {
+  public reindex( env:string ):Observable<Response> {
     throw new Error( 'Reindex is not supported in standalone' );
   }
 

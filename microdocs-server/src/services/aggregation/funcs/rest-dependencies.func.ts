@@ -51,6 +51,10 @@ function resolveRestClient( pipe:Pipe<any>, reporter:ProblemReporter, project:Pr
     return;
   }
 
+  var projectInfo = pipe.projects.filter(info => info.title === depTitle)[0];
+  if(projectInfo) {
+    dependency.latestVersion = projectInfo.version;
+  }
   let compatible = checkDependencyCompatible(depTitle, dependency, depProject, project, reporter);
   if(compatible){
     dependency.version = depProject.info.version;

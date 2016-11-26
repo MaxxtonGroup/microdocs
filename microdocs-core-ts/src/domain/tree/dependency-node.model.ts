@@ -13,12 +13,29 @@ export class DependencyNode extends Node{
     return this.item.getRoot();
   }
 
+  public getParent():Node{
+    return this.item.parent;
+  }
+
+  /**
+   * Get the reference from the root of the tree to this node
+   * @return {string}
+   */
+  public getReference():string{
+    let ref = this.item.getReference();
+    return ref.substring(0, ref.length - 5);
+  }
+
   findNodePath( title:string, version:string ):string {
     return this.item.getRoot().findNodePath(title, version);
   }
 
   unlink():{} {
     return this.item.unlink();
+  }
+
+  public toJson():string{
+    return JSON.stringify(this.unlink());
   }
 
   public resolveReference( reference:string ):Node {
