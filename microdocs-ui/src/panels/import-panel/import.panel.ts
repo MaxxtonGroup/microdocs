@@ -1,7 +1,7 @@
 import {Component, Input, Output, EventEmitter} from "@angular/core";
 import {Router} from "@angular/router";
 import {COMPONENTS} from "@maxxton/components/components";
-import {Project} from "@maxxton/microdocs-core/domain";
+import {Project, Problem, ProblemResponse} from "@maxxton/microdocs-core/domain";
 import {ProjectService} from "../../services/project.service";
 
 /**
@@ -25,6 +25,7 @@ export class ImportPanel{
   
   jsonError:string = "";
   generalError:string = "";
+  problemsErrors:string[] = [];
   valid:boolean = false;
   projectDefinition:string = '';
   
@@ -37,6 +38,8 @@ export class ImportPanel{
       this.projectDefinition = '';
       this.project = null;
       this.projectInfo = new ProjectInfo();
+      this.generalError = '';
+      this.problemsErrors = [];
     }
   }
   
@@ -63,6 +66,7 @@ export class ImportPanel{
   
   onSubmit(){
     this.generalError = "";
+    this.problemsErrors = [];
     if(this.jsonError){
       this.generalError = this.jsonError;
       return;
@@ -81,11 +85,15 @@ export class ImportPanel{
       return;
     }
   
-    this.projectService.importProject(this.project, this.projectInfo.title, this.projectInfo.group, this.projectInfo.version).subscribe(resp => {
-      var url = "/projects/" + this.projectInfo.group + "/" + this.projectInfo.title + "?version=" + this.projectInfo.version + "&env=" + this.projectService.getSelectedEnv();
-      this.setOpened(false);
-      this.projectService.refreshProjects(this.projectService.getSelectedEnv(), true);
-      this.router.navigateByUrl(url);
+    this.projectService.importProject(this.project, this.projectInfo.title, this.projectInfo.group, this.projectInfo.version).subscribe((problemResponse:ProblemResponse) => {
+      if(problemResponse.status === 'ok') {
+        var url = "/projects/" + this.projectInfo.group + "/" + this.projectInfo.title + "?version=" + this.projectInfo.version + "&env=" + this.projectService.getSelectedEnv();
+        this.setOpened( false );
+        this.projectService.refreshProjects( this.projectService.getSelectedEnv(), true );
+        this.router.navigateByUrl( url );
+      }else{
+        this.problemsErrors = problemResponse.problems.map(problem => problem.message);
+      }
     }, error => {
       this.generalError = "Something went wrong";
     });

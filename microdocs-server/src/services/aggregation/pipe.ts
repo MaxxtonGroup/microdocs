@@ -160,6 +160,26 @@ export abstract class Pipe<T> {
   }
 
   /**
+   * Add a report to the current pipe
+   * @return {Pipe} return this pipe
+   */
+  public take(report:Project):Pipe<any>{
+    this.result.pushProject(report);
+    let projectInfo = this.projects.filter(info => info.title === report.info.title)[0];
+    if(!projectInfo){
+      projectInfo = new ProjectInfo(report.info.title, report.info.group, report.info.version, [report.info.version]);
+      this.projects.push(projectInfo);
+    }else{
+      if(projectInfo.versions.filter(version => version === report.info.version).length == 0){
+        projectInfo.versions.push(report.info.version);
+        projectInfo.versions = projectInfo.versions.sort();
+        projectInfo.version = projectInfo.versions[projectInfo.versions.length-1];
+      }
+    }
+    return this;
+  }
+
+  /**
    * PreProcess each project
    * @return {Pipe}
    */
@@ -191,6 +211,19 @@ export abstract class Pipe<T> {
   public resolveRestDependencies( scope?:Project ):Pipe<any> {
     console.info('resolve Rest Dependencies');
     let pipe   = new RestDependenciesPipe( this.pipeline, scope );
+    pipe._prev = this;
+    this._next = pipe;
+    return pipe.process();
+  }
+
+  /**
+   * Resolve REST dependencies
+   * @param scope only check dependencies for this scope if present
+   * @return {Pipe}
+   */
+  public resolveUsesDependencies( scope?:Project ):Pipe<any> {
+    console.info('resolve Uses Dependencies');
+    let pipe   = new UsesDependenciesPipe( this.pipeline, scope );
     pipe._prev = this;
     this._next = pipe;
     return pipe.process();
@@ -268,3 +301,4 @@ import {
     BuildTagsPipe,
     TreePipe
 } from "./pipes";
+import { UsesDependenciesPipe } from "./pipes/uses-dependencies.pipe";

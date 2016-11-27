@@ -15,6 +15,7 @@ export class AggregationService {
         .preProcess()
         .combineIncludes()
         .resolveRestDependencies()
+        .resolveUsesDependencies()
         .buildTags()
         .storeIndex()
         .storeProjects()
@@ -27,6 +28,7 @@ export class AggregationService {
         .preProcess()
         .combineIncludes()
         .resolveRestDependencies()
+        .resolveUsesDependencies()
         .buildTags()
         .storeIndex()
         .storeProjects()
@@ -39,12 +41,15 @@ export class AggregationService {
         .preProcess()
         .combineIncludes()
         .resolveRestDependencies( report )
+        .resolveUsesDependencies( report )
         .asProblems();
     let reverseProblems = pipe( this.injection, env )
         .takeLatest()
+        .take( report )
         .preProcess()
         .combineIncludes()
         .resolveRestDependencies( report )
+        .resolveUsesDependencies( report )
         .asProblems();
     return problems.concat( reverseProblems );
   }

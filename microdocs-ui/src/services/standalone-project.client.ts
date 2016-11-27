@@ -9,7 +9,7 @@ import {
     Map,
     Produces, MediaType, Client
 } from "@maxxton/angular2-rest";
-import { ProjectTree, Project, Environments, ProjectChangeRule } from "@maxxton/microdocs-core/domain";
+import { ProjectTree, Project, Environments, ProjectChangeRule, ProblemResponse } from "@maxxton/microdocs-core/domain";
 import { Observable } from "rxjs/Observable";
 import { SchemaHelper } from "@maxxton/microdocs-core/helpers/schema/schema.helper";
 import { SnackbarService } from "@maxxton/components/services/snackbar.service";
@@ -68,7 +68,7 @@ export class StandaloneProjectClient extends RestClient implements ProjectClient
     return null
   }
 
-  public importProject( env:string, project:Project, name:string, group:string, version:string ):Observable<Response> {
+  public importProject( env:string, project:Project, name:string, group:string, version:string ):Observable<ProblemResponse> {
     throw new Error( 'Import project is not supported in standalone' );
   }
 

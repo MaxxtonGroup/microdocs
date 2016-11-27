@@ -23,7 +23,7 @@ export class PublishRoute extends BaseRoute {
    * @httpQuery ?title {string} override the info.title in the project definitions
    * @httpQuery ?group {string} override the info.group in the project definitions
    * @httpQuery ?version {string} override the info.version in the project definitions
-   * @httpResponse 200 {Problem[]}
+   * @httpResponse 200 {ProblemResponse}
    * @httpResponse 400 Missing title/version/group in the project definitions or missing request body
    */
   public publishProject( req:express.Request, res:express.Response, next:express.NextFunction, scope:BaseRoute ) {

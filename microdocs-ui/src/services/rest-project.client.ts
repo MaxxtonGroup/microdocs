@@ -4,7 +4,7 @@ import {
     Get, Path, Put, Patch, Query, Body, Map, Produces, MediaType, Client, Delete,
     RestClient
 } from "@maxxton/angular2-rest";
-import { ProjectTree, Project, Environments, ProjectChangeRule } from "@maxxton/microdocs-core/domain";
+import { ProjectTree, Project, Environments, ProjectChangeRule, ProblemResponse } from "@maxxton/microdocs-core/domain";
 import { Observable } from "rxjs/Observable";
 import { SchemaHelper } from "@maxxton/microdocs-core/helpers/schema/schema.helper";
 import { SnackbarService } from "@maxxton/components/services/snackbar.service";
@@ -65,7 +65,8 @@ export class RestProjectClient extends RestClient implements ProjectClient {
   }
 
   @Put( "/projects/{title}" )
-  public importProject( @Query( "env" ) env:string, @Body project:Project, @Path( "title" ) name:string, @Query( "group" ) group:string, @Query( "version" ) version:string ):Observable<Response> {
+  @Map( resp => resp.json() )
+  public importProject( @Query( "env" ) env:string, @Body project:Project, @Path( "title" ) name:string, @Query( "group" ) group:string, @Query( "version" ) version:string ):Observable<ProblemResponse> {
     return null;
   }
 

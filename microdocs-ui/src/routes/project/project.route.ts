@@ -160,7 +160,11 @@ export class ProjectRoute {
   }
   
   getDependencyLink(dependency:Dependency):string {
-    return '/projects/' + (dependency.group != undefined ? dependency.group : 'default') + '/' + dependency['_id'];
+    return '/projects/' + dependency['_id'];
+  }
+
+  getDependencyParams(dependency:Dependency):{} {
+    return {version: dependency.version, env: this.projectService.getSelectedEnv()};
   }
   
   updateNodes() {
@@ -186,5 +190,9 @@ export class ProjectRoute {
     this.projectService.updateProject(this.title, rules, this.version).subscribe(resp => {
       this.projectService.refreshProject(this.title, this.version);
     });
+  }
+
+  timeEquals(updateTime:string, publishTime:string):boolean{
+    return new Date(updateTime).getTime() - new Date(publishTime).getTime() > 1000;
   }
 }

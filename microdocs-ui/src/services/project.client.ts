@@ -1,4 +1,4 @@
-import { ProjectTree, Project, Environments, ProjectChangeRule } from "@maxxton/microdocs-core/domain";
+import { ProjectTree, Project, Environments, ProjectChangeRule, ProblemResponse } from "@maxxton/microdocs-core/domain";
 import { Observable } from "rxjs/Observable";
 import { Response } from "@angular/http";
 
@@ -23,7 +23,7 @@ export interface ProjectClient {
   getEnvs():Observable<{[key:string]:Environments}>;
 
 
-  importProject( env:string, project:Project, title:string, group:string, version:string ):Observable<Response>;
+  importProject( env:string, project:Project, title:string, group:string, version:string ):Observable<ProblemResponse>;
 
   deleteProject( env:string, title:string, version?:string ):Observable<Response>;
 

@@ -29,5 +29,10 @@
       <button class="button" (click)="onSubmit()">Import</button>
       <span class="text-danger">{{generalError}}</span>
     </div>
+    <div class="row">
+      <ul>
+        <li class="text-danger" *ngFor="let error of problemsErrors">{{error}}</li>
+      </ul>
+    </div>
   </template>
 </modal>

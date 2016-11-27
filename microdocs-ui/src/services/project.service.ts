@@ -4,7 +4,7 @@ import { ReplaySubject } from "rxjs/ReplaySubject";
 import { Notification } from "rxjs/Notification";
 import { Response } from "@angular/http";
 import { SnackbarService } from "@maxxton/components/services/snackbar.service";
-import { ProjectTree, Project, Environments, ProjectChangeRule } from "@maxxton/microdocs-core/domain";
+import { ProjectTree, Project, Environments, ProjectChangeRule, ProblemResponse} from "@maxxton/microdocs-core/domain";
 import { ProjectClient } from "./project.client";
 import { Injectable, Inject } from "@angular/core";
 
@@ -68,7 +68,7 @@ export class ProjectService {
     }
   }
 
-  public importProject( project:Project, title:string, group:string, version:string, env:string = this.getSelectedEnv() ):Observable<Response> {
+  public importProject( project:Project, title:string, group:string, version:string, env:string = this.getSelectedEnv() ):Observable<ProblemResponse> {
     return this.projectClient.importProject( env, project, title, group, version );
   }
 
