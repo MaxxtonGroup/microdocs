@@ -62,7 +62,6 @@
     "run-sequence": "1.1.5",
     "typings": "^1.0.4",
     "globby": "^6.0.0",
-    "node-rest-client": "^2.0.1",
-    "typedoc": "^0.4.5"
+    "node-rest-client": "^2.0.1"
   }
 }

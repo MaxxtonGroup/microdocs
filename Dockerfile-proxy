@@ -1,5 +1,5 @@
 FROM node:6
-
+RUN npm set registry http://172.17.0.2:4873/
 RUN npm install -g gulp
 
 RUN mkdir -p /microdocs/microdocs-core-ts

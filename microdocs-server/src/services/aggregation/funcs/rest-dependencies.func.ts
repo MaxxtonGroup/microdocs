@@ -37,6 +37,12 @@ export function resolveRestDependencies( pipe:Pipe<any>, project:Project, scope?
 }
 
 function resolveRestClient( pipe:Pipe<any>, reporter:ProblemReporter, project:Project, dependency:Dependency, depTitle:string, scope?:Project ) {
+  // Don't resolve project if it is already resolved
+  if(pipe.result.getProject(project.info.title, project.info.version) != null){
+    return;
+  }
+
+
   // Find the matching version
   let depProject:Project;
   if ( dependency.version ) {
@@ -55,7 +61,7 @@ function resolveRestClient( pipe:Pipe<any>, reporter:ProblemReporter, project:Pr
   if(projectInfo) {
     dependency.latestVersion = projectInfo.version;
   }
-  let compatible = checkDependencyCompatible(depTitle, dependency, depProject, project, reporter);
+  let compatible = checkDependencyCompatible(depTitle, dependency, depProject, project, reporter, false);
   if(compatible){
     dependency.version = depProject.info.version;
   }else{
@@ -65,7 +71,7 @@ function resolveRestClient( pipe:Pipe<any>, reporter:ProblemReporter, project:Pr
       first = false;
       olderDepProject = pipe.getPrevProjectVersion(depTitle, olderDepProject ? olderDepProject.info.version : depProject.info.version);
       if(olderDepProject) {
-        compatible = checkDependencyCompatible( depTitle, dependency, olderDepProject, project, new ProblemReporter() );
+        compatible = checkDependencyCompatible( depTitle, dependency, olderDepProject, project, new ProblemReporter(), true );
       }
     }
     if(olderDepProject && olderDepProject.info && olderDepProject.info.version){
@@ -91,14 +97,14 @@ function resolveRestClient( pipe:Pipe<any>, reporter:ProblemReporter, project:Pr
  * @param reporter
  * @returns {boolean} true if compatible, otherwise false
  */
-function checkDependencyCompatible( title:string, dependency:Dependency, depProject:Project, currentProject:Project, reporter?:ProblemReporter ):boolean {
+function checkDependencyCompatible( title:string, dependency:Dependency, depProject:Project, currentProject:Project, reporter:ProblemReporter, silence:boolean ):boolean {
   if ( dependency.deprecatedVersions && dependency.deprecatedVersions.indexOf( depProject.info.version ) != -1 ) {
     if(reporter) {
       reporter.report( ProblemLevels.WARNING, "This project is marked as not compatible with version " + depProject.info.version, dependency.component );
     }
     return false;
   }
-  return checkEndpoints( title, dependency, depProject, currentProject, reporter != undefined );
+  return checkEndpoints( title, dependency, depProject, currentProject, silence );
 }
 
 /**
@@ -110,7 +116,7 @@ function checkDependencyCompatible( title:string, dependency:Dependency, depProj
  * @param silence Add problems to the client endpoints object
  * @returns {boolean} true if compatible, otherwise false
  */
-function checkEndpoints( title:string, dependency:Dependency, dependentProject:Project, currentProject:Project, silence = false ):boolean {
+function checkEndpoints( title:string, dependency:Dependency, dependentProject:Project, currentProject:Project, silence:boolean ):boolean {
   var compatible = true;
   if ( dependency.paths != undefined ) {
     for ( var path in dependency.paths ) {

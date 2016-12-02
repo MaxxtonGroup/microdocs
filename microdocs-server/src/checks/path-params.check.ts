@@ -37,7 +37,9 @@ export class PathParamsCheck implements PathCheck {
               problemReport.report( ProblemLevels.ERROR, "path variable '" + clientParamName.substr( 1, clientParamName.length-2 ) + "' is missing", clientEndpoint.controller, clientEndpoint.method );
             }
             if ( clientParam != null && producerParam != null ) {
-              if ( clientParam.type != producerParam.type ) {
+              if ( clientParam.type !== producerParam.type &&
+                  !((clientParam.type === SchemaTypes.NUMBER || clientParam.type === SchemaTypes.INTEGER) &&
+                  (producerParam.type === SchemaTypes.NUMBER || producerParam.type === SchemaTypes.INTEGER))) {
                 problemReport.report( ProblemLevels.WARNING, "Type mismatches path variable '" + clientParamName.substr( 1, clientParamName.length-2 ) + "', expected: " + producerParam.type + ", found: " + clientParam.type, clientEndpoint.controller, clientEndpoint.method );
               }
             }

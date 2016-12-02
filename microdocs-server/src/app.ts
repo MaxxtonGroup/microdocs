@@ -6,6 +6,7 @@ import * as express from "express";
 import * as helmet from "helmet";
 import * as path from "path";
 import * as exphbs from 'express-handlebars';
+import * as multer from 'multer';
 
 import {Config} from "./config";
 import {BaseRoute} from "./routes/route";

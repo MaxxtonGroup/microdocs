@@ -3,5 +3,6 @@
     "default": true
   },
   "acceptance": {},
-  "production": {}
+  "production": {},
+  "remote-development": {}
 }

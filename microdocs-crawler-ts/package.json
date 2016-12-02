@@ -20,8 +20,7 @@
     "chai": "^3.5.0",
     "globby": "^6.0.0",
     "node-rest-client": "^2.0.1",
-    "typedoc": "^0.4.5",
-    "typescript": "^1.8.10"
+    "typedoc": "^0.5.1"
   },
   "devDependencies": {
     "gulp": "^3.9.0",

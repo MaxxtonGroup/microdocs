@@ -16,7 +16,7 @@
     "postinstall": "node_modules/.bin/typings install",
     "package-distribution": "gulp prepublish"
   },
-  "author": "Steven Hermans (s.hermans@maxxton.com",
+  "author": "Steven Hermans (s.hermans@maxxton.com)",
   "license": "MIT",
   "dependencies": {
     "@maxxton/microdocs-core": "1.5.1",
@@ -28,6 +28,7 @@
     "js-yaml": "^3.6.1",
     "jsontoxml": "0.0.11",
     "mkdir-p": "0.0.7",
+    "multer": "^1.2.0",
     "node-yaml-config": "0.0.4",
     "uuid": "^2.0.2"
   },
