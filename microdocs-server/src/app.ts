@@ -13,7 +13,7 @@ import {ProjectsRoute} from "./routes/projects.route";
 import {ProjectRoute} from "./routes/project.route";
 import {ReindexRoute} from "./routes/reindex.route";
 import {CheckRoute} from "./routes/check.route";
-import {PublishRoute} from "./routes/publish.route";
+import { PublishRoute, PublishZipRoute } from "./routes/publish.route";
 import {EnvRoute} from "./routes/env.route";
 import {Request, Response, NextFunction} from "express";
 import {DefaultInjectionConfig, Injection} from "./injections";
@@ -30,6 +30,7 @@ import {EditProjectRoute} from "./routes/edit-project.route";
 class Server {
   
   public app:express.Application;
+  private upload:any;
   
   /**
    * Bootstrap the application.
@@ -89,6 +90,7 @@ class Server {
     this.app.engine('handlebars', exphbs());
     this.app.set('views', path.join(__dirname, viewFolder));
     this.app.set('view engine', 'handlebars');
+    this.upload = multer({ dest: Config.get('tempFolder') });
     
     //add static paths
     var staticFolder = "../microdocs-ui";
@@ -131,6 +133,7 @@ class Server {
       new ReindexRoute(this.injection),
       new CheckRoute(this.injection),
       new PublishRoute(this.injection),
+      new PublishZipRoute(this.injection),
       new EnvRoute(this.injection),
       new RemoveProjectRoute(this.injection),
       new EditProjectRoute(this.injection)
@@ -151,7 +154,11 @@ class Server {
           throw "unknown request method: " + requestMethod + " for path: " + path;
         }
         console.info("map route: [" + requestMethod + "] " + path);
-        router[requestMethod](path, (req:Request, res:Response, next:NextFunction) => route.handler()(req, res, next, route));
+        if(route.upload()){
+          router[requestMethod](path, this.upload.single('upload'), (req:Request, res:Response, next:NextFunction) => route.handler()(req, res, next, route));
+        }else{
+          router[requestMethod](path, (req:Request, res:Response, next:NextFunction) => route.handler()(req, res, next, route));
+        }
       });
     });
     
