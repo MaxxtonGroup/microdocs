@@ -1,7 +1,7 @@
 FROM node:6
 
 ARG PROXY_URL
-RUN npm set registry ${PROXY_URL:-https://registry.npm.org}
+RUN npm set registry ${PROXY_URL:-https://registry.npmjs.org/}
 
 RUN npm install -g gulp
 
