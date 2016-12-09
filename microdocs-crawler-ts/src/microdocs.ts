@@ -5,6 +5,7 @@ import * as pjson from '../package.json';
 import * as program from 'commander';
 import * as globby from 'globby';
 import * as fs from 'fs';
+import * as cliHelper from "./helpers/cli.helper";
 import { MicroDocsCrawler } from './crawler/microdocs-crawler';
 import { ServerOptions } from "./options/server.options";
 import { CheckOptions } from "./options/check.options";
@@ -84,7 +85,7 @@ program
       // build definitions
       var crawler = new MicroDocsCrawler();
       crawler.check( src, checkOptinos, tsConfig, result => {
-        crawler.printProblemResponse( result, getFolders() );
+        cliHelper.printProblemResponse( result, getFolders() );
       } );
     } );
 
@@ -127,7 +128,7 @@ program
       // build definitions
       var crawler = new MicroDocsCrawler();
       crawler.publish( src, publishOptions, tsConfig, result => {
-        crawler.printProblemResponse( result, getFolders() );
+        cliHelper.printProblemResponse( result, getFolders() );
       } );
     } );
 

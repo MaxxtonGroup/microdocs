@@ -117,8 +117,8 @@ function getClusterOptions( options: any ): ClusterOptions {
   }
   if ( options.build ) {
     clusterOptions.build = true;
-    if ( typeof(clusterOptions.build) === 'string' ) {
-      clusterOptions.dockerfile = clusterOptions.build;
+    if ( typeof(options.build) === 'string' ) {
+      clusterOptions.dockerfile = options.build;
     }
   }
   if ( options.buildContext ) {
