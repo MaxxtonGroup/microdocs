@@ -408,7 +408,7 @@ describe( '#Aggregation: #resolveRestDependencies:', () => {
      * consumer: GET /api/v1/customers/items
      * result: match second
      */
-    it( '#Take the right path', () => {
+    it( 'Take the right path', () => {
       // Arrange
       let pipeMock         = new PipeMock( {
         'test-project': {

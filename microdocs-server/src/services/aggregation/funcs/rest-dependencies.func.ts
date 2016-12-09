@@ -170,7 +170,7 @@ function findEndpoint( clientEndpoint: Path, clientPath: string, clientMethod: s
   for ( let producerPath in project.paths ) {
     if ( project.paths[ producerPath ][ clientMethod ] ) {
       // match via wildcards in regexp
-      const expression = '^' + producerPath.replace( new RegExp( "\/", 'g' ), '\/' ).replace( new RegExp( "\\{.*?\\}", 'g' ), '(.+)' ) + '$';
+      const expression = '^' + producerPath.replace( new RegExp( "\/", 'g' ), '\/' ).replace( new RegExp( "\\{.*?\\}", 'g' ), '([^\/]+)' ) + '$';
       const regExp = new RegExp( expression );
       const match = clientPath.match( regExp );
 
@@ -191,7 +191,7 @@ function findEndpoint( clientEndpoint: Path, clientPath: string, clientMethod: s
         let resultWarningCount = report.getProblems().filter( problem => problem.level === ProblemLevels.WARNING ).length;
 
         // set as best match if there is no match or it has the fewest problems
-        if ( bestMatch == null || resultErrorCount > errorCount || (resultErrorCount == errorCount && resultWarningCount > warningCount) || variables < variableCount) {
+        if(bestMatch == null || variables < variableCount || (variables == variableCount && (resultErrorCount > errorCount || (resultErrorCount == errorCount && resultWarningCount > warningCount)))){
           bestMatch    = endpoint;
           errorCount   = resultErrorCount;
           warningCount = resultWarningCount;

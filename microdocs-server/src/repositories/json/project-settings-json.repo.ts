@@ -32,9 +32,9 @@ export class ProjectSettingsJsonRepository implements ProjectSettingsRepository 
 
     // Load envs
     var envFolder:string = dataFolder + "/envs";
-    var envs = fsHelper.getDirectories(envFolder);
+    var envs = fsHelper.getFiles(envFolder);
     if(envs){
-      envs.forEach(env => {
+      envs.map(env => env.split('.')[0]).forEach(env => {
         let envFile = envFolder + '/' + env;
         settings.environments[env] = this.loadFile(envFile);
       });
@@ -42,9 +42,9 @@ export class ProjectSettingsJsonRepository implements ProjectSettingsRepository 
 
     // Load groups
     var groupsFolder:string = dataFolder + "/groups";
-    var groups = fsHelper.getDirectories(groupsFolder);
+    var groups = fsHelper.getFiles(groupsFolder);
     if(groups){
-      groups.forEach(group => {
+      groups.map(group => group.split('.')[0]).forEach(group => {
         let groupFile = groupsFolder + '/' + group;
         settings.groups[group] = this.loadFile(groupFile);
       });
@@ -52,9 +52,9 @@ export class ProjectSettingsJsonRepository implements ProjectSettingsRepository 
 
     // Load Projects
     var projectsFolder:string = dataFolder + "/projects";
-    var projects = fsHelper.getDirectories(projectsFolder);
+    var projects = fsHelper.getFiles(projectsFolder);
     if(projects){
-      projects.forEach(project => {
+      projects.map(project => project.split('\\.')[0]).forEach(project => {
         let projectFile = projectsFolder + '/' + project;
         settings.projects[project] = this.loadFile(projectFile);
       });
@@ -65,13 +65,16 @@ export class ProjectSettingsJsonRepository implements ProjectSettingsRepository 
 
   private loadFile(path:string):{}{
     if(fs.existsSync(path + '.js')){
+      console.info('load settings: ' + path + '.js');
       let content:string = fs.readFileSync(path + '.js').toString();
       return eval(content);
     }
     if(fs.existsSync(path + '.json')){
+      console.info('load settings: ' + path + '.json');
       let content:string = fs.readFileSync(path + '.json').toString();
       return JSON.parse(content);
     }
+    console.info('cannot load settings: ' + path);
     return {};
   }
 
