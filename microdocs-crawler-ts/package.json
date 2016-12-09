@@ -1,6 +1,6 @@
 {
   "name": "@maxxton/microdocs-crawler",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "description": "MicroDocs crawler for typescript projects",
   "repository": {
     "type": "git",
