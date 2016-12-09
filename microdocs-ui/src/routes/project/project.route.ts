@@ -163,6 +163,10 @@ export class ProjectRoute {
     return '/projects/' + dependency['_id'];
   }
 
+  getLastDependencyParams(dependency:Dependency):{} {
+    return {version: dependency.latestVersion, env: this.projectService.getSelectedEnv()};
+  }
+
   getDependencyParams(dependency:Dependency):{} {
     return {version: dependency.version, env: this.projectService.getSelectedEnv()};
   }

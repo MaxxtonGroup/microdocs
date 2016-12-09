@@ -60,7 +60,7 @@
             </ul>
           </div>
         </div>
-        <dependency-graph class="small" [nodes]="nodes" [env]="env" [projectName]="title" [showOptionBar]="false" [showVersions]="true" [showInheritance]="true"></dependency-graph>
+        <dependency-graph class="small" [nodes]="nodes" [env]="env" [projectName]="title" [showOptionBar]="false" [showVersions]="false" [showInheritance]="true"></dependency-graph>
       </card>
       <card title="Endpoints" [sectionClass]="'card-section content'" [canFullscreen]="false"
             *ngIf="project.paths | notEmpty">
@@ -74,7 +74,7 @@
           <div class="client-header">
           <span class="link">
             <span class="icon">keyboard_arrow_right</span>
-            <a [routerLink]="getDependencyLink(client)">{{client._id}}</a>
+            <a [routerLink]="getDependencyLink(client)" [queryParams]="getLastDependencyParams(client)">{{client._id}}</a>
           </span>
             <div class="client-problem" *ngIf="client.version !== client.latestVersion">
               <span class="icon red">error</span>
@@ -100,7 +100,7 @@
           <div class="client-header">
           <span class="link">
             <span class="icon">keyboard_arrow_right</span>
-            <a [routerLink]="getDependencyLink(client)">{{client._id}}</a>
+            <a [routerLink]="getDependencyLink(client)" [queryParams]="getLastDependencyParams(client)">{{client._id}}</a>
           </span>
             <div class="client-problem" *ngIf="client.version !== client.latestVersion">
               <span class="icon red">error</span>

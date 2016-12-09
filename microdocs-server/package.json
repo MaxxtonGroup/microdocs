@@ -1,6 +1,6 @@
 {
   "name": "@maxxton/microdocs-server",
-  "version": "1.5.0",
+  "version": "1.6",
   "description": "MicroDocs server, see http://microdocs.io",
   "repository": {
     "type": "git",
