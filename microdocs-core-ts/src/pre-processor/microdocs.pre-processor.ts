@@ -106,16 +106,17 @@ export class MicroDocsPreProcessor implements PreProcessor{
         if ( key === IF_PLACEHOLDER ) {
           let condition = newSettingsScope[ 'condition' ];
           if ( condition ) {
-            var result = SchemaHelper.resolveCondition( condition, variables );
+            let scopeVars = Object.assign({}, variables, {settingsScope: settingsScope});
+            var result = SchemaHelper.resolveCondition( condition, scopeVars );
             if(result){
               if(newSettingsScope['then']){
-                SchemaHelper.resolveCondition( newSettingsScope['then'], variables );
+                SchemaHelper.resolveCondition( newSettingsScope['then'], scopeVars );
               }else{
                 console.warn( "No 'then' in ~~~IF statement" );
               }
             }else{
               if(newSettingsScope['else']){
-                SchemaHelper.resolveCondition( newSettingsScope['else'], variables );
+                SchemaHelper.resolveCondition( newSettingsScope['else'], scopeVars );
               }else{
                 console.warn( "No 'else' in ~~~IF statement" );
               }
@@ -187,11 +188,11 @@ export class MicroDocsPreProcessor implements PreProcessor{
                 }
 
                 // clean up
-                if (oldVarValue) {
-                  variables[variableName] = oldVarValue;
-                } else {
-                  delete variables[variableName];
-                }
+//                if (oldVarValue) {
+//                  variables[variableName] = oldVarValue;
+//                } else {
+//                  delete variables[variableName];
+//                }
               }
             }
           } else {

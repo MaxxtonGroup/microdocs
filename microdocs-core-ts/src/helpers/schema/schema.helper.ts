@@ -503,7 +503,7 @@ export class SchemaHelper {
     }
   }
 
-  public static resolveCondition(condition:string, vars:{scope?:{},project?:{},settings?:{},settingsScope?:{}}):boolean{
+  public static resolveCondition(condition:any, vars:{scope?:{},project?:{},settings?:{},settingsScope?:{}}):boolean{
     var result:boolean;
     (function(){
       var scope = vars.scope;
@@ -511,7 +511,13 @@ export class SchemaHelper {
       var settings = vars.settings;
       var settingsScope = vars.settingsScope;
       var _ = vars;
-      result = eval(condition);
+      if(typeof(condition) === 'string') {
+        result = eval( condition );
+      }else if(typeof(condition) === 'function'){
+        result = condition.call(_, [_, scope, project, settings, settingsScope]);
+      }else{
+        console.warn("Unknown condition type: " + typeof(condition));
+      }
     })();
     return result;
   }

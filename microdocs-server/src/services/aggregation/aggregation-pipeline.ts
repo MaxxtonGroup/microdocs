@@ -19,7 +19,7 @@ export class AggregationPipeline {
   private _scope:Project;
   private _problems:Problem[] = [];
 
-  private constructor( env:string, projectService:ProjectService, reportRepo:ReportRepository, projectSettingsRepo:ProjectSettingsRepository ) {
+  public constructor( env:string, projectService:ProjectService, reportRepo:ReportRepository, projectSettingsRepo:ProjectSettingsRepository ) {
     this._env                 = env;
     this._projectService      = projectService;
     this._reportRepo          = reportRepo;

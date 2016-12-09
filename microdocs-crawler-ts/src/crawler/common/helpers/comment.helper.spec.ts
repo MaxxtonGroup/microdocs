@@ -1,6 +1,6 @@
-/// <reference path="../../typings/index.d.ts" />
+/// <reference path="../../../../typings/index.d.ts" />
 
-import * as helper from '../common/helpers/comment.helper';
+import * as helper from './comment.helper';
 import {SchemaTypes} from '@maxxton/microdocs-core/domain';
 import {CommentTag} from "typedoc/lib/models";
 import {assert} from 'chai';

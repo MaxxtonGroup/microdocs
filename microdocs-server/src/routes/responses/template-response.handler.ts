@@ -95,15 +95,15 @@ export class TemplateResponseHandler extends MicroDocsResponseHandler {
         this.filterMethods( project, filterMethods );
       }
 
-      let buildSelf = true;
-      if ( req.query[ 'build-self' ] === 'false' ) {
-        buildSelf = false;
+      let buildSelf = false;
+      if ( req.query[ 'build-self' ] === 'true' ) {
+        buildSelf = true;
       }
 
       let nodePath:string            = projectTree.findNodePath( project.info.title, project.info.version );
       let projectNode:ProjectNode    = <ProjectNode>projectTree.resolveReference( '#' + nodePath );
       let projectNodes:ProjectNode[] = projectNode != null ? [ projectNode ] : [];
-      let flatList:FlatList          = projectNode != null ? projectNode.toFlatList( !buildSelf ) : new FlatList();
+      let flatList:FlatList          = projectNode != null ? projectNode.toFlatList( false ) : new FlatList();
       let projects:Project[]         = flatList.map<Project>( n => {
         if ( n.title === project.info.title && n.version === project.info.version ) {
           return project;
@@ -173,8 +173,8 @@ export class TemplateResponseHandler extends MicroDocsResponseHandler {
   }
 
 
-  private renderScript( fileName:string, params:{info:Project; env:string; projectNodes:(ProjectNode[]|Array); projectNodesFlat:FlatList; currentNode?:ProjectNode, projects:Project[]}, res:express.Response) {
-    var result;
+  private renderScript( fileName:string, params:{info:Project; env:string; projectNodes:(ProjectNode[]|Array<any>); projectNodesFlat:FlatList; currentNode?:ProjectNode, projects:Project[]}, res:express.Response) {
+    var result:any;
     (function () {
       let func:( env:string, projects:Project[], projectNodes:ProjectNode[], projectNodesFlat:ProjectNode[], current:Project, currentNode?:ProjectNode ) => {extension:string,body:any};
       func   = require( fileName ).default;

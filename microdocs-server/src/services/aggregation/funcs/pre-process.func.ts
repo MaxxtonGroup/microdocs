@@ -1,7 +1,7 @@
 
 import { AggregationPipeline } from "../aggregation-pipeline";
-import { Project } from "@maxxton/microdocs-core/domain/project.model";
 import { PreProcessor } from "@maxxton/microdocs-core/pre-processor/pre-processor";
+import { ProjectSettings,Project} from "@maxxton/microdocs-core/domain";
 
 /**
  * PreProcess a report based on the project settings
@@ -10,6 +10,6 @@ import { PreProcessor } from "@maxxton/microdocs-core/pre-processor/pre-processo
  * @param report project to be processed
  * @return {Project}
  */
-export function preProcess(pipeline:AggregationPipeline, preProcessor:PreProcessor, report:Project):Project{
-  return preProcessor.processProject(pipeline.projectSettingsRepo, report, pipeline.env);
+export function preProcess(pipeline:AggregationPipeline, preProcessor:PreProcessor, report:Project, settings:ProjectSettings):Project{
+  return preProcessor.processProject(settings, report, pipeline.env);
 }

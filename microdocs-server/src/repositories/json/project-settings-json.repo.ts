@@ -9,15 +9,12 @@ import {ProjectSettings, Environments} from '@maxxton/microdocs-core/domain';
 
 export class ProjectSettingsJsonRepository implements ProjectSettingsRepository {
 
-  getEnvs(): {[name: string]: Environments} {
+  public getEnvs(): {[name: string]: Environments} {
     console.info("Load project envs");
     var dataFolder: string = __dirname + '/../../../' + Config.get("dataFolder") + "/config";
-    var projectFile: string = dataFolder + "/envs.json";
+    var projectFile: string = dataFolder + "/envs";
     var envs: {[name: string]: Environments} = {};
-    if (fs.existsSync(projectFile)) {
-      var string = fs.readFileSync(projectFile).toString();
-      envs = JSON.parse(string);
-    }
+    envs = this.loadFile(projectFile) || envs;
     if (!envs || Object.keys(envs).length == 0) {
       envs = {default: {default: true}};
     }
@@ -25,17 +22,13 @@ export class ProjectSettingsJsonRepository implements ProjectSettingsRepository 
     return envs;
   }
 
-  getSettings(): ProjectSettings {
+  public getSettings(): ProjectSettings {
     console.info("Load project settings");
-    var dataFolder: string = __dirname + '/../../../' + Config.get("dataFolder") + "/config/project-settings";
+    var dataFolder: string = __dirname + '/../../../' + Config.get("dataFolder") + "/config/scripts";
     var settings: ProjectSettings = {global: {}, environments: {}, groups: {}, projects: {}};
 
     // Load globals
-    var globalFile: string = dataFolder + "/global.json";
-    if (fs.existsSync(globalFile)) {
-      let string = fs.readFileSync(globalFile).toString();
-      settings.global = JSON.parse(string);
-    }
+    settings.global = this.loadFile(dataFolder + "/global");
 
     // Load envs
     var envFolder:string = dataFolder + "/envs";
@@ -43,10 +36,7 @@ export class ProjectSettingsJsonRepository implements ProjectSettingsRepository 
     if(envs){
       envs.forEach(env => {
         let envFile = envFolder + '/' + env;
-        if (fs.existsSync(envFile)) {
-          let string = fs.readFileSync(envFile).toString();
-          settings.environments[env] = JSON.parse(string);
-        }
+        settings.environments[env] = this.loadFile(envFile);
       });
     }
 
@@ -56,10 +46,7 @@ export class ProjectSettingsJsonRepository implements ProjectSettingsRepository 
     if(groups){
       groups.forEach(group => {
         let groupFile = groupsFolder + '/' + group;
-        if (fs.existsSync(groupFile)) {
-          let string = fs.readFileSync(groupFile).toString();
-          settings.groups[group] = JSON.parse(string);
-        }
+        settings.groups[group] = this.loadFile(groupFile);
       });
     }
 
@@ -69,14 +56,23 @@ export class ProjectSettingsJsonRepository implements ProjectSettingsRepository 
     if(projects){
       projects.forEach(project => {
         let projectFile = projectsFolder + '/' + project;
-        if (fs.existsSync(projectFile)) {
-          let string = fs.readFileSync(projectFile).toString();
-          settings.projects[project] = JSON.parse(string);
-        }
+        settings.projects[project] = this.loadFile(projectFile);
       });
     }
 
     return settings;
+  }
+
+  private loadFile(path:string):{}{
+    if(fs.existsSync(path + '.js')){
+      let content:string = fs.readFileSync(path + '.js').toString();
+      return eval(content);
+    }
+    if(fs.existsSync(path + '.json')){
+      let content:string = fs.readFileSync(path + '.json').toString();
+      return JSON.parse(content);
+    }
+    return {};
   }
 
 }
