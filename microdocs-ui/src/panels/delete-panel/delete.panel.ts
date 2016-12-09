@@ -20,7 +20,7 @@ export class DeletePanel {
   @Input()
   project:string;
   @Output()
-  stateChanges:EventEmitter = new EventEmitter();
+  stateChanges:EventEmitter<boolean> = new EventEmitter<boolean>();
   
   scope:string;
   error:string;
@@ -47,7 +47,7 @@ export class DeletePanel {
       this.error = "Select what you want to delete";
     } else {
       this.projectService.deleteProject(this.project, this.scope === 'current' ? this.version : undefined).subscribe(response => {
-          this.projectService.refreshProjects();
+          this.projectService.refreshProjects(this.projectService.getSelectedEnv(), true);
           this.setOpened(false);
           this.router.navigate(['/dashboard'], {queryParams: {env: this.projectService.getSelectedEnv()}});
         }, (error) => {

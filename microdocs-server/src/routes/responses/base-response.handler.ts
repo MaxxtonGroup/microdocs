@@ -1,6 +1,6 @@
 import * as express from "express";
 import {ProjectTree, Problem, Project, ProblemResponse, ProblemLevels} from '@maxxton/microdocs-core/domain';
-import * as dump from 'js-yaml';
+import * as yaml from 'js-yaml';
 import * as xml from 'jsontoxml';
 import {Injection} from "../../injections";
 
@@ -8,11 +8,11 @@ export class BaseResponseHandler {
   
   constructor(protected injection:Injection){}
 
-  handleProjects(req: express.Request, res: express.Response, projectTree: ProjectTree, env:string) {
+  handleProjects(req: express.Request, res: express.Response, projectTree: ProjectTree, env:string, injection:Injection) {
     this.response(req, res, 200, projectTree.unlink());
   }
 
-  handleProject(req: express.Request, res: express.Response, project: Project, env:string) {
+  handleProject(req: express.Request, res: express.Response, project: Project, env:string, injection:Injection) {
     this.response(req, res, 200, project);
   }
 
@@ -94,17 +94,25 @@ export class BaseResponseHandler {
   protected responseYaml(res: express.Response, status: number, object: any) {
     res
       .header('Access-Control-Allow-Origin', '*')
-      .header('content-type', 'application/yaml')
+      .header('content-type', 'application/x-yaml')
       .status(status)
-      .send(dump(object));
+      .send((<any>yaml).dump(object));
   }
 
   protected responseXml(res: express.Response, status: number, object: any) {
     res
-      .header('Access-Control-Allow-Origin', '*')
-      .header('content-type', 'application/xml')
-      .status(status)
-      .send(xml(object));
+        .header('Access-Control-Allow-Origin', '*')
+        .header('content-type', 'application/xml')
+        .status(status)
+        .send(xml(object));
+  }
+
+  protected responseText(res: express.Response, status: number, text: any) {
+    res
+        .header('Access-Control-Allow-Origin', '*')
+        .header('content-type', 'text/plain')
+        .status(status)
+        .send(text);
   }
 
 }

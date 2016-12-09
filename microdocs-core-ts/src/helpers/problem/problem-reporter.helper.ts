@@ -11,6 +11,7 @@ export class ProblemReporter {
   }
 
   public report(level: string, description: string, component?: Component, method?: Method, clientRootObject?: {}, clientTitle?: string, clientVersion?: string, clientComponent?: Component, clientMethod?: Method) {
+    //console.warn(level + ": " + description);
     var problem: Problem = {level: level, message: description};
 
     // log component info
@@ -82,10 +83,11 @@ export class ProblemReporter {
    * @param project object which holds the problemCount
    */
   public publish(object: {'problems': Problem[]}, project: {'problemCount': number}): void {
-    if (object.problems == undefined || object.problems == null) {
+    if (!object.problems) {
       object.problems = [];
     }
     this.problems.forEach(problem => object.problems.push(problem));
+
     if (project.problemCount == undefined || project.problemCount == null) {
       project.problemCount = this.problems.length;
     } else {

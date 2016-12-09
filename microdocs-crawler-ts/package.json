@@ -1,6 +1,6 @@
 {
   "name": "@maxxton/microdocs-crawler",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "MicroDocs crawler for typescript projects",
   "repository": {
     "type": "git",
@@ -13,18 +13,20 @@
     "prepublish": "gulp prepublish"
   },
   "bin": {
-    "microdocs": "dist/cli.js"
+    "microdocs": "dist/microdocs.js",
+    "microdocs-docker": "dist/microdocs-docker.js"
   },
   "dependencies": {
-    "@maxxton/microdocs-core": "1.5.0",
+    "@maxxton/microdocs-core": "1.6.0",
     "chai": "^3.5.0",
     "globby": "^6.0.0",
+    "js-yaml": "^3.7.0",
     "node-rest-client": "^2.0.1",
-    "typedoc": "^0.4.5",
-    "typescript": "^1.8.10"
+    "osenv": "^0.1.3",
+    "typedoc": "^0.5.1"
   },
   "devDependencies": {
     "gulp": "^3.9.0",
-    "@maxxton/gulp-builder": "1.5.1"
+    "@maxxton/gulp-builder": "1.5.13"
   }
 }

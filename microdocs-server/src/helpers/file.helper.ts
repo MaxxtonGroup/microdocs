@@ -1,4 +1,6 @@
 import * as fs from 'fs';
+import * as path from 'path';
+import { Config } from "../config";
 
 /**
  * Remove empty folders in directory
@@ -35,4 +37,61 @@ export function deleteFolderRecursive(path:string):void {
     });
     fs.rmdirSync(path);
   }
+}
+
+/**
+ * Get folders in a directory
+ * @param srcpath directory
+ * @return {string[]} list of folder names
+ */
+export function getDirectories(dir:string):string[] {
+  if (fs.existsSync(dir)) {
+    return fs.readdirSync(dir).filter(function (file) {
+      return fs.statSync(path.join(dir, file)).isDirectory();
+    });
+  }
+  return [];
+}
+
+/**
+ * Get folders in a directory
+ * @param srcpath directory
+ * @return {string[]} list of folder names
+ */
+export function getFiles(dir:string):string[] {
+  if (fs.existsSync(dir)) {
+    return fs.readdirSync(dir).filter(function (file) {
+      return fs.statSync(path.join(dir, file)).isFile();
+    });
+  }
+  return [];
+}
+
+/**
+ * Get a reandom folder in the given directory
+ * @param dir {string} temp directory
+ * @return {string} random folder
+ */
+export function getTempFolder():string {
+  let dir = path.join(__dirname, '../../../', Config.get('tempFolder'));
+  if(!fs.existsSync(dir)){
+    fs.mkdirSync(dir);
+  }
+  // Generate random tempFOlder
+  let tempFolder = path.join(dir, getRandomString());
+  while(fs.existsSync(tempFolder)){
+    // Get new tempFolder if already exists
+    tempFolder = path.join(dir, getRandomString());
+  }
+  fs.mkdir(tempFolder);
+  return tempFolder;
+}
+
+/**
+ * Generate random string of a specific size
+ * @param size {number} size of the string
+ * @return {string} random string
+ */
+export function getRandomString(size:number = 6):string{
+  return Math.random().toString(36).substring(7).substring(0,size);
 }

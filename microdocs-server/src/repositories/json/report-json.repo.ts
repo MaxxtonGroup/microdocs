@@ -7,6 +7,7 @@ import {ReportRepository} from "../report.repo";
 import {Project, ProjectInfo} from "@maxxton/microdocs-core/domain";
 import * as mkdir from 'mkdir-p';
 import * as fsHelper from '../../helpers/file.helper';
+import { Dependency } from "@maxxton/microdocs-core/domain/dependency/dependency.model";
 
 /**
  * Json file based repository.
@@ -82,7 +83,7 @@ export class ReportJsonRepository implements ReportRepository {
     }
     
     // find links
-    var linkFolders = this.getDirectories(projectFolder);
+    var linkFolders = fsHelper.getDirectories(projectFolder);
     if (project.info.links == undefined) {
       project.info.links = [];
     }
@@ -116,20 +117,6 @@ export class ReportJsonRepository implements ReportRepository {
   }
   
   /**
-   * Get folders in a directory
-   * @param srcpath directory
-   * @return {string[]} list of folder names
-   */
-  private getDirectories(dir:string):string[] {
-    if (fs.existsSync(dir)) {
-      return fs.readdirSync(dir).filter(function (file) {
-        return fs.statSync(path.join(dir, file)).isDirectory();
-      });
-    }
-    return [];
-  }
-  
-  /**
    * Scan the reports folder for groups -> projects -> versions
    * @param folder reports folder
    * @return {ProjectInfo[]} list of projects inside all the groups
@@ -137,7 +124,7 @@ export class ReportJsonRepository implements ReportRepository {
   private scanGroups(folder:string):ProjectInfo[] {
     var projectList:ProjectInfo[] = [];
     
-    var groups = this.getDirectories(folder);
+    var groups = fsHelper.getDirectories(folder);
     groups.forEach(group => {
       var projects = this.scanProjects(group, folder);
       projects.forEach(project => projectList.push(project));
@@ -155,7 +142,7 @@ export class ReportJsonRepository implements ReportRepository {
   private scanProjects(group:string, folder:string):ProjectInfo[] {
     var projectList:ProjectInfo[] = [];
     
-    var projects = this.getDirectories(folder + "/" + group);
+    var projects = fsHelper.getDirectories(folder + "/" + group);
     projects.forEach(title => {
       projectList.push(this.scanProject(group, title, folder));
     });
@@ -170,7 +157,7 @@ export class ReportJsonRepository implements ReportRepository {
    * @return {ProjectInfo} Project information
    */
   private scanProject(group:string, title:string, folder:string):ProjectInfo {
-    var versions = this.getDirectories(folder + "/" + group + "/" + title);
+    var versions = fsHelper.getDirectories(folder + "/" + group + "/" + title);
     var versions = versions.sort();
     if (versions.length > 0) {
       var version = versions[versions.length - 1];
@@ -182,8 +169,23 @@ export class ReportJsonRepository implements ReportRepository {
   private loadProject(projectFile:string):Project {
     var string = fs.readFileSync(projectFile).toString();
     var json = JSON.parse(string);
-    var project:Project = json;
+    let project = <Project>json;
+    this.fixDependencyUpperCase(project);
     return project;
+  }
+
+  /**
+   * Fix uppercase dependency names
+   * @param project
+   */
+  private fixDependencyUpperCase( project:Project ) {
+    if ( project.dependencies ) {
+      var fixedDependencies:{[key:string]:Dependency} = {};
+      for ( var name in project.dependencies ) {
+        fixedDependencies[ name.toLowerCase() ] = project.dependencies[ name ];
+      }
+      project.dependencies = fixedDependencies;
+    }
   }
   
 }

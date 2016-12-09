@@ -483,6 +483,45 @@ export class SchemaHelper {
     return object;
   }
 
+  /**
+   * Merge remote into base, without override existing properties
+   * @param base
+   * @param remote
+   */
+  public static merge(base:{}, remote:{}) {
+    for ( let key in remote ) {
+      let remoteProp = remote[ key ];
+      if ( base[ key ] == undefined ) {
+        base[ key ] = remoteProp;
+      } else {
+        let baseProp = base[ key ];
+        if ( typeof(remoteProp) === 'object' && !Array.isArray( remoteProp ) &&
+            typeof(baseProp) === 'object' && !Array.isArray( baseProp ) ) {
+          SchemaHelper.merge( baseProp, remoteProp );
+        }
+      }
+    }
+  }
+
+  public static resolveCondition(condition:any, vars:{scope?:{},project?:{},settings?:{},settingsScope?:{}}):boolean{
+    var result:boolean;
+    (function(){
+      var scope = vars.scope;
+      var project = vars.project;
+      var settings = vars.settings;
+      var settingsScope = vars.settingsScope;
+      var $ = vars;
+      if(typeof(condition) === 'string') {
+        result = eval( condition );
+      }else if(typeof(condition) === 'function'){
+        result = condition($, scope, project, settings, settingsScope);
+      }else{
+        console.warn("Unknown condition type: " + typeof(condition));
+      }
+    })();
+    return result;
+  }
+
 
   /**
    * Resolve a type string, eg. '{id:number,items:Product[],category:{Indoor, Outdoor},tags:Array<string>}[]'
@@ -587,7 +626,7 @@ export class SchemaHelper {
     }
 
     if ( input === 'Array' ) {
-      var genericSchema;
+      var genericSchema:Schema;
       if ( genericTypes.length >= 1 ) {
         genericSchema = genericTypes[ 0 ];
       } else {
@@ -602,7 +641,7 @@ export class SchemaHelper {
     }
 
     if ( input === 'Map' ) {
-      var genericSchema;
+      var genericSchema:Schema;
       if ( genericTypes.length >= 2 ) {
         genericSchema = genericTypes[ 1 ];
       } else {

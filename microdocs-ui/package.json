@@ -14,7 +14,7 @@
     "unlinkDevelopment": "npm unlink @maxxton/components && npm unlink @maxxton/microdocs-core",
     "link": "npm link @maxxton/microdocs-core",
     "unlink": "npm unlink @maxxton/microdocs-core",
-    "postinstall": "typings install",
+    "postinstall": "node_modules/.bin/typings install",
     "package-distribution": "gulp package-distribution-production"
   },
   "dependencies": {
@@ -46,7 +46,7 @@
     "zone.js": "0.6.12"
   },
   "devDependencies": {
-    "@maxxton/gulp-builder": "1.5.1",
+    "@maxxton/gulp-builder": "1.5.13",
     "async": "^2.1.2",
     "gulp": "3.9.1",
     "gulp-angular-embed-templates": "2.2.0",
@@ -62,7 +62,6 @@
     "run-sequence": "1.1.5",
     "typings": "^1.0.4",
     "globby": "^6.0.0",
-    "node-rest-client": "^2.0.1",
-    "typedoc": "^0.4.5"
+    "node-rest-client": "^2.0.1"
   }
 }

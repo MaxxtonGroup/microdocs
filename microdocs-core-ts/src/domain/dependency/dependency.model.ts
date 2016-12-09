@@ -19,5 +19,6 @@ export interface Dependency {
   paths?:{[path:string]:{[method:string]:Path}};
   component?:Component;
   problems?:Array<Problem>;
+  inherit?:boolean;
 
 }

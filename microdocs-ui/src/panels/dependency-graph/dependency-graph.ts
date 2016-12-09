@@ -378,7 +378,7 @@ export class DependencyGraph {
         .data( self.force.nodes() )
         .enter().append( "circle" )
         .attr( "r", 6 )
-        .attr( "class", d => colorHelper.getColorByTitle( d.group ) )
+        .attr( "class", d => d.group ? colorHelper.getColorByTitle( d.group ) : 'dark-gray' )
         .call( self.force.drag()
             .origin(function(d) { return d; })
             .on("dragstart", dragstarted)

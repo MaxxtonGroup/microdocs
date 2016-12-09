@@ -6,7 +6,7 @@ import { Config } from "../../config";
 export class MicroDocsResponseHandler extends BaseResponseHandler {
 
   handleProjects( req:express.Request, res:express.Response, projectTree:ProjectTree, env:string ) {
-    var filterMethods = [];
+    var filterMethods:string[] = [];
     if ( req.query[ 'method' ] ) {
       filterMethods = req.query[ 'method' ].split( ',' );
     }
@@ -40,7 +40,7 @@ export class MicroDocsResponseHandler extends BaseResponseHandler {
 
       if ( project.paths) {
         for ( var path in project.paths ) {
-          if ( combinedProject.paths[ path ]) {
+          if ( !combinedProject.paths[ path ]) {
             combinedProject.paths[ path ] = {};
           }
           for ( var method in project.paths[ path ] ) {

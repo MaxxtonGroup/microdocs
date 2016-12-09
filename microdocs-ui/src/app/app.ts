@@ -13,9 +13,8 @@ import {Subject} from "rxjs/Subject";
 import {Notification} from "rxjs/Notification";
 
 /**
- * Frontend for MicroDocs
- * @projectName microdocs-ui
- * @projectGroup MicroDocs
+ * @application
+ * @projectInclude microdocs-core
  */
 @Component({
   selector: 'app',

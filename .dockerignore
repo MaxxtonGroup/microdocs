@@ -12,3 +12,9 @@
 !microdocs-ui/package.json
 !microdocs-ui/typings.json
 !microdocs-ui/.npmrc
+
+!microdocs-core-ts/src
+!microdocs-core-ts/gulpfile.js
+!microdocs-core-ts/package.json
+!microdocs-core-ts/typings.json
+!microdocs-core-ts/.npmrc

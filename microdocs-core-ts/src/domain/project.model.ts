@@ -7,8 +7,10 @@ import { Component } from "./component/component.model";
 import { Path } from "./path/path.model";
 import { Problem } from "./problem/problem.model";
 import { Exchange } from "./events/exchange.model";
+import { Deploy } from "./deploy/deploy.model";
 
 export interface Project {
+  microdocs?:string;
   swagger?:string;
   info?:ProjectInfo;
   host?:string;
@@ -25,4 +27,6 @@ export interface Project {
   problems?:Array<Problem>;
   problemCount?:number;
   deprecated?:boolean;
+  deploy?:Deploy;
+
 }

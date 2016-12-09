@@ -5,8 +5,6 @@ import {ProjectTree, Project} from "@maxxton/microdocs-core/domain";
 
 export class ProjectService{
 
-  private projectRepo:ProjectRepository;
-
   constructor(private projectRepo:ProjectRepository){}
 
   public storeAggregatedProjects(env:string, projectTree:ProjectTree) : void{

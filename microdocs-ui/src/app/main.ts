@@ -12,8 +12,8 @@ import { App } from "./app";
 import { MicroDocsConfig } from "./../config/config";
 import { MicrodocsRoutes } from "../routes/micrdocs.routes";
 import { ProjectService } from "../services/project.service";
-import { RestProjectService } from "../services/rest-project.service";
-import { StandaloneProjectService } from "../services/standalone-project.service";
+import { RestProjectClient } from "../services/rest-project.client";
+import { StandaloneProjectClient } from "../services/standalone-project.client";
 
 if ( MicroDocsConfig.isProduction ) {
   enableProdMode();
@@ -24,7 +24,8 @@ bootstrap( App, [
   HTTP_PROVIDERS,
   APP_WIDE_SERVICES,
   // TranslateService,
-  provide(ProjectService, {useClass: MicroDocsConfig.isStandAlone ? StandaloneProjectService : RestProjectService}),
+  provide('ProjectClient', {useClass: MicroDocsConfig.isStandAlone ? StandaloneProjectClient : RestProjectClient}),
+  ProjectService,
   DummyPreferenceService,
   SnackbarService,
   // provide( PLATFORM_PIPES, { useValue: [ TranslatePipe ], multi: true } ),
@@ -33,6 +34,6 @@ bootstrap( App, [
   //   deps: [ Http ]
   // } ),
   provideRouter( MicrodocsRoutes ),
-  provide( APP_BASE_HREF, { useValue: MicroDocsConfig.basePath } ),
+  provide( APP_BASE_HREF, { useValue: MicroDocsConfig.basepath } ),
   provide(LocationStrategy, {useClass: HashLocationStrategy})
 ] ).catch( err => console.error( err ) );

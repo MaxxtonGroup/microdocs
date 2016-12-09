@@ -79,7 +79,7 @@ export class RemoveProjectRoute extends BaseRoute {
       }
   
       var nodes = scope.injection.AggregationService().reindex(env);
-      handler.handleProjects(req, res, nodes, env);
+      handler.handleProjects(req, res, nodes, env, scope.injection);
     } catch (e) {
       scope.getDefaultHandler().handleInternalServerError(req, res, e);
     }

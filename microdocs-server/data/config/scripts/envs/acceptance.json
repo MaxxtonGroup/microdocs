@@ -1,0 +1,25 @@
+{
+  "info": {
+    "links": [
+      {
+        "rel": "repository",
+        "href": "https://stash.maxxton.com/projects/${groupCode}/repos/${project.info.title}/browse?at=refs/tags/v${project.info.version}"
+      }
+    ]
+  },
+  "components": {
+    "{componentName}": {
+      "sourceLink": "https://stash.maxxton.com/projects/${groupCode}/repos/${project.info.title}/browse/${sourcePath}${scope.file}?at=refs/tags/v{project.info.version}",
+      "methods": {
+        "{methodName}": {
+          "sourceLink": "${project.components.[componentName].sourceLink}#${scope.lineNumber}"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "{definitionName}": {
+      "sourceLink": "https://stash.maxxton.com/projects/${groupCode}/repos/${project.info.title}/browse/${sourcePath}${definitionName|replace \\\\. /}.java?at=refs/tags/v${project.info.version}"
+    }
+  }
+}

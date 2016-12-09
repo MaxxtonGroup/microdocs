@@ -6,11 +6,7 @@ import { BaseRoute } from "./route";
 import { Project, ProjectInfo, Problem, ProblemLevels } from "@maxxton/microdocs-core/domain";
 import { SchemaHelper } from "@maxxton/microdocs-core/helpers/schema/schema.helper";
 
-/**
- * @controller
- * @baseUrl /api/v1
- */
-export class PublishRoute extends BaseRoute {
+export class PublishZipRoute extends BaseRoute{
 
   mapping = { methods: [ "put" ], path: "/projects/:title", handler: this.publishProject, upload: true };
 
@@ -23,7 +19,33 @@ export class PublishRoute extends BaseRoute {
    * @httpQuery ?title {string} override the info.title in the project definitions
    * @httpQuery ?group {string} override the info.group in the project definitions
    * @httpQuery ?version {string} override the info.version in the project definitions
-   * @httpResponse 200 {Problem[]}
+   * @httpResponse 200 {ProblemResponse}
+   * @httpResponse 400 Missing title/version/group in the project definitions or missing request body
+   */
+  public publishProject( req:express.Request, res:express.Response, next:express.NextFunction, scope:BaseRoute ) {
+    let tempFolder = getTempFolder()
+  }
+}
+
+
+/**
+ * @controller
+ * @baseUrl /api/v1
+ */
+export class PublishRoute extends BaseRoute {
+
+  mapping = { methods: [ "put" ], path: "/projects/:title", handler: this.publishProject, upload: false };
+
+  /**
+   * Publish new project definitions
+   * @httpPut /projects/{title}
+   * @httpPath title {string} name of the project
+   * @httpQuery ?env {string} environment to publish the project definition
+   * @httpQuery ?failOnProblems {boolean} either to publish when there are problems or
+   * @httpQuery ?title {string} override the info.title in the project definitions
+   * @httpQuery ?group {string} override the info.group in the project definitions
+   * @httpQuery ?version {string} override the info.version in the project definitions
+   * @httpResponse 200 {ProblemResponse}
    * @httpResponse 400 Missing title/version/group in the project definitions or missing request body
    */
   public publishProject( req:express.Request, res:express.Response, next:express.NextFunction, scope:BaseRoute ) {

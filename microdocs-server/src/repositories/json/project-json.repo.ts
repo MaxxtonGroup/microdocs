@@ -7,6 +7,7 @@ import {Config} from "../../config";
 import {ProjectRepository} from "../project.repo";
 import {Project, ProjectTree} from "@maxxton/microdocs-core/domain";
 import * as fsHelper from '../../helpers/file.helper';
+import { Dependency } from "@maxxton/microdocs-core/domain/dependency/dependency.model";
 
 export class ProjectJsonRepository implements ProjectRepository {
   
@@ -55,6 +56,13 @@ export class ProjectJsonRepository implements ProjectRepository {
       var string = fs.readFileSync(storeFile).toString();
       var json = JSON.parse(string);
       var project:Project = json;
+      if(project.dependencies) {
+        let convertedDependencies:{[key: string]:Dependency} = {};
+        for(let key in project.dependencies){
+          convertedDependencies[key.toLowerCase()] = project.dependencies[key];
+        }
+        project.dependencies = convertedDependencies;
+      }
       return project;
     }
     return null;
