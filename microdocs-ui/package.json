@@ -1,6 +1,6 @@
 {
   "name": "@maxxton/microdocs-ui",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "Frontend for the microdocs-server",
   "author": "S. Hermans",
   "repository": {
@@ -28,7 +28,7 @@
     "@angular/router": "3.0.0-beta.2",
     "@maxxton/angular2-rest": "^1.0.0",
     "@maxxton/components": "2.6.0",
-    "@maxxton/microdocs-core": "1.5.0",
+    "@maxxton/microdocs-core": "1.6.0",
     "angular2-prettyjson": "^1.0.4",
     "core-js": "^2.4.0",
     "d3": "3.5.17",
