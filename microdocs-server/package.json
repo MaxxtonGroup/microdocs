@@ -1,6 +1,6 @@
 {
   "name": "@maxxton/microdocs-server",
-  "version": "1.6",
+  "version": "1.6.0",
   "description": "MicroDocs server, see http://microdocs.io",
   "repository": {
     "type": "git",
@@ -19,7 +19,7 @@
   "author": "Steven Hermans (s.hermans@maxxton.com)",
   "license": "MIT",
   "dependencies": {
-    "@maxxton/microdocs-core": "1.5.1",
+    "@maxxton/microdocs-core": "1.6.0",
     "body-parser": "^1.15.2",
     "express": "^4.14.0",
     "express-handlebars": "^3.0.0",
