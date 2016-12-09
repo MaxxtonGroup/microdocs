@@ -5,7 +5,7 @@ module.exports.default = {
         '{path}': {
           '{method}': {
             '~~~IF': {
-              condition: ($) => $.scope && $.scope.parameters && $.scope.parameters.filter((param) => param.name === 'fields').length > 0,
+              condition: ($) => $.scope && $.scope.parameters && $.scope.parameters.filter((param) => param.name === 'field').length > 0,
               'then': ($) => {
                 $.scope.responses = {};
                 console.info('match: ' + JSON.stringify($.scope));

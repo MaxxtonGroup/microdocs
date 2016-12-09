@@ -510,11 +510,11 @@ export class SchemaHelper {
       var project = vars.project;
       var settings = vars.settings;
       var settingsScope = vars.settingsScope;
-      var _ = vars;
+      var $ = vars;
       if(typeof(condition) === 'string') {
         result = eval( condition );
       }else if(typeof(condition) === 'function'){
-        result = condition.call(_, [_, scope, project, settings, settingsScope]);
+        result = condition($, scope, project, settings, settingsScope);
       }else{
         console.warn("Unknown condition type: " + typeof(condition));
       }
