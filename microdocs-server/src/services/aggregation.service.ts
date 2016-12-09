@@ -36,14 +36,7 @@ export class AggregationService {
   }
 
   checkProject( env:string, report:Project ):Problem[] {
-    let problems        = pipe( this.injection, env )
-        .take( report )
-        .preProcess()
-        .combineIncludes()
-        .resolveRestDependencies( report )
-        .resolveUsesDependencies( report )
-        .asProblems();
-    let reverseProblems = pipe( this.injection, env )
+    let problems = pipe( this.injection, env )
         .takeLatest()
         .take( report )
         .preProcess()
@@ -51,7 +44,7 @@ export class AggregationService {
         .resolveRestDependencies( report )
         .resolveUsesDependencies( report )
         .asProblems();
-    return problems.concat( reverseProblems );
+    return problems;
   }
 
 }
