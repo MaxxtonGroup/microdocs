@@ -62,8 +62,9 @@ export class ProjectTree extends Node{
         if(reverseDependencyNodes.length > 1){
           // redirect other dependencies to the new place
           let newReference = firstDep.item.getReference();
-          reverseDependencyNodes.some(reverseDependencyNode => {
+          reverseDependencyNodes.some((reverseDependencyNode:DependencyNode) => {
             reverseDependencyNode.item.reference = newReference;
+            return false;
           });
         }
         return true;

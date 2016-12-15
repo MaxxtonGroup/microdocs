@@ -1,15 +1,26 @@
 import {ProjectLink} from "./project-link.model";
 export class ProjectInfo {
 
+  private _versions:string[];
+
   constructor(public title: string,
               public group: string,
               public version: string,
-              public versions: string[],
+              versions: string[],
               public links ?: ProjectLink[],
               public description?: string,
               public sourceLink?: string,
               public publishTime?:string,
               public updateTime?:string) {
+    this.versions = versions;
+  }
+
+  get versions():string[]{
+    return this._versions.sort();
+  }
+
+  set versions(val:string[] ){
+    this._versions = val;
   }
 
   /**

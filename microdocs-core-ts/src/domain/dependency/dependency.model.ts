@@ -1,12 +1,12 @@
 import { Path } from "../path/path.model";
 import { Component } from "../component/component.model";
 import { DependencyImport } from "./dependency-import.model";
-import { Problem } from "../problem/problem.model";
+import { Problemable } from "../problem/problemable.model";
 
 /**
  * @author Steven Hermans
  */
-export interface Dependency {
+export interface Dependency extends Problemable{
 
   description?:string;
   group?:string;
@@ -18,7 +18,6 @@ export interface Dependency {
   import?:DependencyImport;
   paths?:{[path:string]:{[method:string]:Path}};
   component?:Component;
-  problems?:Array<Problem>;
   inherit?:boolean;
 
 }

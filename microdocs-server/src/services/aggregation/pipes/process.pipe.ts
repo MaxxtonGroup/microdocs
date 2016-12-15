@@ -21,6 +21,8 @@ export abstract class ProcessPipe extends Pipe<any> {
       if(project) {
         result = this.runEach( project );
         this.result.pushProject( result );
+      } else {
+        return this.prev.getPrevProject( title, version );
       }
     }
     return result;

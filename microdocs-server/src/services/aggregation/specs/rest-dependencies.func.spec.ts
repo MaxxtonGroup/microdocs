@@ -1,7 +1,7 @@
 /// <reference path="../../../../typings/index.d.ts" />
 import { assert } from 'chai';
 import { Project, DependencyTypes, ProblemLevels, ProjectInfo, SchemaTypes } from "@maxxton/microdocs-core/domain";
-import { PipeMock } from "./pipe-mock.spec";
+import { PipeMock } from "./mocks/pipe-mock.spec";
 import { resolveRestDependencies } from "../funcs/rest-dependencies.func";
 
 

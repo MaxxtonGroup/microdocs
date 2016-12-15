@@ -8,6 +8,7 @@ import { PathParamsCheck } from "../../../checks/path-params.check";
 import { QueryParamsCheck } from "../../../checks/query-params.check";
 import { BodyParamsCheck } from "../../../checks/body-params.check";
 import { ResponseCheck } from "../../../checks/response.check";
+import { raw } from "body-parser";
 
 const pathParamsCheck: PathCheck  = new PathParamsCheck();
 const endpointChecks: PathCheck[] = [ new QueryParamsCheck(), new BodyParamsCheck(), pathParamsCheck, new ResponseCheck() ];
@@ -27,13 +28,17 @@ export function resolveRestDependencies( pipe: Pipe<any>, project: Project, scop
   if ( project.dependencies ) {
     for ( let depTitle in project.dependencies ) {
       if ( (scope && (scope.info.title === depTitle || scope.info.title === project.info.title)) || !scope ) {
+        let reverse: boolean       = scope && (scope.info.title === depTitle);
         let dependency: Dependency = project.dependencies[ depTitle ];
         if ( dependency.type === DependencyTypes.REST ) {
           let reporter = new ProblemReporter( project );
-          resolveRestClient( pipe, reporter, project, dependency, depTitle, scope );
+          resolveRestClient( pipe, reporter, project, dependency, depTitle, scope, reverse );
+
+
           if ( reporter.hasProblems() ) {
-            reporter.publish( dependency, project );
-            pipe.pipeline.addProblems( reporter.getProblems() );
+            let problems = reverse ? reporter.getRawProblems().map( rawProblem => rawProblem.inverse( project, dependency.component ).problem ) : reporter.getProblems();
+            reporter.publish( dependency, project, problems );
+            pipe.pipeline.addProblems( problems );
           }
         }
       }
@@ -41,7 +46,7 @@ export function resolveRestDependencies( pipe: Pipe<any>, project: Project, scop
   }
 }
 
-function resolveRestClient( pipe: Pipe<any>, reporter: ProblemReporter, project: Project, dependency: Dependency, depTitle: string, scope?: Project ) {
+function resolveRestClient( pipe: Pipe<any>, reporter: ProblemReporter, project: Project, dependency: Dependency, depTitle: string, scope?: Project, reverse: boolean = false ) {
   // Find the matching version
   let depProject: Project;
   if ( dependency.version ) {
@@ -60,19 +65,17 @@ function resolveRestClient( pipe: Pipe<any>, reporter: ProblemReporter, project:
   if ( projectInfo ) {
     dependency.latestVersion = projectInfo.version;
   }
-  let compatible = checkDependencyCompatible( depTitle, dependency, depProject, project, reporter, false, pipe );
+  let compatible = checkDependencyCompatible( depTitle, dependency, depProject, project, reporter, false, reverse, pipe );
   if ( compatible || dependency.version ) {
     dependency.version = depProject.info.version;
   } else {
-    let first                    = true;
     let olderDepProject: Project = null;
-    while ( !compatible && (olderDepProject != null || first) ) {
-      first           = false;
+    do {
       olderDepProject = pipe.getPrevProjectVersion( depTitle, olderDepProject ? olderDepProject.info.version : depProject.info.version );
       if ( olderDepProject ) {
-        compatible = checkDependencyCompatible( depTitle, dependency, olderDepProject, project, new ProblemReporter(), true, pipe);
+        compatible = checkDependencyCompatible( depTitle, dependency, olderDepProject, project, new ProblemReporter(), true, reverse, pipe );
       }
-    }
+    } while ( !compatible && olderDepProject != null );
     if ( olderDepProject && olderDepProject.info && olderDepProject.info.version ) {
       dependency.version = olderDepProject.info.version;
     } else {
@@ -96,7 +99,7 @@ function resolveRestClient( pipe: Pipe<any>, reporter: ProblemReporter, project:
  * @param reporter
  * @returns {boolean} true if compatible, otherwise false
  */
-function checkDependencyCompatible( title: string, dependency: Dependency, depProject: Project, currentProject: Project, reporter: ProblemReporter, silence: boolean, pipe:Pipe<any> ): boolean {
+function checkDependencyCompatible( title: string, dependency: Dependency, depProject: Project, currentProject: Project, reporter: ProblemReporter, silence: boolean, reverse: boolean, pipe: Pipe<any> ): boolean {
   let compatible: boolean = true;
   if ( (dependency.deprecatedVersions && dependency.deprecatedVersions.indexOf( depProject.info.version ) != -1) ) {
     if ( reporter ) {
@@ -109,7 +112,7 @@ function checkDependencyCompatible( title: string, dependency: Dependency, depPr
     }
     compatible = false;
   }
-  if ( !checkEndpoints( title, dependency, depProject, currentProject, silence, pipe ) ) {
+  if ( !checkEndpoints( title, dependency, depProject, currentProject, silence, reverse, pipe ) ) {
     compatible = false;
   }
   return compatible;
@@ -124,7 +127,7 @@ function checkDependencyCompatible( title: string, dependency: Dependency, depPr
  * @param silence Add problems to the client endpoints object
  * @returns {boolean} true if compatible, otherwise false
  */
-function checkEndpoints( title: string, dependency: Dependency, dependentProject: Project, currentProject: Project, silence: boolean, pipe:Pipe<any> ): boolean {
+function checkEndpoints( title: string, dependency: Dependency, dependentProject: Project, currentProject: Project, silence: boolean, reverse: boolean, pipe: Pipe<any> ): boolean {
   var compatible = true;
   if ( dependency.paths != undefined ) {
     for ( var path in dependency.paths ) {
@@ -146,8 +149,9 @@ function checkEndpoints( title: string, dependency: Dependency, dependentProject
         if ( problemReport.hasProblems() ) {
           compatible = false;
           if ( !silence ) {
-            problemReport.publish( clientEndpoint, currentProject );
-            pipe.pipeline.addProblems(problemReport.getProblems());
+            let problems = reverse ? problemReport.getRawProblems().map( rawProblem => rawProblem.inverse( currentProject, producerEndpoint.controller, producerEndpoint.method ).problem ) : problemReport.getProblems();
+            problemReport.publish( clientEndpoint, currentProject, problems );
+            pipe.pipeline.addProblems( problems );
           }
         }
       }
@@ -165,24 +169,24 @@ function checkEndpoints( title: string, dependency: Dependency, dependentProject
  */
 function findEndpoint( clientEndpoint: Path, clientPath: string, clientMethod: string, project: Project ): Path {
   let bestMatch: Path = null;
-  let errorCount = 0;
-  let warningCount = 0;
-  let variableCount = 0;
+  let errorCount      = 0;
+  let warningCount    = 0;
+  let variableCount   = 0;
   for ( let producerPath in project.paths ) {
     if ( project.paths[ producerPath ][ clientMethod ] ) {
       // match via wildcards in regexp
       const expression = '^' + producerPath.replace( new RegExp( "\/", 'g' ), '\/' ).replace( new RegExp( "\\{.*?\\}", 'g' ), '([^\/]+)' ) + '$';
-      const regExp = new RegExp( expression );
-      const match = clientPath.match( regExp );
+      const regExp     = new RegExp( expression );
+      const match      = clientPath.match( regExp );
 
       if ( match && match.length >= 1 ) {
         // build endpoint if match
         const endpoint         = project.paths[ producerPath ][ clientMethod ];
         endpoint.path          = producerPath;
         endpoint.requestMethod = clientMethod;
-        let variables = 0;
-        if(endpoint.parameters){
-          variables = endpoint.parameters.filter(param => param.in === ParameterPlacings.PATH).length;
+        let variables          = 0;
+        if ( endpoint.parameters ) {
+          variables = endpoint.parameters.filter( param => param.in === ParameterPlacings.PATH ).length;
         }
 
         // check problems
@@ -192,10 +196,10 @@ function findEndpoint( clientEndpoint: Path, clientPath: string, clientMethod: s
         let resultWarningCount = report.getProblems().filter( problem => problem.level === ProblemLevels.WARNING ).length;
 
         // set as best match if there is no match or it has the fewest problems
-        if(bestMatch == null || variables < variableCount || (variables == variableCount && (resultErrorCount > errorCount || (resultErrorCount == errorCount && resultWarningCount > warningCount)))){
-          bestMatch    = endpoint;
-          errorCount   = resultErrorCount;
-          warningCount = resultWarningCount;
+        if ( bestMatch == null || variables < variableCount || (variables == variableCount && (resultErrorCount > errorCount || (resultErrorCount == errorCount && resultWarningCount > warningCount))) ) {
+          bestMatch     = endpoint;
+          errorCount    = resultErrorCount;
+          warningCount  = resultWarningCount;
           variableCount = variables;
         }
       }

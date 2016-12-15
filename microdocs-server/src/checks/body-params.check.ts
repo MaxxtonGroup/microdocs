@@ -25,18 +25,18 @@ export class BodyParamsCheck implements PathCheck {
             exists = true;
             var producerSchema:Schema = SchemaHelper.collect(producerParam.schema, [], project);
             var clientSchema = SchemaHelper.collect(clientParam.schema, [], project);
-            this.checkSchema(clientSchema, producerSchema, problemReport, "");
+            this.checkSchema(clientEndpoint, clientSchema, producerSchema, problemReport, "");
             return true;
           }
         });
         if (!exists && producerParam.required) {
-          problemReport.report(ProblemLevels.ERROR, "Missing request body");
+          problemReport.report(ProblemLevels.ERROR, "Missing request body", clientEndpoint.controller, clientEndpoint.method);
         }
       }
     });
   }
 
-  private checkSchema(clientSchema:Schema, producerSchema:Schema, problemReport:ProblemReporter, path:string):void {
+  private checkSchema(endpoint:Path, clientSchema:Schema, producerSchema:Schema, problemReport:ProblemReporter, path:string):void {
     if(producerSchema != null && producerSchema != undefined){
       if(clientSchema != null && clientSchema != undefined){
         if(producerSchema.type != clientSchema.type){
@@ -44,22 +44,22 @@ export class BodyParamsCheck implements PathCheck {
           if(path != ''){
             position = ' at ' + path;
           }
-          problemReport.report(ProblemLevels.WARNING, "Type mismatches in request body" + position + ", expected: " + producerSchema.type + ", found: " + clientSchema.type);
+          problemReport.report(ProblemLevels.WARNING, "Type mismatches in request body" + position + ", expected: " + producerSchema.type + ", found: " + clientSchema.type, endpoint.controller, endpoint.method);
         }else{
           if(producerSchema.type == SchemaTypes.OBJECT){
             var producerProperties = producerSchema.properties;
             var clientProperties = clientSchema.properties;
             for(var key in producerProperties){
-              this.checkSchema(clientProperties[key], producerProperties[key], problemReport, path + (path == '' ? '' : '.') + key);
+              this.checkSchema(endpoint, clientProperties[key], producerProperties[key], problemReport, path + (path == '' ? '' : '.') + key);
             }
           }else if(producerSchema.type == SchemaTypes.ARRAY){
             var producerItems = producerSchema.items;
             var clientItems = clientSchema.items;
-            this.checkSchema(clientItems, producerItems, problemReport, path + (path == '' ? '' : '.') + "0");
+            this.checkSchema(endpoint, clientItems, producerItems, problemReport, path + (path == '' ? '' : '.') + "0");
           }
         }
       }else if(producerSchema.required){
-        problemReport.report(ProblemLevels.ERROR, "Missing required value at " + path);
+        problemReport.report(ProblemLevels.ERROR, "Missing required value at " + path, endpoint.controller, endpoint.method);
       }
     }
   }

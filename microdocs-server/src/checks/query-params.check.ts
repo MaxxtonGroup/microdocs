@@ -24,13 +24,13 @@ export class QueryParamsCheck implements PathCheck {
           if(producerParam.name == clientParam.name && producerParam.in == clientParam.in){
             exists = true;
             if(producerParam.type != clientParam.type){
-              problemReport.report(ProblemLevels.WARNING, "Type mismatches query parameter '" + producerParam.name + "', expected: '" + producerParam.type + "', found: '" + clientParam.type + "'");
+              problemReport.report(ProblemLevels.WARNING, "Type mismatches query parameter '" + producerParam.name + "', expected: '" + producerParam.type + "', found: '" + clientParam.type + "'", clientEndpoint.controller, clientEndpoint.method);
             }
             return true;
           }
         });
         if(!exists && producerParam.required){
-          problemReport.report(ProblemLevels.ERROR, "Missing query parameter '" + producerParam.name + "'");
+          problemReport.report(ProblemLevels.ERROR, "Missing query parameter '" + producerParam.name + "'", clientEndpoint.controller, clientEndpoint.method);
         }
       }
     });

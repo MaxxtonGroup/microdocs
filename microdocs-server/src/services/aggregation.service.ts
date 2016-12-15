@@ -36,6 +36,8 @@ export class AggregationService {
   }
 
   checkProject( env:string, report:Project ):Problem[] {
+    report.info.version = Number.MAX_VALUE + '.0.0';
+    report.info.versions.push(report.info.version);
     let problems = pipe( this.injection, env )
         .takeLatest()
         .take( report )

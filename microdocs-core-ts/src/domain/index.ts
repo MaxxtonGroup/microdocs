@@ -22,7 +22,10 @@ export { ParameterPlacings };
 import * as RequestMethods from './path/request-method.model';
 export { RequestMethods };
 
-export { Problem, ProblemClient } from "./problem/problem.model";
+export { Problem } from "./problem/problem.model";
+export { ProblemClient } from "./problem/problem-client.model";
+export { Problemable } from "./problem/problemable.model";
+export { RawProblem } from "./problem/raw-problem.model";
 import * as ProblemLevels from './problem/problem-level.model';
 export { ProblemLevels };
 export { ProblemResponse } from './problem/problem-response.model';

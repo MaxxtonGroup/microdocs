@@ -1,6 +1,6 @@
-import { Pipe } from "../pipe";
+import { Pipe } from "../../pipe";
 import { Project } from "@maxxton/microdocs-core/domain/project.model";
-import { AggregationPipeline } from "../aggregation-pipeline";
+import { AggregationPipeline } from "../../aggregation-pipeline";
 import { ProjectInfo } from "@maxxton/microdocs-core/domain/common/project-info.model";
 
 export class PipeMock extends Pipe<Pipe<any>> {

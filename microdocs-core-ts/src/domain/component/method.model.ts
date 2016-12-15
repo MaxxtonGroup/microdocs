@@ -8,7 +8,7 @@ export interface Method{
 
     name?:string;
     description?:string;
-    paramters?:string[];
+    parameters?:string[];
     lineNumber?:number;
     component?:Component;
     annotations?:{[name:string]:Annotation};

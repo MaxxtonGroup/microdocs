@@ -9,12 +9,12 @@ import { AggregationPipeline } from "./aggregation-pipeline";
  */
 export abstract class Pipe<T> {
 
-  private _pipeline:AggregationPipeline;
-  private _prev:Pipe<any>;
-  private _next:Pipe<any>;
-  private _result:AggregationResult = new AggregationResult();
+  private _pipeline: AggregationPipeline;
+  private _prev: Pipe<any>;
+  private _next: Pipe<any>;
+  private _result: AggregationResult = new AggregationResult();
 
-  constructor( pipeline:AggregationPipeline ) {
+  constructor( pipeline: AggregationPipeline ) {
     this._pipeline = pipeline;
   }
 
@@ -22,7 +22,7 @@ export abstract class Pipe<T> {
    * Get previous pipe
    * @return {Pipe} previous pipe or null if this is the first one
    */
-  get prev():Pipe<any> {
+  get prev(): Pipe<any> {
     return this._prev;
   }
 
@@ -30,7 +30,7 @@ export abstract class Pipe<T> {
    * Get next pipe
    * @return {Pipe} next pipe or null if this is the last one
    */
-  get next():Pipe<any> {
+  get next(): Pipe<any> {
     return this._prev;
   }
 
@@ -38,7 +38,7 @@ export abstract class Pipe<T> {
    * Get the first pipe
    * @return {Pipe}
    */
-  get first():Pipe<any> {
+  get first(): Pipe<any> {
     if ( this._prev ) {
       return this._prev.first;
     }
@@ -49,7 +49,7 @@ export abstract class Pipe<T> {
    * Get the last pipe
    * @return {Pipe}
    */
-  get last():Pipe<any> {
+  get last(): Pipe<any> {
     if ( this._next ) {
       return this._next.last;
     }
@@ -60,7 +60,7 @@ export abstract class Pipe<T> {
    * Get the result of this pipe
    * @return {AggregationResult}
    */
-  get result():AggregationResult {
+  get result(): AggregationResult {
     return this._result;
   }
 
@@ -68,7 +68,7 @@ export abstract class Pipe<T> {
    * Process this pipe
    * @return {T}
    */
-  public process():T {
+  public process(): T {
 
     let out = this.run();
 
@@ -78,7 +78,7 @@ export abstract class Pipe<T> {
   /**
    * Implemented run function
    */
-  protected abstract run():T;
+  protected abstract run(): T;
 
   /**
    * Load a project from the previous pipe
@@ -86,9 +86,14 @@ export abstract class Pipe<T> {
    * @param version
    * @return {Project}
    */
-  public getPrevProject( title:string, version:string ):Project {
+  public getPrevProject( title: string, version: string ): Project {
     if ( this._prev ) {
-      return this._prev._result.getProject( title, version );
+      let project = this._prev._result.getProject( title, version );
+      if ( project ) {
+        return project;
+      } else {
+        return this._prev.getPrevProject( title, version );
+      }
     }
     return null;
   }
@@ -99,7 +104,7 @@ export abstract class Pipe<T> {
    * @param lastVersion
    * @return {Project} or null
    */
-  public getPrevProjectVersion( title:string, lastVersion?:string ):Project {
+  public getPrevProjectVersion( title: string, lastVersion?: string ): Project {
     let projectInfos = this.projects.filter( info => info.title === title );
     if ( projectInfos.length > 0 ) {
       let versions    = projectInfos[ 0 ].versions;
@@ -109,7 +114,7 @@ export abstract class Pipe<T> {
         if ( index > -1 ) {
           if ( index - 1 >= 0 ) {
             nextVersion = versions[ index - 1 ];
-          }else{
+          } else {
             return null; // no versions
           }
         }
@@ -127,19 +132,19 @@ export abstract class Pipe<T> {
    * Get current environment
    * @return {string}
    */
-  get env():string {
+  get env(): string {
     return this.pipeline.env;
   }
 
-  get reportRepo():ReportRepository {
+  get reportRepo(): ReportRepository {
     return this.pipeline.reportRepo;
   }
 
-  get projectSettingsRepo():ProjectSettingsRepository {
+  get projectSettingsRepo(): ProjectSettingsRepository {
     return this.pipeline.projectSettingsRepo;
   }
 
-  get projectService():ProjectService {
+  get projectService(): ProjectService {
     return this.pipeline.projectService;
   }
 
@@ -147,7 +152,7 @@ export abstract class Pipe<T> {
    * Get pipeline
    * @return {string}
    */
-  get pipeline():AggregationPipeline {
+  get pipeline(): AggregationPipeline {
     return this._pipeline;
   }
 
@@ -155,7 +160,7 @@ export abstract class Pipe<T> {
    * Get preloaded project info's
    * @return {ProjectInfo[]}
    */
-  get projects():ProjectInfo[] {
+  get projects(): ProjectInfo[] {
     return this.pipeline.projects;
   }
 
@@ -163,17 +168,17 @@ export abstract class Pipe<T> {
    * Add a report to the current pipe
    * @return {Pipe} return this pipe
    */
-  public take(report:Project):Pipe<any>{
-    this.result.pushProject(report);
-    let projectInfo = this.projects.filter(info => info.title === report.info.title)[0];
-    if(!projectInfo){
-      projectInfo = new ProjectInfo(report.info.title, report.info.group, report.info.version, [report.info.version]);
-      this.projects.push(projectInfo);
-    }else{
-      if(projectInfo.versions.filter(version => version === report.info.version).length == 0){
-        projectInfo.versions.push(report.info.version);
+  public take( report: Project ): Pipe<any> {
+    this.result.pushProject( report );
+    let projectInfo = this.projects.filter( info => info.title === report.info.title )[ 0 ];
+    if ( !projectInfo ) {
+      projectInfo = new ProjectInfo( report.info.title, report.info.group, report.info.version, [ report.info.version ] );
+      this.projects.push( projectInfo );
+    } else {
+      if ( projectInfo.versions.filter( version => version === report.info.version ).length == 0 ) {
+        projectInfo.versions.push( report.info.version );
         projectInfo.versions = projectInfo.versions.sort();
-        projectInfo.version = projectInfo.versions[projectInfo.versions.length-1];
+        projectInfo.version  = projectInfo.versions[ projectInfo.versions.length - 1 ];
       }
     }
     return this;
@@ -183,8 +188,8 @@ export abstract class Pipe<T> {
    * PreProcess each project
    * @return {Pipe}
    */
-  public preProcess():Pipe<any> {
-    console.info('preProcess');
+  public preProcess(): Pipe<any> {
+    console.info( 'preProcess' );
     let pipe   = new PreProcessPipe( this.pipeline );
     pipe._prev = this;
     this._next = pipe;
@@ -195,8 +200,8 @@ export abstract class Pipe<T> {
    * Resolve include dependencies
    * @return {Pipe}
    */
-  public combineIncludes():Pipe<any> {
-    console.info('combine Includes');
+  public combineIncludes(): Pipe<any> {
+    console.info( 'combine Includes' );
     let pipe   = new IncludesPipe( this.pipeline );
     pipe._prev = this;
     this._next = pipe;
@@ -208,8 +213,8 @@ export abstract class Pipe<T> {
    * @param scope only check dependencies for this scope if present
    * @return {Pipe}
    */
-  public resolveRestDependencies( scope?:Project ):Pipe<any> {
-    console.info('resolve Rest Dependencies');
+  public resolveRestDependencies( scope?: Project ): Pipe<any> {
+    console.info( 'resolve Rest Dependencies' );
     let pipe   = new RestDependenciesPipe( this.pipeline, scope );
     pipe._prev = this;
     this._next = pipe;
@@ -221,8 +226,8 @@ export abstract class Pipe<T> {
    * @param scope only check dependencies for this scope if present
    * @return {Pipe}
    */
-  public resolveUsesDependencies( scope?:Project ):Pipe<any> {
-    console.info('resolve Uses Dependencies');
+  public resolveUsesDependencies( scope?: Project ): Pipe<any> {
+    console.info( 'resolve Uses Dependencies' );
     let pipe   = new UsesDependenciesPipe( this.pipeline, scope );
     pipe._prev = this;
     this._next = pipe;
@@ -233,8 +238,8 @@ export abstract class Pipe<T> {
    * Resolve REST dependencies
    * @return {Pipe}
    */
-  public storeIndex():Pipe<any> {
-    console.info('store Index');
+  public storeIndex(): Pipe<any> {
+    console.info( 'store Index' );
     let pipe   = new StoreIndexPipe( this.pipeline );
     pipe._prev = this;
     this._next = pipe;
@@ -245,8 +250,8 @@ export abstract class Pipe<T> {
    * Resolve REST dependencies
    * @return {Pipe}
    */
-  public storeProjects():Pipe<any> {
-    console.info('store Projects');
+  public storeProjects(): Pipe<any> {
+    console.info( 'store Projects' );
     let pipe   = new StoreProjectsPipe( this.pipeline );
     pipe._prev = this;
     this._next = pipe;
@@ -257,8 +262,8 @@ export abstract class Pipe<T> {
    * Build tags
    * @return {Pipe}
    */
-  public buildTags():Pipe<any> {
-    console.info('build Tags');
+  public buildTags(): Pipe<any> {
+    console.info( 'build Tags' );
     let pipe   = new BuildTagsPipe( this.pipeline );
     pipe._prev = this;
     this._next = pipe;
@@ -269,8 +274,8 @@ export abstract class Pipe<T> {
    * Return result as project tree
    * @return {ProjectTree}
    */
-  public asTree():ProjectTree {
-    console.info('as Tree');
+  public asTree(): ProjectTree {
+    console.info( 'as Tree' );
     let pipe   = new TreePipe( this.pipeline );
     pipe._prev = this;
     this._next = pipe;
@@ -281,8 +286,8 @@ export abstract class Pipe<T> {
    * Return all found problems
    * @return {Problem[]}
    */
-  public asProblems():Problem[] {
-    console.info('as Problems');
+  public asProblems(): Problem[] {
+    console.info( 'as Problems' );
     let pipe   = new ProblemsPipe( this.pipeline );
     pipe._prev = this;
     this._next = pipe;
@@ -292,13 +297,13 @@ export abstract class Pipe<T> {
 
 // This needs to be at the end, because these are inheritance of Pipe, so Pipe has te be initialized first
 import {
-    PreProcessPipe,
-    IncludesPipe,
-    RestDependenciesPipe,
-    StoreIndexPipe,
-    StoreProjectsPipe,
-    ProblemsPipe,
-    BuildTagsPipe,
-    TreePipe
+  PreProcessPipe,
+  IncludesPipe,
+  RestDependenciesPipe,
+  StoreIndexPipe,
+  StoreProjectsPipe,
+  ProblemsPipe,
+  BuildTagsPipe,
+  TreePipe
 } from "./pipes";
 import { UsesDependenciesPipe } from "./pipes/uses-dependencies.pipe";

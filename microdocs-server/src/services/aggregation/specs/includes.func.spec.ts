@@ -2,7 +2,7 @@
 import { assert } from 'chai';
 import { Project, DependencyTypes, ProblemLevels } from "@maxxton/microdocs-core/domain";
 import { combineIncludes } from "../funcs/includes.func";
-import { PipeMock } from "./pipe-mock.spec";
+import { PipeMock } from "./mocks/pipe-mock.spec";
 
 
 describe( '#Aggregation: #combineIncludes:', () => {
