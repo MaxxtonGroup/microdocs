@@ -2,9 +2,9 @@ import {Component} from "../component/component.model";
 import {Method} from "../component/method.model";
 import {Parameter} from "./parameter.model";
 import {ResponseModel} from "./response.model";
-import {Problem} from "../problem/problem.model";
+import { Problemable } from "../problem/problemable.model";
 
-export interface Path {
+export interface Path extends Problemable {
   path?:string;
   requestMethod?:string;
   controller?:Component;
@@ -19,5 +19,4 @@ export interface Path {
   responses?:{[key:string]:ResponseModel};
   deprecated?:boolean;
   security?:{};//todo: security
-  problems?:Array<Problem>;
 }

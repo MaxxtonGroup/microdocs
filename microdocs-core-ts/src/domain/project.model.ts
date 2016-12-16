@@ -8,8 +8,9 @@ import { Path } from "./path/path.model";
 import { Problem } from "./problem/problem.model";
 import { Exchange } from "./events/exchange.model";
 import { Deploy } from "./deploy/deploy.model";
+import { Problemable } from "./problem/problemable.model";
 
-export interface Project {
+export interface Project extends Problemable{
   microdocs?:string;
   swagger?:string;
   info?:ProjectInfo;
@@ -24,7 +25,6 @@ export interface Project {
   dependencies?:{[key:string]:Dependency};
   components?:{[key:string]:Component};
   events?:{[key:string]:Exchange};
-  problems?:Array<Problem>;
   problemCount?:number;
   deprecated?:boolean;
   deploy?:Deploy;

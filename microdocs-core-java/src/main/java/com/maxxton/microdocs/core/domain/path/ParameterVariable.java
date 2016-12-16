@@ -1,7 +1,10 @@
 package com.maxxton.microdocs.core.domain.path;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.maxxton.microdocs.core.domain.schema.SchemaArray;
+
+import java.util.List;
 
 /**
  * @author Steven Hermans
@@ -12,6 +15,8 @@ public class ParameterVariable extends SchemaArray implements Parameter {
     private ParameterPlacing in;
     @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     private boolean allowEmptyValue = false;
+    @JsonProperty("enum")
+    private List enums;
 
     @Override
     public String getName() {
@@ -39,5 +44,13 @@ public class ParameterVariable extends SchemaArray implements Parameter {
 
     public void setAllowEmptyValue(boolean allowEmptyValue) {
         this.allowEmptyValue = allowEmptyValue;
+    }
+
+    public List getEnums() {
+        return enums;
+    }
+
+    public void setEnums(List enums) {
+        this.enums = enums;
     }
 }

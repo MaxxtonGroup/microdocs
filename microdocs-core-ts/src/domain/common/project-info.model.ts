@@ -1,15 +1,26 @@
 import {ProjectLink} from "./project-link.model";
 export class ProjectInfo {
 
+  private _versions:string[];
+
   constructor(public title: string,
               public group: string,
               public version: string,
-              public versions: string[],
+              vs: string[],
               public links ?: ProjectLink[],
               public description?: string,
               public sourceLink?: string,
               public publishTime?:string,
               public updateTime?:string) {
+    this.setVersions(vs);
+  }
+
+  public getVersions():string[]{
+    return this._versions.sort();
+  }
+
+  setVersions(val:string[] ):void{
+    this._versions = val;
   }
 
   /**
@@ -18,10 +29,10 @@ export class ProjectInfo {
    * @return {ProjectInfo,null} new ProjectInfo or null if the version doesn't exists
    */
   public getVersion(version: string): ProjectInfo {
-    if (this.versions.filter(v => v == version).length == 0) {
+    if (this.getVersions().filter(v => v == version).length == 0) {
       return null;
     }
-    return new ProjectInfo(this.title, this.group, version, this.versions);
+    return new ProjectInfo(this.title, this.group, version, this.getVersions());
   }
 
   /**
@@ -29,12 +40,27 @@ export class ProjectInfo {
    * @return {ProjectInfo,null} new ProjectInfo or null if the version doesn't exists
    */
   public getPrevVersion(): ProjectInfo {
-    var sortedVersions = this.versions.sort();
+    var sortedVersions = this.getVersions().sort();
     var index = sortedVersions.indexOf(this.version);
     index--;
     if (index >= 0 && sortedVersions[index] != undefined) {
       return this.getVersion(sortedVersions[index]);
     }
     return null;
+  }
+
+  public toJson():string{
+    let output:any = {
+      title: this.title,
+      group: this.group,
+      version: this.version,
+      versions: this.getVersions(),
+      description: this.description,
+      links: this.links,
+      sourceLink: this.sourceLink,
+      publishTime: this.publishTime,
+      updateTime: this.updateTime
+    };
+    return JSON.stringify(output);
   }
 }

@@ -29,7 +29,7 @@ export class Request {
     return this._validateMessage;
   }
 
-  set files( value:Array ) {
+  set files( value:string[] ) {
     this._files = value;
   }
 

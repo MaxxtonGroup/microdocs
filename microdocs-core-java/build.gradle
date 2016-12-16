@@ -1,5 +1,5 @@
 group 'com.maxxton'
-version '1.6.0'
+version '1.6.2'
 
 apply plugin: 'java'
 apply plugin: 'maven'

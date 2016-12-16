@@ -70,17 +70,22 @@ export class ReportJsonRepository implements ReportRepository {
     var project = this.loadProject(projectFolder + "/microdocs.json");
     
     // merge project info
-    if (project.info == undefined || project.info == null) {
-      project.info = projectInfo;
-    } else {
-      project.info.title = projectInfo.title.toLowerCase();
-      project.info.group = projectInfo.group.toLowerCase();
-      project.info.version = projectInfo.version.toLowerCase();
-      project.info.versions = projectInfo.versions;
-      if (projectInfo.description != null && projectInfo.description != "") {
-        project.info.description = projectInfo.description;
-      }
+    if(project.info.description){
+      projectInfo.description = project.info.description;
     }
+    if(project.info.links){
+      projectInfo.links = project.info.links;
+    }
+    if(project.info.sourceLink){
+      projectInfo.sourceLink = project.info.sourceLink;
+    }
+    if(project.info.publishTime){
+      projectInfo.sourceLink = project.info.publishTime;
+    }
+    if(project.info.updateTime){
+      projectInfo.updateTime = project.info.updateTime;
+    }
+    project.info = projectInfo;
     
     // find links
     var linkFolders = fsHelper.getDirectories(projectFolder);

@@ -43,7 +43,7 @@ export class RemoveProjectRoute extends BaseRoute {
       // remove whole project or just one version
       if(version && version.trim() !== ''){
         // Find matching reports
-        var matches = projectInfos.filter(info => info.title.toLowerCase() === title.toLowerCase() && info.versions.indexOf(version) != -1).map(info => {info.version = version; return info;});
+        var matches = projectInfos.filter(info => info.title.toLowerCase() === title.toLowerCase() && info.getVersions().indexOf(version) != -1).map(info => {info.version = version; return info;});
         if(matches.length == 0){
           handler.handleNotFound(req, res, "Project " + title + ":" + version + " doesn't exists");
           return;

@@ -46,7 +46,7 @@ export class CheckRoute extends BaseRoute {
           }
         }
         project.info.version = '9999999999.0.0';
-        project.info.versions = ['9999999999.0.0'];
+        project.info.setVersions(['9999999999.0.0']);
 
         var problems: Problem[] = scope.injection.AggregationService().checkProject(env, project);
         handler.handleProblems(req, res, problems, env);

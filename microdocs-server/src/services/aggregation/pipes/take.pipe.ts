@@ -41,10 +41,9 @@ export class TakePipe extends Pipe<any> {
         projectInfo = new ProjectInfo(report.info.title, report.info.group, report.info.version, [report.info.version]);
         this.projects.push(projectInfo);
       }else{
-        if(projectInfo.versions.filter(version => version === report.info.version).length == 0){
-          projectInfo.versions.push(report.info.version);
-          projectInfo.versions = projectInfo.versions.sort();
-          projectInfo.version = projectInfo.versions[projectInfo.versions.length-1];
+        if(projectInfo.getVersions().filter(version => version === report.info.version).length == 0){
+          projectInfo.getVersions().push(report.info.version);
+          projectInfo.version = projectInfo.getVersions()[projectInfo.getVersions().length-1];
         }
       }
     }
@@ -57,6 +56,16 @@ export class TakePipe extends Pipe<any> {
       takeLatest(this, this._versionAmount);
     }
     return this;
+  }
+
+  public getPrevProject( title: string, version: string ): Project {
+    let infos = this.projects.filter(info => info.title === title);
+    if(infos.length > 0){
+      let info = infos[0].getVersion(version);
+      let report = this.reportRepo.getProject(this.env, info);
+      return report;
+    }
+    return null;
   }
 
 }

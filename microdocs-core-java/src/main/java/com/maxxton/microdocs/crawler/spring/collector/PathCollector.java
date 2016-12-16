@@ -1,6 +1,7 @@
 package com.maxxton.microdocs.crawler.spring.collector;
 
 import com.maxxton.microdocs.core.domain.path.*;
+import com.maxxton.microdocs.core.domain.schema.SchemaType;
 import com.maxxton.microdocs.core.reflect.*;
 import com.maxxton.microdocs.crawler.ErrorReporter;
 import com.maxxton.microdocs.core.builder.PathBuilder;
@@ -81,8 +82,13 @@ public class PathCollector implements Collector<PathBuilder> {
                 parameter.setIn(ParameterPlacing.QUERY);
                 parameter.setName(paramSplit[0]);
                 parameter.setRequired(true);
+                parameter.setType(SchemaType.ANY);
                 if(paramSplit.length > 1) {
                     parameter.setDefaultValue(paramSplit[1]);
+                    parameter.setType(SchemaType.ENUM);
+                    List enums = new ArrayList();
+                    enums.add(paramSplit[1]);
+                    parameter.setEnums(enums);
                 }
                 parameters.add(parameter);
             }

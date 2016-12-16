@@ -1,8 +1,8 @@
 import {Annotation} from "./annotation.model";
 import {Method} from "./method.model";
-import {Problem} from "../problem/problem.model";
+import { Problemable } from "../problem/problemable.model";
 
-export interface Component{
+export interface Component extends Problemable{
 
     name?:string;
     file?:string;
@@ -12,6 +12,5 @@ export interface Component{
     annotations?:{[name:string]:Annotation};
     methods?:{[name:string]:Method};
     dependencies?:Component[];
-    problems?:Array<Problem>;
 
 }

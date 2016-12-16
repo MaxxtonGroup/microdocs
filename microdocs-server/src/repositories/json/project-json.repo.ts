@@ -5,7 +5,7 @@ import * as mkdir from 'mkdir-p';
 
 import {Config} from "../../config";
 import {ProjectRepository} from "../project.repo";
-import {Project, ProjectTree} from "@maxxton/microdocs-core/domain";
+import { Project, ProjectTree, ProjectInfo } from "@maxxton/microdocs-core/domain";
 import * as fsHelper from '../../helpers/file.helper';
 import { Dependency } from "@maxxton/microdocs-core/domain/dependency/dependency.model";
 
@@ -63,6 +63,7 @@ export class ProjectJsonRepository implements ProjectRepository {
         }
         project.dependencies = convertedDependencies;
       }
+      project.info = new ProjectInfo(title, project.info.group, version, project.info.versions, project.info.links, project.info.description, project.info.sourceLink, project.info.publishTime, project.info.updateTime);
       return project;
     }
     return null;

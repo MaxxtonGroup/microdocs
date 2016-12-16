@@ -9,7 +9,7 @@ import { ProjectInfo } from "@maxxton/microdocs-core/domain/common/project-info.
  */
 export function takeEverything(pipe:Pipe<any>){
   pipe.projects.forEach( (projectInfo:ProjectInfo) => {
-    projectInfo.versions.forEach((version:string) => {
+    projectInfo.getVersions().forEach((version:string) => {
       projectInfo.version = version;
       let report = pipe.reportRepo.getProject(pipe.env, projectInfo);
       pipe.result.pushProject(report);
@@ -25,7 +25,7 @@ export function takeEverything(pipe:Pipe<any>){
  */
 export function takeLatest(pipe:Pipe<any>, versionAmount:number):void{
   pipe.projects.forEach((projectInfo:ProjectInfo) => {
-    var latestVersions = projectInfo.versions.reverse().slice(0, versionAmount);
+    var latestVersions = projectInfo.getVersions().reverse().slice(0, versionAmount);
     latestVersions.forEach((version:string) => {
       projectInfo.version = version;
       let report = pipe.reportRepo.getProject(pipe.env, projectInfo);
