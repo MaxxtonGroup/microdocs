@@ -183,6 +183,42 @@ describe('#Aggregation: #endpointCheck:', () => {
       expect(problemReport.hasProblems()).be.false;
     });
 
+    it('Matching reverse enum query type', () => {
+      var problemReport = new ProblemReporter();
+
+      // client with string query param
+      var clientEndpoint: Path = <Path>{
+        parameters: [
+          {
+            'in': 'query',
+            name: 'search',
+            type: 'enum',
+            required: true,
+            'enum': ['application']
+          }
+        ]
+      };
+
+      // producer with same query param
+      var producerEndpoint: Path = <Path>{
+        parameters: [
+          {
+            'in': 'query',
+            name: 'search',
+            type: 'string',
+            required: true,
+            default: 'application',
+          }
+        ]
+      };
+
+      // act
+      checkQueryParameters(clientEndpoint, producerEndpoint, {}, problemReport);
+
+      // No problems
+      expect(problemReport.hasProblems()).be.false;
+    });
+
     it('Matching any query type', () => {
       var problemReport = new ProblemReporter();
 

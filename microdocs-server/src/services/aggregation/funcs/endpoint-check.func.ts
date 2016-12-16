@@ -170,5 +170,22 @@ function matchType(producerParam:Parameter, clientParam:Parameter):boolean{
     }
   }
 
+  // Match reverse enum
+  if(clientParam.type === SchemaTypes.ENUM && clientParam.enum && clientParam.enum.length > 0){
+    if(producerParam.type === SchemaTypes.INTEGER || producerParam.type === SchemaTypes.NUMBER){
+      if(typeof(clientParam.enum[0]) === 'number' || !isNaN(parseInt(clientParam.enum[0]))){
+        return true;
+      }
+    }else if(producerParam.type === SchemaTypes.BOOLEAN){
+      if(typeof(clientParam.enum[0]) === 'boolean' || clientParam.enum[0] === 'true' || clientParam.enum[0] === 'false'){
+        return true;
+      }
+    }else if(producerParam.type === SchemaTypes.STRING){
+      if(typeof(clientParam.enum[0]) === 'string') {
+        return true;
+      }
+    }
+  }
+
   return false;
 }
