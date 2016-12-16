@@ -1,17 +1,9 @@
-///<reference path="../../../checks/query-params.check.ts"/>
 import { Project, DependencyTypes, Dependency, ProblemLevels, ParameterPlacings } from "@maxxton/microdocs-core/domain";
 import { Pipe } from "../pipe";
 import { ProblemReporter } from "@maxxton/microdocs-core/helpers/problem/problem-reporter.helper";
 import { Path } from "@maxxton/microdocs-core/domain/path/path.model";
-import { PathCheck } from "../../../checks/path-check";
-import { PathParamsCheck } from "../../../checks/path-params.check";
-import { QueryParamsCheck } from "../../../checks/query-params.check";
-import { BodyParamsCheck } from "../../../checks/body-params.check";
-import { ResponseCheck } from "../../../checks/response.check";
 import { raw } from "body-parser";
-
-const pathParamsCheck: PathCheck  = new PathParamsCheck();
-const endpointChecks: PathCheck[] = [ new QueryParamsCheck(), new BodyParamsCheck(), pathParamsCheck, new ResponseCheck() ];
+import { checkPathParameters, checkQueryParameters, checkBodyParameters, checkResponseBody } from "./endpoint-check.func";
 
 /**
  * Resolve Rest dependencies with other projects
@@ -20,7 +12,7 @@ const endpointChecks: PathCheck[] = [ new QueryParamsCheck(), new BodyParamsChec
  * @param scope
  */
 export function resolveRestDependencies( pipe: Pipe<any>, project: Project, scope?: Project ) {
-  // Don't resolve project if it is already resolved
+  // Don't resolve project if it is   already resolved
   if ( pipe.result.getProject( project.info.title, project.info.version ) != null ) {
     return;
   }
@@ -139,7 +131,10 @@ function checkEndpoints( title: string, dependency: Dependency, dependentProject
         var producerEndpoint         = findEndpoint( clientEndpoint, path, method, dependentProject );
         if ( producerEndpoint != null ) {
           // execute checks on the endpoint
-          endpointChecks.forEach( check => check.check( clientEndpoint, producerEndpoint, currentProject, problemReport ) );
+          checkPathParameters(clientEndpoint, producerEndpoint, currentProject, problemReport );
+          checkQueryParameters(clientEndpoint, producerEndpoint, currentProject, problemReport );
+          checkBodyParameters(clientEndpoint, producerEndpoint, currentProject, problemReport );
+          checkResponseBody(clientEndpoint, producerEndpoint, currentProject, problemReport );
         } else {
           // endpoint does not exists
           problemReport.report( ProblemLevels.ERROR, "No mapping for '" + method + " " + path + "' on " + title, clientEndpoint.controller, clientEndpoint.method );
@@ -191,7 +186,7 @@ function findEndpoint( clientEndpoint: Path, clientPath: string, clientMethod: s
 
         // check problems
         const report = new ProblemReporter();
-        pathParamsCheck.check( clientEndpoint, endpoint, project, report );
+        checkPathParameters( clientEndpoint, endpoint, project, report );
         let resultErrorCount   = report.getProblems().filter( problem => problem.level === ProblemLevels.ERROR ).length;
         let resultWarningCount = report.getProblems().filter( problem => problem.level === ProblemLevels.WARNING ).length;
 

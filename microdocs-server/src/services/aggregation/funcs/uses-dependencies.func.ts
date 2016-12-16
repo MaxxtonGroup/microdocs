@@ -1,16 +1,7 @@
-///<reference path="../../../checks/query-params.check.ts"/>
 import { Project, DependencyTypes, Dependency, ProblemLevels } from "@maxxton/microdocs-core/domain";
 import { Pipe } from "../pipe";
 import { ProblemReporter } from "@maxxton/microdocs-core/helpers/problem/problem-reporter.helper";
 import { Path } from "@maxxton/microdocs-core/domain/path/path.model";
-import { PathCheck } from "../../../checks/path-check";
-import { PathParamsCheck } from "../../../checks/path-params.check";
-import { QueryParamsCheck } from "../../../checks/query-params.check";
-import { BodyParamsCheck } from "../../../checks/body-params.check";
-import { ResponseCheck } from "../../../checks/response.check";
-
-const pathParamsCheck:PathCheck  = new PathParamsCheck();
-const endpointChecks:PathCheck[] = [ new QueryParamsCheck(), new BodyParamsCheck(), pathParamsCheck, new ResponseCheck() ];
 
 /**
  * Resolve Rest dependencies with other projects
@@ -60,7 +51,7 @@ function resolveUsesClient( pipe:Pipe<any>, reporter:ProblemReporter, project:Pr
     dependency.version = depProject.info.version;
   }else{
     let first = true;
-    let olderDepProject = null;
+    let olderDepProject:Project = null;
     while(!compatible && (olderDepProject != null || first)){
       first = false;
       olderDepProject = pipe.getPrevProjectVersion(depTitle, olderDepProject ? olderDepProject.info.version : depProject.info.version);

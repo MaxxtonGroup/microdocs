@@ -30,7 +30,7 @@ export class SwaggerResponseHandler extends MicroDocsResponseHandler {
     delete project.problemCount;
 
     if(project.info != undefined){
-      this.convertInfo(project.info);
+      project.info = this.convertInfo(project.info);
     }
 
     if (project.definitions != undefined) {
@@ -96,11 +96,13 @@ export class SwaggerResponseHandler extends MicroDocsResponseHandler {
     }
   }
 
-  convertInfo(info:ProjectInfo){
-    delete info.group;
-    delete info.versions;
-    delete info.links;
-    delete info.sourceLink;
+  convertInfo(info:ProjectInfo):any{
+    let jsonInfo:any = JSON.parse(JSON.stringify(info));
+    delete jsonInfo.group;
+    delete jsonInfo.versions;
+    delete jsonInfo.links;
+    delete jsonInfo.sourceLink;
+    return jsonInfo;
   }
 
 }

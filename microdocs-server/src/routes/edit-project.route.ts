@@ -47,7 +47,7 @@ export class EditProjectRoute extends BaseRoute {
       var reportRepository = scope.injection.ReportRepository();
       var projectRepository = scope.injection.ProjectRepository();
       var projects = reportRepository.getProjects(env);
-      var matches = projects.filter(info => info.title.toLowerCase() === title.toLowerCase() && info.versions.indexOf(version) != -1).map(info => {
+      var matches = projects.filter(info => info.title.toLowerCase() === title.toLowerCase() && info.getVersions().indexOf(version) != -1).map(info => {
         info.version = version;
         return info;
       });
@@ -127,8 +127,8 @@ function updateGroup(infos:ProjectInfo[], ignoreProject:string, rules:ProjectCha
 }
 
 function updateProject(info:ProjectInfo, ignoreVersion:string, rules:ProjectChangeRule[], reportRepository:ReportRepository, projectRepository:ProjectRepository, env:string) {
-  info.versions.filter(v => v !== ignoreVersion).forEach(version => {
-    var vInfo = new ProjectInfo(info.title, info.group, version, info.versions);
+  info.getVersions().filter(v => v !== ignoreVersion).forEach(version => {
+    var vInfo = new ProjectInfo(info.title, info.group, version, info.getVersions());
     var report = reportRepository.getProject(env, vInfo);
     if (report) {
       updateVersion(report, vInfo, rules, reportRepository, projectRepository, env);

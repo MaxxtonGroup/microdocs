@@ -107,7 +107,7 @@ export abstract class Pipe<T> {
   public getPrevProjectVersion( title: string, lastVersion?: string ): Project {
     let projectInfos = this.projects.filter( info => info.title === title );
     if ( projectInfos.length > 0 ) {
-      let versions    = projectInfos[ 0 ].versions;
+      let versions    = projectInfos[ 0 ].getVersions();
       let nextVersion = versions[ versions.length - 1 ];
       if ( lastVersion ) {
         let index = versions.indexOf( lastVersion );
@@ -175,10 +175,9 @@ export abstract class Pipe<T> {
       projectInfo = new ProjectInfo( report.info.title, report.info.group, report.info.version, [ report.info.version ] );
       this.projects.push( projectInfo );
     } else {
-      if ( projectInfo.versions.filter( version => version === report.info.version ).length == 0 ) {
-        projectInfo.versions.push( report.info.version );
-        projectInfo.versions = projectInfo.versions.sort();
-        projectInfo.version  = projectInfo.versions[ projectInfo.versions.length - 1 ];
+      if ( projectInfo.getVersions().filter( version => version === report.info.version ).length == 0 ) {
+        projectInfo.getVersions().push( report.info.version );
+        projectInfo.version  = projectInfo.getVersions()[ projectInfo.getVersions().length - 1 ];
       }
     }
     return this;

@@ -23,7 +23,8 @@ export class PublishZipRoute extends BaseRoute{
    * @httpResponse 400 Missing title/version/group in the project definitions or missing request body
    */
   public publishProject( req:express.Request, res:express.Response, next:express.NextFunction, scope:BaseRoute ) {
-    let tempFolder = getTempFolder()
+//    let tempFolder = getTempFolder()
+    next();
   }
 }
 
@@ -60,6 +61,9 @@ export class PublishRoute extends BaseRoute {
       var title                  = req.params.title;
       var version                = req.query.version;
       var group                  = req.query.group;
+      if(group){
+        group = decodeURIComponent(group);
+      }
       var failOnProblems:boolean = true;
       if ( req.query.failOnProblems == 'false' ) {
         failOnProblems = false;
@@ -96,11 +100,11 @@ export class PublishRoute extends BaseRoute {
         }
 
         //set group and version in the report
-        if ( report.info == undefined ) {
+        if ( !report.info ) {
           report.info = new ProjectInfo( undefined, undefined, undefined, undefined );
         }
         report.info.version = version;
-        report.info.versions = [version];
+        report.info.setVersions([version]);
         report.info.group = group;
         report.info.title = title;
         report.info.publishTime = new Date().toISOString();
