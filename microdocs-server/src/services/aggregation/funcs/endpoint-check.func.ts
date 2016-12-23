@@ -81,23 +81,25 @@ function getPathVariable( name:string, path:Path ):Parameter {
 }
 
 export function checkBodyParameters(clientEndpoint:Path, producerEndpoint:Path, project:Project, problemReport:ProblemReporter):void{
-  let parameters = producerEndpoint.parameters.filter(param => param.in === ParameterPlacings.BODY);
-  let clientParams = clientEndpoint.parameters;
-  parameters.forEach(producerParam => {
-    var exists = false;
-    clientParams.some(clientParam => {
-      if (producerParam.in == clientParam.in) {
-        exists = true;
-        var producerSchema:Schema = SchemaHelper.collect(producerParam.schema, [], project);
-        var clientSchema = SchemaHelper.collect(clientParam.schema, [], project);
-        checkSchema(clientEndpoint, clientSchema, producerSchema, problemReport, "");
-        return true;
+  if(producerEndpoint.parameters) {
+    let parameters   = producerEndpoint.parameters.filter( param => param.in === ParameterPlacings.BODY );
+    let clientParams = clientEndpoint.parameters;
+    parameters.forEach( producerParam => {
+      var exists = false;
+      clientParams.some( clientParam => {
+        if ( producerParam.in == clientParam.in ) {
+          exists                     = true;
+          var producerSchema: Schema = SchemaHelper.collect( producerParam.schema, [], project );
+          var clientSchema           = SchemaHelper.collect( clientParam.schema, [], project );
+          checkSchema( clientEndpoint, clientSchema, producerSchema, problemReport, "" );
+          return true;
+        }
+      } );
+      if ( !exists && producerParam.required ) {
+        problemReport.report( ProblemLevels.ERROR, "Missing request body", clientEndpoint.controller, clientEndpoint.method );
       }
-    });
-    if (!exists && producerParam.required) {
-      problemReport.report(ProblemLevels.ERROR, "Missing request body", clientEndpoint.controller, clientEndpoint.method);
-    }
-  });
+    } );
+  }
 }
 
 export function checkResponseBody(clientEndpoint:Path, producerEndpoint:Path, project:Project, problemReport:ProblemReporter):void{

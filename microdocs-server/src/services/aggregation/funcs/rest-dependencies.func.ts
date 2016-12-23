@@ -74,7 +74,7 @@ function resolveRestClient( pipe: Pipe<any>, reporter: ProblemReporter, project:
       dependency.version = depProject.info.version;
     }
     if ( !compatible ) {
-      reporter.report( ProblemLevels.ERROR, "Not compatible with: " + depTitle, dependency.component );
+      reporter.report( ProblemLevels.ERROR, "Not compatible with: " + depTitle + " (see other problems)", dependency.component );
     }
   }
 
@@ -95,7 +95,7 @@ function checkDependencyCompatible( title: string, dependency: Dependency, depPr
   let compatible: boolean = true;
   if ( (dependency.deprecatedVersions && dependency.deprecatedVersions.indexOf( depProject.info.version ) != -1) ) {
     if ( reporter ) {
-      reporter.report( ProblemLevels.ERROR, "This project is marked as not compatible with version " + depProject.info.version, dependency.component );
+      reporter.report( ProblemLevels.ERROR, "This project is marked as not compatible with version " + depProject.info.version + " (see other problems)", dependency.component );
     }
     compatible = false;
   } else if ( depProject.deprecated ) {
@@ -144,7 +144,7 @@ function checkEndpoints( title: string, dependency: Dependency, dependentProject
         if ( problemReport.hasProblems() ) {
           compatible = false;
           if ( !silence ) {
-            let problems = reverse ? problemReport.getRawProblems().map( rawProblem => rawProblem.inverse( currentProject, producerEndpoint.controller, producerEndpoint.method ).problem ) : problemReport.getProblems();
+            let problems = reverse ? problemReport.getRawProblems().map( rawProblem => rawProblem.inverse( dependentProject, producerEndpoint.controller, producerEndpoint.method ).problem ) : problemReport.getProblems();
             problemReport.publish( clientEndpoint, currentProject, problems );
             pipe.pipeline.addProblems( problems );
           }

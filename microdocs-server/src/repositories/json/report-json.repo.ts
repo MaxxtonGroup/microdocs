@@ -80,7 +80,7 @@ export class ReportJsonRepository implements ReportRepository {
       projectInfo.sourceLink = project.info.sourceLink;
     }
     if(project.info.publishTime){
-      projectInfo.sourceLink = project.info.publishTime;
+      projectInfo.publishTime = project.info.publishTime;
     }
     if(project.info.updateTime){
       projectInfo.updateTime = project.info.updateTime;

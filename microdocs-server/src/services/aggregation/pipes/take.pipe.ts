@@ -62,8 +62,10 @@ export class TakePipe extends Pipe<any> {
     let infos = this.projects.filter(info => info.title === title);
     if(infos.length > 0){
       let info = infos[0].getVersion(version);
-      let report = this.reportRepo.getProject(this.env, info);
-      return report;
+      if(info) {
+        let report = this.reportRepo.getProject( this.env, info );
+        return report;
+      }
     }
     return null;
   }

@@ -65,6 +65,9 @@ export class PublishRoute extends BaseRoute {
         group = decodeURIComponent(group);
       }
       var failOnProblems:boolean = true;
+      if(!req.query.force){
+        failOnProblems = false
+      }
       if ( req.query.failOnProblems == 'false' ) {
         failOnProblems = false;
       }

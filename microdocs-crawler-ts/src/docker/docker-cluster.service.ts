@@ -148,7 +148,7 @@ export class DockerClusterService {
                 let build: Build = {};
                 if ( service.build ) {
                   if ( typeof(service.build) === 'string' ) {
-                    build.context = service.build;
+                    build.context = <string>service.build;
                   } else if ( typeof(service.build) === 'object' ) {
                     build = service.build;
                   }
