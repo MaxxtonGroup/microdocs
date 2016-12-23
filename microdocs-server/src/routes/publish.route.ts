@@ -100,13 +100,7 @@ export class PublishRoute extends BaseRoute {
         }
 
         //set group and version in the report
-        if ( !report.info ) {
-          report.info = new ProjectInfo( undefined, undefined, undefined, undefined );
-        }
-        report.info.version = version;
-        report.info.setVersions([version]);
-        report.info.group = group;
-        report.info.title = title;
+        report.info = new ProjectInfo(title, group, version, [version], report.info.links, report.info.description, report.info.sourceLink);
         report.info.publishTime = new Date().toISOString();
 
         var aggregationService = scope.injection.AggregationService();
