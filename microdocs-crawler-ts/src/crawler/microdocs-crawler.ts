@@ -77,7 +77,7 @@ export class MicroDocsCrawler {
   public publish( sources: string[], publishOptions: PublishOptions, tsConfig: {} = {}, callback:(response:ProblemResponse)=>void = cliHelper.printProblemResponse, frameworks: Framework[] = FRAMEWORKS ): void {
     var project = this.crawl( sources, tsConfig, frameworks );
 
-
+    new MicroDocsClient().publish(publishOptions, project, callback);
   }
 
 }

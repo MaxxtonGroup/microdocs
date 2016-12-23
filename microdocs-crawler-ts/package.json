@@ -1,6 +1,6 @@
 {
   "name": "@maxxton/microdocs-crawler",
-  "version": "1.6.3",
+  "version": "1.6.4",
   "description": "MicroDocs crawler for typescript projects",
   "repository": {
     "type": "git",
@@ -17,7 +17,7 @@
     "microdocs-docker": "dist/microdocs-docker.js"
   },
   "dependencies": {
-    "@maxxton/microdocs-core": "1.6.2",
+    "@maxxton/microdocs-core": "1.6.4",
     "chai": "^3.5.0",
     "globby": "^6.0.0",
     "js-yaml": "^3.7.0",
