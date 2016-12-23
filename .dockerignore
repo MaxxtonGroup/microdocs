@@ -1,4 +1,4 @@
 *
-!microdocs-server/node_modules
 !microdocs-server/dist
+!microdocs-server/config.yml
 !microdocs-ui/dist
