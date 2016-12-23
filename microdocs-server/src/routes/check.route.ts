@@ -34,19 +34,18 @@ export class CheckRoute extends BaseRoute {
 
       var project = req.body as Project;
       if (project != null && project != undefined) {
+        let title = req.query.project;
+        if(!title){
+          title = project.info.title;
+        }
+        if(!title){
+          handler.handleBadRequest(req, res, 'project param is missing');
+          return;
+        }
         if (project.info == null || project.info == undefined) {
           project.info = new ProjectInfo(undefined, undefined, undefined, undefined);
         }
-        if (project.info.title == null || project.info.title == undefined) {
-          if (req.query.project != undefined) {
-            project.info.title = req.query.project;
-          } else {
-            handler.handleBadRequest(req, res, 'project param is missing');
-            return;
-          }
-        }
-        project.info.version = '9999999999.0.0';
-        project.info.setVersions(['9999999999.0.0']);
+        project.info = new ProjectInfo(title, project.info.group, '9999999999.0.0', ['9999999999.0.0'], project.info.links, project.info.description, project.info.sourceLink);
 
         var problems: Problem[] = scope.injection.AggregationService().checkProject(env, project);
         handler.handleProblems(req, res, problems, env);
