@@ -9,13 +9,14 @@
   "author": "Steven Hermans (s.hermans@maxxton.com)",
   "license": "MIT",
   "scripts": {
-    "postinstall": "typings install",
+    "postinstall": "./node_modules/.bin/typings install",
     "prepublish": "gulp prepublish"
   },
   "dependencies": {},
   "devDependencies": {
     "@maxxton/gulp-builder": "1.5.13",
     "chai": "^3.5.0",
-    "gulp": ">=3.9.1"
+    "gulp": ">=3.9.1",
+    "typings": "^2.0.0"
   }
 }
