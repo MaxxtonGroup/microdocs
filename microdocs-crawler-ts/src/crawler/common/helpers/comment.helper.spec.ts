@@ -2,7 +2,7 @@
 
 import * as helper from './comment.helper';
 import {SchemaTypes} from '@maxxton/microdocs-core/domain';
-import {CommentTag} from "typedoc/lib/models";
+import {CommentTag} from "typedoc/dist/lib/models";
 import {assert} from 'chai';
 
 describe('#CommentHelper:', () => {

@@ -1,4 +1,4 @@
-import {CommentTag} from "typedoc/lib/models";
+import {CommentTag} from "typedoc/dist/lib/models";
 import {AdvancedCommentTag} from "../domain/advanced-comment-tag";
 
 export function transformCommentTag(tag: CommentTag, ignoreParamName: boolean = false): AdvancedCommentTag {

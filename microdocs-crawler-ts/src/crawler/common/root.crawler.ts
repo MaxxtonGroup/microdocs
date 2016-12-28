@@ -1,5 +1,5 @@
 import {ProjectReflection} from "typedoc";
-import {ReflectionKind, ContainerReflection, DeclarationReflection} from "typedoc/lib/models";
+import {ReflectionKind, ContainerReflection, DeclarationReflection} from "typedoc/dist/lib/models";
 import {AbstractCrawler} from "./abstract/abstract.crawler";
 import {ControllerCrawler} from "./abstract/controller.crawler";
 import {ClassCrawler} from "./abstract/class.crawler";
@@ -109,7 +109,7 @@ export class RootCrawler {
     }
   }
 
-  private triggerCrawlers(crawlers: AbstractCrawler[], call: (AbstractCrawler) => void) {
+  private triggerCrawlers(crawlers: AbstractCrawler[], call: (c:AbstractCrawler) => void) {
     crawlers.sort((a, b) => a.order - b.order).forEach(crawler => call(crawler));
   }
 
@@ -122,7 +122,7 @@ export class RootCrawler {
   private crawlClass(projectBuilder: ProjectBuilder, projectReflection: ProjectReflection, classReflection: ContainerReflection): void {
     console.info("Crawl class: " + classReflection.name);
     var classIdentity = new ClassIdentity();
-    this.triggerCrawlers(this.classCrawlers, (crawler) => crawler.crawl(classIdentity, projectBuilder, projectReflection, classReflection));
+    this.triggerCrawlers(this.classCrawlers, (crawler:AbstractCrawler) => crawler.crawl(classIdentity, projectBuilder, projectReflection, classReflection));
 
 
     if (classIdentity.isComponent) {

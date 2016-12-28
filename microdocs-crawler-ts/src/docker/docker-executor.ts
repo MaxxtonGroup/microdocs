@@ -6,8 +6,10 @@ export function dockerComposeUp( options: DockerComposeUpOptions, callback?: ( e
     env: options.buildArgs
   };
   var cmd = 'docker-compose';
-  if(options.composerFile){
-    cmd += ' -f "' + options.composerFile + '"';
+  if(options.composeFiles){
+    options.composeFiles.forEach(composeFile => {
+      cmd += ' -f "' + composeFile + '"';
+    });
   }
   if(options.projectName){
     cmd += ' -p "' + options.projectName + '"';
@@ -34,7 +36,7 @@ export interface DockerComposeUpOptions {
   forceBuild?: boolean;
   cleanOrphans?: boolean;
   buildArgs?: {[key: string]: string};
-  composerFile?:string;
+  composeFiles?:string[];
 
 }
 
@@ -43,8 +45,10 @@ export function dockerComposeDown( options: DockerComposeDownOptions, callback?:
     cwd: options.cwd
   };
   var cmd = 'docker-compose';
-  if(options.composerFile){
-    cmd += ' -f "' + options.composerFile + '"';
+  if(options.composeFiles){
+    options.composeFiles.forEach(composeFile => {
+      cmd += ' -f "' + composeFile + '"';
+    });
   }
   cmd += ' down';
   if(options.removeVolume){
@@ -60,7 +64,7 @@ export function dockerComposeDown( options: DockerComposeDownOptions, callback?:
 export interface DockerComposeDownOptions {
   cwd?:string;
   removeVolume?: boolean;
-  composerFile?:string;
+  composeFiles?:string[];
   cleanOrphans?: boolean;
 
 }
