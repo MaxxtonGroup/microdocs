@@ -2,7 +2,7 @@ import {ProjectBuilder} from '@maxxton/microdocs-core/builder';
 import {ClassCrawler} from "../common/abstract/class.crawler";
 import {ClassIdentity} from "../common/domain/class-identity";
 import {ProjectReflection} from "typedoc";
-import {ContainerReflection} from "typedoc/lib/models";
+import {ContainerReflection} from "typedoc/dist/lib/models";
 import * as helper from "../common/helpers/crawler.helper";
 
 export class Angular2ClassCrawler extends ClassCrawler {

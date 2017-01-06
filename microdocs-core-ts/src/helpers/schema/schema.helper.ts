@@ -552,27 +552,40 @@ export class SchemaHelper {
       var objContent    = isObjectMatch[ 1 ];
       var regExp        = new RegExp( REGEX_TYPE_OBJECT, 'g' );
       var propMatch:RegExpExecArray;
+      var additionalProperty:boolean = false;
       while ( propMatch = regExp.exec( objContent ) ) {
         var key   = propMatch[ 1 ];
         var value = propMatch[ 3 ];
         if ( !value ) {
-          if ( schema.type && schema.type !== SchemaTypes.ENUM ) {
-            throw SchemaHelper.resolveTypeError( "Expected key:value", propMatch[ 0 ], originalString, cursor + propMatch.index );
+          if(additionalProperty){
+            schema.additonalProperties = SchemaHelper.resolveTypeString( key, resolveUnknownObject, originalString, cursor + propMatch.index );
+            additionalProperty = false;
+          }else {
+            if ( schema.type && schema.type !== SchemaTypes.ENUM ) {
+              throw SchemaHelper.resolveTypeError( "Expected key:value", propMatch[ 0 ], originalString, cursor + propMatch.index );
+            }
+            schema.type = SchemaTypes.ENUM;
+            if ( !schema.enum ) {
+              schema.enum = [];
+            }
+            schema.enum.push( key );
           }
-          schema.type = SchemaTypes.ENUM;
-          if ( !schema.enum ) {
-            schema.enum = [];
-          }
-          schema.enum.push( key );
         } else {
+          if(additionalProperty){
+            throw SchemaHelper.resolveTypeError( "Expected additionalProperty value", propMatch[ 0 ], originalString, cursor + propMatch.index );
+          }
           if ( schema.type && schema.type !== SchemaTypes.OBJECT ) {
             throw SchemaHelper.resolveTypeError( "Expected enum", propMatch[ 0 ], originalString, cursor + propMatch.index );
           }
           schema.type = SchemaTypes.OBJECT;
-          if ( !schema.properties ) {
-            schema.properties = {};
+          if(key.indexOf('[') === 0 && value.lastIndexOf(']') === value.length-1){
+            additionalProperty = true;
+          }else {
+            if ( !schema.properties ) {
+              schema.properties = {};
+            }
+            schema.properties[ key ] = SchemaHelper.resolveTypeString( value, resolveUnknownObject, originalString, cursor + propMatch.index );
           }
-          schema.properties[ key ] = SchemaHelper.resolveTypeString( value, resolveUnknownObject, originalString, cursor + propMatch.index );
         }
       }
       if ( !schema.type ) {
@@ -672,7 +685,7 @@ export class SchemaHelper {
 const REGEX_TYPE_GENERIC           = /^([^<]+)\<(.*?)\>$/;
 const REGEX_TYPE_ARRAY             = /^(.+)\[\]$/;
 const REGEX_TYPE_IS_OBJECT         = /^\{(.*)\}$/;
-const REGEX_TYPE_OBJECT            = "(?:(\\w+)|'(.+)')(?:\\s*:\\s*(?:([\\w]+)|(\\{.*\\}(?:\\[\\])?)))?\\s*,?";
+const REGEX_TYPE_OBJECT            = "(?:(\\[?\\w+)|'(.+)')(?:\\s*:\\s*(?:([\\w]+\\]?)|(\\{.*\\}(?:\\[\\])?)))?\\s*,?";
 const REGEX_TYPE_PRIMITIVE_STRING  = /^string$/;
 const REGEX_TYPE_PRIMITIVE_NUMBER  = /^number$/;
 const REGEX_TYPE_PRIMITIVE_BOOLEAN = /^bool(ean)?$/;

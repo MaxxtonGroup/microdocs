@@ -1,7 +1,7 @@
 
 import { ComponentCrawler } from "../common/abstract/component.crawler";
 import { ProjectReflection } from "typedoc";
-import { ContainerReflection, ReflectionKind, SignatureReflection } from "typedoc/lib/models";
+import { ContainerReflection, ReflectionKind, SignatureReflection } from "typedoc/dist/lib/models";
 import {ComponentBuilder} from '@maxxton/microdocs-core/builder';
 import {Method} from '@maxxton/microdocs-core/domain';
 

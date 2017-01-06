@@ -1,4 +1,4 @@
-import {ContainerReflection, ReferenceType, DeclarationReflection} from "typedoc/lib/models";
+import {ContainerReflection, ReferenceType, DeclarationReflection} from "typedoc/dist/lib/models";
 
 /**
  * Check if the instance has a parent with that name

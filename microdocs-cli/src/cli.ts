@@ -37,7 +37,7 @@ program
 
       // check input
       if ( !src || src.length == 0 ) {
-        console.warn( "Missing input files, use '--sourceFiles [files] or -sourceFolders [folders]'" );
+        console.warn( "Missing input files, use '--sourceFiles [files] or --sourceFolders [folders]'" );
         return;
       }
       if ( !tsConfig ) {
@@ -208,36 +208,42 @@ function getFiles(): string[] {
   var folders: string[] = [];
   var files: string[]   = [];
 
-  if ( program[ 'sourceFiles' ] ) {
-    files = files.concat( program[ 'sourceFiles' ] );
+  if ( program.args[0][ 'sourceFiles' ] ) {
+    files = files.concat( program.args[0][ 'sourceFiles' ] );
   }
 
-  if ( program[ 'sourceFolders' ] ) {
-    folders = folders.concat( program[ 'sourceFolders' ] );
+  if ( program.args[0][ 'sourceFolders' ] ) {
+    folders = folders.concat( program.args[0][ 'sourceFolders' ] );
   }
 
   if ( folders.length == 0 && files.length == 0 ) {
     folders.push( process.cwd() );
   }
 
-  folders.forEach( folder => {
-    files = files.concat( globby[ 'sync' ]( [ folder + program[ 'filePattern' ] ] ) );
-  } );
+  folders.forEach(folder => {
+    var matchFiles = files.concat(globby['sync']([folder + program.args[0]['filePattern']]));
+    console.info(matchFiles);
+    if(matchFiles){
+      matchFiles.forEach(f => {
+        files.push(f);
+      });
+    }
+  });
   return files;
 }
 
 function getFolders(): string[] {
   var folders: string[] = [];
 
-  if ( program[ 'sourceFolders' ] ) {
-    folders = folders.concat( program[ 'sourceFolders' ] );
+  if ( program.args[0][ 'sourceFolders' ] ) {
+    folders = folders.concat( program.args[0][ 'sourceFolders' ] );
   }
   folders.push( process.cwd() );
   return folders;
 }
 
 function getTsConfig(): {} {
-  var file              = program[ 'tsConfig' ];
+  var file              = program.args[0][ 'tsConfig' ];
   var folders: string[] = getFolders();
 
   for ( var i = 0; i < folders.length; i++ ) {

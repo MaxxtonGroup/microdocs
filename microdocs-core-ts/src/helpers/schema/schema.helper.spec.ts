@@ -286,6 +286,20 @@ describe('#SchemaHelper: ', () => {
       assert.equal(SchemaTypes.OBJECT, result.type);
       assert.equal(SchemaTypes.INTEGER, result.additonalProperties.type);
     });
+
+    it("test additional property", () => {
+      var input = "{[key:string]:Component}";
+
+      var result = SchemaHelper.resolveTypeString(input, ( modelName, genericTypes ) => {
+        assert.equal('Component', modelName);
+        return {
+          $ref: '#/definitions/' + modelName
+        };
+      });
+
+      assert.equal(SchemaTypes.OBJECT, result.type);
+      assert.equal('#/definitions/Component', result.additonalProperties.$ref);
+    });
     
   });
 

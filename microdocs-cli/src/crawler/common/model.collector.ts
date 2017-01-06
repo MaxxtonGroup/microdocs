@@ -1,12 +1,12 @@
 import { Schema, SchemaTypes } from '@maxxton/microdocs-core/domain';
 import { PropertyBuilder, ModelBuilder } from '@maxxton/microdocs-core/builder';
 import { SchemaHelper } from '@maxxton/microdocs-core/helpers';
-import { ContainerReflection, Reflection, ReflectionKind, ReflectionFlag } from "typedoc/lib/models";
+import { ContainerReflection, Reflection, ReflectionKind, ReflectionFlag } from "typedoc/dist/lib/models";
 import { AbstractCrawler } from "./abstract/abstract.crawler";
 import { ModelCrawler } from "./abstract/model.crawler";
 import { PropertyCrawler } from "./abstract/property.crawler";
 import * as helper from './helpers/crawler.helper';
-import { DeclarationReflection } from "typedoc/lib/models/reflections/declaration";
+import { DeclarationReflection } from "typedoc/dist/lib/models/reflections/declaration";
 
 /**
  * Collects Models

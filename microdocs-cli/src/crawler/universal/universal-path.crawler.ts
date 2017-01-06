@@ -3,7 +3,7 @@ import {ProjectReflection} from "typedoc";
 import {
   ContainerReflection, DeclarationReflection, SignatureReflection, ParameterReflection,
   CommentTag
-} from "typedoc/lib/models";
+} from "typedoc/dist/lib/models";
 import {PathBuilder} from '@maxxton/microdocs-core/builder';
 import {Parameter, SchemaTypes, ParameterPlacings, Schema, ResponseModel} from '@maxxton/microdocs-core/domain';
 import {HTTP_METHODS} from "../common/domain/http-methods";

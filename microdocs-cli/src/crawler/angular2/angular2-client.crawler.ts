@@ -1,4 +1,4 @@
-import {ContainerReflection} from "typedoc/lib/models";
+import {ContainerReflection} from "typedoc/dist/lib/models";
 import {DependencyBuilder, PathBuilder} from '@maxxton/microdocs-core/builder/index';
 import {ClientCrawler} from "../common/abstract/client.crawler";
 import {ProjectReflection} from "typedoc";

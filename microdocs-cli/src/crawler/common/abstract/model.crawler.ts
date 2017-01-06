@@ -1,6 +1,6 @@
 
 import {AbstractCrawler} from "./abstract.crawler";
-import {ContainerReflection} from "typedoc/lib/models";
+import {ContainerReflection} from "typedoc/dist/lib/models";
 import {ModelBuilder} from '@maxxton/microdocs-core/builder';
 
 export abstract class ModelCrawler extends AbstractCrawler{

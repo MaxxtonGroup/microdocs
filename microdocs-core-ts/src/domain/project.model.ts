@@ -10,6 +10,9 @@ import { Exchange } from "./events/exchange.model";
 import { Deploy } from "./deploy/deploy.model";
 import { Problemable } from "./problem/problemable.model";
 
+/**
+ * @model
+ */
 export interface Project extends Problemable{
   microdocs?:string;
   swagger?:string;

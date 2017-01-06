@@ -1,6 +1,6 @@
 
 import {ProjectReflection} from "typedoc";
-import {ContainerReflection} from "typedoc/lib/models";
+import {ContainerReflection} from "typedoc/dist/lib/models";
 import {ComponentBuilder} from '@maxxton/microdocs-core/builder';
 import {AbstractCrawler} from "./abstract.crawler";
 

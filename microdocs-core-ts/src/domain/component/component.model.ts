@@ -2,6 +2,9 @@ import {Annotation} from "./annotation.model";
 import {Method} from "./method.model";
 import { Problemable } from "../problem/problemable.model";
 
+/**
+ * @model
+ */
 export interface Component extends Problemable{
 
     name?:string;

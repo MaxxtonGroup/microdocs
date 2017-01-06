@@ -1,7 +1,7 @@
 
 import {PathCrawler} from "../common/abstract/path.crawler";
 import {ProjectReflection} from "typedoc";
-import {ContainerReflection, DeclarationReflection, IDecorator} from "typedoc/lib/models";
+import {ContainerReflection, DeclarationReflection, IDecorator} from "typedoc/dist/lib/models";
 import {PathBuilder} from '@maxxton/microdocs-core/builder';
 import * as helper from '../common/helpers/crawler.helper';
 
