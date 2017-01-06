@@ -5,7 +5,7 @@ var Builder = require('./node_modules/@maxxton/microdocs-core/build').Builder;
 
 var settings = {
   distFolder: 'dist',
-  projectName: 'microdocs',
+  projectName: 'microdocs-cli',
   tsConfig: tscConfig
 };
 
