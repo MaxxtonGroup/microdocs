@@ -8,7 +8,7 @@ import { ProjectTree, Project, Environments, ProjectChangeRule, ProblemResponse}
 import { ProjectClient } from "./project.client";
 import { Injectable, Inject } from "@angular/core";
 
-const TIMEOUT:number = 5000;
+const TIMEOUT:number = 500;
 
 @Injectable()
 export class ProjectService {
