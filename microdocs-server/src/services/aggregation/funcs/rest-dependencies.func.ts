@@ -144,7 +144,7 @@ function checkEndpoints( title: string, dependency: Dependency, dependentProject
         if ( problemReport.hasProblems() ) {
           compatible = false;
           if ( !silence ) {
-            let problems = reverse ? problemReport.getRawProblems().map( rawProblem => rawProblem.inverse( dependentProject, producerEndpoint.controller, producerEndpoint.method ).problem ) : problemReport.getProblems();
+            let problems = reverse ? problemReport.getRawProblems().map( rawProblem => rawProblem.inverse( dependentProject, producerEndpoint && producerEndpoint.controller, producerEndpoint && producerEndpoint.method ).problem ) : problemReport.getProblems();
             problemReport.publish( clientEndpoint, currentProject, problems );
             pipe.pipeline.addProblems( problems );
           }
