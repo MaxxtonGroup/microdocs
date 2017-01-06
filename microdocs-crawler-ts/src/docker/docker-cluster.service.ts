@@ -32,23 +32,24 @@ export class DockerClusterService {
    */
   public down( options: ClusterOptions ) {
     let composeName: string = this.getComposeName( options );
+    let clusterDir: string  = this.getClusterDir( options.clusterName );
     if ( composeName !== 'all' ) {
       console.info( 'update docker-compose' );
-      let clusterDir: string  = this.getClusterDir( options.clusterName );
-      let composeFile: string = clusterDir + '/' + composeName;
+      let composeFile: string = path.join(clusterDir, composeName + '.yml');
+
+      this.removeCluster(options.clusterName, [composeFile]);
       fs.unlinkSync( composeFile );
-      this.concatDockerComposes( clusterDir );
 
       this.updateCluster(clusterDir);
     }else{
-      this.removeCluster(options.clusterName);
+      this.removeCluster(options.clusterName, this.getFiles(clusterDir).map(file => path.join(clusterDir, file)));
     }
   }
 
-  private removeCluster(clusterName:string = 'default'){
+  private removeCluster(clusterName:string = 'default', composeFiles:string[]){
     console.info( 'down docker-compose' );
     let clusterDir: string  = this.getClusterDir( clusterName );
-    let childProcess = dockerComposeDown({cwd: clusterDir, cleanOrphans: true, removeVolume: true}, ( error: Error, stdout: string, stderr: string ) => {
+    let childProcess = dockerComposeDown({cwd: clusterDir, cleanOrphans: true, removeVolume: true, composeFiles: composeFiles}, ( error: Error, stdout: string, stderr: string ) => {
       console.log( stdout );
       console.error( stderr );
       if ( !error ) {
@@ -79,11 +80,13 @@ export class DockerClusterService {
 
   private updateCluster(clusterDir:string){
     console.info( 'docker-compose up' );
+    let composeFiles:string[] = this.getFiles(clusterDir).map(file => path.join(clusterDir, file));
     let childProcess = dockerComposeUp( {
       forceBuild: true,
       detached: true,
       cleanOrphans: true,
-      cwd: clusterDir
+      cwd: clusterDir,
+      composeFiles: composeFiles
     }, ( error: Error, stdout: string, stderr: string ) => {
       console.log( stdout );
       console.error( stderr );
@@ -107,7 +110,7 @@ export class DockerClusterService {
         let dockerCompose: DockerCompose = <DockerCompose>(<any>yaml).load( response );
         this.addDockerOptions( options, dockerCompose );
 
-        console.info( 'store and concat docker-compose' );
+        console.info( 'store docker-compose' );
         let clusterDir = this.getClusterDir( options.clusterName );
         this.storeDockerCompose( clusterDir, options, dockerCompose );
 
@@ -183,20 +186,6 @@ export class DockerClusterService {
     let composeName    = this.getComposeName( options );
     let composeContent = (<any>yaml).dump( dockerCompose );
     fs.writeFileSync( path.join( clusterDir, composeName + '.yml' ), composeContent );
-
-    this.concatDockerComposes( clusterDir );
-  }
-
-  private concatDockerComposes( clusterDir: string ): DockerCompose {
-    let compose: DockerCompose = {};
-    this.getFiles( clusterDir ).filter(file => file !== 'docker-compose.yml').forEach( file => {
-      let content = fs.readFileSync( path.join( clusterDir, file ) );
-      let yml     = <DockerCompose>(<any>yaml).load( content );
-      SchemaHelper.merge( compose, yml );
-    } );
-    let composeContent: string = (<any>yaml).dump( compose );
-    fs.writeFileSync( path.join( clusterDir, 'docker-compose.yml' ), composeContent );
-    return compose;
   }
 
   private getClusterDir( cluster: string = 'default' ): string {
