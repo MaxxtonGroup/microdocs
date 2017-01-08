@@ -1,0 +1,8 @@
+<h4>Product Catalog</h4>
+<span *ngIf="error" class="text-error">{{error}}</span>
+<span *ngIf="!error && loading" class="text-info">Loading catalog...</span>
+<template *ngIf="!loading">
+  <ul *ngFor="let product of products">
+
+  </ul>
+</template>
