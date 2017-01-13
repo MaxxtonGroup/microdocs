@@ -2,7 +2,6 @@
 var gulp = require('gulp');
 var gutil = require('gulp-util');
 var htmlExtender = require('gulp-html-extend');
-var rimraf = require('gulp-rimraf');
 var typescript = require('gulp-typescript');
 var async = require('async');
 var merge = require('merge2');
@@ -10,8 +9,8 @@ var replace = require('gulp-replace');
 var fs = require('fs');
 var Gaze = require('gaze').Gaze;
 var mocha = require('gulp-mocha');
-
-const EXCLUDE_E2E_SRC = ['!src/**/*e2e*.ts'];
+var vinylPaths = require('vinyl-paths');
+var del = require('del');
 
 function Builder(settings) {
 
@@ -33,8 +32,8 @@ function Builder(settings) {
   };
 
   function _clean(cb) {
-    gulp.src(settings.distFolder, {read: false})
-        .pipe(rimraf())
+    gulp.src(settings.distFolder + '/*', { read: false })
+        .pipe(vinylPaths(del))
         .on('finish', function () {
           cb();
         });
@@ -66,7 +65,7 @@ function Builder(settings) {
   }
 
   function _compileTypescript(cb) {
-    _compileTypescriptFromSrc(['src/**/*.ts', '!src/**/*spec.ts', '!src/config/**/*.ts'].concat(EXCLUDE_E2E_SRC), cb);
+    _compileTypescriptFromSrc(['src/**/*.ts', '!src/**/*spec.ts', '!src/config/**/*.ts'], cb);
   }
 
   this.watch = function(cb) {
@@ -81,7 +80,7 @@ function Builder(settings) {
 
   function _watchTypescript() {
     gutil.log('Watching', gutil.colors.cyan('Typescript'));
-    var gaze = new Gaze(['src/**/*.ts', 'src/**/*.html', '!src/**/*spec.ts'].concat(EXCLUDE_E2E_SRC));
+    var gaze = new Gaze(['src/**/*.ts', 'src/**/*.html', '!src/**/*spec.ts']);
     gaze.on('all', function (event, filepath) {
       _compileChangedTypescript(event, filepath);
     });
@@ -94,6 +93,27 @@ function Builder(settings) {
         });
       }, 3000);
     });
+  }
+
+  function _compileChangedTypescript(event, src) {
+    if (event == 'changed') {
+      src = src.substring(src.lastIndexOf("/"));
+      src = src.substring(src.lastIndexOf("\\"));
+
+      _compileTypescriptFromSrc(["src/**" + src], function () {
+      }, true);
+    }
+    else if (event == 'added') {
+      _compileTypescript(function () {
+      });
+    }
+    else if (event == 'deleted') {
+      var jsDistFileLoc = src.replace("\\src\\", '\\' + settings.distFolder + '\\').replace('.ts', '.js');
+      var dTsDistFileLoc = src.replace("\\src\\", '\\' + settings.distFolder + '\\').replace('.ts', '.d.ts');
+      gutil.log("Deleting", gutil.colors.magenta(jsDistFileLoc));
+      return gulp.src([jsDistFileLoc, dTsDistFileLoc], {read: false})
+          .pipe(rimraf());
+    }
   }
 
   function _compileTypescriptFromSrc(srcArray, cb) {
@@ -127,8 +147,14 @@ function Builder(settings) {
       name: json.name,
       version: json.version,
       description: json.description,
+      typings: json.typings,
+      main: json.main,
+      repository: json.repository,
+      keywords: json.keywords,
       author: json.author,
       license: json.license,
+      bugs: json.bugs,
+      homepage: json.homepage,
       publishConfig: json.publishConfig,
       dependencies: json.dependencies
     };
@@ -178,7 +204,7 @@ function Builder(settings) {
   }
 
   function _compileSpecs(cb) {
-    _compileTypescriptFromSrc(['src/**/*.spec.ts'].concat(EXCLUDE_E2E_SRC), cb);
+    _compileTypescriptFromSrc(['src/**/*.spec.ts'], cb);
   }
 
   function _runMocha(cb) {

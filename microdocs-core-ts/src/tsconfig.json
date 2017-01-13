@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "ES5",
+    "target": "ES6",
     "module": "commonjs",
     "moduleResolution": "node",
     "sourceMap": true,
@@ -10,10 +10,9 @@
     "removeComments": false,
     "noImplicitAny": true,
     "suppressImplicitAnyIndexErrors": true,
-    "isolatedModules": false
-  },
-  "exclude": [
-    "./node_modules",
-    "src/config"
-  ]
+    "isolatedModules": false,
+    "typeRoots": [
+      "../node_modules/@types"
+    ]
+  }
 }
