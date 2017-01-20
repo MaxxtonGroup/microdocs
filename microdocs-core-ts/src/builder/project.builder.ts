@@ -20,7 +20,7 @@ export class ProjectBuilder implements Builder<Project>{
 
   dependency(dependencyBuilder:DependencyBuilder):void{
     if(!dependencyBuilder.title || dependencyBuilder.title == ''){
-      throw new Error("No title found for client");
+      console.error("No title found for client");
     }
     if(!this._project.dependencies){
       this._project.dependencies = {};
@@ -52,7 +52,7 @@ export class ProjectBuilder implements Builder<Project>{
   
   component(componentBuilder:ComponentBuilder):void{
     if(!componentBuilder.title || componentBuilder.title == ''){
-      throw new Error("No title found for component");
+      console.error("No title found for component");
     }
     if(!this._project.components){
       this._project.components = {};
@@ -70,10 +70,10 @@ export class ProjectBuilder implements Builder<Project>{
     var path = basePath + pathBuilder.path;
     var requestMethods = pathBuilder.methods.concat(requestMethods).map(method => method.toLowerCase());
     if(!path || path == ''){
-      throw new Error("No path found for endpoint");
+      console.error("No path found for endpoint");
     }
     if(!requestMethods || requestMethods.length == 0){
-      throw new Error("No request methods found for endpoint");
+      console.error("No request methods found for endpoint");
     }
 
     if(!this._project.paths){
@@ -89,7 +89,7 @@ export class ProjectBuilder implements Builder<Project>{
 
   model(schema:Schema):void {
     if (!schema.name || schema.name == '') {
-      throw new Error("No name found for schema");
+      console.error("No name found for schema");
     }
     if (!this._project.definitions) {
       this._project.definitions = {};

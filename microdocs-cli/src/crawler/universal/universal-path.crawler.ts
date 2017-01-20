@@ -1,9 +1,9 @@
 import {PathCrawler} from "../common/abstract/path.crawler";
-import {ProjectReflection} from "typedoc";
+import {ProjectReflection} from "@maxxton/typedoc";
 import {
   ContainerReflection, DeclarationReflection, SignatureReflection, ParameterReflection,
   CommentTag
-} from "typedoc/dist/lib/models";
+} from "@maxxton/typedoc/dist/lib/models";
 import {PathBuilder} from '@maxxton/microdocs-core/builder';
 import {Parameter, SchemaTypes, ParameterPlacings, Schema, ResponseModel} from '@maxxton/microdocs-core/domain';
 import {HTTP_METHODS} from "../common/domain/http-methods";
@@ -11,6 +11,7 @@ import {AbstractCrawler} from "../common/abstract/abstract.crawler";
 import * as helper from '../common/helpers';
 import {ModelCollector} from "../common/model.collector";
 import {getMethodName} from './universal-component.crawler';
+import { AdvancedCommentTag } from "../common/domain/advanced-comment-tag";
 
 export class UniversalPathCrawler extends PathCrawler {
 
@@ -95,8 +96,8 @@ export class UniversalPathCrawler extends PathCrawler {
     pathBuilder.endpoint.parameters.push(param);
   }
 
-  private crawlResponse(tag: CommentTag, signature: SignatureReflection, pathBuilder: PathBuilder, modelCollector:ModelCollector) {
-    var tag = helper.transformCommentTag(tag);
+  private crawlResponse(t: CommentTag, signature: SignatureReflection, pathBuilder: PathBuilder, modelCollector:ModelCollector) {
+    var tag:AdvancedCommentTag = helper.transformCommentTag(t);
     var status = tag.paramName ? tag.paramName : 'default';
     var description = tag.text;
     var defaultValue: any = null;
@@ -126,8 +127,8 @@ export class UniversalPathCrawler extends PathCrawler {
     pathBuilder.endpoint.responses[status] = response;
   }
 
-  private buildParam(tag: CommentTag, signature: SignatureReflection, placing: string, modelCollector:ModelCollector): Parameter {
-    var tag = helper.transformCommentTag(tag, placing === ParameterPlacings.BODY);
+  private buildParam(t: CommentTag, signature: SignatureReflection, placing: string, modelCollector:ModelCollector): Parameter {
+    var tag:AdvancedCommentTag = helper.transformCommentTag(t, placing === ParameterPlacings.BODY);
     var name: string = tag.paramName;
     var description: string = tag.text;
     var required: boolean = !tag.optional;
@@ -171,14 +172,10 @@ export class UniversalPathCrawler extends PathCrawler {
     };
 
     if (schema) {
+      if(schema.$ref){
+        schema.type = SchemaTypes.OBJECT;
+      }
       if (placing !== ParameterPlacings.BODY) {
-        if(schema.$ref){
-          schema.type = SchemaTypes.OBJECT;
-        }
-        var allowedTypes = [SchemaTypes.STRING, SchemaTypes.NUMBER, SchemaTypes.INTEGER, SchemaTypes.BOOLEAN, SchemaTypes.ARRAY];
-        if (allowedTypes.indexOf(schema.type) == -1) {
-          console.warn("type " + schema.type + " is not allowed for query param '" + name + "'");
-        }
         if (defaultValue != null) {
           param['default'] = defaultValue;
         }

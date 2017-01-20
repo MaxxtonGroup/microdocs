@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-/// <reference path="../typings/index.d.ts" />
 
 import * as pjson from '../package.json';
 import * as program from 'commander';

@@ -1,5 +1,5 @@
-import {ProjectReflection} from "typedoc";
-import {ReflectionKind, ContainerReflection, DeclarationReflection} from "typedoc/dist/lib/models";
+import {ProjectReflection} from "@maxxton/typedoc";
+import {ReflectionKind, ContainerReflection, DeclarationReflection} from "@maxxton/typedoc/dist/lib/models";
 import {AbstractCrawler} from "./abstract/abstract.crawler";
 import {ControllerCrawler} from "./abstract/controller.crawler";
 import {ClassCrawler} from "./abstract/class.crawler";
@@ -136,6 +136,9 @@ export class RootCrawler {
         projectBuilder.controller(controllerBuilder);
       } else if (classIdentity.isClient) {
         var clientBuilder = this.crawlClient(componentBuilder, projectReflection, classReflection);
+        if(!clientBuilder.title){
+          clientBuilder.title = componentBuilder.title;
+        }
         projectBuilder.dependency(clientBuilder);
       }
     }

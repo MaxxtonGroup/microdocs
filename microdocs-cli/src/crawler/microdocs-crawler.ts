@@ -1,6 +1,6 @@
 import { Project,ProblemResponse, ProblemLevels } from '@maxxton/microdocs-core/domain';
 import { ProjectBuilder } from '@maxxton/microdocs-core/builder/index';
-import { Application } from "typedoc";
+import { Application } from "@maxxton/typedoc";
 import * as fs from 'fs';
 import * as pathUtil from 'path';
 
