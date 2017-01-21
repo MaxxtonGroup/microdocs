@@ -1,0 +1,227 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+
+<dom-module id="progress-pipeline">
+  <template>
+    <style>
+      .pipeline-container {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+      }
+
+      .pipe-container {
+        display: inline-block;
+        width: 100px;
+        height: 100px;
+        margin-left: 40px;
+        background-color: #03A9F4;
+        border-radius: 100%;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+      }
+
+      .pipe-container::before {
+        content: ' ';
+        z-index: -1;
+        display: block;
+        position: relative;
+        height: 20px;
+        width: 55px;
+        top: 40px;
+        right: 50px;
+        background-color: #03A9F4;
+      }
+
+      .pipe-container:first-child {
+        margin-left: 0px;
+      }
+
+      .pipe-container:first-child::before {
+        display: none;
+      }
+
+      .pipe-container.selected, .pipe-container.selected::before {
+        background-color: #2196F3;
+      }
+
+      .pipe-container.pending, .pipe-container.pending::before, .pipe-container.pending + .pipe-container::before {
+        background-color: #9E9E9E;
+      }
+
+      .pipe-container.pending.selected, .pipe-container.pending.selected::before, .pipe-container.pending + .pipe-container.selected::before {
+        background-color: #607D8B;
+      }
+
+      .pipe-container span {
+        color: white;
+        position: relative;
+        display: inline-block;
+        top: 17px;
+        font-size: 12px;
+        padding-left: 15px;
+        padding-right: 15px;
+      }
+
+      .pipe-container:first-child span {
+        top: 31px;
+      }
+
+      .pipe-container.two-lines span {
+        top: 12px;
+      }
+
+      .pipeline-desc{
+        height: 180px;
+      }
+
+      .pipeline-desc h3 a{
+        color: inherit;
+      }
+
+      .pipeline-desc article code {
+        margin-top: 10px;
+        display: inline-block;
+      }
+
+      .pipeline-desc .status{
+        font-weight: bold;
+        margin-top: 10px;
+      }
+
+      .pipeline-desc .status.alpha {
+        color: #F44336;
+      }
+
+      .pipeline-desc .status.released {
+        color: #4CAF50;
+      }
+    </style>
+    <div class="pipeline-container">
+      <div class$="pipe-container pending {{_getClass(1, selectedIndex)}}" on-mouseover="_selectPipe" on-mousemove="_selectPipe" data-index="1">
+        <span>Setup Develop env</span>
+      </div>
+      <div class$="pipe-container {{_getClass(2, selectedIndex)}}" on-mouseover="_selectPipe" on-mousemove="_selectPipe" data-index="2">
+        <span>Coding</span>
+      </div>
+      <div class$="pipe-container {{_getClass(3, selectedIndex)}}" on-mouseover="_selectPipe" on-mousemove="_selectPipe" data-index="3">
+        <span>Verifing</span>
+      </div>
+      <div class$="pipe-container {{_getClass(4, selectedIndex)}}" on-mouseover="_selectPipe" on-mousemove="_selectPipe" data-index="4">
+        <span>Building</span>
+      </div>
+      <div class$="pipe-container pending two-lines {{_getClass(5, selectedIndex)}}" on-mouseover="_selectPipe" on-mousemove="_selectPipe" data-index="5">
+        <span>Setup Test env</span>
+      </div>
+      <div class$="pipe-container pending {{_getClass(6, selectedIndex)}}" on-mouseover="_selectPipe" on-mousemove="_selectPipe" data-index="6">
+        <span>Api Testing</span>
+      </div>
+      <div class$="pipe-container pending two-lines {{_getClass(7, selectedIndex)}}" on-mouseover="_selectPipe" on-mousemove="_selectPipe" data-index="7">
+        <span>Deploy to Production</span>
+      </div>
+    </div>
+    <div class="pipeline-desc">
+      <iron-pages selected="[[selectedIndex]]" attr-for-selected="index">
+        <div index="1">
+          <h3><a href="#/documentation/general/setup-dev-env">Setup a Develop environment</a></h3>
+          <article>
+            With only a single command the <strong>MicroDocs CLI</strong> can setup all the Microservices you need to
+            start developing.<br>
+            <strong>Example:</strong> The following command starts the customer-service and all its depending services
+            in Docker.
+            <br>
+            <code>mdocs up <span class="highlight">customer-service</span></code>
+          </article>
+          <div class="status alpha">Status: Alpha</span></div>
+        </div>
+        <div index="2">
+          <h3><a href="#/documentation/general/coding">Check for breaking changes while Coding</a></h3>
+          <article>
+            Everyone breaks an API contract once in a while. <br>
+            With MicroDocs you can check if you are about to make <strong>breaking changes</strong> while still in your <strong>IDE</strong>.<br>
+            There are verious <strong>plugins for build tools</strong> which adds a task to check for breaking changes.
+          </article>
+          <div class="status released">Status: Released</span></div>
+        </div>
+        <div index="3">
+          <h3><a href="#/documentation/general/verifing">Check for breaking changes while Verifing</a></h3>
+          <article>
+            In Pull Requests it's sometimes hard to see if someone is about to Break an API contract.<br>
+            MicroDocs adds a <strong>plugin to Jenkins</strong> which can check for <strong>breaking changes</strong> in a Pull Request.<br>
+            Problems can then be <strong>posted as comments</strong> back into the Pull Request in <strong>BitBucket</strong>.
+          </article>
+          <div class="status released">Status: Released</div>
+        </div>
+        <div index="4">
+          <h3><a href="#/documentation/general/building">Build the definitions together with the Docker image</a></h3>
+          <article>
+            The power of MicroDocs are the <strong>definitions of the MicroServices</strong>. It's like the <strong>metadata</strong> of each service.<br>
+            The definitions should therefore follow the <strong>flow of the Docker images</strong>.<br>
+            Each definition has a <strong>version</strong> which corresponds with the Docker image.<br>
+            Like the Docker registry, definitions should be <strong>published to the MicroDocs Server</strong>.<br>
+            Through the pipeline the definitions can be <strong>promoted</strong> to different <strong>environments</strong> (develop/test/staging/production).
+          </article>
+          <div class="status released">Status: Released</div>
+        </div>
+        <div index="5">
+          <h3><a href="#/documentation/general/setup-test-env">Setup a Test environment</a></h3>
+          <article>
+            To setup a working test environment with the <strong>right services and versions</strong> can sometimes be hard.<br>
+            MicroDocs can create a <strong>deployment configuration</strong> to startup a <strong>single Microservice</strong> with its depending services<br>
+            or a deployment configuration for a <strong>whole cluster</strong>.
+          </article>
+          <div class="status alpha">Status: Alpha</span></div>
+        </div>
+        <div index="6">
+          <h3><a href="#/documentation/general/api-testing">Run Api Testing</a></h3>
+          <article>
+            MicroDocs will integrate with the Postman test runner to make Api tests easier to write and run.
+          </article>
+          <div class="status alpha">Status: TBD</span></div>
+        </div>
+        <div index="7">
+          <h3><a href="#/documentation/general/setup-prod-env">Deploy to Production</a></h3>
+          <article>
+            Just like with the Test environment setup, a <strong>deployment configuration</strong> can be created to deploy your Microservices to production.<br>
+            Where each service will be <strong>routed to a version of a depending service which is known to be working</strong>.<br>
+            So you won't have <strong>breaking changes</strong> anymore in production.
+          </article>
+          <div class="status alpha">Status: Alpha</span></div>
+        </div>
+      </iron-pages>
+    </div>
+  </template>
+  <script>
+    Polymer({
+      is: 'progress-pipeline',
+      properties: {
+        selectedIndex: {
+          type: Number,
+          value: 2
+        }
+      },
+
+      _selectPipe: function (e) {
+        try {
+          var index = parseInt(e.target.dataset.index) || parseInt(e.target.parentElement.dataset.index);
+          if (index) {
+            this.set('selectedIndex', index);
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      },
+
+      _getClass: function (index, selectedIndex) {
+        if (index <= selectedIndex) {
+          return 'selected';
+        }
+        return '';
+      },
+
+      _isSelected: function (index, selectedIndex) {
+        return index == selectedIndex;
+      }
+    });
+  </script>
+</dom-module>

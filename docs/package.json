@@ -1,0 +1,17 @@
+{
+  "name": "microdocs-website",
+  "version": "1.0.0",
+  "scripts": {
+    "postinstall": "bower install",
+    "prepublish": "./node_modules/.bin/gulp prepublish",
+    "watch": "./node_modules/.bin/gulp default"
+  },
+  "devDependencies": {
+    "async": "^2.1.4",
+    "bower": "^1.8.0",
+    "del": "^2.2.2",
+    "gulp": "^3.9.1",
+    "gulp-util": "^3.0.8",
+    "gulp-vulcanize": "^6.1.0"
+  }
+}
