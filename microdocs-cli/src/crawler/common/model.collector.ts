@@ -1,12 +1,12 @@
 import { Schema, SchemaTypes } from '@maxxton/microdocs-core/domain';
 import { PropertyBuilder, ModelBuilder } from '@maxxton/microdocs-core/builder';
 import { SchemaHelper } from '@maxxton/microdocs-core/helpers';
-import { ContainerReflection, Reflection, ReflectionKind, ReflectionFlag } from "typedoc/dist/lib/models";
+import { ContainerReflection, Reflection, ReflectionKind, ReflectionFlag } from "@maxxton/typedoc/dist/lib/models";
 import { AbstractCrawler } from "./abstract/abstract.crawler";
 import { ModelCrawler } from "./abstract/model.crawler";
 import { PropertyCrawler } from "./abstract/property.crawler";
 import * as helper from './helpers/crawler.helper';
-import { DeclarationReflection } from "typedoc/dist/lib/models/reflections/declaration";
+import { DeclarationReflection } from "@maxxton/typedoc/dist/lib/models/reflections/declaration";
 
 /**
  * Collects Models
@@ -71,7 +71,7 @@ export class ModelCollector {
     }
   }
 
-  private triggerCrawlers( crawlers:AbstractCrawler[], call:( AbstractCrawler ) => void ) {
+  private triggerCrawlers( crawlers:AbstractCrawler[], call:( crawler:AbstractCrawler ) => void ) {
     crawlers.sort( ( a, b ) => a.order - b.order ).forEach( crawler => call( crawler ) );
   }
 
@@ -154,10 +154,10 @@ export class ModelCollector {
         }
         propertyBuilder.property.required = !(property.flags && property.flags.filter( flag => flag === 'Optional' ).length > 0);
 
-        this.triggerCrawlers( this.propertyCrawlers, ( crawler ) => crawler.crawl( propertyBuilder, classReflection, property ) );
+        this.triggerCrawlers( this.propertyCrawlers, ( crawler:AbstractCrawler ) => crawler.crawl( propertyBuilder, classReflection, property ) );
 
         var propResult = propertyBuilder.build();
-        let schema     = null;
+        let schema:Schema     = null;
         if ( typeParams[ propResult.type.toString().trim() ] ) {
           schema = typeParams[ propResult.type.toString().trim() ];
         } else {

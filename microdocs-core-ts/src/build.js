@@ -2,7 +2,6 @@
 var gulp = require('gulp');
 var gutil = require('gulp-util');
 var htmlExtender = require('gulp-html-extend');
-var rimraf = require('gulp-rimraf');
 var typescript = require('gulp-typescript');
 var async = require('async');
 var merge = require('merge2');
@@ -10,11 +9,10 @@ var replace = require('gulp-replace');
 var fs = require('fs');
 var Gaze = require('gaze').Gaze;
 var mocha = require('gulp-mocha');
+var vinylPaths = require('vinyl-paths');
+var del = require('del');
 
-var settings;
-
-function Builder(_settings) {
-  settings = _settings;
+function Builder(settings) {
 
   /**
    * Cleans, moves, and compiles the code
@@ -33,38 +31,9 @@ function Builder(_settings) {
     ], cb);
   };
 
-  this.watch = function(cb) {
-    gutil.log('Starting ', gutil.colors.cyan('_watch'));
-    _watchTypescript();
-    gulp.watch(['package.json', 'LICENSE', 'README.md', 'src/build.js'], _deployMisc);
-    gulp.watch(['src/**/*.spec.ts'], _compileSpecs);
-    gutil.log(gutil.colors.cyan('Watchers started'));
-    cb();
-  };
-
-  this.test = function(cb) {
-    async.series([
-      function (next) {
-        _clean(next);
-      },
-      function (next) {
-        _buildDeploy(next);
-      },
-      function (next) {
-        _compileSpecs(next);
-      },
-      function (next) {
-        _runMocha(next);
-      }
-    ], cb);
-  };
-
-
-}
-
   function _clean(cb) {
-    gulp.src(settings.distFolder, {read: false})
-        .pipe(rimraf())
+    gulp.src(settings.distFolder + '/*', { read: false })
+        .pipe(vinylPaths(del))
         .on('finish', function () {
           cb();
         });
@@ -81,9 +50,33 @@ function Builder(_settings) {
     ], cb);
   }
 
+  function _deployMisc(cb) {
+    gutil.log('Starting ', gutil.colors.cyan('_deployMisc'));
+    gulp.src(['src/test/*.js']).pipe(gulp.dest(settings.distFolder + '/test'));
+
+    gulp.src(['package.json', 'LICENSE', 'README.md', 'src/systemjs.config.js', 'src/build.js'])
+        .pipe(htmlExtender({annotations: false, verbose: false}))
+        .pipe(gulp.dest(settings.distFolder))
+        .on('finish', function () {
+          gutil.log('Finished ', gutil.colors.cyan('_deployMisc'));
+          cb();
+        });
+
+  }
+
   function _compileTypescript(cb) {
     _compileTypescriptFromSrc(['src/**/*.ts', '!src/**/*spec.ts', '!src/config/**/*.ts'], cb);
   }
+
+  this.watch = function(cb) {
+    gutil.log('Starting ', gutil.colors.cyan('_watch'));
+    _watchTypescript();
+    gulp.watch(['package.json', 'LICENSE', 'README.md', 'src/test/*.js'], ['_deployMisc']);
+    gulp.watch(['src/**/*.spec.ts'], ['_compileSpecs']);
+    gulp.watch(['src/**/*e2e*.ts'], ['_compileE2e']);
+    gutil.log(gutil.colors.cyan('Watchers started'));
+    cb();
+  };
 
   function _watchTypescript() {
     gutil.log('Watching', gutil.colors.cyan('Typescript'));
@@ -100,6 +93,27 @@ function Builder(_settings) {
         });
       }, 3000);
     });
+  }
+
+  function _compileChangedTypescript(event, src) {
+    if (event == 'changed') {
+      src = src.substring(src.lastIndexOf("/"));
+      src = src.substring(src.lastIndexOf("\\"));
+
+      _compileTypescriptFromSrc(["src/**" + src], function () {
+      }, true);
+    }
+    else if (event == 'added') {
+      _compileTypescript(function () {
+      });
+    }
+    else if (event == 'deleted') {
+      var jsDistFileLoc = src.replace("\\src\\", '\\' + settings.distFolder + '\\').replace('.ts', '.js');
+      var dTsDistFileLoc = src.replace("\\src\\", '\\' + settings.distFolder + '\\').replace('.ts', '.d.ts');
+      gutil.log("Deleting", gutil.colors.magenta(jsDistFileLoc));
+      return gulp.src([jsDistFileLoc, dTsDistFileLoc], {read: false})
+          .pipe(rimraf());
+    }
   }
 
   function _compileTypescriptFromSrc(srcArray, cb) {
@@ -120,9 +134,7 @@ function Builder(_settings) {
       tsResult.js.pipe(gulp.dest(settings.distFolder))
     ]).on('finish', function () {
       gutil.log('Finished ', gutil.colors.cyan('_compileTypescriptFromSrc'));
-      if(cb) {
-        cb();
-      }
+      cb();
     });
   }
 
@@ -135,8 +147,14 @@ function Builder(_settings) {
       name: json.name,
       version: json.version,
       description: json.description,
+      typings: json.typings,
+      main: json.main,
+      repository: json.repository,
+      keywords: json.keywords,
       author: json.author,
       license: json.license,
+      bugs: json.bugs,
+      homepage: json.homepage,
       publishConfig: json.publishConfig,
       dependencies: json.dependencies
     };
@@ -157,6 +175,22 @@ function Builder(_settings) {
         });
   }
 
+  this.test = function(cb) {
+    async.series([
+      function (next) {
+        _clean(next);
+      },
+      function (next) {
+        _buildDeploy(next);
+      },
+      function (next) {
+        _compileSpecs(next);
+      },
+      function (next) {
+        _runMocha(next);
+      }
+    ], cb);
+  };
 
   function _buildDeploy(cb) {
     async.series([
@@ -169,53 +203,15 @@ function Builder(_settings) {
     ], cb);
   }
 
+  function _compileSpecs(cb) {
+    _compileTypescriptFromSrc(['src/**/*.spec.ts'], cb);
+  }
+
   function _runMocha(cb) {
     return gulp.src(['dist/**/*.spec.js'], {read: false})
         .pipe(mocha({reporter: 'list'}))
         .on('error', gutil.log);
   }
-
-  function _compileChangedTypescript(vinyl) {
-    var src = vinyl.history.toString();
-    var event = vinyl.event.toString();
-    if (event == 'change') {
-      src = src.substring(src.lastIndexOf("/"));
-      src = src.substring(src.lastIndexOf("\\"));
-      src = src.replace("html", "ts");
-      _compileTypescriptFromSrc(["src/**" + src], function () {
-      }, true);
-    }
-    else if (event == 'add') {
-      _compileTypescript(function () {
-      });
-    }
-    else if (event == 'unlink') {
-      var jsDistFileLoc = src.replace("\\src\\", '\\' + settings.distFolder + '\\').replace('.ts', '.js');
-      var dTsDistFileLoc = src.replace("\\src\\", '\\' + settings.distFolder + '\\').replace('.ts', '.d.ts');
-      gutil.log("Deleting", gutil.colors.magenta(jsDistFileLoc));
-      return gulp.src([jsDistFileLoc, dTsDistFileLoc], {read: false})
-          .pipe(rimraf());
-    }
-  }
-
-function _compileSpecs(cb) {
-    if(typeof(cb) !== 'function'){
-      _compileTypescriptFromSrc(['src/**/*.spec.ts']);
-    }else{
-      _compileTypescriptFromSrc(['src/**/*.spec.ts'], cb);
-    }
-}
-
-function  _deployMisc(cb) {
-  gutil.log('Starting ', gutil.colors.cyan('_deployMisc'));
-
-  gulp.src(['package.json', 'LICENSE', 'README.md', 'src/build.js'])
-      .pipe(htmlExtender({annotations: false, verbose: false}))
-      .pipe(gulp.dest(settings.distFolder))
-      .on('finish', function () {
-        gutil.log('Finished ', gutil.colors.cyan('_deployMisc'));
-        cb();
-      });
 
 }
 

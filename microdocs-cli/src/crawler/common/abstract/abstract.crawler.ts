@@ -15,5 +15,7 @@ export abstract class AbstractCrawler{
   get order(){
     return this._order;
   }
+
+  public abstract crawl(arg1?:any,arg2?:any,arg3?:any,arg4?:any,arg5?:any):any;
   
 }
