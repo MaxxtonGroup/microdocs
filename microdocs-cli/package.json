@@ -13,14 +13,15 @@
     "prepublish": "./node_modules/.bin/gulp prepublish"
   },
   "bin": {
-    "microdocs": "cli.js",
-    "mdocs": "cli.js"
+    "microdocs": "cli/cli.js",
+    "mdocs": "cli/cli.js"
   },
   "dependencies": {
     "@maxxton/microdocs-core": "1.6.6",
     "chai": "^3.5.0",
     "commander": "^2.9.0",
     "globby": "^6.0.0",
+    "inquirer-credentials": "^3.0.0",
     "js-yaml": "^3.7.0",
     "node-rest-client": "^2.0.1",
     "osenv": "^0.1.3",
@@ -37,7 +38,6 @@
     "async": "^2.0.1",
     "merge2": "^1.0.2",
     "gaze": "^1.1.2",
-    "chai": "^3.5.0",
-    "typings": "^2.0.0"
+    "chai": "^3.5.0"
   }
 }

@@ -1,0 +1,9 @@
+version: '2'
+services:
+  microdocs-server:
+    image: maxxton/microdocs
+    container_name: microdocs-server
+    ports:
+    - 3000:3000
+    volumes:
+    - './:/microdocs/microdocs-server/data'

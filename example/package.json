@@ -1,0 +1,31 @@
+{
+  "name": "microdocs-example",
+  "version": "1.0.0",
+  "scripts": {
+    "run.microdocs-server": "docker-compose -f _microdocs-server-config/docker-compose.yml up -d",
+    "stop.microdocs-server": "docker-compose -f _microdocs-server-config/docker-compose.yml down -v",
+
+    "publish-mdocs.customer-service": "node scripts/gradle.js customer-service buildmicrodocs",
+    "publish-mdocs.order-service": "./order-service/gradlew microdocsPublish",
+    "publish-mdocs.product-service": "./product-service/gradlew microdocs-publish",
+    "publish-mdocs.shop-app": "mdocs publish --sourceFolders shop-app/src",
+
+    "check-mdocs.customer-service": "./customer-service/gradlew microdocs-check",
+    "check-mdocs.order-service": "./order-service/gradlew microdocs-check",
+    "check-mdocs.product-service": "./product-service/gradlew microdocs-check",
+    "check-mdocs.shop-app": "mdocs check --source shop-app/src",
+
+    "run.customer-service": "mdocs up customer-service --build ./customer-service",
+    "run.order-service": "mdocs up order-service --build ./order-service",
+    "run.product-service": "mdocs up product-service --build ./product-service",
+    "run.shop-app": "mdocs up shop-app --build ./shop-app",
+
+    "stop.customer-service": "mdocs down customer-service",
+    "stop.order-service": "mdocs down order-service",
+    "stop.product-service": "mdocs down product-service",
+    "stop.shop-app": "mdocs down shop-app"
+  },
+  "dependencies": {
+    "@maxxton/microdocs-cli": "1.6.8"
+  }
+}
