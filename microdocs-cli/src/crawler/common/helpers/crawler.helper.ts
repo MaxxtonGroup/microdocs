@@ -6,7 +6,7 @@ import {ContainerReflection, ReferenceType, DeclarationReflection} from "@maxxto
  * @param baseName
  * @returns {boolean}
  */
-export function isSubClassOf(instance: ContainerReflection, baseName: string): boolean {
+export function isSubClassOf(instance: ContainerReflection, baseName: string, instanceStore:string[] = []): boolean {
   var declaration = instance as DeclarationReflection;
   if (declaration) {
     // check super classes
@@ -15,7 +15,7 @@ export function isSubClassOf(instance: ContainerReflection, baseName: string): b
         var superClass = declaration.extendedTypes[i] as ReferenceType;
         if (superClass.name === baseName) {
           return true;
-        } else if (superClass.reflection && isInstanceOf(superClass.reflection as ContainerReflection, baseName)) {
+        } else if (superClass.reflection && isInstanceOf(superClass.reflection as ContainerReflection, baseName, instanceStore)) {
           return true;
         }
       }
@@ -27,7 +27,7 @@ export function isSubClassOf(instance: ContainerReflection, baseName: string): b
         var iface = declaration.implementedTypes[i] as ReferenceType;
         if (iface.name === baseName) {
           return true;
-        } else if (iface.reflection && isInstanceOf(iface.reflection as ContainerReflection, baseName)) {
+        } else if (iface.reflection && isInstanceOf(iface.reflection as ContainerReflection, baseName, instanceStore)) {
           return true;
         }
       }
@@ -43,12 +43,16 @@ export function isSubClassOf(instance: ContainerReflection, baseName: string): b
  * @param baseName
  * @returns {boolean}
  */
-export function isInstanceOf(instance: ContainerReflection, baseName: string): boolean {
+export function isInstanceOf(instance: ContainerReflection, baseName: string, instanceStore:string[] = []): boolean {
   if (instance.name === baseName) {
     return true;
   }
-
-  return isSubClassOf(instance, baseName);
+  if(instanceStore.indexOf(instance.name) > -1) {
+    return false;
+  }else{
+    instanceStore.push( instance.name );
+    return isSubClassOf( instance, baseName, instanceStore );
+  }
 }
 
 /**
@@ -57,7 +61,12 @@ export function isInstanceOf(instance: ContainerReflection, baseName: string): b
  * @param decoratorName
  * @returns {boolean}
  */
-export function hasDecorator(instance: ContainerReflection, decoratorName: string): boolean {
+export function hasDecorator(instance: ContainerReflection, decoratorName: string, instanceStore:string[] = []): boolean {
+  if(instanceStore.indexOf(instance.name) > -1) {
+    return false;
+  }
+  instanceStore.push( instance.name );
+
   if (instance.decorators) {
     for (var i = 0; i < instance.decorators.length; i++) {
       if (instance.decorators[i].name == decoratorName) {
@@ -72,7 +81,7 @@ export function hasDecorator(instance: ContainerReflection, decoratorName: strin
     if (declaration.extendedTypes) {
       for (var i = 0; i < declaration.extendedTypes.length; i++) {
         var superClass = declaration.extendedTypes[i] as ReferenceType;
-        if (superClass.reflection && hasDecorator(superClass.reflection as ContainerReflection, decoratorName)) {
+        if (superClass.reflection && hasDecorator(superClass.reflection as ContainerReflection, decoratorName, instanceStore)) {
           return true;
         }
       }
@@ -82,7 +91,7 @@ export function hasDecorator(instance: ContainerReflection, decoratorName: strin
     if (declaration.implementedTypes) {
       for (var i = 0; i < declaration.implementedTypes.length; i++) {
         var iface = declaration.implementedTypes[i] as ReferenceType;
-        if (iface.reflection && hasDecorator(iface.reflection as ContainerReflection, decoratorName)) {
+        if (iface.reflection && hasDecorator(iface.reflection as ContainerReflection, decoratorName, instanceStore)) {
           return true;
         }
       }

@@ -2,16 +2,16 @@ import { Project,ProblemResponse, ProblemLevels } from '@maxxton/microdocs-core/
 import { ProjectBuilder } from '@maxxton/microdocs-core/builder/index';
 import { Application } from "@maxxton/typedoc";
 import * as fs from 'fs';
-import * as pathUtil from 'path';
+import * as path from 'path';
 
 import { RootCrawler } from "./common/root.crawler";
 import { CrawlerException } from "./common/crawler.exception";
 import { Framework, FRAMEWORKS } from "./frameworks";
-import { ServerOptions } from "../options/server.options";
 import { CheckOptions } from "../options/check.options";
 import { MicroDocsClient } from "../helpers/microdocs-client";
 import * as cliHelper from '../helpers/cli.helper';
 import { PublishOptions } from "../options/publish.options";
+const mkdirp = require('mkdirp');
 
 /**
  * Base crawler to crawl Typescript sources
@@ -65,6 +65,7 @@ export class MicroDocsCrawler {
     var project = this.crawl( sources, tsConfig, frameworks );
 
     var json = JSON.stringify( project );
+    mkdirp.sync(path.dirname(outputFile));
     fs.writeFileSync( outputFile, json );
   }
 
