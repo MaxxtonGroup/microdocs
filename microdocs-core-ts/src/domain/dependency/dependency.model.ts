@@ -8,6 +8,7 @@ import { Problemable } from "../problem/problemable.model";
  */
 export interface Dependency extends Problemable{
 
+  dependencyName?:string;
   description?:string;
   group?:string;
   version?:string;

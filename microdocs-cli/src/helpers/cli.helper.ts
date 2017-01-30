@@ -48,8 +48,12 @@ export function printProblemResponse( response:ProblemResponse, folders:string[]
           path = matches[ 0 ] + '/' + path;
         }
       }
-      var sourceFile = path + lineNumber;
-      msg += sourceFile + ": " + problem.level + ": " + problem.message;
+      if(path){
+        var sourceFile = path + lineNumber;
+        msg = sourceFile + ": " + problem.level + ": " + problem.message;;
+      }else{
+        msg += problem.message;
+      }
       if(problem.client){
         msg += "\nBreaking change detected with " + problem.client.title + " (source: " + problem.client.sourceLink ? problem.client.sourceLink : problem.client.className + " )";
       }
