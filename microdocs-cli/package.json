@@ -1,6 +1,6 @@
 {
   "name": "@maxxton/microdocs-cli",
-  "version": "1.6.6",
+  "version": "1.6.11",
   "description": "MicroDocs cli",
   "repository": {
     "type": "git",
@@ -16,7 +16,7 @@
     "mdocs": "cli.js"
   },
   "dependencies": {
-    "@maxxton/microdocs-core": "1.6.9",
+    "@maxxton/microdocs-core": "1.6.11",
     "@maxxton/typedoc": "^0.5.5",
     "chai": "^3.5.0",
     "commander": "^2.9.0",

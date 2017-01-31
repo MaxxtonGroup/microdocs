@@ -1,10 +1,12 @@
 /**
  * @author Steven Hermans
  */
-export var
+export class ParameterPlacings {
 
-  QUERY = 'query',
-  HEADER = 'header',
-  PATH = 'path',
-  FORMDATA = 'formdata',
-  BODY = 'body';
+  public static readonly QUERY    = 'query';
+  public static readonly HEADER   = 'header';
+  public static readonly PATH     = 'path';
+  public static readonly FORMDATA = 'formdata';
+  public static readonly BODY     = 'body';
+}
+

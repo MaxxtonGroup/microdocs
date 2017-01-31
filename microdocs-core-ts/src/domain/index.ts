@@ -6,33 +6,27 @@ export { Tag } from './common/tag.model';
 export { Annotation } from './component/annotation.model';
 export { Component } from './component/component.model';
 export { Method } from './component/method.model';
-import * as ComponentTypes from './component/component-type.model';
-export { ComponentTypes };
+export { ComponentTypes } from './component/component-type.model';
 
 export { Dependency } from './dependency/dependency.model';
 export { DependencyImport } from './dependency/dependency-import.model';
-import * as DependencyTypes from './dependency/dependency-type.model';
-export { DependencyTypes };
+export { DependencyTypes } from './dependency/dependency-type.model';
 
 export { Path } from './path/path.model';
 export { Parameter } from './path/parameter.model';
 export { ResponseModel } from './path/response.model';
-import * as ParameterPlacings from './path/parameter-placing.model';
-export { ParameterPlacings };
-import * as RequestMethods from './path/request-method.model';
-export { RequestMethods };
+export { ParameterPlacings } from './path/parameter-placing.model';
+export { RequestMethods } from './path/request-method.model';
 
 export { Problem } from "./problem/problem.model";
 export { ProblemClient } from "./problem/problem-client.model";
 export { Problemable } from "./problem/problemable.model";
 export { RawProblem } from "./problem/raw-problem.model";
-import * as ProblemLevels from './problem/problem-level.model';
-export { ProblemLevels };
+export { ProblemLevels } from './problem/problem-level.model';
 export { ProblemResponse } from './problem/problem-response.model';
 
 export { Schema } from './schema/schema.model';
-import * as SchemaTypes from './schema/schema-type.model';
-export { SchemaTypes };
+export { SchemaTypes } from './schema/schema-type.model';
 
 export { Node } from './tree/node.model';
 export { ProjectNode } from './tree/project-node.model';
@@ -45,5 +39,4 @@ export { ProjectChangeRule } from './settings/project-change-rule.model';
 
 export { Event } from './events/event.model';
 export { Exchange } from './events/exchange.model';
-import * as ExchangeTypes from './events/exchange-types.model';
-export { ExchangeTypes };
+export { ExchangeTypes } from './events/exchange-types.model';

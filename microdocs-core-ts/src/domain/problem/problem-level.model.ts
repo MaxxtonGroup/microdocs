@@ -1,4 +1,6 @@
 
-export const NOTICE = "notice";
-export const WARNING = "warning";
-export const ERROR = "error";
+export class ProblemLevels{
+  public static readonly NOTICE = 'notice';
+  public static readonly WARNING = 'warning';
+  public static readonly ERROR = 'error';
+}

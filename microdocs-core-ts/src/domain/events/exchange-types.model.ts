@@ -1,4 +1,7 @@
-export const DIRECT  = "direct";
-export const TOPIC   = "topic";
-export const FANOUT  = "fanout";
-export const HEADERS = "headers";
+
+export class ExchangeTypes {
+  public static readonly DIRECT  = "direct";
+  public static readonly TOPIC   = "topic";
+  public static readonly FANOUT  = "fanout";
+  public static readonly HEADERS = "headers";
+}

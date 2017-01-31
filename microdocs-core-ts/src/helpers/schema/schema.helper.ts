@@ -1,5 +1,4 @@
 import { Schema, SchemaTypes } from "../../domain";
-import { OBJECT, ARRAY, BOOLEAN, ENUM, INTEGER, NUMBER, STRING } from "../../domain/schema/schema-type.model";
 
 /**
  * Helper class for generation example data based on schema and resolve references
@@ -14,7 +13,7 @@ export class SchemaHelper {
    */
   public static generateExample( schema:Schema, fieldName?:string, objectStack:string[] = [], rootObject?:{} ):any {
     if ( schema != undefined && schema != null ) {
-      if ( schema.type == OBJECT ) {
+      if ( schema.type == SchemaTypes.OBJECT ) {
         if ( schema.name != undefined && schema.name != null ) {
           var sameObjects:string[] = objectStack.filter( ( object ) => object == schema.name );
           if ( sameObjects.length > 0 ) {
@@ -27,32 +26,32 @@ export class SchemaHelper {
       if ( schema.default != undefined ) {
         return schema.default;
       }
-      if ( schema.type == ENUM && schema.enum != undefined && schema.enum != null ) {
+      if ( schema.type == SchemaTypes.ENUM && schema.enum != undefined && schema.enum != null ) {
         if ( schema.enum.length == 0 ) {
           return "[" + schema.name + "]";
         }
         var random = Math.floor( (Math.random() * schema.enum.length) );
         return schema.enum[ random ];
-      } else if ( schema.type == BOOLEAN ) {
+      } else if ( schema.type == SchemaTypes.BOOLEAN ) {
         var random = Math.floor( (Math.random() * 2) );
         return random == 1;
-      } else if ( schema.type == INTEGER ) {
+      } else if ( schema.type == SchemaTypes.INTEGER ) {
         var random = Math.floor( (Math.random() * 99) + 1 );
         return random;
-      } else if ( schema.type == NUMBER ) {
+      } else if ( schema.type == SchemaTypes.NUMBER ) {
         var random = (Math.random() * 99) + 1;
         return random;
-      } else if ( schema.type == STRING ) {
+      } else if ( schema.type == SchemaTypes.STRING ) {
         return "Extended kindness trifling";
-      } else if ( schema.type == ARRAY ) {
+      } else if ( schema.type == SchemaTypes.ARRAY ) {
         var array:Array<any> = [];
         array.push( SchemaHelper.generateExample( schema.items, undefined, objectStack, rootObject ) );
         return array;
-      } else if ( schema.type == OBJECT ) {
+      } else if ( schema.type == SchemaTypes.OBJECT ) {
         var object:any = {};
         if ( schema.allOf != undefined ) {
           schema.allOf.forEach( superSchema => {
-            if ( superSchema.type == OBJECT ) {
+            if ( superSchema.type == SchemaTypes.OBJECT ) {
               var superObject = SchemaHelper.generateExample( superSchema, fieldName, objectStack.slice(), rootObject );
               for ( var field in superObject ) {
                 object[ field ] = superObject[ field ];
@@ -89,7 +88,7 @@ export class SchemaHelper {
         schema = result;
       }
     }
-    if ( schema.type == OBJECT ) {
+    if ( schema.type == SchemaTypes.OBJECT ) {
       if ( schema.name != undefined && schema.name != null ) {
         var sameObjects:string[] = objectStack.filter( ( object ) => object == schema.name );
         if ( sameObjects.length > 0 ) {
@@ -380,9 +379,9 @@ export class SchemaHelper {
       }
       for ( var key in object ) {
         var childObject = object[ key ];
-        if ( typeof(childObject) == OBJECT ) {
+        if ( typeof(childObject) == SchemaTypes.OBJECT ) {
           SchemaHelper.resolveObject( childObject, rootObject );
-        } else if ( typeof(childObject) == STRING && key != '$ref' ) {
+        } else if ( typeof(childObject) == SchemaTypes.STRING && key != '$ref' ) {
           object[ key ] = SchemaHelper.resolveString( childObject, rootObject );
         }
       }
