@@ -88,8 +88,8 @@ export class RawProblem {
       }
       if ( this.clientMethod ) {
         client.lineNumber = this.clientMethod.lineNumber;
-        if ( this.clientMethod[ 'sourceLink' ] ) {
-          client.sourceLink = this.clientMethod[ 'sourceLink' ];
+        if ( this.clientMethod.sourceLink ) {
+          client.sourceLink = this.clientMethod.sourceLink;
         }
       }
 

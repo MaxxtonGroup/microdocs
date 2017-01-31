@@ -81,7 +81,7 @@ export class PostmanResponseHandler extends MicroDocsResponseHandler {
         if(param.default != undefined){
           generatedValue = param.default;
         }
-        url.replace(new RegExp("{" + param.name + "}", 'g'), generatedValue);
+        url.replace(new RegExp("{{" + param.name + "}}", 'g'), generatedValue);
       });
 
       // replace query params

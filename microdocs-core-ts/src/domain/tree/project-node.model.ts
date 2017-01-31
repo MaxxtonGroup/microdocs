@@ -140,45 +140,45 @@ export class ProjectNode extends Node {
 
     var dependencies:{[title:string]:{}} = {};
     this.dependencies.forEach( dependency => {
-      var child = {
+      var child:any = {
         item: dependency.item.unlink()
       };
       if ( dependency.problems ) {
-        child[ 'problems' ] = dependency.problems;
+        child.problems = dependency.problems;
       }
       if ( dependency.type ) {
-        child[ 'type' ] = dependency.type;
+        child.type = dependency.type;
       }
       dependencies[ dependency.item.title ] = child;
     } );
 
-    var node = {};
+    var node:any = {};
     if ( Object.keys( dependencies ).length > 0 ) {
-      node[ 'dependencies' ] = dependencies;
+      node.dependencies = dependencies;
     }
     if ( this.group != null || this.group != undefined ) {
-      node[ 'group' ] = this.group;
+      node.group = this.group;
     }
     if ( this.version != null || this.version != undefined ) {
-      node[ 'version' ] = this.version;
+      node.version = this.version;
     }
     if ( this.versions != null || this.versions != undefined ) {
-      node[ 'versions' ] = this.versions;
+      node.versions = this.versions;
     }
     if ( this.problems != null || this.problems != undefined ) {
-      node[ 'problems' ] = this.problems;
+      node.problems = this.problems;
     }
     if ( this.tags != null || this.tags != undefined ) {
-      node[ 'tags' ] = this.tags;
+      node.tags = this.tags;
     }
     return node;
   }
 
-  public static link( unlinkedProject:{}, title:string ):ProjectNode {
+  public static link( unlinkedProject:any, title:string ):ProjectNode {
     var project = new ProjectNode( title );
-    if ( unlinkedProject[ 'dependencies' ] ) {
-      for ( let key in unlinkedProject[ 'dependencies' ] ) {
-        let unlinkedDependency = unlinkedProject[ 'dependencies' ][ key ];
+    if ( unlinkedProject.dependencies ) {
+      for ( let key in unlinkedProject.dependencies ) {
+        let unlinkedDependency = unlinkedProject.dependencies[ key ];
         let dependency         = DependencyNode.link( unlinkedDependency, key );
         if ( dependency.item ) {
           dependency.item.parent = project;
@@ -186,23 +186,23 @@ export class ProjectNode extends Node {
         project.dependencies.push( dependency );
       }
     }
-    if ( unlinkedProject[ 'group' ] ) {
-      project.group = unlinkedProject[ 'group' ];
+    if ( unlinkedProject.group ) {
+      project.group = unlinkedProject.group;
     }
-    if ( unlinkedProject[ 'version' ] ) {
-      project.version = unlinkedProject[ 'version' ];
+    if ( unlinkedProject.version ) {
+      project.version = unlinkedProject.version;
     }
-    if ( unlinkedProject[ 'versions' ] ) {
-      project.versions = unlinkedProject[ 'versions' ];
+    if ( unlinkedProject.versions ) {
+      project.versions = unlinkedProject.versions;
     }
-    if ( unlinkedProject[ 'problems' ] ) {
-      project.problems = unlinkedProject[ 'problems' ];
+    if ( unlinkedProject.problems ) {
+      project.problems = unlinkedProject.problems;
     }
-    if ( unlinkedProject[ '$ref' ] ) {
-      project.reference = unlinkedProject[ '$ref' ];
+    if ( unlinkedProject.$ref ) {
+      project.reference = unlinkedProject.$ref;
     }
-    if ( unlinkedProject[ 'tags' ] ) {
-      project.tags = unlinkedProject[ 'tags' ];
+    if ( unlinkedProject.tags ) {
+      project.tags = unlinkedProject.tags;
     }
     return project;
   }

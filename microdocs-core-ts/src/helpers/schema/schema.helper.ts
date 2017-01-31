@@ -49,7 +49,7 @@ export class SchemaHelper {
         array.push( SchemaHelper.generateExample( schema.items, undefined, objectStack, rootObject ) );
         return array;
       } else if ( schema.type == OBJECT ) {
-        var object:{} = {};
+        var object:any = {};
         if ( schema.allOf != undefined ) {
           schema.allOf.forEach( superSchema => {
             if ( superSchema.type == OBJECT ) {
@@ -126,7 +126,7 @@ export class SchemaHelper {
    * @param vars object where to search in
    * @returns {any} object or null
    */
-  public static resolveReference( reference:string, vars:{} ):any {
+  public static resolveReference( reference:string, vars:any ):any {
     if ( reference != undefined || reference == null ) {
       var currentObject     = vars;
       var segments:string[] = [];
@@ -373,7 +373,7 @@ export class SchemaHelper {
    * @param rootObject
    * @returns {{}}
    */
-  public static resolveObject( object:{}, rootObject ?:{} ):{} {
+  public static resolveObject( object:any, rootObject ?:{} ):{} {
     if ( object != null && object != undefined ) {
       if ( rootObject == undefined ) {
         rootObject = object;
@@ -409,7 +409,7 @@ export class SchemaHelper {
    */
   public static setProperty( object:{}, key:string, value:any ):{} {
     var segments           = key.split( "." );
-    var currentObject:{}   = object;
+    var currentObject:any   = object;
     var currentPath:string = null;
     for ( var i = 0; i < segments.length; i++ ) {
       var segment = segments[ i ];
@@ -445,9 +445,9 @@ export class SchemaHelper {
    */
   public static removeProperty( object:{}, key:string ):{} {
     var segments           = key.split( "." );
-    var currentObject:{}   = object;
+    var currentObject:any   = object;
     var currentPath:string = null;
-    var objectStack:{}[]   = [];
+    var objectStack:any  = [];
 
     for ( var i = 0; i < segments.length; i++ ) {
       objectStack.push( currentObject );
@@ -488,7 +488,7 @@ export class SchemaHelper {
    * @param base
    * @param remote
    */
-  public static merge(base:{}, remote:{}) {
+  public static merge(base:any, remote:any) {
     for ( let key in remote ) {
       let remoteProp = remote[ key ];
       if ( base[ key ] == undefined ) {
@@ -552,27 +552,40 @@ export class SchemaHelper {
       var objContent    = isObjectMatch[ 1 ];
       var regExp        = new RegExp( REGEX_TYPE_OBJECT, 'g' );
       var propMatch:RegExpExecArray;
+      var additionalProperty:boolean = false;
       while ( propMatch = regExp.exec( objContent ) ) {
         var key   = propMatch[ 1 ];
         var value = propMatch[ 3 ];
         if ( !value ) {
-          if ( schema.type && schema.type !== SchemaTypes.ENUM ) {
-            throw SchemaHelper.resolveTypeError( "Expected key:value", propMatch[ 0 ], originalString, cursor + propMatch.index );
+          if(additionalProperty){
+            schema.additonalProperties = SchemaHelper.resolveTypeString( key, resolveUnknownObject, originalString, cursor + propMatch.index );
+            additionalProperty = false;
+          }else {
+            if ( schema.type && schema.type !== SchemaTypes.ENUM ) {
+              throw SchemaHelper.resolveTypeError( "Expected key:value", propMatch[ 0 ], originalString, cursor + propMatch.index );
+            }
+            schema.type = SchemaTypes.ENUM;
+            if ( !schema.enum ) {
+              schema.enum = [];
+            }
+            schema.enum.push( key );
           }
-          schema.type = SchemaTypes.ENUM;
-          if ( !schema.enum ) {
-            schema.enum = [];
-          }
-          schema.enum.push( key );
         } else {
+          if(additionalProperty){
+            throw SchemaHelper.resolveTypeError( "Expected additionalProperty value", propMatch[ 0 ], originalString, cursor + propMatch.index );
+          }
           if ( schema.type && schema.type !== SchemaTypes.OBJECT ) {
             throw SchemaHelper.resolveTypeError( "Expected enum", propMatch[ 0 ], originalString, cursor + propMatch.index );
           }
           schema.type = SchemaTypes.OBJECT;
-          if ( !schema.properties ) {
-            schema.properties = {};
+          if(key.indexOf('[') === 0 && value.lastIndexOf(']') === value.length-1){
+            additionalProperty = true;
+          }else {
+            if ( !schema.properties ) {
+              schema.properties = {};
+            }
+            schema.properties[ key ] = SchemaHelper.resolveTypeString( value, resolveUnknownObject, originalString, cursor + propMatch.index );
           }
-          schema.properties[ key ] = SchemaHelper.resolveTypeString( value, resolveUnknownObject, originalString, cursor + propMatch.index );
         }
       }
       if ( !schema.type ) {
@@ -672,7 +685,7 @@ export class SchemaHelper {
 const REGEX_TYPE_GENERIC           = /^([^<]+)\<(.*?)\>$/;
 const REGEX_TYPE_ARRAY             = /^(.+)\[\]$/;
 const REGEX_TYPE_IS_OBJECT         = /^\{(.*)\}$/;
-const REGEX_TYPE_OBJECT            = "(?:(\\w+)|'(.+)')(?:\\s*:\\s*(?:([\\w]+)|(\\{.*\\}(?:\\[\\])?)))?\\s*,?";
+const REGEX_TYPE_OBJECT            = "(?:(\\[?\\w+)|'(.+)')(?:\\s*:\\s*(?:([\\w]+\\]?)|(\\{.*\\}(?:\\[\\])?)))?\\s*,?";
 const REGEX_TYPE_PRIMITIVE_STRING  = /^string$/;
 const REGEX_TYPE_PRIMITIVE_NUMBER  = /^number$/;
 const REGEX_TYPE_PRIMITIVE_BOOLEAN = /^bool(ean)?$/;

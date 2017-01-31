@@ -1,38 +1,27 @@
 'use strict';
 var gulp = require('gulp');
 var tscConfig = require('./src/tsconfig.json');
-var mxtBuilder = require("@maxxton/gulp-builder");
+var Builder = require('./src/build').Builder;
 
-mxtBuilder.setSettings({
+var settings = {
   distFolder: 'dist',
   projectName: 'microdocs-core',
   tsConfig: tscConfig
-});
+};
+
+var builder = new Builder(settings);
 
 gulp.task('default', ['prepublish'], function (cb) {
-  mxtBuilder.watch(cb);
-});
-
-// TEMPORARY SOLUTION FOR LINKING NPM MODULES TO DEVELOPMENT
-gulp.task('link', function (cb) {
-  mxtBuilder.link(cb);
-});
-
-gulp.task('lint', function (cb) {
-  mxtBuilder.lint(cb);
-});
-
-gulp.task('bundle-javascript', function (cb) {
-  mxtBuilder.bundleJavascript(cb);
+  builder.watch(cb);
 });
 
 gulp.task('test', function (cb) {
-  mxtBuilder.test(cb, 'mocha');
+  builder.test(cb);
 });
 
 /**
  * Cleans, moves, and compiles the code
  */
 gulp.task('prepublish', function (cb) {
-  mxtBuilder.prepublish(cb);
+  builder.prepublish(cb);
 });

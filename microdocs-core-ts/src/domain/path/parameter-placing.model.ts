@@ -1,7 +1,7 @@
 /**
  * @author Steven Hermans
  */
-export const
+export var
 
   QUERY = 'query',
   HEADER = 'header',

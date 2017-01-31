@@ -40,4 +40,6 @@ export interface Schema {
   //reference
   $ref?: string;
 
+  [key:string]:any;
+
 }

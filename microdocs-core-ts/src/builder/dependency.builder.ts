@@ -30,8 +30,8 @@ export class DependencyBuilder implements Builder<Dependency> {
   }
 
   path(pathBuilder: PathBuilder): void {
-    var path = this.baseUrl + pathBuilder.path;
-    var requestMethods = pathBuilder.methods.concat(this.requestMethods).map(method => method.toLowerCase());
+    let path = this.baseUrl + pathBuilder.path;
+    let requestMethods = pathBuilder.methods.concat(this.requestMethods).map(method => method.toLowerCase());
 
     if(!path || path == ''){
       throw new Error("No path found for endpoint");
@@ -44,11 +44,11 @@ export class DependencyBuilder implements Builder<Dependency> {
     if (!this._dependency.paths) {
       this._dependency.paths = {};
     }
-    if (!this._dependency.paths[pathBuilder.path]) {
-      this._dependency.paths[pathBuilder.path] = {};
+    if (!this._dependency.paths[path]) {
+      this._dependency.paths[path] = {};
     }
     pathBuilder.methods.forEach(method => {
-      this._dependency.paths[pathBuilder.path][method] = pathBuilder.build();
+      this._dependency.paths[path][method] = pathBuilder.build();
     });
   }
 
