@@ -9,7 +9,6 @@
   "author": "Steven Hermans (s.hermans@maxxton.com)",
   "license": "MIT",
   "scripts": {
-    "postinstall": "./node_modules/.bin/typings install",
     "prepublish": "./node_modules/.bin/gulp prepublish"
   },
   "dependencies": {},

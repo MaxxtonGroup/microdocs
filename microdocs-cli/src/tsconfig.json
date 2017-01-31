@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "ES5",
+    "target": "ES6",
     "module": "commonjs",
     "moduleResolution": "node",
     "sourceMap": true,
@@ -10,11 +10,22 @@
     "removeComments": false,
     "noImplicitAny": true,
     "suppressImplicitAnyIndexErrors": true,
-    "isolatedModules": false
-  },
-  "exclude": [
-    "./node_modules",
-    "src/config",
-    "node-yaml-config"
-  ]
+    "isolatedModules": false,
+    "typeRoots": [
+      "../node_modules/@types"
+    ],
+    "types": [
+      "chai",
+      "fs-extra",
+      "handlebars",
+      "highlight.js",
+      "jasmine",
+      "lodash",
+      "marked",
+      "minimatch",
+      "mkdirp",
+      "node",
+      "shelljs"
+    ]
+  }
 }

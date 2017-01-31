@@ -39,7 +39,7 @@ export class UniversalClassCrawler extends ClassCrawler{
           var splitted = dependencyName.split('/');
           var dependendyBuilder = new DependencyBuilder(DependencyTypes.INCLUDES);
           dependendyBuilder.title = splitted[splitted.length-1];
-          dependendyBuilder.dependency.dependencyName = dependencyName;
+          dependendyBuilder.dependency.title = dependencyName;
           var version = this.findDependency(dependencyName, projectReflection);
           if(version){
             dependendyBuilder.dependency.version;

@@ -1,6 +1,6 @@
 
 import { expect, assert } from 'chai';
-import { exec } from "child_process";
+import { exec } from "shelljs";
 
 describe( '#cli: ', () => {
 
@@ -9,7 +9,7 @@ describe( '#cli: ', () => {
 
    exec( cmd, (error: Error, stdout: string, stderr: string) => {
      checkAsync( done, function() {
-       assert.isNotNull(error);
+        assert.equal(error, 1);
       } );
     } );
   });
@@ -19,17 +19,7 @@ describe( '#cli: ', () => {
 
     exec( cmd, (error: Error, stdout: string, stderr: string) => {
       checkAsync( done, function() {
-        assert.isNotNull(error);
-      } );
-    } );
-  });
-
-  it('help option', (done:(e?:any)=>void) => {
-    var cmd = 'node ./dist/cli/cli.js --help';
-
-    exec( cmd, (error: Error, stdout: string, stderr: string) => {
-      checkAsync( done, function() {
-        assert.isNull(error);
+        assert.equal(error, 1);
       } );
     } );
   });
@@ -39,7 +29,7 @@ describe( '#cli: ', () => {
 
     exec( cmd, (error: Error, stdout: string, stderr: string) => {
       checkAsync( done, function() {
-        assert.isNull(error);
+        assert.equal(error, 0);
       } );
     } );
   });
@@ -49,7 +39,7 @@ describe( '#cli: ', () => {
 
     exec( cmd, (error: Error, stdout: string, stderr: string) => {
       checkAsync( done, function() {
-        assert.isNull(error);
+        assert.equal(error, 0);
       } );
     } );
   });

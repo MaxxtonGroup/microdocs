@@ -1,8 +1,10 @@
 
 import { ProblemResponse, ProblemLevels } from "@maxxton/microdocs-core/domain";
 import * as fs from 'fs';
+import { JSLogger } from "./logging/js-logger";
+import { Logger } from './logging/logger';
 
-export function printProblemResponse( response:ProblemResponse, folders:string[] = [process.cwd()]):boolean{
+export function printProblemResponse( response:ProblemResponse, folders:string[] = [process.cwd()], logger:Logger = new JSLogger()):boolean{
   var hasProblems = response.status !== 'ok';
   var errorCount = 0;
   var warningCount = 0;
@@ -32,9 +34,9 @@ export function printProblemResponse( response:ProblemResponse, folders:string[]
     message += response.message;
   }
   if(hasProblems){
-    console.warn(message);
+    logger.warn(message);
   }else{
-    console.info(message);
+    logger.info(message);
   }
 
   if(response.problems){
@@ -54,9 +56,9 @@ export function printProblemResponse( response:ProblemResponse, folders:string[]
         msg += "\nBreaking change detected with " + problem.client.title + " (source: " + problem.client.sourceLink ? problem.client.sourceLink : problem.client.className + " )";
       }
       if(hasProblems){
-        console.warn(msg);
+        logger.warn(msg);
       }else{
-        console.info(msg);
+        logger.info(msg);
       }
     });
   }

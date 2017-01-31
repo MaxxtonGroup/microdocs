@@ -1,27 +1,21 @@
 #!/usr/bin/env node
-/// <reference path="../../typings/index.d.ts" />
 
-import * as fs from 'fs';
-import * as path from 'path';
-import * as program from 'commander';
-import * as cliCrawler from './cli-crawler';
-import * as cliDocker from './cli-docker';
+import {Cli} from 'command-script';
+var packageJson:any = require('../../package.json');
 
-var packageJsonFile = fs.readFileSync(path.join(__dirname, '../../package.json'));
+var cli = new Cli({
+  packageJson: packageJson
+});
 
-program.version( packageJsonFile.toJSON()['version'] );
-program.allowUnknownOption(false);
+cli.command(require('./cli.build'));
+cli.command(require('./cli.check'));
+cli.command(require('./cli.login'));
 
-cliCrawler.init(program);
-cliDocker.init(program);
-
-program
-    .command('help')
-    .action(function(){
-      program.help();
+cli.command('help')
+    .description('Show help')
+    .order(2000)
+    .action(() => {
+      cli.showHelp();
     });
 
-program.parse( process.argv );
-
-program.outputHelp();
-process.exit(1);
+cli.run(process.argv.splice(2));

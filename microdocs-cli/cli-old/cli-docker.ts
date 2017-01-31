@@ -1,8 +1,8 @@
-import IExportedCommand = commander.IExportedCommand;
+import * as commander from 'commander';
 import { DockerClusterService } from "../docker/docker-cluster.service";
 import { ClusterOptions } from "../options/cluster.options";
 
-export function init( program: IExportedCommand ) {
+export function init( program: commander.IExportedCommand ) {
   program
       .command( 'up' )
       .usage( "[options] <project|all>" )
