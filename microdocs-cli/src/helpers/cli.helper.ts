@@ -1,5 +1,5 @@
 
-import { ProblemResponse, ProblemLevels } from "@maxxton/microdocs-core/domain";
+import { ProblemResponse, ProblemLevels, Problem } from "@maxxton/microdocs-core/domain";
 import * as fs from 'fs';
 import { JSLogger } from "./logging/js-logger";
 import { Logger } from './logging/logger';
@@ -52,9 +52,9 @@ export function printProblemResponse( response:ProblemResponse, folders:string[]
       }
       if(path){
         var sourceFile = path + lineNumber;
-        msg = sourceFile + ": " + problem.level + ": " + problem.message;;
+        msg = sourceFile + ": " + problem.level + ": " + problem.message;
       }else{
-        msg += problem.message;
+        msg += problem.level + ": " + problem.message;
       }
       if(problem.client){
         msg += "\nBreaking change detected with " + problem.client.title + " (source: " + problem.client.sourceLink ? problem.client.sourceLink : problem.client.className + " )";
@@ -68,4 +68,12 @@ export function printProblemResponse( response:ProblemResponse, folders:string[]
   }
 
   return !hasProblems;
+}
+
+export function formatProblemMessage(problem:Problem):string{
+  let msg = problem.level + ': ' + problem.message;
+  if(problem.client){
+    msg += "\nBreaking change detected with " + problem.client.title + " (source: " + problem.client.sourceLink ? problem.client.sourceLink : problem.client.className + " )";
+  }
+  return msg;
 }

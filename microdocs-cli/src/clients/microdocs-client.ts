@@ -3,12 +3,16 @@ import { Project, ProblemResponse } from "@maxxton/microdocs-core/domain";
 import { CheckOptions } from "../options/check.options";
 import { PublishOptions } from "../options/publish.options";
 import { ClusterOptions } from "../options/cluster.options";
+import { Logger } from "../helpers/logging/logger";
 const Client = require( 'node-rest-client' ).Client;
 
 /**
  * @author Steven Hermans
  */
 export class MicroDocsClient {
+
+  constructor( private logger: Logger ) {
+  }
 
   private createClient( serverOptions: ServerOptions, errorHandler: ( error: any ) => void ): any {
     var authOption: any = undefined;
@@ -28,7 +32,9 @@ export class MicroDocsClient {
   public login( serverOptions: ServerOptions ): Promise<boolean> {
     return new Promise( ( resolve: ( loggedIn: boolean ) => void, reject: ( err?: any ) => void ) => {
       let client: any = this.createClient( serverOptions, reject );
+      this.logger.info('GET ' + serverOptions.url);
       client.get( serverOptions.url, ( data: ProblemResponse, response: any ) => {
+        this.logger.debug('Response: ' + response.statusCode);
         if ( response.statusCode == 200 ) {
           resolve( true );
         } else if ( response.statusCode == 401 ) {
@@ -50,7 +56,7 @@ export class MicroDocsClient {
     return new Promise( ( resolve: ( result: ProblemResponse ) => void, reject: ( err?: any ) => void ) => {
       try {
         var errorHandler = ( error: any ) => {
-          var message = "Failed to POST to " + url + " (" + error + ")";
+          var message = "Failed to post to " + url + " (" + error + ")";
           resolve( { message: message, status: 'failed' } );
         };
 
@@ -69,7 +75,7 @@ export class MicroDocsClient {
           data: JSON.stringify( project )
         };
         var url     = checkOptions.url + '/api/v1/check';
-        console.info( "POST " + url );
+        this.logger.info('post ' + url);
 
         client.post( url, options, ( data: ProblemResponse, response: any ) => {
           if ( response.statusCode == 200 ) {
@@ -120,7 +126,7 @@ export class MicroDocsClient {
           data: JSON.stringify( project )
         };
         var url     = publishOptions.url + '/api/v1/projects/' + encodeURIComponent( publishOptions.title );
-        console.info( "PUT " + url );
+        this.logger.info('PUT ' + url);
 
         client.put( url, options, ( data: ProblemResponse, response: any ) => {
           if ( response.statusCode == 200 ) {
@@ -138,7 +144,7 @@ export class MicroDocsClient {
 
   public getProjects( clusterOptions: ClusterOptions, exportType: string, callback: ( response: ProblemResponse ) => void ) {
     var errorHandler = ( error: any ) => {
-      var message = "Failed to GET to " + url + " (" + error + ")";
+      var message = "Failed to get to " + url + " (" + error + ")";
       callback( { message: message, status: 'failed' } );
     };
 
@@ -168,7 +174,7 @@ export class MicroDocsClient {
         params[ 'build-self' ] = true;
       }
     }
-    console.info( "GET " + url );
+    this.logger.info('get ' + url);
 
     client.get( url, options, ( data: string, response: any ) => {
       if ( response.statusCode == 200 ) {

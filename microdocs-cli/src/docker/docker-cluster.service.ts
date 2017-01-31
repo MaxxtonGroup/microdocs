@@ -1,5 +1,5 @@
 import { ClusterOptions } from "../options/cluster.options";
-import { MicroDocsClient } from "../helpers/microdocs-client";
+import { MicroDocsClient } from "../clients/microdocs-client";
 import { ProblemResponse } from "@maxxton/microdocs-core/domain";
 import * as cliHelper from "../helpers/cli.helper";
 import * as fs from 'fs';

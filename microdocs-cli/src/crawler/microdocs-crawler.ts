@@ -8,7 +8,7 @@ import { RootCrawler } from "./common/root.crawler";
 import { CrawlerException } from "./common/crawler.exception";
 import { Framework, FRAMEWORKS } from "./frameworks";
 import { CheckOptions } from "../options/check.options";
-import { MicroDocsClient } from "../helpers/microdocs-client";
+import { MicroDocsClient } from "../clients/microdocs-client";
 import * as cliHelper from '../helpers/cli.helper';
 import { PublishOptions } from "../options/publish.options";
 import { Logger } from '../helpers/logging/logger';
@@ -23,10 +23,10 @@ const Preferences = require("preferences");
  */
 export class MicroDocsCrawler {
 
-  private readonly _logger: Logger;
+  private readonly logger: Logger;
 
   constructor( logger: Logger ) {
-    this._logger = logger;
+    this.logger = logger;
   }
 
   /**
@@ -63,7 +63,7 @@ export class MicroDocsCrawler {
           if ( noBuild ) {
             try {
               let project: Project = <Project>require( definitionFile );
-              this._logger.info( "Skip building the MicroDocs definitions, use the '--no-cache' option to enforce this" );
+              this.logger.info( "Skip building the MicroDocs definitions, use the '--no-cache' option to enforce this" );
               resolve( project );
               return;
             } catch ( e ) {
@@ -76,11 +76,11 @@ export class MicroDocsCrawler {
               if ( newHash === hash.toString() ) {
                 try {
                   let project: Project = <Project>require( definitionFile );
-                  this._logger.info( "Skip building the MicroDocs definitions, use the '--no-cache' option to enforce this" );
+                  this.logger.info( "Skip building the MicroDocs definitions, use the '--no-cache' option to enforce this" );
                   resolve( project );
                   return;
                 } catch ( e ) {
-                  this._logger.warn( `Failed to load cached definitions from '${definitionFile}', rebuilding definitions...` );
+                  this.logger.warn( `Failed to load cached definitions from '${definitionFile}', rebuilding definitions...` );
                 }
               }
               this.buildDefinition( source, sourceFiles, tsConfigFile, definitionFile, newHash.hash )
@@ -117,7 +117,7 @@ export class MicroDocsCrawler {
 
         let tsConfig: any = this.getTsConfig( tsConfigFile, [ source, process.cwd() ] );
         if ( !tsConfig ) {
-          this._logger.warn( `No tsConfig found in '${tsConfigFile}', use default compile options` );
+          this.logger.warn( `No tsConfig found in '${tsConfigFile}', use default compile options` );
           tsConfig = {};
         }
         if ( tsConfig.ignoreCompilerErrors !== false ) {
@@ -127,7 +127,7 @@ export class MicroDocsCrawler {
         let project: Project = this.buildProject( sourceFiles, tsConfig );
 
         if ( definitionFile ) {
-          this._logger.info( `Store definitions in '${definitionFile}'` );
+          this.logger.info( `Store definitions in '${definitionFile}'` );
           let hashFile         = definitionFile + '.hash';
           let json             = JSON.stringify( project );
           let definitionFolder = pathUtil.dirname( definitionFile );
@@ -187,8 +187,8 @@ export class MicroDocsCrawler {
     }
 
     // Convert source to reflection
-    this._logger.info( 'Crawl sources with config:' );
-    this._logger.info( JSON.stringify( tsConfig, undefined, 2 ) );
+    this.logger.info( 'Crawl sources with config:' );
+    this.logger.info( JSON.stringify( tsConfig, undefined, 2 ) );
     var typedocApplication = new Application( tsConfig );
     var reflect            = typedocApplication.convert( sources );
 
@@ -260,10 +260,33 @@ export class MicroDocsCrawler {
   }
 
   public check(project:Project, checkOptions:CheckOptions):Promise<ProblemResponse>{
-    return new MicroDocsClient().check( checkOptions, project );
+    return new Promise( ( resolve: ( result: ProblemResponse ) => void, reject: ( err?: any ) => void ) => {
+      let microDocsClient = new MicroDocsClient(this.logger);
+      microDocsClient.check( checkOptions, project ).then((problemResponse:ProblemResponse) => {
+        if(checkOptions.bitBucketPullRequestUrl){
+          this.publishToBitBucket(checkOptions, problemResponse).then(resolve, reject);
+        }else{
+          resolve(problemResponse);
+        }
+      }, reject);
+    });
   }
+
   public publish(project:Project, publishOptions:PublishOptions):Promise<ProblemResponse>{
-    return new MicroDocsClient().publish( publishOptions, project );
+    return new Promise( ( resolve: ( result: ProblemResponse ) => void, reject: ( err?: any ) => void ) => {
+      let microDocsClient = new MicroDocsClient(this.logger);
+      microDocsClient.publish( publishOptions, project ).then((problemResponse:ProblemResponse) => {
+        if(publishOptions.bitBucketPullRequestUrl){
+          this.publishToBitBucket(publishOptions, problemResponse).then(resolve, reject);
+        }else{
+          resolve(problemResponse);
+        }
+      }, reject);
+    });
+  }
+
+  private publishToBitBucket(checkOptions:CheckOptions, problemResponse:ProblemResponse):Promise<ProblemResponse>{
+
   }
 
   private getSourceFiles( sourceFolder: string, filePatterns: string[] ): string[] {
@@ -281,7 +304,7 @@ export class MicroDocsCrawler {
       let tsFile = pathUtil.join( folders[ i ] + '/' + tsConfigFile );
       if ( fs.existsSync( tsFile ) ) {
         try {
-          this._logger.info( `Load tsConfig from '${tsFile}'` );
+          this.logger.info( `Load tsConfig from '${tsFile}'` );
           var tsConfig = require( tsFile );
           if ( tsConfig.compilerOptions ) {
             if ( tsConfig.compilerOptions.ignoreCompilerErrors !== false ) {
