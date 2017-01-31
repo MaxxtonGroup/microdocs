@@ -50,7 +50,7 @@ export class ProjectTree extends Node{
   }
 
   private rearrangeNodes(projectTree:ProjectTree, dependencyNodes:DependencyNode[]):boolean{
-    return dependencyNodes.some(dependencyNode => {
+    return dependencyNodes.some((dependencyNode:DependencyNode) => {
       let reference = dependencyNode.getReference() + '/item';
       let reverseDependencyNodes = this.findReverseDependencies(reference);
       if(reverseDependencyNodes.length > 0){
@@ -71,6 +71,7 @@ export class ProjectTree extends Node{
       }else if(dependencyNode.item && dependencyNode.item.dependencies){
         this.rearrangeNodes(projectTree, dependencyNode.item.dependencies);
       }
+      return false;
     });
   }
 
@@ -192,7 +193,7 @@ export class ProjectTree extends Node{
     return JSON.stringify(this.unlink());
   }
   
-  public static link(unlinkedRoot:{}):ProjectTree{
+  public static link(unlinkedRoot:any):ProjectTree{
     var root = new ProjectTree();
     if(unlinkedRoot) {
       for (let key in unlinkedRoot) {

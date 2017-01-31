@@ -31,5 +31,6 @@ export interface Project extends Problemable{
   problemCount?:number;
   deprecated?:boolean;
   deploy?:Deploy;
+  [key:string]:any;
 
 }

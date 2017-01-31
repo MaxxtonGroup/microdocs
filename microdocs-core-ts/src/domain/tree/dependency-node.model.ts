@@ -49,18 +49,18 @@ export class DependencyNode extends Node{
     return null;
   }
   
-  public static link(unlinkedDependency:{}, title:string):DependencyNode{
+  public static link(unlinkedDependency:any, title:string):DependencyNode{
     var dependency = new DependencyNode();
-    if(unlinkedDependency['item']){
-      let unlinkedProject = unlinkedDependency['item'];
+    if(unlinkedDependency.item){
+      let unlinkedProject = unlinkedDependency.item;
       let project = ProjectNode.link(unlinkedProject, title);
       dependency.item = project;
     }
-    if (unlinkedDependency['type']) {
-      dependency.type = unlinkedDependency['type'];
+    if (unlinkedDependency.type) {
+      dependency.type = unlinkedDependency.type;
     }
-    if (unlinkedDependency['problems']) {
-      dependency.problems = unlinkedDependency['problems'];
+    if (unlinkedDependency.problems) {
+      dependency.problems = unlinkedDependency.problems;
     }
     
     return dependency;

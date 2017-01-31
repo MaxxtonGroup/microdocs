@@ -2,14 +2,13 @@ import { ClusterOptions } from "../options/cluster.options";
 import { MicroDocsClient } from "../helpers/microdocs-client";
 import { ProblemResponse } from "@maxxton/microdocs-core/domain";
 import * as cliHelper from "../helpers/cli.helper";
-import * as yaml from 'js-yaml';
 import * as fs from 'fs';
 import * as path from 'path';
 import { DockerCompose } from "./domain/docker-compose";
-import * as osenv from "osenv";
 import { dockerComposeUp, dockerComposePs, dockerComposeDown } from "./docker-executor";
 import { Build } from "./domain/build";
-import { SchemaHelper } from "@maxxton/microdocs-core/helpers";
+const yaml = require('js-yaml');
+const osenv = require('osenv');
 
 
 /**

@@ -4,6 +4,7 @@ import { Project, ProblemResponse } from "@maxxton/microdocs-core/domain";
 import { CheckOptions } from "../options/check.options";
 import { PublishOptions } from "../options/publish.options";
 import { ClusterOptions } from "../options/cluster.options";
+
 /**
  * @author Steven Hermans
  */
@@ -34,7 +35,7 @@ export class MicroDocsClient {
 
     var client: any = this.createClient( checkOptions, errorHandler );
 
-    var params = {};
+    var params:any = {};
     if ( checkOptions.title ) {
       params[ 'title' ] = checkOptions.title;
     }
@@ -73,7 +74,7 @@ export class MicroDocsClient {
 
     var client:any = this.createClient(publishOptions, errorHandler);
 
-    var params = {};
+    var params:any = {};
     if(publishOptions.version){
       params['version'] = publishOptions.version;
     }
@@ -112,7 +113,7 @@ export class MicroDocsClient {
 
     var client: any = this.createClient( clusterOptions, errorHandler );
 
-    var params = {export: exportType};
+    var params:any = {export: exportType};
     if ( clusterOptions.env ) {
       params[ 'env' ] = clusterOptions.env;
     }

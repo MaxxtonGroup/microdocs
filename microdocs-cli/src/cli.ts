@@ -1,8 +1,5 @@
 #!/usr/bin/env node
 
-import * as pjson from '../package.json';
-import * as program from 'commander';
-import * as globby from 'globby';
 import * as fs from 'fs';
 import * as cliHelper from "./helpers/cli.helper";
 import { MicroDocsCrawler } from './crawler/microdocs-crawler';
@@ -11,6 +8,9 @@ import { CheckOptions } from "./options/check.options";
 import { PublishOptions } from "./options/publish.options";
 import { ClusterOptions } from "./options/cluster.options";
 import { DockerClusterService } from "./docker/docker-cluster.service";
+const pjson = require('../package.json');
+const globby = require('globby');
+const program = require('commander');
 
 function list( val: string ) {
   return val.split( ',' );
@@ -193,7 +193,7 @@ program
 
 program
     .command( '' )
-    .action( function ( env ) {
+    .action( function ( env:string ) {
       program.help();
     } );
 

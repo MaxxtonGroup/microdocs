@@ -12,6 +12,8 @@ export interface Method{
     lineNumber?:number;
     component?:Component;
     annotations?:{[name:string]:Annotation};
+    sourceLink?:string;
     $ref?: string;
+    [key:string]:any;
 
 }

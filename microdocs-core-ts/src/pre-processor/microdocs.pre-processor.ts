@@ -68,7 +68,7 @@ export class MicroDocsPreProcessor implements PreProcessor{
    * @param variables
    * @returns {any}
    */
-  public process(project: Project, settings: {},  variables:{scope?:{},project?:{},settings?:{},settingsScope?:{}} = {}, projectScope?: any, settingsScope?: any, prevScope?:{}): any {
+  public process(project: Project, settings: {},  variables:{scope?:{},project?:{},settings?:{},settingsScope?:{},[key:string]:any} = {}, projectScope?: any, settingsScope?: any, prevScope?:{}): any {
     if (settingsScope === undefined) {
       settingsScope = settings;
     }
@@ -153,7 +153,7 @@ export class MicroDocsPreProcessor implements PreProcessor{
                 }
                 projectScope = newProjectScopes;
               } else {
-                let newProjectScopes:{} = {};
+                let newProjectScopes:any = {};
                 for ( let existingKey in projectScope ) {
                   variables[ variableName ] = existingKey;
                   var newProjectScope       = projectScope[ existingKey ];
@@ -212,7 +212,7 @@ export class MicroDocsPreProcessor implements PreProcessor{
         }
       }
     } else if ( typeof(settingsScope) === 'string' ) {
-      let varCopy:{scope?:{},project?:{},settings?:{},settingsScope?:{}} = {};
+      let varCopy:{scope?:{},project?:{},settings?:{},settingsScope?:{},[key:string]:any} = {};
       for(let key in variables){
         varCopy[key] = variables[key];
       }
