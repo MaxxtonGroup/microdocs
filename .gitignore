@@ -14,3 +14,4 @@
 /microdocs-server/data/reports
 /microdocs-server/data/database
 !/docs/**/dist
+/docs/src/bower_components

@@ -1,0 +1,331 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="./docs-list.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animations.html">
+<link rel="import" href="../bower_components/neon-animation/neon-shared-element-animatable-behavior.html">
+<link rel="import" href="../bower_components/marked-element/marked-element.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
+
+<dom-module id="documentation-route">
+  <template>
+    <style>
+      #header {
+        position: absolute;
+        z-index: 1;
+        top: 0;
+        left: 0;
+        width: 300px;
+        height: 50px;
+        margin: 0;
+        border-radius: 0;
+        background-color: #2196F3;
+        color: white;
+      }
+
+      #header .dropdown {
+        position: absolute;
+        right: 0px;
+      }
+
+      #header iron-icon, #dropdown-container iron-icon {
+        margin-right: 10px;
+      }
+
+      #dropdown-container {
+        position: absolute;
+        z-index: 2;
+        top: 50px;
+        left: 0;
+        width: 300px;
+        box-shadow: rgba(0, 0, 0, 0.227451) 0px 6px 10px 0px, rgba(0, 0, 0, 0.188235) 0px 10px 30px 0px;
+        background-color: white;
+        cursor: pointer;
+      }
+
+      #dropdown-container a {
+        color: #2196F3;
+        text-decoration: none;
+      }
+
+      #container {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: white;
+      }
+
+      nav {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 300px;
+        bottom: 0;
+        padding-top: 50px;
+        overflow: auto;
+        border-right: 1px solid #efefef;
+      }
+
+      nav paper-menu {
+        padding: 0;
+      }
+
+      nav a {
+        display: block;
+        cursor: pointer;
+        color: black;
+        text-decoration: none;
+      }
+
+      nav a.iron-selected {
+        background-color: #E0E0E0;
+      }
+
+      nav a paper-item {
+        --paper-item-before: {
+          background-color: transparent;
+        };
+        --paper-item-focused-before: {
+          background-color: transparent;
+        };
+      }
+
+      article {
+        position: absolute;
+        left: 300px;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        z-index: 1;
+        padding: 20px 50px;
+      }
+
+      article marked-element {
+        width: 100%;
+        height: 100%;
+      }
+
+      article .error-text{
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        background-color: #ececec;
+      }
+
+      article .error-text span {
+        text-align: center;
+        display: block;
+        padding-top: 200px;
+        color: #F44336;
+        font-weight: bold;
+        font-size: 20px;
+      }
+
+      article .error-text span iron-icon {
+        height: 40px;
+        width: 40px;
+        position: relative;
+        top: -2px;
+      }
+    </style>
+    <paper-button id="header" on-click="_activateDropdown" on-blur="_deactiveDropdown">
+      <iron-icon icon="[[icon]]"></iron-icon>
+      <span>[[title]]</span>
+      <iron-icon class="dropdown" icon="arrow-drop-down"></iron-icon>
+    </paper-button>
+    <div id="dropdown-container" hidden$="[[!dropdownActive]]">
+      <paper-menu>
+        <template is="dom-repeat" items="[[links]]">
+          <a href$="#/documentation/[[item]]/index">
+            <paper-item>
+              <iron-icon icon="{{_computeIcon(item)}}" item-icon></iron-icon>
+              {{_computeTitle(item)}}
+            </paper-item>
+          </a>
+        </template>
+      </paper-menu>
+    </div>
+    <div id="container">
+      <nav>
+        <paper-menu selected="[[routeData.document]]" attr-for-selected="name">
+          <template is="dom-repeat" items="[[docsTree]]">
+            <a href$="#/documentation/[[name]]/[[item.id]]" name="[[item.id]]">
+              <paper-item>
+                {{item.title}}
+              </paper-item>
+            </a>
+          </template>
+        </paper-menu>
+      </nav>
+      <article>
+        <template is="dom-if" if="[[loadError]]">
+          <div class="error-text">
+            <span>
+              <iron-icon icon="close"></iron-icon>
+              Could not load this page
+            </span>
+          </div>
+        </template>
+        <template is="dom-if" if="[[!loadError]]">
+          <marked-element markdown="[[documentContent]]">
+            <div class="markdown-html"></div>
+          </marked-element>
+        </template>
+      </article>
+    </div>
+
+    <docs-list docs="{{docsTree}}" scope="[[name]]"></docs-list>
+    <app-route route="{{route}}" pattern="/:document" data="{{routeData}}"></app-route>
+    <iron-ajax id="documentRequest" url="[[documentUrl]]" last-response="{{documentContent}}" on-response="_onRequestSucceed" on-error="_onRequestError" handle-as="text"></iron-ajax>
+  </template>
+  <script>
+    Polymer({
+      is: 'documentation-route',
+      behaviors: [
+        Polymer.NeonSharedElementAnimatableBehavior
+      ],
+      properties: {
+        sharedElements: {
+          value: function () {
+            return {
+              'hero': this.$.header
+            }
+          }
+        },
+
+        animationConfig: {
+          value: function () {
+            return {
+              'entry': [{
+                name: 'hero-animation',
+                id: 'hero',
+                toPage: this
+              }, {
+                name: 'fade-in-animation',
+                node: this.$.container,
+                timing: 3000
+              }, {
+                name: 'fade-in-animation',
+                node: this.$.header.children[0],
+                timing: 3000
+              }, {
+                name: 'fade-in-animation',
+                node: this.$.header.children[1],
+                timing: 3000
+              }, {
+                name: 'fade-in-animation',
+                node: this.$.header.children[2],
+                timing: 3000
+              }],
+              'exit': [{
+                name: 'fade-out-animation',
+                node: this,
+                timing: 0
+              }]
+            };
+          }
+        },
+        route: {
+          type: Object,
+          notify: true
+        },
+        routeData: Object,
+        name: {
+          type: String
+        },
+        title: {
+          type: String,
+          computed: '_computeTitle(name)'
+        },
+        icon: {
+          type: String,
+          computed: '_computeIcon(name)'
+        },
+        links: {
+          type: Array,
+          computed: '_computeLinks(name)'
+        },
+        dropdownActive: {
+          type: Boolean,
+          value: false
+        },
+        documentUrl: {
+          type: String,
+          computed: '_computeDocumentUrl(name,routeData)',
+          observer: '_onDocumentUrl'
+        }
+      },
+
+      _computeTitle: function (name) {
+        switch (name) {
+          case 'plugins':
+            return 'Plugins';
+          case 'server':
+            return 'Server';
+          case 'configuration':
+            return 'Configuration';
+          case 'general':
+            return 'General';
+        }
+        return 'Documentation';
+      },
+
+      _computeIcon: function (name) {
+        switch (name) {
+          case 'plugins':
+            return 'extension';
+          case 'server':
+            return 'cloud';
+          case 'configuration':
+            return 'settings';
+          case 'general':
+            return 'autorenew';
+        }
+        return 'description';
+      },
+
+      _computeLinks: function (name) {
+        var links = ['plugins', 'server', 'configuration', 'general'];
+        links.splice(links.indexOf(name), 1);
+        return links;
+      },
+
+      _activateDropdown: function () {
+        this.set('dropdownActive', true);
+      },
+
+      _deactiveDropdown: function () {
+        var _this = this;
+        setTimeout(function () {
+          _this.set('dropdownActive', false);
+        }, 100);
+      },
+
+      _computeDocumentUrl: function (name,routeData) {
+          var doc = routeData.document || 'index';
+          var url = "docs/" + name + "/" + doc + ".md";
+          return url;
+      },
+
+      _onDocumentUrl: function () {
+        this.$.documentRequest.generateRequest();
+      },
+
+      _onRequestError: function () {
+        this.set('loadError', true);
+      },
+
+      _onRequestSucceed: function () {
+        this.set('loadError', false);
+      }
+    });
+  </script>
+</dom-module>

@@ -6,7 +6,8 @@ var Builder = require('./src/build').Builder;
 var settings = {
   distFolder: 'dist',
   projectName: 'microdocs-core',
-  tsConfig: tscConfig
+  tsConfig: tscConfig,
+  srcResources: ['package.json', 'LICENSE','README.md', 'src/**/*.js']
 };
 
 var builder = new Builder(settings);

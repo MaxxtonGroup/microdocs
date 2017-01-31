@@ -42,7 +42,7 @@ export class UniversalClassCrawler extends ClassCrawler {
         dependendyBuilder.dependency.dependencyName = dependencyName;
         var version                                 = this.findDependency( dependencyName, projectReflection );
         if ( version ) {
-          dependendyBuilder.dependency.version;
+          dependendyBuilder.dependency.version = version;
         }
         projectBuilder.dependency( dependendyBuilder );
       }

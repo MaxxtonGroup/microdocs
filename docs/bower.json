@@ -1,0 +1,25 @@
+{
+  "name": "microdocs-website",
+  "homepage": "http://microdocs.io",
+  "authors": [
+    "Steven Hermans <steven166@live.nl>"
+  ],
+  "description": "",
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "^1.7.1",
+    "iron-elements": "^1.0.10",
+    "paper-elements": "^1.0.7",
+    "app-elements": "^0.10.1",
+    "neon-elements": "^1.0.0",
+    "marked-element": "^1.2.0"
+  }
+}

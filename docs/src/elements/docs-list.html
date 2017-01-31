@@ -1,0 +1,80 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<dom-module id="docs-list">
+  <script>
+
+    Polymer({
+      is: 'docs-list',
+      properties: {
+        scope: String,
+        documentsTree: {
+          type: Object,
+          readonly: true,
+          notify: true,
+          value: {
+            plugins: [
+            ],
+            server: [
+              {
+                id: 'advanced-installation',
+                title: 'Advanced installation'
+              },
+              {
+                id: 'security',
+                title: 'Security'
+              },
+              {
+                id: 'architecture',
+                title: 'Architecture'
+              }
+            ],
+            configuration: [],
+            general: [
+              {
+                id: 'intro-example-app',
+                title: 'Intro example app '
+              },
+              {
+                id: 'setup-dev-env',
+                title: 'Setup a Develop environment'
+              },
+              {
+                id: 'coding',
+                title: 'Detect breaking changes in your IDE'
+              },
+              {
+                id: 'verifing',
+                title: 'Detect breaking changes in Jenkins'
+              },
+              {
+                id: 'building',
+                title: 'Build an Publish new definitions'
+              },
+              {
+                id: 'setup-test-env',
+                title: 'Setup a Test environments'
+              },
+              {
+                id: 'api-testing',
+                title: 'Run Api Testing'
+              },
+              {
+                id: 'setup-prod-env',
+                title: 'Deploy to Production'
+              }
+              ]
+          }
+        },
+        docs: {
+          type: Array,
+          readonly: true,
+          notify: true,
+          computed: '_computeDocs(documentsTree,scope)'
+        }
+      },
+      _computeDocs: function(documentsTree, scope){
+        return documentsTree[scope] || [];
+      }
+    });
+  </script>
+</dom-module>

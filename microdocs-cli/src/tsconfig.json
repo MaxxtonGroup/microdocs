@@ -23,9 +23,17 @@
       "../node_modules/@types"
     ],
     "types": [
-      "node",
-      "jasmine",
-      "chai"
+    "chai",
+    "fs-extra",
+    "handlebars",
+    "highlight.js",
+    "jasmine",
+    "lodash",
+    "marked",
+    "minimatch",
+    "mkdirp",
+    "node",
+    "shelljs"
     ]
   },
   "exclude": [
