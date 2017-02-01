@@ -301,6 +301,20 @@ export class MicroDocsCrawler {
   }
 
   private getTsConfig( tsConfigFile: string, folders: string[] ): any {
+    if ( fs.existsSync( tsConfigFile ) ) {
+      try {
+        this.logger.info( `Load tsConfig from '${tsConfigFile}'` );
+        var tsConfig = require( tsConfigFile );
+        if ( tsConfig.compilerOptions ) {
+          if ( tsConfig.compilerOptions.ignoreCompilerErrors !== false ) {
+            tsConfig.compilerOptions.ignoreCompilerErrors = true;
+          }
+          return tsConfig.compilerOptions;
+        }
+      } catch ( e ) {
+        console.error( e );
+      }
+    }
     for ( let i = 0; i < folders.length; i++ ) {
       let tsFile = pathUtil.join( folders[ i ] + '/' + tsConfigFile );
       if ( fs.existsSync( tsFile ) ) {
