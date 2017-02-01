@@ -9,6 +9,7 @@ export class UniversalClassCrawler extends ClassCrawler {
 
   public crawl( classIdentity: ClassIdentity, projectBuilder: ProjectBuilder, projectReflection: ProjectReflection, classReflection: ContainerReflection ): void {
     if ( classReflection.comment ) {
+      var comment = classReflection.comment;
       if ( this.isClient( classReflection ) ) {
         classIdentity.isClient    = true;
         classIdentity.isComponent = true;
@@ -22,9 +23,7 @@ export class UniversalClassCrawler extends ClassCrawler {
         classIdentity.isModel = true;
       } else if ( this.isMain( classReflection ) ) {
         classIdentity.isMain = true;
-
-        var comment         = classReflection.comment;
-        var applicationName = comment.getTag( 'application' ).text.trim();
+        var applicationName  = comment.getTag( 'application' ).text.trim();
         if ( applicationName && applicationName !== '' ) {
           var splitted                        = applicationName.split( '/' );
           projectBuilder.project().info.title = splitted[ splitted.length - 1 ];
