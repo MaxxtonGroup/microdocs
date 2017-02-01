@@ -7,6 +7,7 @@ import * as path from 'path';
 import { DockerCompose } from "./domain/docker-compose";
 import { dockerComposeUp, dockerComposePs, dockerComposeDown } from "./docker-executor";
 import { Build } from "./domain/build";
+import { JSLogger } from "../helpers/logging/js-logger";
 const yaml = require('js-yaml');
 const osenv = require('osenv');
 
@@ -103,7 +104,7 @@ export class DockerClusterService {
 
   private fetchDockerCompose( options: ClusterOptions ) {
     console.info( 'Fetch docker-compose' );
-    let microDocsClient = new MicroDocsClient();
+    let microDocsClient = new MicroDocsClient(new JSLogger());
     microDocsClient.getProjects( options, 'docker-compose', ( response: ProblemResponse|string ) => {
       if ( typeof(response) === 'string' ) {
         let dockerCompose: DockerCompose = <DockerCompose>(<any>yaml).load( response );

@@ -18,7 +18,7 @@
   "dependencies": {
     "@maxxton/microdocs-core": "1.6.11",
     "@maxxton/typedoc": "^0.5.5",
-    "cli-framework": "1.0.0",
+    "command-script": "1.0.0",
     "chai": "^3.5.0",
     "glob-hash": "^1.0.5",
     "globby": "^6.0.0",

@@ -108,7 +108,7 @@ export class BitBucketClient {
    * @return comment id
    */
   private postPullRequestComment( client: any, details: PullRequestDetails, message: string, filePath?: string, lineNumber?: number ): Promise<number> {
-    return new Promise( ( resolve: ( loggedIn: boolean ) => void, reject: ( err?: any ) => void ) => {
+    return new Promise( ( resolve: ( commentId:number ) => void, reject: ( err?: any ) => void ) => {
       try {
 
         let comment: any = {
@@ -155,7 +155,7 @@ export class BitBucketClient {
    * @return task id
    */
   private postTask( client: any, details: PullRequestDetails, message: string, commentId: number ): Promise<number> {
-    return new Promise( ( resolve: ( loggedIn: boolean ) => void, reject: ( err?: any ) => void ) => {
+    return new Promise( ( resolve: ( taskId: number ) => void, reject: ( err?: any ) => void ) => {
       try {
         let comment: any = {
           text: message,

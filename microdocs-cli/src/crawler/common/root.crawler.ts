@@ -13,7 +13,7 @@ import {
   PathBuilder,
   ControllerBuilder
 } from '@maxxton/microdocs-core/builder';
-import {REST} from '@maxxton/microdocs-core/domain/dependency/dependency-type.model'
+import {DependencyTypes} from '@maxxton/microdocs-core/domain/dependency/dependency-type.model'
 import {ProjectInfo} from '@maxxton/microdocs-core/domain';
 import {ClassIdentity} from "./domain/class-identity";
 import {CrawlerException} from "./crawler.exception";
@@ -178,7 +178,7 @@ export class RootCrawler {
    * @returns {DependencyBuilder}
    */
   private crawlClient(componentBuilder: ComponentBuilder, projectReflection: ProjectReflection, classReflection: ContainerReflection): DependencyBuilder {
-    var clientBuilder = new DependencyBuilder(REST);
+    var clientBuilder = new DependencyBuilder(DependencyTypes.REST);
     this.triggerCrawlers(this.clientCrawlers, crawler => crawler.crawl(clientBuilder, projectReflection, classReflection));
 
     if (classReflection.children) {

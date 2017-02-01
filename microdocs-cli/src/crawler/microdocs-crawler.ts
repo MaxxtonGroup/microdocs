@@ -13,6 +13,7 @@ import * as cliHelper from '../helpers/cli.helper';
 import { PublishOptions } from "../options/publish.options";
 import { Logger } from '../helpers/logging/logger';
 import { ServerOptions } from "../options/server.options";
+import { BitBucketClient } from "../clients/bitbucket-client";
 const mkdirp = require('mkdirp');
 const hasher = require( 'glob-hash' );
 const globby = require( 'globby' );
@@ -243,7 +244,7 @@ export class MicroDocsCrawler {
             resolve( serverOptions );
           }
         } else {
-          new MicroDocsClient().login( serverOptions ).then( () => {
+          new MicroDocsClient(this.logger).login( serverOptions ).then( () => {
             if ( noCredentialStore ) {
               resolve( serverOptions );
             } else {
@@ -286,7 +287,7 @@ export class MicroDocsCrawler {
   }
 
   private publishToBitBucket(checkOptions:CheckOptions, problemResponse:ProblemResponse):Promise<ProblemResponse>{
-
+    return new BitBucketClient(this.logger).publishToBitBucket(checkOptions, problemResponse);
   }
 
   private getSourceFiles( sourceFolder: string, filePatterns: string[] ): string[] {
