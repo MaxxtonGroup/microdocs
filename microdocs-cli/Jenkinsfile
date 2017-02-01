@@ -1,5 +1,6 @@
-def projectFolder = 'microdocs-core-ts';
+def projectFolder = 'microdocs-cli';
 def semver = input message: 'Increase the patch, minor, major version', parameters: [choice(choices: "patch\nminor\nmajor", description: 'Increase the patch, minor, major version', name: 'SEM_VERSION')]
+def microdocsCoreVersion = input message: 'Version microdocs-core', parameters: [string(defaultValue: '', description: 'Version of microdocs-core', name: 'MICRODOCS_CORE_VERSION')]
 node {
     stage('Checkout'){
         deleteDir()
@@ -15,12 +16,8 @@ node {
             echo "Installing npm dependencies"
             unstash 'src'
             sh 'npm version ' + semver
-            try{
-                sh 'npm install'
-            }catch(e){
-                sh 'ls node_modules'
-                throw e
-            }
+            sh 'npm install --save @maxxton/microdocs-core@' + microdocsCoreVersion
+            sh 'npm install'
             stash name: 'build'
         }
     }

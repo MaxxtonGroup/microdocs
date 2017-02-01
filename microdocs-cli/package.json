@@ -9,7 +9,8 @@
   "author": "Steven Hermans (s.hermans@maxxton.com)",
   "license": "MIT",
   "scripts": {
-    "prepublish": "./node_modules/.bin/gulp prepublish"
+    "prepublish": "./node_modules/.bin/gulp prepublish",
+    "test": "./node_modules/.bin/gulp test"
   },
   "bin": {
     "microdocs": "cli/cli.js",
