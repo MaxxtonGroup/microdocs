@@ -1,35 +1,54 @@
-#!/usr/bin/env groovy
+def semver = input message: 'Increase the patch, minor, major version', parameters: [choice(choices: "patch\nminor\nmajor", description: 'Increase the patch, minor, major version', name: 'SEM_VERSION')]
 node {
-    stage('Checkout Git'){
-        checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'git@github.com:MaxxtonGroup/microdocs.git']]])
-        dir('microdocs-core-ts') {
-            stash name: 'source'
+    stage('Checkout'){
+        dir('microdocs-core-ts'){
+            echo "Checkout git"
+            git url: 'git@github.com:MaxxtonGroup/microdocs.git', branch: 'development'
+            stash name: 'src'
         }
     }
-    stage('Build microdocs-core'){
-        def semver = input message: 'Increase the patch, minor, major version', parameters: [choice(choices: "patch\nminor\nmajor", description: 'Increase the patch, minor, major version', name: 'SEM_VERSION')]
-        def updateMessage = input 'Update Message'
-        unstash 'source'
-        sh 'echo  "Installing npm dependencies"'
-        try{
-            sh 'npm version ' + semver + ' -m ' + updateMessage
-        }catch(Exception e){}
-        sh 'npm install'
-        sh 'echo "Publishing to private NPM registry"'
-        sh 'npm run prepublish'
-        dir ('dist'){
-            stash name: 'microdocs-core-dist'
+    stage('Build'){
+        dir('microdocs-core-ts'){
+            echo "Installing npm dependencies"
+            unstash 'src'
+            sh 'npm version ' + semver
+            sh 'npm install'
+            stash name: 'build'
         }
     }
-    stage('Publish microdocs-core'){
-        unstash 'microdocs-core-dist'
-        sh 'echo @maxxton:registry=https://npm.maxxton.com > .npmrc'
-        sh 'npm publish dist'
+
+    stage('Test'){
+        dir('microdocs-core-ts'){
+            echo "Test"
+            unstash 'build'
+            sh 'npm test'
+        }
     }
-    stage('Tag Git'){
-        sh 'echo @maxxton:registry=https://npm.maxxton.com > .npmrc'
-        def version = sh 'npm view @maxxton/microdocs-cli version'
-        sh 'git tag microdocs-core_' + version
-        sh 'git push --tags'
+
+    stage('PrePublish'){
+        dir('microdocs-core-ts'){
+            echo "PrePublish"
+            unstash 'build'
+            sh 'npm run prepublish'
+            dir('dist'){
+                stash 'dist'
+            }
+        }
     }
+
+    stage('Publish'){
+        dir('microdocs-core-ts/dist'){
+            echo "Publish"
+            unstash 'dist'
+            sh 'echo @maxxton:registry=https://npm.maxxton.com > .npmrc'
+            sh 'npm publish'
+        }
+    }
+
+    // stage('Tag Git'){
+    //     sh 'echo @maxxton:registry=https://npm.maxxton.com > .npmrc'
+    //     def version = sh 'npm view @maxxton/microdocs-cli version'
+    //     sh 'git tag microdocs-core_' + version
+    //     sh 'git push --tags'
+    // }
 }
