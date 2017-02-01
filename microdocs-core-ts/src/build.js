@@ -11,7 +11,6 @@ var Gaze = require('gaze').Gaze;
 var mocha = require('gulp-mocha');
 var vinylPaths = require('vinyl-paths');
 var del = require('del');
-var globby = require('globby');
 
 function Builder(settings) {
 
