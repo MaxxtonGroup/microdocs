@@ -15,3 +15,6 @@
 /microdocs-server/data/database
 !/docs/**/dist
 /docs/src/bower_components
+/npm-cache/conf/storage
+/npm-cache/local_storage
+/npm-cache/storage
