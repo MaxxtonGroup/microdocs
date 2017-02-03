@@ -1,0 +1,47 @@
+<div class="sidebar">
+  <a class="logo" [routerLink]="['/']">
+    <h1>MicroDocs</h1>
+    <div class="logo-left"></div>
+    <div class="logo-right"></div>
+  </a>
+
+  <div class="env-box">
+    <select [ngModel]="selectedEnv" (change)="onEnvVersion($event.target.value)">
+      <option *ngFor="let env of envs" [value]="env">{{env}}</option>
+    </select>
+  </div>
+
+  <div class="search-box">
+    <md-icon>search</md-icon>
+    <input type="text" placeholder="Search" (val)="searchQuery" (keyup)="onSearchQueryChange($event.target.value)"/>
+  </div>
+
+  <div class="grid-block">
+    <sidebar-list [routes]="menu"></sidebar-list>
+  </div>
+
+  <template [ngIf]="!config.isStandAlone">
+    <div class="controls-box">
+      <a (click)="showImportModal = true" class="import-button">
+        <md-icon>file_upload</md-icon>
+        <span class="control-text">Import</span>
+      </a>
+      <a (click)="showExportModal = true" class="export-button">
+        <md-icon>file_download</md-icon>
+        <span class="control-text">Export</span>
+      </a>
+      <a (click)="doReindex()" class="reindex-button">
+        <md-icon>refresh</md-icon>
+        <span class="control-text">Reïndex</span>
+      </a>
+    </div>
+  </template>
+
+  <div class="footer">
+    <a class="microdocs-link" target="_blank" [href]="'http://www.microdocs.io'">microdocs.io</a>
+  </div>
+</div>
+<template [ngIf]="!config.isStandAlone">
+  <!--<import-panel [showModal]="showImportModal" (stateChanges)="showImportModal = $event"></import-panel>-->
+  <!--<export-panel [showModal]="showExportModal" (stateChanges)="showExportModal = $event"></export-panel>-->
+</template>

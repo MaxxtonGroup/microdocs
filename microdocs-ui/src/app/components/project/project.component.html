@@ -1,0 +1,127 @@
+<md-toolbar>
+  <span>
+    <icon-generator [text]="title"></icon-generator>
+    <span>{{title}}</span>
+    <select class="version-box" [ngModel]="version" (change)="onChangeVersion($event.target.value)">
+      <option *ngFor="let v of versions" [value]="v">{{v}}</option>
+    </select>
+  </span>
+  <span class="example-spacer"></span>
+  <md-icon class="deprecate-button" mdTooltip="Mark this project as deprecated" [class.selected]="project.deprecated === true" (click)="toggleDeprecated()">broken_image</md-icon>
+  <md-icon class="export-button" mdTooltip="Export" (click)="showExportModal = true">file_download</md-icon>
+  <md-icon class="edit-button" mdTooltip="Edit" (click)="showEditModal = true">edit</md-icon>
+  <md-icon class="delete-button" mdTooltip="Delete" (click)="showDeleteModal = true">delete</md-icon>
+</md-toolbar>
+<div class="project-content" [class.loading]="loading">
+  <div class="grid-container page-content">
+    <template [ngIf]="!error">
+      <simple-card text="Info">
+        <div class="info-content">
+          <template [ngIf]="project.problemCount | notEmpty">
+            <div class="error">
+              <md-icon>error</md-icon>
+              <span class="problem">This project contains {{project.problemCount}} problem{{project.problemCount > 1 ? 's' : ''}}</span>
+            </div>
+          </template>
+          <template [ngIf]="project.deprecated === true">
+            <div class="problem-box">
+              <md-icon>error</md-icon>
+              <span class="problem">This version is marked as Deprecated</span>
+            </div>
+          </template>
+          <div *ngIf="project | notEmpty:'info.description'" class="project-desc">{{project.info.description}}</div>
+          <div class="time-box">
+            <div *ngIf="project | notEmpty:'info.publishTime'" class="project-time">
+              Published: {{project.info.publishTime | date:'hh:mm dd-MM-yyyy'}}
+            </div>
+            <div *ngIf="(project | notEmpty:'info.updateTime') && timeEquals(project.info.updateTime, project.info.publishTime)" class="project-time">
+              Last updated: {{project.info.updateTime | date:'hh:mm dd-MM-yyyy'}}
+            </div>
+          </div>
+          <div *ngIf="project | notEmpty:'info.links'" class="project-links">
+            <ul>
+              <li *ngFor="let link of project.info.links">
+                <span class="link">
+                  <md-icon class="link-icon">keyboard_arrow_right</md-icon>
+                  <a [href]="link.href" target="_blank">{{link.rel}}</a>
+                </span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <!--<dependency-graph class="small" [nodes]="nodes" [env]="env" [projectName]="title" [showOptionBar]="false" [showVersions]="false" [showInheritance]="true"></dependency-graph>-->
+      </simple-card>
+      <simple-card text="Endpoints" *ngIf="project.paths | notEmpty">
+        <div *ngFor="let path of project.paths | objectIterator | sortByKey:'_id'">
+          <endpoint-group [endpointGroup]="path" [schemaList]="project.definitions"></endpoint-group>
+        </div>
+      </simple-card>
+      <simple-card text="Clients" *ngIf="project.dependencies | filterByField:'type':rest | notEmpty">
+        <div *ngFor="let client of project.dependencies | filterByField:'type':rest | objectIterator | sortByKey:'_id'">
+          <div class="client-header">
+            <span class="link">
+              <md-icon class="link-icon">keyboard_arrow_right</md-icon>
+              <a [routerLink]="getDependencyLink(client)" [queryParams]="getLastDependencyParams(client)">{{client._id}}</a>
+            </span>
+            <div class="client-problem" *ngIf="client.version !== client.latestVersion">
+              <md-icon class="red">error</md-icon>
+              <span class="client-problem-desc" *ngIf="client.version | empty">Not compatible</span>
+              <span class="client-problem-desc" *ngIf="client.version | notEmpty">
+                Latest compatible version:
+                <a class="link" [routerLink]="getDependencyLink(client)" [queryParams]="getDependencyParams(client)">{{client.version}}</a>
+                </span>
+            </div>
+          </div>
+          <template [ngIf]="client.problems | notEmpty">
+            <problem-box [problems]="client.problems"></problem-box>
+          </template>
+          <div *ngFor="let path of client.paths | objectIterator | sortByKey:'_id'">
+            <endpoint-group [endpointGroup]="path" [schemaList]="project.definitions"></endpoint-group>
+          </div>
+        </div>
+      </simple-card>
+
+      <simple-card text="Dependencies" *ngIf="project.dependencies | filterByField:'type':uses | notEmpty">
+        <div *ngFor="let client of project.dependencies | filterByField:'type':uses | objectIterator | sortByKey:'_id'">
+          <div class="client-header">
+            <span class="link">
+              <md-icon class="link-icon">keyboard_arrow_right</md-icon>
+              <a [routerLink]="getDependencyLink(client)" [queryParams]="getLastDependencyParams(client)">{{client._id}}</a>
+            </span>
+            <div class="client-problem" *ngIf="client.version !== client.latestVersion">
+              <md-icon class="red">error</md-icon>
+              <span class="client-problem-desc" *ngIf="client.version | empty">Not compatible</span>
+              <span class="client-problem-desc" *ngIf="client.version | notEmpty">
+                Latest compatible version:
+                <a class="link" [routerLink]="getDependencyLink(client)" [queryParams]="getDependencyParams(client)">{{client.version}}</a>
+              </span>
+            </div>
+          </div>
+          <template [ngIf]="client.problems | notEmpty">
+            <problem-box [problems]="client.problems"></problem-box>
+          </template>
+        </div>
+      </simple-card>
+      <simple-card text="Models" *ngIf="project.definitions | filterByField:'type':'object' | notEmpty">
+        <model [schema]="schema" *ngFor="let schema of project.definitions | objectIterator | sortByKey:'_id'"></model>
+      </simple-card>
+    </template>
+    <template [ngIf]="error">
+      <div class="error-page">
+        <template [ngIf]="notFound">
+          <h1><md-icon>warning</md-icon> {{error}}</h1>
+          <h2><strong>{{title + ' '}}</strong><span *ngIf="version">version <strong>{{version + ' '}}</strong></span>doesn't
+            exists</h2>
+        </template>
+        <template [ngIf]="!notFound">
+          <h1 class="error"><md-icon>error</md-icon> {{error}}</h1>
+        </template>
+      </div>
+    </template>
+  </div>
+</div>
+<!--<template [ngIf]="!config.isStandAlone">-->
+  <!--<export-panel [showModal]="showExportModal" (stateChanges)="showExportModal = $event" [project]="title" [version]="version"></export-panel>-->
+  <!--<edit-panel [showModal]="showEditModal" (stateChanges)="showEditModal = $event" [project]="title" [version]="version" [group]="project?.info?.group"></edit-panel>-->
+  <!--<delete-panel [showModal]="showDeleteModal" (stateChanges)="showDeleteModal = $event" [project]="title" [version]="version"></delete-panel>-->
+<!--</template>-->

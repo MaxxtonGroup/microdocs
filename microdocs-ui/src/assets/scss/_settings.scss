@@ -6,13 +6,15 @@ $candy-app-primary: md-palette($md-blue);
 $candy-app-accent:  md-palette($md-orange, A700);
 $candy-app-error:    md-palette($md-red);
 $candy-app-warn:    md-palette($md-deep-orange);
+$candy-app-info: md-palette($md-blue);
 $candy-app-theme: md-light-theme($candy-app-primary, $candy-app-accent, $candy-app-warn);
 @include angular-material-theme($candy-app-theme);
 
 $primary: md-color($candy-app-primary);
 $accent: md-color($candy-app-accent);
 $error:    md-color($candy-app-error);
-$warn:    md-color($candy-app-warn);
+$warning:    md-color($candy-app-warn);
+$info:    md-color($candy-app-info);
 $primary-opacity: rgba(33, 150, 243, 0.5);
 
 $colors: (

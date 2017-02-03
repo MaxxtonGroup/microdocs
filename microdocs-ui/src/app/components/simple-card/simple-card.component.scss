@@ -1,0 +1,59 @@
+@import '../../../assets/scss/settings';
+
+.simple-card {
+  margin-bottom: 40px;
+
+  .header {
+    display: inline-block;
+    cursor: pointer;
+    h1 {
+      display: inline-block;
+      color: $accent;
+      font-size: 21px;
+    }
+    .subtitle{
+      margin: 12px 20px;
+      color: map_get($md-grey, 500);
+    }
+
+    md-icon {
+      position: relative;
+      top: 5px;
+    }
+    md-icon[hidden] {
+      display: none;
+    }
+  }
+  .header:hover md-icon {
+    color: $accent;
+  }
+  .content{
+    margin-top: 10px;
+  }
+}
+
+.simple-card.paper {
+  box-shadow: rgba(0, 0, 0, 0.227451) 0px 3px 10px 0px, rgba(0, 0, 0, 0.156863) 0px 3px 10px 0px !important;
+  border-radius: 2px;
+  margin-bottom: 10px;
+  padding: 10px 20px;
+  background-color: white;
+
+  .header {
+    display: flex;
+    h1 {
+      color: black;
+      font-size: 16px;
+      flex: 1;
+      margin-top: 8px;
+    }
+    h1:hover{
+      color: $accent;
+    }
+    md-icon {
+      top: 7px;
+    }
+  }
+}
+
+

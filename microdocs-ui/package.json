@@ -24,6 +24,7 @@
     "@angular/router": "^3.3.1",
     "@maxxton/angular-rest": "^1.0.0",
     "@maxxton/microdocs-core": "^1.7.0",
+    "angular2-prettyjson": "^2.0.3",
     "core-js": "^2.4.1",
     "hammerjs": "^2.0.8",
     "rxjs": "^5.0.1",

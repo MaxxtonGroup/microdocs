@@ -1,0 +1,29 @@
+@import "../../../assets/scss/settings";
+
+.icon-generator span {
+
+  display: inline-block;
+  padding: 7px 5px;
+  height: 32px;
+  width: 32px;
+  border-radius: 100%;
+  color: white;
+  text-align: center;
+  margin-right: 5px;
+  font-size: 17px !important;
+}
+
+/**
+** generate a list of components based on the color-palette,
+**/
+.icon-generator {
+  @each $name, $color in $colors {
+    span.#{$name} {
+      background: $color;
+    }
+  }
+
+  span.amber, span.yellow {
+    color: black;
+  }
+}
