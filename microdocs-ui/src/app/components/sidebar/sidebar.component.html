@@ -22,17 +22,14 @@
 
   <template [ngIf]="!config.isStandAlone">
     <div class="controls-box">
-      <a (click)="showImportModal = true" class="import-button">
-        <md-icon>file_upload</md-icon>
-        <span class="control-text">Import</span>
+      <a (click)="showImportModal()" class="import-button" mdTooltip="Add new project" mdTooltipPosition="above">
+        <md-icon>add</md-icon>
       </a>
-      <a (click)="showExportModal = true" class="export-button">
+      <a (click)="showExportModal()" class="export-button" mdTooltip="Export all projects" mdTooltipPosition="above">
         <md-icon>file_download</md-icon>
-        <span class="control-text">Export</span>
       </a>
-      <a (click)="doReindex()" class="reindex-button">
+      <a (click)="doReindex()" class="reindex-button" mdTooltip="Reïndex" mdTooltipPosition="above">
         <md-icon>refresh</md-icon>
-        <span class="control-text">Reïndex</span>
       </a>
     </div>
   </template>
@@ -41,7 +38,3 @@
     <a class="microdocs-link" target="_blank" [href]="'http://www.microdocs.io'">microdocs.io</a>
   </div>
 </div>
-<template [ngIf]="!config.isStandAlone">
-  <!--<import-panel [showModal]="showImportModal" (stateChanges)="showImportModal = $event"></import-panel>-->
-  <!--<export-panel [showModal]="showExportModal" (stateChanges)="showExportModal = $event"></export-panel>-->
-</template>

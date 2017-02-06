@@ -24,13 +24,9 @@ md-list{
       top: 3px;
     }
 
-    md-list-item{
-      padding-left: 20px;
-    }
-
     @each $name, $color in $colors {
       .#{$name} md-icon {
-        color: $color;
+        color: map_get($color, 500);
       }
     }
   }

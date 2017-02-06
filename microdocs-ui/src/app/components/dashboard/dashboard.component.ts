@@ -16,19 +16,20 @@ import {Router} from "@angular/router";
 
 @Component({
   selector: 'dashboard',
-  providers: [],
-//  templateUrl: 'dashboard.component.html'
-  template: 'dashboard'
+  templateUrl: 'dashboard.component.html',
+  styleUrls: ['dashboard.component.scss']
 })
 
 export class DashboardComponent {
 
+  loading:boolean = true;
   empty:boolean = false;
   nodes:Subject<ProjectTree> = new ReplaySubject<ProjectTree>(1);
 
   constructor(private projectService:ProjectService, private router:Router){
     this.projectService.getProjects().subscribe(notification => {
       notification.do(data => {
+        this.loading = false;
         this.nodes.next(data as ProjectTree);
         if ((data as ProjectTree).projects) {
           this.empty = (data as ProjectTree).projects.length == 0;

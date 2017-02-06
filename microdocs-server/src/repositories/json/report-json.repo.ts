@@ -85,6 +85,9 @@ export class ReportJsonRepository implements ReportRepository {
     if(project.info.updateTime){
       projectInfo.updateTime = project.info.updateTime;
     }
+    if(project.info.color){
+      projectInfo.color = project.info.color;
+    }
     project.info = projectInfo;
     
     // find links

@@ -7,10 +7,13 @@
     </select>
   </span>
   <span class="example-spacer"></span>
-  <md-icon class="deprecate-button" mdTooltip="Mark this project as deprecated" [class.selected]="project.deprecated === true" (click)="toggleDeprecated()">broken_image</md-icon>
-  <md-icon class="export-button" mdTooltip="Export" (click)="showExportModal = true">file_download</md-icon>
-  <md-icon class="edit-button" mdTooltip="Edit" (click)="showEditModal = true">edit</md-icon>
-  <md-icon class="delete-button" mdTooltip="Delete" (click)="showDeleteModal = true">delete</md-icon>
+
+  <template [ngIf]="!error && !loading">
+    <md-icon class="deprecate-button" mdTooltip="Mark this project as deprecated" [class.selected]="project.deprecated === true" (click)="toggleDeprecated()">broken_image</md-icon>
+    <md-icon class="export-button disabled" mdTooltip="Disabled" (click)="showExportModal()">file_download</md-icon>
+    <md-icon class="edit-button disabled" mdTooltip="Disabled" (click)="showEditModal()">edit</md-icon>
+    <md-icon class="delete-button disabled" mdTooltip="Disabled" (click)="showDeleteModal()">delete</md-icon>
+  </template>
 </md-toolbar>
 <div class="project-content" [class.loading]="loading">
   <div class="grid-container page-content">
@@ -24,7 +27,7 @@
             </div>
           </template>
           <template [ngIf]="project.deprecated === true">
-            <div class="problem-box">
+            <div class="error">
               <md-icon>error</md-icon>
               <span class="problem">This version is marked as Deprecated</span>
             </div>
@@ -49,7 +52,7 @@
             </ul>
           </div>
         </div>
-        <!--<dependency-graph class="small" [nodes]="nodes" [env]="env" [projectName]="title" [showOptionBar]="false" [showVersions]="false" [showInheritance]="true"></dependency-graph>-->
+        <dependency-graph [small]="true" [nodes]="nodes" [env]="env" [projectName]="title" [showOptionBar]="false" [showVersions]="false" [showInheritance]="true"></dependency-graph>
       </simple-card>
       <simple-card text="Endpoints" *ngIf="project.paths | notEmpty">
         <div *ngFor="let path of project.paths | objectIterator | sortByKey:'_id'">
@@ -109,19 +112,25 @@
     <template [ngIf]="error">
       <div class="error-page">
         <template [ngIf]="notFound">
-          <h1><md-icon>warning</md-icon> {{error}}</h1>
+          <h1 class="warning">
+            <md-icon>warning</md-icon>
+            {{error}}
+          </h1>
           <h2><strong>{{title + ' '}}</strong><span *ngIf="version">version <strong>{{version + ' '}}</strong></span>doesn't
             exists</h2>
         </template>
         <template [ngIf]="!notFound">
-          <h1 class="error"><md-icon>error</md-icon> {{error}}</h1>
+          <h1 class="error">
+            <md-icon>error</md-icon>
+            {{error}}
+          </h1>
         </template>
       </div>
     </template>
   </div>
 </div>
 <!--<template [ngIf]="!config.isStandAlone">-->
-  <!--<export-panel [showModal]="showExportModal" (stateChanges)="showExportModal = $event" [project]="title" [version]="version"></export-panel>-->
-  <!--<edit-panel [showModal]="showEditModal" (stateChanges)="showEditModal = $event" [project]="title" [version]="version" [group]="project?.info?.group"></edit-panel>-->
-  <!--<delete-panel [showModal]="showDeleteModal" (stateChanges)="showDeleteModal = $event" [project]="title" [version]="version"></delete-panel>-->
+<!--<export-panel [showModal]="showExportModal" (stateChanges)="showExportModal = $event" [project]="title" [version]="version"></export-panel>-->
+<!--<edit-panel [showModal]="showEditModal" (stateChanges)="showEditModal = $event" [project]="title" [version]="version" [group]="project?.info?.group"></edit-panel>-->
+<!--<delete-panel [showModal]="showDeleteModal" (stateChanges)="showDeleteModal = $event" [project]="title" [version]="version"></delete-panel>-->
 <!--</template>-->

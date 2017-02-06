@@ -11,6 +11,8 @@ import { ProjectChangeRule } from "@maxxton/microdocs-core/domain/settings/proje
 import {ProjectService} from "../../services/project.service";
 import {environment} from '../../../environments/environment'
 import { StringUtil } from "../../helpers/string.util";
+import { MdDialog } from "@angular/material";
+import { ExportDialogComponent } from "../export-dialog/export-dialog.component";
 
 
 @Component({
@@ -34,9 +36,6 @@ export class ProjectComponent {
   private notFound:boolean = false;
   private error:string;
 
-  private showExportModal:boolean = false;
-  private showDeleteModal:boolean = false;
-  private showEditModal:boolean = false;
   private subscribtions:Subscription[] = [];
   private projectSubscribtion:Subscription;
 
@@ -52,7 +51,8 @@ export class ProjectComponent {
 
   constructor(private projectService:ProjectService,
               private activatedRoute:ActivatedRoute,
-              private router:Router) {
+              private router:Router,
+              private mdDialog:MdDialog) {
 
     //load metadata
     this.projectService.getProjects().subscribe(notification => {
@@ -186,5 +186,17 @@ export class ProjectComponent {
 
   timeEquals(updateTime:string, publishTime:string):boolean{
     return new Date(updateTime).getTime() - new Date(publishTime).getTime() > 1000;
+  }
+
+  showExportModal():void{
+//    let ref = this.mdDialog.open(ExportDialogComponent);
+  }
+
+  showEditModal():void{
+
+  }
+
+  showDeleteModal():void{
+
   }
 }

@@ -100,7 +100,7 @@ export class ProjectService {
   }
 
   private handleError( error:Response, friendlyMessage:string ):void {
-    this.snackbar.open(friendlyMessage);
+    this.snackbar.open(friendlyMessage, undefined, {duration: 3000});
 //    this.snackbarService.addNotification( friendlyMessage, undefined, undefined, 'error_outline', undefined );
     try {
       var body = error.json();

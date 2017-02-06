@@ -4,7 +4,7 @@
       <a [routerLink]="[route.path]" [queryParams]="route.pathParams">
           <template [ngIf]="route.generateIcon">
             <md-list-item>
-              <icon-generator md-list-avatar [text]="route.name" [color]="getColor(route)"></icon-generator>
+              <icon-generator [small]="true" md-list-avatar [text]="route.name" [color]="getColor(route)"></icon-generator>
               <h4 md-line>{{route.name}}</h4>
               <template [ngIf]="route.postIcon">
                 <span [class]="route.postIconColor">

@@ -4,13 +4,22 @@
 
   display: inline-block;
   padding: 7px 5px;
-  height: 32px;
-  width: 32px;
+  width: 34px;
+  height: 34px;
   border-radius: 100%;
   color: white;
   text-align: center;
   margin-right: 5px;
   font-size: 17px !important;
+}
+
+.icon-generator.small span{
+  height: 24px;
+  width: 24px;
+  font-size: 11px !important;
+  position: relative;
+  top: 5px;
+  margin-left: 10px;
 }
 
 /**
@@ -19,7 +28,7 @@
 .icon-generator {
   @each $name, $color in $colors {
     span.#{$name} {
-      background: $color;
+      background: map_get($color, 500);
     }
   }
 

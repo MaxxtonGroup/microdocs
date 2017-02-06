@@ -4,8 +4,10 @@ import { Observable } from "rxjs/Observable";
 import { ProjectTree } from "@maxxton/microdocs-core/domain";
 import { ProjectService } from "../../services/project.service";
 import { environment } from "../../../environments/environment";
-import { MdIconRegistry, MdSnackBar } from "@angular/material";
+import { MdSnackBar, MdDialog } from "@angular/material";
 import { RouteInfo } from "../../domain/route-info.model";
+import { ImportDialogComponent } from "../import-dialog/import-dialog.component";
+import { ExportDialogComponent } from "../export-dialog/export-dialog.component";
 
 @Component( {
   selector: 'sidebar-component',
@@ -17,10 +19,7 @@ export class SidebarComponent {
 
   private config: any = environment;
 
-  private user              = {};
-          showImportModal   = false;
-          showExportModal   = false;
-          showSettingsModal = false;
+  private user = {};
 
   @HostBinding( 'class.big' )
   private showFullSideBar: boolean = true;
@@ -44,7 +43,7 @@ export class SidebarComponent {
   @Output( 'envChange' )
   change = new EventEmitter();
 
-  constructor( private projectService: ProjectService, private snackbar:MdSnackBar) {
+  constructor( private projectService: ProjectService, private snackbar: MdSnackBar, private dialog: MdDialog ) {
 
   }
 
@@ -67,7 +66,7 @@ export class SidebarComponent {
   }
 
   private initMenu() {
-    let pathPrefix        = "projects/";
+    let pathPrefix              = "projects/";
     let menus: Array<RouteInfo> = [ {
       path: '/dashboard',
       pathMatch: 'full',
@@ -75,7 +74,7 @@ export class SidebarComponent {
       name: 'Overview',
       icon: 'home'
     } ];
-    let filteredNodes     = this.filterNodes( this.node, this.searchQuery );
+    let filteredNodes           = this.filterNodes( this.node, this.searchQuery );
     filteredNodes.projects.forEach( projectNode => {
       let groupName = projectNode.group;
       if ( groupName == undefined ) {
@@ -91,7 +90,7 @@ export class SidebarComponent {
       let iconColor = null;
       if ( problems != undefined && problems != null && problems > 0 ) {
         iconColor = 'red';
-        icon = 'error';
+        icon      = 'error';
       }
       let groupRoute = menus.filter( group => group.name == groupName )[ 0 ];
       groupRoute.children.push( {
@@ -100,7 +99,8 @@ export class SidebarComponent {
         name: projectNode.title,
         postIcon: icon,
         postIconColor: iconColor,
-        generateIcon: true
+        generateIcon: true,
+        generateIconColor: projectNode.color
       } );
     } );
     console.info( menus );
@@ -137,16 +137,24 @@ export class SidebarComponent {
 
   doReindex() {
     let time = new Date().getTime();
-    let ref = this.snackbar.open("Reindexing " + this.projectService.getSelectedEnv() + " environment");
+    let ref  = this.snackbar.open( "Reindexing " + this.projectService.getSelectedEnv() + " environment", undefined, {duration: 3000} );
 //    let notification = this.snackbarService.addNotification( "Reindexing " + this.projectService.getSelectedEnv() + " environment", undefined, undefined, 'refresh', undefined );
     this.projectService.reindex().subscribe( resp => {
       ref.dismiss();
       let difTime = new Date().getTime() - time;
-      this.snackbar.open("Reindexing complete in " + difTime + 'ms');
+      this.snackbar.open( "Reindexing complete in " + difTime + 'ms', undefined, {duration: 3000} );
       this.projectService.refreshProjects();
     }, error => {
-      this.snackbar.open("Reindexing failed!");
+      this.snackbar.open( "Reindexing failed!", undefined, {duration: 3000} );
     } );
+  }
+
+  showImportModal(): void {
+    this.dialog.open( ImportDialogComponent );
+  }
+
+  showExportModal(): void {
+    this.dialog.open( ExportDialogComponent );
   }
 
 }

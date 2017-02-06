@@ -1,0 +1,55 @@
+<div class="export-dialog">
+  <h2>
+    <md-icon>file_download</md-icon>
+    Export Project
+  </h2>
+  <div class="row">
+    <div class="large-6 columns">
+      <h5>1. Select Projects</h5>
+      <ul class="project-list">
+        <li>
+          <input type="checkbox" name="_all" [checked]="allSelected" (change)="selectAll($event.target.checked)"/>
+          <label (click)="selectAll(!allSelected)">All</label>
+        </li>
+        <li><strong>Groups</strong></li>
+        <li *ngFor="let item of groupItems">
+          <input type="checkbox" name="_group_{{item.name | lowercase}}" [checked]="item.selected" (change)="selectItem(item, $event.target.checked)"/>
+          <label (click)="selectItem(item, !item.selected)">{{item.name}}</label>
+        </li>
+        <li><strong>Projects</strong></li>
+        <li *ngFor="let item of projectItems">
+          <input type="checkbox" name="_group_{{item.name | lowercase}}" [checked]="item.selected" (change)="selectItem(item, $event.target.checked)"/>
+          <label (click)="selectItem(item, !item.selected)">{{item.name}}</label>
+        </li>
+      </ul>
+    </div>
+    <div class="large-6 columns">
+      <h5>2. Select Format</h5>
+      <ul class="export-formats">
+        <li class="microdocs" [class.selected]="format == 'microdocs'" (click)="selectFormat('microdocs')">
+          <span>MicroDocs</span>
+        </li>
+        <li class="swagger" [class.selected]="format == 'swagger'" (click)="selectFormat('swagger')">
+          <span>Open Api (Swagger)</span>
+        </li>
+        <li class="api-blueprint" [class.selected]="format == 'api-blueprint'" (click)="selectFormat('api-blueprint')">
+          <span>Api Blueprint</span>
+        </li>
+        <li class="postman" [class.selected]="format == 'postman'" (click)="selectFormat('postman')">
+          <span>Postman</span>
+        </li>
+        <li class="docker-compose" [class.selected]="format == 'docker-compose'" (click)="selectFormat('docker-compose')">
+          <span>Docker Compose</span>
+        </li>
+        <li class="typescript" [class.selected]="format == 'typescript'" (click)="selectFormat('typescript')">
+          <span>Typescript</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="bottom-bar">
+    <button md-raised-button class="button" (click)="export()">Export</button>
+    <span class="text-danger">{{error}}</span>
+    <span class="text-warning">{{warning}}</span>
+  </div>
+</div>

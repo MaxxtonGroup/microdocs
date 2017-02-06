@@ -50,6 +50,12 @@ md-toolbar{
   md-icon:hover, md-icon.selected{
     background-color: rgba(0, 0, 0, 0.1);
   }
+
+  md-icon.disabled{
+    color: map_get($md-grey, 500);
+    background-color: transparent;
+    cursor: default;
+  }
 }
 
 .project-content{
@@ -66,13 +72,32 @@ md-toolbar{
   max-width: 1200px !important;
 }
 
-.error-page .error{
+.error-page{
   text-align: center;
   md-icon{
     font-size: 40px;
     width: 40px;
     height: 40px;
+    position: relative;
+    top: 8px;
   }
+  h1{
+    color: $error;
+  }
+  h1.warning{
+    color: $warning;
+  }
+  h2{
+    color: map_get($md-grey, 700);
+  }
+}
+
+dependency-graph{
+  display: block;
+  height: 200px;
+  margin-top: 10px;
+  border: 1px solid #d6d6d6;
+  border-radius: 2px;
 }
 
 

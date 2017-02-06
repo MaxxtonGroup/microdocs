@@ -1,5 +1,6 @@
 
 @import 'assets/scss/settings';
+@import 'app/components/dependency-graph/dependency-graph.component';
 
 * {
   box-sizing: border-box;
@@ -83,5 +84,12 @@ a:hover{
 .highlight-container{
   .highlight{
     color: $primary;
+  }
+}
+
+.md-list-item {
+  height: 38px !important;
+  .md-list-text h4 {
+    font-size: 14px;
   }
 }

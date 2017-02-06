@@ -13,6 +13,8 @@ export class IconGeneratorComponent {
 
   @Input( "color" )
   private color: string;
+  @Input()
+  private small:boolean = false;
 
   private initials: string;
 

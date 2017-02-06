@@ -30,6 +30,10 @@ import { PathHighlightComponent } from "./components/path-highlight/path-highlig
 import { ProblemBoxComponent } from "./components/problem-box/problem-box.component";
 import { BodyRenderComponent } from "./components/body-render/body-render.component";
 import { ModelComponent } from "./components/model/model.component";
+import { DependencyGraphComponent } from "./components/dependency-graph/dependency-graph.component";
+import { WelcomeComponent } from "./components/welcome/welcome.component";
+import { ImportDialogComponent } from "./components/import-dialog/import-dialog.component";
+import { ExportDialogComponent } from "./components/export-dialog/export-dialog.component";
 
 @NgModule({
   declarations: [
@@ -46,6 +50,10 @@ import { ModelComponent } from "./components/model/model.component";
     ProblemBoxComponent,
     BodyRenderComponent,
     ModelComponent,
+    DependencyGraphComponent,
+    WelcomeComponent,
+    ImportDialogComponent,
+    ExportDialogComponent,
 
     SortByHttpMethodPipe,
     SortByKeyPipe,
@@ -53,6 +61,10 @@ import { ModelComponent } from "./components/model/model.component";
     NotEmptyPipe,
     EmptyPipe,
     ObjectIteratorPipe
+  ],
+  entryComponents: [
+    ImportDialogComponent,
+    ExportDialogComponent
   ],
   imports: [
     BrowserModule,
