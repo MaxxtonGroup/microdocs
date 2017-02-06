@@ -1,4 +1,7 @@
 module.exports.default = {
+  info: {
+    color: 'pink'
+  },
   dependencies: {
     '{dependencyTitle}': {
       paths: {

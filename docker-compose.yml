@@ -1,0 +1,22 @@
+version: '2'
+services:
+  microdocs-server:
+    container_name: microdocs-dev
+    image: microdocs:dev
+    build:
+      dockerfile: Dockerfile.dev
+      context: .
+    ports:
+     - 3000:3000
+    volumes:
+     - ./microdocs-server/dist:/microdocs/microdocs-server/dist
+     - ./microdocs-server/data:/microdocs/microdocs-server/data
+     - ./microdocs-ui/dist:/microdocs/microdocs-ui/dist
+     - ../microdocs-core/dist:/microdocs/microdocs-server/dist/node_modules/@maxxton/microdocs-core
+    networks:
+     - 'microdocs-server'
+
+networks:
+  microdocs-server:
+    external:
+      name: 'microdocs-server'

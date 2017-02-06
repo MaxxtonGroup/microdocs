@@ -10,7 +10,6 @@ import { MicroDocsResponseHandler } from "./microdocs-response.handler";
 import * as Handlebars from 'handlebars';
 import { Injection } from "../../injections";
 import { ProjectNode } from "@maxxton/microdocs-core/domain/tree/project-node.model";
-import { extention } from "../../views/docker-compose-projects";
 
 export class TemplateResponseHandler extends MicroDocsResponseHandler {
 
@@ -102,22 +101,22 @@ export class TemplateResponseHandler extends MicroDocsResponseHandler {
 
       let nodePath:string            = projectTree.findNodePath( project.info.title, project.info.version );
       let projectNode:ProjectNode    = <ProjectNode>projectTree.resolveReference( '#' + nodePath );
-      let projectNodes:ProjectNode[] = projectNode != null ? [ projectNode ] : [];
-      let flatList:FlatList          = projectNode != null ? projectNode.toFlatList( false ) : new FlatList();
-      let projects:Project[]         = flatList.map<Project>( n => {
-        if ( n.title === project.info.title && n.version === project.info.version ) {
-          return project;
-        } else {
-          return this.injection.ProjectRepository().getAggregatedProject( env, n.title, n.version );
-        }
-      } ).filter( p => p );
+      //let projectNodes:ProjectNode[] = projectNode != null ? [ projectNode ] : [];
+      //let flatList:FlatList          = projectNode != null ? projectNode.toFlatList( false ) : new FlatList();
+//      let projects:Project[]         = flatList.map<Project>( n => {
+//        if ( n.title === project.info.title && n.version === project.info.version ) {
+//          return project;
+//        } else {
+//          return this.injection.ProjectRepository().getAggregatedProject( env, n.title, n.version );
+//        }
+//      } ).filter( p => p );
 
       if ( projectsScriptFile != null || projectScriptFile != null ) {
         this.renderScript( projectsScriptFile != null ? projectsScriptFile : projectScriptFile, {
           info: project,
           env: env,
-          projectNodes: projectNodes,
-          projectNodesFlat: flatList,
+          projectNodes: [], //projectNodes,
+          projectNodesFlat: new FlatList(), //flatList,
           currentNode: buildSelf ? projectNode : undefined,
           projects: [ project ]
         }, res );
@@ -125,8 +124,8 @@ export class TemplateResponseHandler extends MicroDocsResponseHandler {
         res.render( projectViewFile != null ? projectViewFile : projectsViewFile, {
           info: project,
           env: env,
-          projectNodes: projectNodes,
-          projectNodesFlat: flatList,
+          projectNodes: [], //projectNodes,
+          projectNodesFlat: new FlatList(), //flatList,
           currentNode: projectNode
         } );
       }
@@ -199,7 +198,7 @@ export class TemplateResponseHandler extends MicroDocsResponseHandler {
         this.responseYaml(res, 200, result.body);
         break;
       default:
-        throw new Error("Unknown response mime type: " + extention);
+        throw new Error("Unknown response mime type: " + result.extension);
     }
   }
 

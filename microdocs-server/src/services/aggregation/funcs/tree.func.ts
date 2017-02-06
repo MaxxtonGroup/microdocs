@@ -18,7 +18,8 @@ export function buildTree( pipe:Pipe<any> ):ProjectTree {
 }
 
 function buildNode( pipe:Pipe<any>, projectInfo:ProjectInfo ):ProjectNode {
-  let projectNode = new ProjectNode( projectInfo.title, undefined, projectInfo.group, projectInfo.version, projectInfo.getVersions() );
+  let projectNode = new ProjectNode( projectInfo.title, undefined, projectInfo.group, projectInfo.version, projectInfo.getVersions());
+  projectNode.color = projectInfo.color;
 
   // load project
   let project = pipe.getPrevProject( projectNode.title, projectNode.version );

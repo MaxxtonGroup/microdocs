@@ -1,0 +1,167 @@
+
+@import '../../../assets/scss/settings';
+
+.sidebar {
+  width: 250px;
+  height: 100%;
+  display: flex;
+  flex-flow: column nowrap;
+
+  a.logo {
+    height: 88px;
+    position: relative;
+    display: block;
+    background-color: $primary;
+    padding-top: 24px;
+    padding-bottom: 64px;
+    font-weight: bold;
+    font-size: 23px;
+    text-decoration: none;
+
+    h1 {
+      color: white;
+      text-align: center;
+      font-size: 24px;
+    }
+
+    .logo-left, .logo-right{
+      position: absolute;
+      height: 50px;
+      width: 50px;
+      background-image: url(../../../assets/images/microdocs-white.png);
+      background-size: contain;
+    }
+
+    .logo-left{
+      bottom: -10px;
+      left: 5px;
+    }
+
+    .logo-right{
+      height: 50px;
+      top: -10px;
+      right: 5px;
+    }
+  }
+
+  .env-box {
+    position: absolute;
+    top: 48px;
+    right: 0;
+
+    select {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      padding: 0.5rem;
+      padding-right: 1.625rem;
+      background: url(../../../assets/images/arrow_down.png) no-repeat right transparent;
+      background-size: 24px;
+      border: none;
+      color: white;
+      display: block;
+      width: 100%;
+      height: 2.4rem;
+      margin: 0 0 0.8rem 0;
+      outline: none;
+
+      option {
+        color: black;
+      }
+    }
+  }
+
+  .search-box{
+    position: relative;
+    min-height: 33px;
+
+    md-icon{
+      position: absolute;
+      left: 20px;
+      top: 7px;
+      font-size: 21px;
+    }
+
+    input {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      display: block;
+      width: 100%;
+      height: 2.4rem;
+      padding: 0.5rem;
+      padding-left: 56px;
+      border-radius: 0;
+      background: #fff;
+      color: #000;
+      font-size: 14px;
+      -webkit-font-smoothing: antialiased;
+      vertical-align: middle;
+      background: none !important;
+      border: none;
+      outline: none;
+      margin: 0;
+    }
+  }
+
+  .grid-block{
+    height: 100%;
+    flex: 1 1 auto;
+    flex-flow: row wrap;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    justify-content: flex-start;
+    overflow: auto;
+  }
+
+  .controls-box {
+    position: relative;
+    height: 40px;
+    border-top: 1px solid #eee;
+
+    a {
+      position: absolute;
+      display: inline-block;
+      height: 100%;
+      width: 50%;
+      transition: 0.2s ease all;
+
+      md-icon{
+        position: absolute;
+        width: 100%;
+        height: 80%;
+        top: 5px;
+        text-align: center;
+        font-size: 20px;
+      }
+    }
+
+    a.import-button{
+      color: md-color(md-palette($md-green));
+      width: 33%;
+      left: 0;
+    }
+
+    a.export-button{
+      left: 33%;
+      width: 34%;
+      color: md-color(md-palette($md-blue));
+    }
+
+    a.reindex-button{
+      color: md-color(md-palette($md-blue-grey));
+      width: 33%;
+      left: 67%;
+    }
+    a:hover{
+      background-color: map_get($md-grey, 300);
+    }
+  }
+
+  .footer{
+    padding: 10px;
+    background-color: map_get($md-grey, 300);
+    font-size: 14px;
+    a{
+      color: $primary;
+    }
+  }
+}

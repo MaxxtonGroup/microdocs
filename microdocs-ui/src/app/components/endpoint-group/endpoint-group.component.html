@@ -1,0 +1,21 @@
+<div class="endpoint-group">
+  <div class="group-header" (click)="hidden = !hidden">
+    <path-highlight class="path" [path]="endpointGroup._id"></path-highlight>
+    <span class="methods" *ngIf="hidden">
+    <span *ngFor="let endpoint of endpointGroup | objectIterator | sortByHttpMethod:'_id'" [class]="endpoint._id | lowercase">
+      {{endpoint._id | uppercase}}
+      <template [ngIf]="endpoint.problems | notEmpty">
+        <md-icon class="error">error</md-icon>
+      </template>
+    </span>
+  </span>
+  </div>
+  <template [ngIf]="!hidden">
+    <div class="group-content">
+      <div class="methods" *ngFor="let endpoint of endpointGroup | objectIterator | sortByHttpMethod:'_id'">
+        <span [class]="endpoint._id | lowercase">{{endpoint._id | uppercase}}</span>
+        <endpoint [path]="endpointGroup._id" [endpoint]="endpoint"></endpoint>
+      </div>
+    </div>
+  </template>
+</div>

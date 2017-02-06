@@ -1,4 +1,5 @@
 *
 !microdocs-server/dist
+!microdocs-server/package.json
 !microdocs-server/config.yml
 !microdocs-ui/dist

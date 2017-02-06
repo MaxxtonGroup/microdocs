@@ -1,0 +1,40 @@
+<div class="sidebar">
+  <a class="logo" [routerLink]="['/']">
+    <h1>MicroDocs</h1>
+    <div class="logo-left"></div>
+    <div class="logo-right"></div>
+  </a>
+
+  <div class="env-box">
+    <select [ngModel]="selectedEnv" (change)="onEnvVersion($event.target.value)">
+      <option *ngFor="let env of envs" [value]="env">{{env}}</option>
+    </select>
+  </div>
+
+  <div class="search-box">
+    <md-icon>search</md-icon>
+    <input type="text" placeholder="Search" (val)="searchQuery" (keyup)="onSearchQueryChange($event.target.value)"/>
+  </div>
+
+  <div class="grid-block">
+    <sidebar-list [routes]="menu"></sidebar-list>
+  </div>
+
+  <template [ngIf]="!config.isStandAlone">
+    <div class="controls-box">
+      <a (click)="showImportModal()" class="import-button" mdTooltip="Add new project" mdTooltipPosition="above">
+        <md-icon>add</md-icon>
+      </a>
+      <a (click)="showExportModal()" class="export-button" mdTooltip="Export all projects" mdTooltipPosition="above">
+        <md-icon>file_download</md-icon>
+      </a>
+      <a (click)="doReindex()" class="reindex-button" mdTooltip="Reïndex" mdTooltipPosition="above">
+        <md-icon>refresh</md-icon>
+      </a>
+    </div>
+  </template>
+
+  <div class="footer">
+    <a class="microdocs-link" target="_blank" [href]="'http://www.microdocs.io'">microdocs.io</a>
+  </div>
+</div>

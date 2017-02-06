@@ -63,7 +63,7 @@ export class ProjectJsonRepository implements ProjectRepository {
         }
         project.dependencies = convertedDependencies;
       }
-      project.info = new ProjectInfo(title, project.info.group, version, project.info.versions, project.info.links, project.info.description, project.info.sourceLink, project.info.publishTime, project.info.updateTime);
+      project.info = new ProjectInfo(title, project.info.group, version, project.info.versions, project.info.links, project.info.description, project.info.sourceLink, project.info.publishTime, project.info.updateTime, project.info.color);
       return project;
     }
     return null;

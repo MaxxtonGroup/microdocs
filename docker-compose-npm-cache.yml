@@ -1,0 +1,17 @@
+version: '2'
+services:
+  npm-registry:
+    image: verdaccio/verdaccio
+    volumes:
+     - ./npm-cache/conf:/verdaccio/conf
+     - ./npm-cache/storage:/verdaccio/storage
+     - ./npm-cache/local_storage :/verdaccio/local_storage
+    ports:
+     - 4873:4873
+    networks:
+     - 'microdocs-server'
+
+networks:
+  microdocs-server:
+    external:
+      name: 'microdocs-server'

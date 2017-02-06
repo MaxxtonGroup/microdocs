@@ -1,0 +1,82 @@
+
+@import '../../../assets/scss/settings';
+
+.endpoint-group {
+  display: block;
+  box-shadow: rgba(0, 0, 0, 0.227451) 0px 3px 10px 0px, rgba(0, 0, 0, 0.156863) 0px 3px 10px 0px !important;
+  border-radius: 2px;
+  margin-bottom: 10px;
+  background-color: white;
+
+  .group-header {
+    padding: 15px;
+    font-size: 14px;
+    font-family: monospace;
+    cursor: pointer;
+
+    .path {
+      cursor: text;
+    }
+  }
+
+  .methods > span {
+    position: relative;
+    padding: 5px 10px;
+    margin-left: 10px;
+    background-color: map_get($md-blue-grey, 500);
+    color: white;
+    border-radius: 5px;
+
+    md-icon {
+      position: absolute;
+      top: -8px;
+      right: -14px;
+    }
+  }
+
+  .methods > span.get {
+    background-color: map_get($md-green, 500);
+  }
+
+  .methods > span.post {
+    background-color: map_get($md-blue, 500);
+  }
+
+  .methods > span.put {
+    background-color: map_get($md-orange, 500);
+  }
+
+  .methods > span.delete {
+    background-color: map_get($md-red, 500);
+  }
+
+  .methods > span.path {
+    background-color: map_get($md-brown, 500);
+  }
+
+  .group-content {
+    height: auto;
+    padding: 0 20px;
+    opacity: 1;
+    overflow: hidden;
+    transition: 0.2s ease opacity;
+  }
+
+  .group-content.hidden {
+    opacity: 0;
+    height: 0;
+  }
+
+  .group-content .methods {
+    border-top: 1px solid #d6d6d6;
+    margin-bottom: 20px;
+    padding-top: 1px;
+  }
+
+  .group-content .methods > span {
+    display: inline-block;
+    margin: 10px 0;
+    margin-bottom: 20px;
+    font-size: 18px;
+  }
+}

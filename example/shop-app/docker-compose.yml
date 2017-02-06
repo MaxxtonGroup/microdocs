@@ -1,0 +1,7 @@
+version: '2'
+services:
+  shop-app:
+    container_name: shop-app
+    build: .
+    ports:
+    - 4200:4200

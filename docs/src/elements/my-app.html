@@ -1,0 +1,52 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/app-route/app-location.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animated-pages.html">
+<link rel="import" href="./home-route.html">
+<link rel="import" href="./documentation-route.html">
+
+<dom-module id="my-app">
+  <template>
+    <style>
+      neon-animated-pages > *{
+        position: fixed;
+        top: 100px;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        overflow: auto;
+      }
+    </style>
+
+    <app-location use-hash-as-path route="{{route}}"></app-location>
+    <app-route route="{{route}}" pattern="/:page" data="{{routeData1}}" tail="{{trail1}}"></app-route>
+    <app-route route="[[trail1]]" pattern="/:section" data="{{routeData2}}" tail="{{trail2}}"></app-route>
+    <!-- /.navbar -->
+    {{routeData.view}}
+    <neon-animated-pages selected='{{routeData1.page}}' attr-for-selected='path' fallback-selection="home">
+      <home-route path="home" route="{{route}}"></home-route>
+      <documentation-route path="documentation" name="{{routeData2.section}}" route="[[trail2]]"></documentation-route>
+    </neon-animated-pages>
+  </template>
+  <script>
+    Polymer({
+      is: 'my-app',
+
+      properties: {
+        routeData: {
+          type: Object,
+          notify: true,
+          observer: "onRouteChanged"
+        }
+      },
+
+      onRouteChanged: function () {
+        if (["home", "plugins", "server", "configuration", "general"].indexOf(this.routeData.view) < 0) {
+          this.async(function () {
+            window.location.hash = '/home';
+          });
+        }
+      }
+    });
+  </script>
+</dom-module>
