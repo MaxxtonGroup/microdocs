@@ -6,7 +6,6 @@ import {BaseRoute} from "./route";
 
 /**
  * @controller
- * @baseUrl /api/v1
  */
 export class EnvRoute extends BaseRoute {
 
@@ -14,7 +13,7 @@ export class EnvRoute extends BaseRoute {
 
   /**
    * Get all the environments
-   * @httpGet /envs
+   * @httpGet /api/v1/envs
    * @httpResponse 200 {{[name: string]: Environments}[]}
    */
   public projects(req: express.Request, res: express.Response, next: express.NextFunction, scope:BaseRoute) {

@@ -7,7 +7,6 @@ import {Problem, ProjectInfo, Project} from "@maxxton/microdocs-core/domain";
 
 /**
  * @controller
- * @baseUrl /api/v1
  */
 export class CheckRoute extends BaseRoute {
 
@@ -15,7 +14,7 @@ export class CheckRoute extends BaseRoute {
 
   /**
    * Check project definitions for problems
-   * @httpPost /check
+   * @httpPost /api/v1/check
    * @httpQuery ?env {string} environment to check the project definition against
    * @httpQuery ?project {string} name of the project if not already defined in the project definitions
    * @httpQuery ?title {string} alias for project

@@ -12,7 +12,7 @@ export class PublishZipRoute extends BaseRoute{
 
   /**
    * Publish new project definitions
-   * @httpPut /projects/{title}
+   * @httpPut /api/v1/projects/{title}
    * @httpPath title {string} name of the project
    * @httpQuery ?env {string} environment to publish the project definition
    * @httpQuery ?failOnProblems {boolean} either to publish when there are problems or

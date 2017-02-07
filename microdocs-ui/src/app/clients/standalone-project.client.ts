@@ -1,13 +1,13 @@
 import { Injectable } from "@angular/core";
 import { Http, Response } from "@angular/http";
 import {
-    RestClient,
-    HttpClient,
-    Get,
-    Path,
-    Query,
-    Map,
-    Produces, MediaType, Client
+  RestClient,
+  HttpClient,
+  Get,
+  Path,
+  Query,
+  Map,
+  Produces, MediaType, Client
 } from "@maxxton/angular-rest";
 import { ProjectTree, Project, Environments, ProjectChangeRule, ProblemResponse } from "@maxxton/microdocs-core/domain";
 import { Observable } from "rxjs/Observable";
@@ -27,10 +27,10 @@ import { ProjectClient } from "./project.client";
   }
 } )
 @Injectable()
-export class StandaloneProjectClient extends RestClient implements ProjectClient{
+export class StandaloneProjectClient extends RestClient implements ProjectClient {
 
-  constructor( private http:Http ) {
-    super(<any>http);
+  constructor( private http: Http ) {
+    super( <any>http );
   }
 
   /**
@@ -40,7 +40,7 @@ export class StandaloneProjectClient extends RestClient implements ProjectClient
    */
   @Get( "/projects-{env}.json" )
   @Map( resp => ProjectTree.link( resp.json() ) )
-  public loadProjects( @Path( "env" ) env:string ):Observable<ProjectTree> {
+  public loadProjects( @Path( "env", { value: 'default' } ) env: string ): Observable<ProjectTree> {
     return null;
   }
 
@@ -53,7 +53,7 @@ export class StandaloneProjectClient extends RestClient implements ProjectClient
    */
   @Get( "/projects/{title}-{env}-{version}.json" )
   @Map( resp => SchemaHelper.resolveObject( resp.json() ) )
-  public loadProject( @Path( "env" ) env:string, @Path( "projectName" ) projectName:string, @Path( "version" ) version?:string ):Observable<Project> {
+  public loadProject( @Path( "env", { value: 'default' } ) env: string, @Path( "title" ) title: string, @Path( "version" ) version?: string ): Observable<Project> {
     return null;
   }
 
@@ -63,23 +63,23 @@ export class StandaloneProjectClient extends RestClient implements ProjectClient
    */
   @Get( "/envs.json" )
   @Map( resp => resp.json() )
-  public getEnvs():Observable<{[key:string]:Environments}> {
+  public getEnvs(): Observable<{ [key: string]: Environments }> {
     return null
   }
 
-  public importProject( env:string, project:Project, name:string, group:string, version:string ):Observable<ProblemResponse> {
+  public importProject( env: string, project: Project, name: string, group: string, version: string ): Observable<ProblemResponse> {
     throw new Error( 'Import project is not supported in standalone' );
   }
 
-  public deleteProject( env:string, name:string, version?:string ):Observable<Response> {
+  public deleteProject( env: string, name: string, version?: string ): Observable<Response> {
     throw new Error( 'Delete project is not supported in standalone' );
   }
 
-  public updateProject( env:string, name:string, rules:ProjectChangeRule[], version?:string ):Observable<Response> {
+  public updateProject( env: string, name: string, rules: ProjectChangeRule[], version?: string ): Observable<Response> {
     throw new Error( 'Update project is not supported in standalone' );
   }
 
-  public reindex( env:string ):Observable<Response> {
+  public reindex( env: string ): Observable<Response> {
     throw new Error( 'Reindex is not supported in standalone' );
   }
 

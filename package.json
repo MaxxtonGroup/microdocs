@@ -2,6 +2,7 @@
   "scripts": {
     "watch-server": "cd microdocs-server && gulp",
     "watch-ui": "cd microdocs-ui && ng build --watch",
+    "watch-standalone": "cd microdocs-ui && ng build --watch --env=dev-standalone",
     "start-docker": "docker-compose up --build",
     "start-npm-cache": "docker-compose -f docker-compose-npm-cache.yml up"
   }

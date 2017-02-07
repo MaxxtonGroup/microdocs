@@ -10,7 +10,6 @@ import {ProjectRepository} from "../repositories/project.repo";
 
 /**
  * @controller
- * @baseUrl /api/v1
  */
 export class EditProjectRoute extends BaseRoute {
   
@@ -18,7 +17,7 @@ export class EditProjectRoute extends BaseRoute {
 
   /**
    * Update reports
-   * @httpPatch /projects/:title
+   * @httpPatch /api/v1/projects/:title
    * @httpPath title {string} name of the report
    * @httpQuery version {string} version of the report
    * @httpQuery ?env {string} environment to check the project definition against

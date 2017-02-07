@@ -8,14 +8,13 @@ import {ProjectRepository} from "../repositories/project.repo";
 
 /**
  * @controller
- * @baseUrl /api/v1
  */
 export class ProjectsRoute extends BaseRoute {
   
   mapping = {methods: ['get'], path: '/projects', handler: this.projects};
   
   /**
-   * @httpGet /projects
+   * @httpGet /api/v1/projects
    * @httpQuery ?env {string}
    * @httpQuery ?groups {string[]} filter to include or exclude groups with a '!' in front
    * @httpQuery ?projects {string[]} filter to include or exclude groups with a '!' in front
