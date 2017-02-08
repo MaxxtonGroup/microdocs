@@ -1,7 +1,7 @@
 import * as express from "express";
 import {ProjectTree, Problem, Project, ProblemResponse, ProblemLevels} from '@maxxton/microdocs-core/domain';
-import * as yaml from 'js-yaml';
-import * as xml from 'jsontoxml';
+const yaml = require('js-yaml');
+const xml = require('jsontoxml');
 import {Injection} from "../../injections";
 
 export class BaseResponseHandler {

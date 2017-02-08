@@ -1,4 +1,3 @@
-/// <reference path="../_all.d.ts" />
 
 import * as express from "express";
 
@@ -101,10 +100,14 @@ export class PublishRoute extends BaseRoute {
           handler.handleBadRequest( req, res, "Missing group parameter" );
           return;
         }
+        let links = report.info && report.info.links;
+        let description = report.info && report.info.description;
+        let sourceLink = report.info && report.info.sourceLink;
+        let color = report.info && report.info.color;
+
 
         //set group and version in the report
-        report.info = new ProjectInfo(title, group, version, [version], report.info.links, report.info.description, report.info.sourceLink);
-        report.info.publishTime = new Date().toISOString();
+        report.info = new ProjectInfo(title, group, version, [version], links, description, sourceLink, new Date().toISOString(), undefined, color);
 
         var aggregationService = scope.injection.AggregationService();
 

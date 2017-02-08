@@ -1,7 +1,6 @@
-/// <reference path="../../_all.d.ts" />
 
 import * as express from "express";
-import { ProjectTree, Problem, Project, Schema, ProblemLevels, FlatList } from '@maxxton/microdocs-core/domain';
+import { ProjectTree, Problem, Project, Schema, ProblemLevels, FlatList, ProblemResponse } from '@maxxton/microdocs-core/domain';
 import { Config } from "../../config";
 import * as fs from 'fs';
 import * as path from 'path';
@@ -139,13 +138,13 @@ export class TemplateResponseHandler extends MicroDocsResponseHandler {
     res.setHeader( 'Content-Type', 'text/plain' );
     let problemsViewFile = this.findViewFile( 'problems', 'handlebars' );
     if ( problemsViewFile != null ) {
-      var object = { problems: problems };
+      var object:ProblemResponse = { problems: problems };
       if ( problems.filter( problem => problem.level == ProblemLevels.ERROR || problem.level == ProblemLevels.WARNING ).length == 0 ) {
-        object[ 'status' ]  = 'ok';
-        object[ 'message' ] = 'No problems found';
+        object.status  = 'ok';
+        object.message = 'No problems found';
       } else {
-        object[ 'status' ]  = 'failed';
-        object[ 'message' ] = problems.length + " problem" + (problems.length > 1 ? 's' : '') + " found";
+        object.status = 'failed';
+        object.message = problems.length + " problem" + (problems.length > 1 ? 's' : '') + " found";
       }
       res.render( problemsViewFile, object );
     } else {

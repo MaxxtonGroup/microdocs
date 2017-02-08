@@ -17,6 +17,7 @@ export function checkQueryParameters( clientEndpoint:Path, producerEndpoint:Path
             }
             return true;
           }
+          return false;
         } );
       }
       if(!exists && producerParam.required){
@@ -94,6 +95,7 @@ export function checkBodyParameters(clientEndpoint:Path, producerEndpoint:Path, 
           checkSchema( clientEndpoint, clientSchema, producerSchema, problemReport, "" );
           return true;
         }
+        return false;
       } );
       if ( !exists && producerParam.required ) {
         problemReport.report( ProblemLevels.ERROR, "Missing request body", clientEndpoint.controller, clientEndpoint.method );
