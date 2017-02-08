@@ -3,22 +3,22 @@ import * as Handlebars from 'handlebars';
 import { SchemaHelper } from "@maxxton/microdocs-core/helpers/schema/schema.helper";
 import { Schema } from "@maxxton/microdocs-core/domain";
 
-Handlebars.registerHelper( 'toUpperCase', function ( str ) {
+Handlebars.registerHelper( 'toUpperCase', function ( str:string ) {
   return str.toUpperCase();
 } );
-Handlebars.registerHelper( 'ifEq', function ( v1, v2, options ) {
+Handlebars.registerHelper( 'ifEq', function ( v1:any, v2:any, options:any ) {
   if ( v1 === v2 ) {
     return options.fn( this );
   }
   return options.inverse( this );
 } );
-Handlebars.registerHelper( 'ifEq', function ( v1, v2, options ) {
+Handlebars.registerHelper( 'ifEq', function ( v1:any, v2:any, options:any ) {
   if ( v1 === v2 ) {
     return options.fn( this );
   }
   return options.inverse( this );
 } );
-Handlebars.registerHelper( 'ifNotEmpty', function ( v1, options ) {
+Handlebars.registerHelper( 'ifNotEmpty', function ( v1:any, options:any ) {
   if ( v1 ) {
     if ( typeof(v1) === 'string' ) {
       if ( v1.length > 0 ) {
@@ -67,6 +67,6 @@ Handlebars.registerHelper('randomPort', function () {
   return lastPort++;
 });
 
-Handlebars.registerHelper('resolveProjectVersion', function (projectNode) {
+Handlebars.registerHelper('resolveProjectVersion', function (projectNode:any) {
   return projectNode.resolve().version;
 });

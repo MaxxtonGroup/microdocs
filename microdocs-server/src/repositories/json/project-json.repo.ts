@@ -1,7 +1,6 @@
-/// <reference path="../../_all.d.ts" />
 import * as fs from 'fs';
 import * as path from 'path';
-import * as mkdir from 'mkdir-p';
+const mkdir = require('mkdir-p');
 
 import {Config} from "../../config";
 import {ProjectRepository} from "../project.repo";
@@ -55,7 +54,7 @@ export class ProjectJsonRepository implements ProjectRepository {
     if (fs.existsSync(storeFile)) {
       var string = fs.readFileSync(storeFile).toString();
       var json = JSON.parse(string);
-      var project:Project = json;
+      var project:any = json;
       if(project.dependencies) {
         let convertedDependencies:{[key: string]:Dependency} = {};
         for(let key in project.dependencies){

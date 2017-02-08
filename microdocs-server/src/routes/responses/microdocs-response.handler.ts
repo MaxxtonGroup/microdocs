@@ -55,7 +55,7 @@ export class MicroDocsResponseHandler extends BaseResponseHandler {
 
   protected getGlobalInfo():Project {
     var project:Project = {};
-    project.info        = <ProjectInfo>{
+    project.info        = <any>{
       title: Config.get( 'application-name' ),
       group: undefined,
       version: Config.get( 'application-version' ).toString(),

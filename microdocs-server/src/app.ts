@@ -1,4 +1,3 @@
-/// <reference path="_all.d.ts" />
 "use strict";
 
 import * as bodyParser from "body-parser";
@@ -124,7 +123,7 @@ class Server {
    */
   private routes() {
     //get router
-    let router:express.Router;
+    let router:any;
     router = express.Router();
     
     //create routes
@@ -168,5 +167,5 @@ class Server {
   }
 }
 
-var server = Server.bootstrap();
-export = server.app;
+const app = Server.bootstrap().app;
+export = app;

@@ -3,7 +3,7 @@ import { Project, ProjectNode, FlatList } from "@maxxton/microdocs-core/domain";
 declare var extention:string;
 
 export default function ( env:string, projects:Project[], projectNodes:ProjectNode[], projectNodesFlat:ProjectNode[], current:Project, currentNode?:ProjectNode ):any {
-  let services:{} = {};
+  let services:any = {};
 
   projectNodesFlat.forEach( ( projectNode:ProjectNode ) => {
     let service:any                    = buildService( projectNode );

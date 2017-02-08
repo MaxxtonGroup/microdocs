@@ -1,4 +1,3 @@
-/// <reference path="../_all.d.ts" />
 
 import {RequestHandler, Request, Response, NextFunction} from 'express';
 import {ProjectSettingsJsonRepository} from "../repositories/json/project-settings-json.repo";

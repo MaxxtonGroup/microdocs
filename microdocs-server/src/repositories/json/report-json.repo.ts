@@ -1,11 +1,10 @@
-/// <reference path="../../_all.d.ts" />
 import * as fs from 'fs';
 import * as path from 'path';
 
 import {Config} from "../../config";
 import {ReportRepository} from "../report.repo";
 import {Project, ProjectInfo} from "@maxxton/microdocs-core/domain";
-import * as mkdir from 'mkdir-p';
+const mkdir = require('mkdir-p');
 import * as fsHelper from '../../helpers/file.helper';
 import { Dependency } from "@maxxton/microdocs-core/domain/dependency/dependency.model";
 

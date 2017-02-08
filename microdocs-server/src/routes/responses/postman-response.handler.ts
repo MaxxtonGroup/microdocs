@@ -35,12 +35,12 @@ export class PostmanResponseHandler extends MicroDocsResponseHandler {
   }
 
   postmans(projectTree: ProjectTree, env:string):{}{
-    var collection = this.getPostmanBase();
+    var collection:any = this.getPostmanBase();
 
     projectTree.projects.forEach(projectNode => {
       var project = this.injection.ProjectRepository().getAggregatedProject(env, projectNode.title, projectNode.version);
       var subCollection = this.getPostmanItems(project);
-      collection['item'].push({
+      collection.item.push({
         name: projectNode.title,
         description: project.info && project.info.description ? project.info.description : 'Folder for ' + projectNode.title,
         item: subCollection
@@ -51,8 +51,8 @@ export class PostmanResponseHandler extends MicroDocsResponseHandler {
   }
 
   postman(project: Project): {} {
-    var collection = this.getPostmanBase(project);
-    collection['item'] = this.getPostmanItems(project);
+    var collection:any = this.getPostmanBase(project);
+    collection.item = this.getPostmanItems(project);
 
     return collection;
   }
@@ -110,18 +110,18 @@ export class PostmanResponseHandler extends MicroDocsResponseHandler {
     if(endpoint.responses != undefined){
       var defaultResponse = endpoint.responses['default'];
       if(Object.keys(endpoint.responses).length == 1 && defaultResponse != undefined){
-        var response:{} = {};
+        var response:any = {};
         if(defaultResponse.schema != undefined && defaultResponse.schema.default != undefined){
-          response['body'] = JSON.stringify(defaultResponse.schema.default, null, '  ');
+          response.body = JSON.stringify(defaultResponse.schema.default, null, '  ');
         }
         responses.push(response);
       }else{
         for(var status in endpoint.responses){
-          var response:{} = {status: status};
+          var response:any = {status: status};
           if(endpoint.responses[status].schema != undefined && endpoint.responses[status].schema.default != undefined){
-            response['body'] = JSON.stringify(endpoint.responses[status].schema.default, null, '  ');
+            response.body = JSON.stringify(endpoint.responses[status].schema.default, null, '  ');
           }else if(defaultResponse.schema != undefined && defaultResponse.schema.default != undefined){
-            response['body'] = JSON.stringify(defaultResponse.schema.default, null, '  ');
+            response.body = JSON.stringify(defaultResponse.schema.default, null, '  ');
           }
           responses.push(response);
         }
@@ -141,7 +141,7 @@ export class PostmanResponseHandler extends MicroDocsResponseHandler {
   }
 
   getPostmanBase(project?:Project): {} {
-    var collection:{item:any[], info:{}} = {item: [], info:{}};
+    var collection:any = {item: [], info:{}};
     if(project){
       collection['info'] = {
         name: project.info.title,
@@ -155,8 +155,8 @@ export class PostmanResponseHandler extends MicroDocsResponseHandler {
         description: Config.get('application-description')
       };
     }
-    collection.info['schema'] = "https://schema.getpostman.com/json/collection/v2.0.0/collection.json";
-    collection.info['_postman_id'] = uuid['v4']();
+    collection.info.schema = "https://schema.getpostman.com/json/collection/v2.0.0/collection.json";
+    collection.info._postman_id = uuid['v4']();
 
     // get base url
     var schema:string = Config.get('application-schema');

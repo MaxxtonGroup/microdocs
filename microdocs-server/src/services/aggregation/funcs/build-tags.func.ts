@@ -6,7 +6,7 @@ import { Project } from "@maxxton/microdocs-core/domain/project.model";
  * @return {string[]} list of tags
  */
 export function buildTags(project:Project):string[]{
-  let tags:{} = {};
+  let tags:any = {};
   if ( project.paths ) {
     for ( let path in project.paths ) {
       let segments = path.split( '/' );
