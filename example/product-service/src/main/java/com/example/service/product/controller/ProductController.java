@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
  * @author Steven Hermans (s.hermans@maxxton.com)
  */
 @RestController
-@RequestMapping("/api/v1/customers")
+@RequestMapping("/api/v1/products")
 public class ProductController {
 
     @Autowired
