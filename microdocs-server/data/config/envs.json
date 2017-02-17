@@ -4,5 +4,6 @@
   },
   "acceptance": {},
   "production": {},
-  "remote-development": {}
+  "remote-development": {},
+  "test": {}
 }

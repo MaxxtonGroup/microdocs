@@ -1,4 +1,3 @@
-/// <reference path="../../../../typings/index.d.ts" />
 import {expect} from 'chai';
 import { ProblemReporter } from "@maxxton/microdocs-core/helpers";
 import { Path, SchemaTypes, Parameter, Schema } from "@maxxton/microdocs-core/domain";
@@ -22,7 +21,7 @@ describe('#Aggregation: #endpointCheck:', () => {
       };
 
       // act
-      checkQueryParameters(clientEndpoint, producerEndpoint, {}, problemReport);
+      checkQueryParameters(clientEndpoint, producerEndpoint, problemReport);
 
       // No problems
       expect(problemReport.hasProblems()).be.false;
@@ -47,7 +46,7 @@ describe('#Aggregation: #endpointCheck:', () => {
       };
 
       // act
-      checkQueryParameters(clientEndpoint, producerEndpoint, {}, problemReport);
+      checkQueryParameters(clientEndpoint, producerEndpoint, problemReport);
 
       // No problems
       expect(problemReport.hasProblems()).be.false;
@@ -73,7 +72,7 @@ describe('#Aggregation: #endpointCheck:', () => {
       };
 
       // act
-      checkQueryParameters(clientEndpoint, producerEndpoint, {}, problemReport);
+      checkQueryParameters(clientEndpoint, producerEndpoint, problemReport);
 
       // No problems
       expect(problemReport.hasProblems()).be.true;
@@ -107,7 +106,7 @@ describe('#Aggregation: #endpointCheck:', () => {
       };
 
       // act
-      checkQueryParameters(clientEndpoint, producerEndpoint, {}, problemReport);
+      checkQueryParameters(clientEndpoint, producerEndpoint, problemReport);
 
       // No problems
       expect(problemReport.hasProblems()).be.false;
@@ -141,7 +140,7 @@ describe('#Aggregation: #endpointCheck:', () => {
       };
 
       // act
-      checkQueryParameters(clientEndpoint, producerEndpoint, {}, problemReport);
+      checkQueryParameters(clientEndpoint, producerEndpoint, problemReport);
 
       // No problems
       expect(problemReport.hasProblems()).be.true;
@@ -177,7 +176,7 @@ describe('#Aggregation: #endpointCheck:', () => {
       };
 
       // act
-      checkQueryParameters(clientEndpoint, producerEndpoint, {}, problemReport);
+      checkQueryParameters(clientEndpoint, producerEndpoint, problemReport);
 
       // No problems
       expect(problemReport.hasProblems()).be.false;
@@ -213,7 +212,7 @@ describe('#Aggregation: #endpointCheck:', () => {
       };
 
       // act
-      checkQueryParameters(clientEndpoint, producerEndpoint, {}, problemReport);
+      checkQueryParameters(clientEndpoint, producerEndpoint, problemReport);
 
       // No problems
       expect(problemReport.hasProblems()).be.false;
@@ -247,7 +246,7 @@ describe('#Aggregation: #endpointCheck:', () => {
       };
 
       // act
-      checkQueryParameters(clientEndpoint, producerEndpoint, {}, problemReport);
+      checkQueryParameters(clientEndpoint, producerEndpoint, problemReport);
 
       // No problems
       expect(problemReport.hasProblems()).be.false;
@@ -280,7 +279,7 @@ describe('#Aggregation: #endpointCheck:', () => {
       };
 
       // act
-      checkQueryParameters(clientEndpoint, producerEndpoint, {}, problemReport);
+      checkQueryParameters(clientEndpoint, producerEndpoint, problemReport);
 
       // No problems
       expect(problemReport.hasProblems()).be.true;
@@ -302,7 +301,7 @@ describe('#Aggregation: #endpointCheck:', () => {
       };
 
       // act
-      checkPathParameters(clientEndpoint, producerEndpoint, {}, problemReport);
+      checkPathParameters(clientEndpoint, producerEndpoint, problemReport);
 
       // No problems
       expect(problemReport.hasProblems()).be.false;
@@ -322,7 +321,7 @@ describe('#Aggregation: #endpointCheck:', () => {
       };
 
       // act
-      checkPathParameters(clientEndpoint, producerEndpoint, {}, problemReport);
+      checkPathParameters(clientEndpoint, producerEndpoint, problemReport);
 
       // No problems
       expect(problemReport.hasProblems()).be.false;
@@ -350,7 +349,7 @@ describe('#Aggregation: #endpointCheck:', () => {
       };
 
       // act
-      checkPathParameters(clientEndpoint, producerEndpoint, {}, problemReport);
+      checkPathParameters(clientEndpoint, producerEndpoint, problemReport);
 
       // No problems
       expect(problemReport.hasProblems()).be.false;
@@ -386,7 +385,7 @@ describe('#Aggregation: #endpointCheck:', () => {
       };
 
       // act
-      checkPathParameters(clientEndpoint, producerEndpoint, {}, problemReport);
+      checkPathParameters(clientEndpoint, producerEndpoint, problemReport);
 
       // No problems
       expect(problemReport.hasProblems()).be.false;
@@ -422,7 +421,7 @@ describe('#Aggregation: #endpointCheck:', () => {
       };
 
       // act
-      checkPathParameters(clientEndpoint, producerEndpoint, {}, problemReport);
+      checkPathParameters(clientEndpoint, producerEndpoint, problemReport);
 
       // No problems
       expect(problemReport.hasProblems()).be.true;
@@ -450,7 +449,7 @@ describe('#Aggregation: #endpointCheck:', () => {
       };
 
       // act
-      checkPathParameters(clientEndpoint, producerEndpoint, {}, problemReport);
+      checkPathParameters(clientEndpoint, producerEndpoint, problemReport);
 
       // No problems
       expect(problemReport.hasProblems()).be.true;
@@ -478,7 +477,7 @@ describe('#Aggregation: #endpointCheck:', () => {
       };
 
       // act
-      checkPathParameters(clientEndpoint, producerEndpoint, {}, problemReport);
+      checkPathParameters(clientEndpoint, producerEndpoint, problemReport);
 
       // No problems
       expect(problemReport.hasProblems()).be.true;
@@ -506,7 +505,7 @@ describe('#Aggregation: #endpointCheck:', () => {
       };
 
       // act
-      checkPathParameters(clientEndpoint, producerEndpoint, {}, problemReport);
+      checkPathParameters(clientEndpoint, producerEndpoint, problemReport);
 
       // No problems
       expect(problemReport.hasProblems()).be.false;
@@ -535,7 +534,7 @@ describe('#Aggregation: #endpointCheck:', () => {
       };
 
       //act
-      checkBodyParameters(clientEndpoint, producerEndpoint, {}, problemReport);
+      checkBodyParameters(clientEndpoint, producerEndpoint, {}, {}, problemReport);
 
       // no problems expected, as the body is not required
       expect(problemReport.hasProblems()).be.false;
@@ -571,7 +570,7 @@ describe('#Aggregation: #endpointCheck:', () => {
       };
 
       // act
-      checkBodyParameters(clientEndpoint, producerEndpoint, {}, problemReport);
+      checkBodyParameters(clientEndpoint, producerEndpoint, {}, {}, problemReport);
 
       // should has problems, because the schema types are not equals. This indicates that the body is checked
       expect(problemReport.hasProblems()).be.true;
@@ -645,7 +644,7 @@ describe('#Aggregation: #endpointCheck:', () => {
       };
 
       // act
-      checkBodyParameters(clientEndpoint, producerEndpoint, {}, problemReport);
+      checkBodyParameters(clientEndpoint, producerEndpoint, {}, {}, problemReport);
 
       // Shouldn't detect problems
       expect(problemReport.hasProblems()).be.false;
@@ -691,7 +690,7 @@ describe('#Aggregation: #endpointCheck:', () => {
       };
 
       // act
-      checkBodyParameters(clientEndpoint, producerEndpoint, {}, problemReport);
+      checkBodyParameters(clientEndpoint, producerEndpoint, {}, {}, problemReport);
 
       // Should detect
       expect(problemReport.hasProblems()).be.true;
@@ -712,7 +711,7 @@ describe('#Aggregation: #endpointCheck:', () => {
       };
 
       // act
-      checkResponseBody(clientEndpoint, producerEndpoint, {}, problemReport);
+      checkResponseBody(clientEndpoint, producerEndpoint, {}, {}, problemReport);
 
       // No problems
       expect(problemReport.hasProblems()).be.false;
@@ -737,7 +736,7 @@ describe('#Aggregation: #endpointCheck:', () => {
       };
 
       // act
-      checkResponseBody(clientEndpoint, producerEndpoint, {}, problemReport);
+      checkResponseBody(clientEndpoint, producerEndpoint, {}, {}, problemReport);
 
       // No problems
       expect(problemReport.hasProblems()).be.false;
@@ -762,7 +761,7 @@ describe('#Aggregation: #endpointCheck:', () => {
       };
 
       // act
-      checkResponseBody(clientEndpoint, producerEndpoint, {}, problemReport);
+      checkResponseBody(clientEndpoint, producerEndpoint, {}, {}, problemReport);
 
       // should give problems
       expect(problemReport.hasProblems()).be.true;
@@ -794,7 +793,7 @@ describe('#Aggregation: #endpointCheck:', () => {
       };
 
       // act
-      checkResponseBody(clientEndpoint, producerEndpoint, {}, problemReport);
+      checkResponseBody(clientEndpoint, producerEndpoint, {}, {}, problemReport);
 
       // should give problems
       expect(problemReport.hasProblems()).be.true;
@@ -811,8 +810,7 @@ describe('#Aggregation: #endpointCheck:', () => {
               type: SchemaTypes.OBJECT,
               properties: {
                 "test1": {
-                  type: SchemaTypes.STRING,
-                  required: true
+                  type: SchemaTypes.STRING
                 }
               }
             }
@@ -828,7 +826,8 @@ describe('#Aggregation: #endpointCheck:', () => {
               type: SchemaTypes.OBJECT,
               properties: {
                 "test2": {
-                  type: SchemaTypes.STRING
+                  type: SchemaTypes.STRING,
+                  required: true
                 }
               }
             }
@@ -837,7 +836,7 @@ describe('#Aggregation: #endpointCheck:', () => {
       };
 
       // act
-      checkResponseBody(clientEndpoint, producerEndpoint, {}, problemReport);
+      checkResponseBody(clientEndpoint, producerEndpoint, {}, {}, problemReport);
 
       // should give problems
       expect(problemReport.hasProblems()).be.true;

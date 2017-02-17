@@ -2,7 +2,7 @@
 import { Path, Project, Parameter, ParameterPlacings, ProblemLevels, SchemaTypes, Schema } from "@maxxton/microdocs-core/domain";
 import { ProblemReporter, SchemaHelper } from "@maxxton/microdocs-core/helpers";
 
-export function checkQueryParameters( clientEndpoint:Path, producerEndpoint:Path, project:Project, problemReport:ProblemReporter):void{
+export function checkQueryParameters( clientEndpoint:Path, producerEndpoint:Path, problemReport:ProblemReporter):void{
   if(producerEndpoint.parameters){
     let parameters = producerEndpoint.parameters.filter(param => param.in === ParameterPlacings.QUERY);
     let clientParams = clientEndpoint.parameters;
@@ -12,7 +12,7 @@ export function checkQueryParameters( clientEndpoint:Path, producerEndpoint:Path
         clientParams.forEach( clientParam => {
           if ( producerParam.name == clientParam.name && producerParam.in == clientParam.in ) {
             exists = true;
-            if ( !matchType(producerParam, clientParam )) {
+            if ( !matchType(producerParam, clientParam)) {
               problemReport.report( ProblemLevels.WARNING, "Type mismatches query parameter '" + producerParam.name + "', expected: '" + producerParam.type + "', found: '" + clientParam.type + "'", clientEndpoint.controller, clientEndpoint.method );
             }
             return true;
@@ -27,7 +27,7 @@ export function checkQueryParameters( clientEndpoint:Path, producerEndpoint:Path
   }
 }
 
-export function checkPathParameters( clientEndpoint:Path, producerEndpoint:Path, project:Project, problemReport:ProblemReporter):void{
+export function checkPathParameters( clientEndpoint:Path, producerEndpoint:Path, problemReport:ProblemReporter):void{
   // match via wildcards in regexp
   var expression               = '^' + producerEndpoint.path.replace( new RegExp( "\/", 'g' ), '\/' ).replace( new RegExp( "\\{.*?\\}", 'g' ), '(.+)' ) + '$';
   var clientExp                = new RegExp( expression );
@@ -49,7 +49,7 @@ export function checkPathParameters( clientEndpoint:Path, producerEndpoint:Path,
             problemReport.report( ProblemLevels.ERROR, "path variable '" + clientParamName.substr( 1, clientParamName.length-2 ) + "' is missing", clientEndpoint.controller, clientEndpoint.method );
           }
           if ( clientParam != null && producerParam != null ) {
-            if ( !matchType(producerParam, clientParam)) {
+            if ( !matchType(clientParam, producerParam)) {
               problemReport.report( ProblemLevels.WARNING, "Type mismatches path variable '" + clientParamName.substr( 1, clientParamName.length-2 ) + "', expected: " + producerParam.type + ", found: " + clientParam.type, clientEndpoint.controller, clientEndpoint.method );
             }
           }
@@ -81,7 +81,7 @@ function getPathVariable( name:string, path:Path ):Parameter {
   return null;
 }
 
-export function checkBodyParameters(clientEndpoint:Path, producerEndpoint:Path, project:Project, problemReport:ProblemReporter):void{
+export function checkBodyParameters(clientEndpoint:Path, producerEndpoint:Path, clientProject:Project, producerProject:Project, problemReport:ProblemReporter):void{
   if(producerEndpoint.parameters) {
     let parameters   = producerEndpoint.parameters.filter( param => param.in === ParameterPlacings.BODY );
     let clientParams = clientEndpoint.parameters;
@@ -90,9 +90,9 @@ export function checkBodyParameters(clientEndpoint:Path, producerEndpoint:Path, 
       clientParams.some( clientParam => {
         if ( producerParam.in == clientParam.in ) {
           exists                     = true;
-          var producerSchema: Schema = SchemaHelper.collect( producerParam.schema, [], project );
-          var clientSchema           = SchemaHelper.collect( clientParam.schema, [], project );
-          checkSchema( clientEndpoint, clientSchema, producerSchema, problemReport, "" );
+          var producerSchema: Schema = SchemaHelper.collect( producerParam.schema, [], producerProject );
+          var clientSchema           = SchemaHelper.collect( clientParam.schema, [], clientProject );
+          checkSchema( clientEndpoint, clientSchema, producerSchema, clientProject, producerProject, problemReport, "", 'request');
           return true;
         }
         return false;
@@ -104,7 +104,7 @@ export function checkBodyParameters(clientEndpoint:Path, producerEndpoint:Path, 
   }
 }
 
-export function checkResponseBody(clientEndpoint:Path, producerEndpoint:Path, project:Project, problemReport:ProblemReporter):void{
+export function checkResponseBody(clientEndpoint:Path, producerEndpoint:Path, clientProject:Project, producerProject:Project, problemReport:ProblemReporter):void{
   if(clientEndpoint.responses != undefined && clientEndpoint.responses != null &&
       clientEndpoint.responses['default'] != undefined && clientEndpoint.responses['default'] != null &&
       clientEndpoint.responses['default'].schema != undefined && clientEndpoint.responses['default'].schema != null){
@@ -115,33 +115,33 @@ export function checkResponseBody(clientEndpoint:Path, producerEndpoint:Path, pr
 
       var producerSchema = producerEndpoint.responses['default'].schema;
       var clientSchema = clientEndpoint.responses['default'].schema;
-      checkSchema(clientEndpoint, producerSchema, clientSchema, problemReport, '');
+      checkSchema(clientEndpoint, clientSchema, producerSchema, clientProject, producerProject, problemReport, '', 'response');
     }else{
       problemReport.report(ProblemLevels.ERROR, "There is no response body", clientEndpoint.controller, clientEndpoint.method);
     }
   }
 }
 
-function checkSchema(endpoint:Path, clientSchema:Schema, producerSchema:Schema, problemReport:ProblemReporter, path:string):void {
+function checkSchema(endpoint:Path, clientSchema:Schema, producerSchema:Schema, clientProject:Project, producerProject:Project, problemReport:ProblemReporter, path:string, placing:'request'|'response'):void {
   if(producerSchema != null && producerSchema != undefined){
   if(clientSchema != null && clientSchema != undefined){
-    if(!matchType(producerSchema, clientSchema)){
+    if(!matchType(clientSchema, producerSchema)){
       var position = "";
       if(path != ''){
         position = ' at ' + path;
       }
-      problemReport.report(ProblemLevels.WARNING, "Type mismatches in request body" + position + ", expected: " + producerSchema.type + ", found: " + clientSchema.type, endpoint.controller, endpoint.method);
+      problemReport.report(ProblemLevels.WARNING, "Type mismatches in " + placing + " body" + position + ", expected: " + producerSchema.type + ", found: " + clientSchema.type, endpoint.controller, endpoint.method);
     }else{
       if(producerSchema.type == SchemaTypes.OBJECT){
         var producerProperties = producerSchema.properties;
         var clientProperties = clientSchema.properties;
         for(var key in producerProperties){
-          checkSchema(endpoint, clientProperties[key], producerProperties[key], problemReport, path + (path == '' ? '' : '.') + key);
+          checkSchema(endpoint, clientProperties[key], producerProperties[key], clientProject, producerProject, problemReport, path + (path == '' ? '' : '.') + key, placing);
         }
       }else if(producerSchema.type == SchemaTypes.ARRAY){
         var producerItems = producerSchema.items;
         var clientItems = clientSchema.items;
-        checkSchema(endpoint, clientItems, producerItems, problemReport, path + (path == '' ? '' : '.') + "0");
+        checkSchema(endpoint, clientItems, producerItems, clientProject, producerProject, problemReport, path + (path == '' ? '' : '.') + "0", placing);
       }
     }
   }else if(producerSchema.required){
@@ -150,7 +150,7 @@ function checkSchema(endpoint:Path, clientSchema:Schema, producerSchema:Schema, 
 }
 }
 
-function matchType(producerParam:Parameter, clientParam:Parameter):boolean{
+function matchType(clientParam:Parameter, producerParam:Parameter):boolean{
   // Full match
   if(producerParam.type === clientParam.type){
     return true;

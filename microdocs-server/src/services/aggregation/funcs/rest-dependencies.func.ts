@@ -131,10 +131,10 @@ function checkEndpoints( title: string, dependency: Dependency, dependentProject
         var producerEndpoint         = findEndpoint( clientEndpoint, path, method, dependentProject );
         if ( producerEndpoint != null ) {
           // execute checks on the endpoint
-          checkPathParameters(clientEndpoint, producerEndpoint, currentProject, problemReport );
-          checkQueryParameters(clientEndpoint, producerEndpoint, currentProject, problemReport );
-          checkBodyParameters(clientEndpoint, producerEndpoint, currentProject, problemReport );
-          checkResponseBody(clientEndpoint, producerEndpoint, currentProject, problemReport );
+          checkPathParameters(clientEndpoint, producerEndpoint, problemReport );
+          checkQueryParameters(clientEndpoint, producerEndpoint, problemReport );
+          checkBodyParameters(clientEndpoint, producerEndpoint, currentProject, dependentProject, problemReport );
+          checkResponseBody(clientEndpoint, producerEndpoint, currentProject, dependentProject, problemReport );
         } else {
           // endpoint does not exists
           problemReport.report( ProblemLevels.ERROR, "No mapping for '" + method + " " + path + "' on " + title, clientEndpoint.controller, clientEndpoint.method );
@@ -186,7 +186,7 @@ function findEndpoint( clientEndpoint: Path, clientPath: string, clientMethod: s
 
         // check problems
         const report = new ProblemReporter();
-        checkPathParameters( clientEndpoint, endpoint, project, report );
+        checkPathParameters( clientEndpoint, endpoint, report );
         let resultErrorCount   = report.getProblems().filter( problem => problem.level === ProblemLevels.ERROR ).length;
         let resultWarningCount = report.getProblems().filter( problem => problem.level === ProblemLevels.WARNING ).length;
 
