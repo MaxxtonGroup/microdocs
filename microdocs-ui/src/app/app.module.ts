@@ -33,7 +33,9 @@ import { ModelComponent } from "./components/model/model.component";
 import { DependencyGraphComponent } from "./components/dependency-graph/dependency-graph.component";
 import { WelcomeComponent } from "./components/welcome/welcome.component";
 import { ImportDialogComponent } from "./components/import-dialog/import-dialog.component";
-import { ExportDialogComponent } from "./components/export-dialog/export-dialog.component";
+import { ExportPanelComponent } from "./components/export-panel/export-panel.component";
+import { DialogBaseComponent } from './components/dialog-base/dialog-base.component';
+import { ExportDialogComponent } from './components/export-dialog/export-dialog.component';
 
 @NgModule({
   declarations: [
@@ -54,6 +56,8 @@ import { ExportDialogComponent } from "./components/export-dialog/export-dialog.
     WelcomeComponent,
     ImportDialogComponent,
     ExportDialogComponent,
+    DialogBaseComponent,
+    ExportPanelComponent,
 
     SortByHttpMethodPipe,
     SortByKeyPipe,
@@ -64,7 +68,7 @@ import { ExportDialogComponent } from "./components/export-dialog/export-dialog.
   ],
   entryComponents: [
     ImportDialogComponent,
-    ExportDialogComponent
+    ExportPanelComponent
   ],
   imports: [
     BrowserModule,

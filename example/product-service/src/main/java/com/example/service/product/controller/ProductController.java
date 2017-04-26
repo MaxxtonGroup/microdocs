@@ -3,18 +3,18 @@ package com.example.service.product.controller;
 import com.example.service.product.domain.Product;
 import com.example.service.product.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * Controller for handling all products endpoints
  * @author Steven Hermans (s.hermans@maxxton.com)
  */
 @RestController
-@RequestMapping("/api/v1/customers")
+@RequestMapping("/api/v1/products")
 public class ProductController {
 
     @Autowired
@@ -22,13 +22,12 @@ public class ProductController {
 
     /**
      * Request a page of products
-     * @param pageable select which page to request
      * @response 200
      * @return Page of products
      */
     @RequestMapping(path = "", method = RequestMethod.GET)
-    public Page<Product> getProducts(Pageable pageable){
-        return productService.getProducts(pageable);
+    public List<Product> getProducts(){
+        return productService.getProducts();
     }
 
     /**
@@ -54,15 +53,15 @@ public class ProductController {
      * @response 409 product with the same email already exists
      * @return The created product
      */
-    @RequestMapping(path = "", method = RequestMethod.POST)
-    public ResponseEntity<Product> createProduct(@RequestBody Product product){
-        Product newProduct = productService.createProduct(product);
-        if(newProduct != null){
-            return new ResponseEntity<Product>(newProduct, HttpStatus.CREATED);
-        }else{
-            return new ResponseEntity<Product>(HttpStatus.CONFLICT);
-        }
-    }
+//    @RequestMapping(path = "", method = RequestMethod.POST)
+//    public ResponseEntity<Product> createProduct(@RequestBody Product product){
+//        Product newProduct = productService.createProduct(product);
+//        if(newProduct != null){
+//            return new ResponseEntity<Product>(newProduct, HttpStatus.CREATED);
+//        }else{
+//            return new ResponseEntity<Product>(HttpStatus.CONFLICT);
+//        }
+//    }
 
     /**
      * Delete product by id
@@ -70,15 +69,15 @@ public class ProductController {
      * @response 200 the product is removed
      * @response 404 the product did not exists
      */
-    @RequestMapping(path = "/{productId}", method = RequestMethod.DELETE)
-    public ResponseEntity removeProduct(@PathVariable("productId") Long productId){
-        boolean succeed = productService.removeProduct(productId);
-        if(succeed){
-            return new ResponseEntity(HttpStatus.OK);
-        }else{
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
-        }
-    }
+//    @RequestMapping(path = "/{productId}", method = RequestMethod.DELETE)
+//    public ResponseEntity removeProduct(@PathVariable("productId") Long productId){
+//        boolean succeed = productService.removeProduct(productId);
+//        if(succeed){
+//            return new ResponseEntity(HttpStatus.OK);
+//        }else{
+//            return new ResponseEntity(HttpStatus.NOT_FOUND);
+//        }
+//    }
 
 
 

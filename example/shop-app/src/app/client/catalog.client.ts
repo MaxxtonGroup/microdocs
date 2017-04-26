@@ -2,16 +2,19 @@ import { Injectable } from '@angular/core';
 import { Http } from "@angular/http";
 import { Observable } from "rxjs";
 import { Product } from "../domain/product";
-import { RestClient, HttpClient, Get, Produces, MediaType } from "@maxxton/angular-rest";
+import { RestClient, HttpClient, Get, Produces, MediaType, Client } from "@maxxton/angular-rest";
 
+@Client({
+  serviceId: 'catalog-service'
+})
 @Injectable()
 export class CatalogClient extends RestClient {
 
   constructor(private http:Http){
-    super(<HttpClient>http);
+    super(<any>http);
   }
 
-  @Get('http://catalog-service/api/v1/products')
+  @Get('/api/v1/catalog')
   @Produces(MediaType.JSON)
   public getProducts():Observable<Product[]>{
     return null;
