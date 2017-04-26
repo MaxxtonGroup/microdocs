@@ -8,7 +8,6 @@ import {ReportRepository} from "../repositories/report.repo";
 
 /**
  * @controller
- * @baseUrl /api/v1
  */
 export class RemoveProjectRoute extends BaseRoute {
 
@@ -16,7 +15,7 @@ export class RemoveProjectRoute extends BaseRoute {
 
   /**
    * Remove a project or only one version of a project
-   * @httpDelete /projects/{title}
+   * @httpDelete /api/v1/projects/{title}
    * @HttpPath title {string} Name of the project
    * @HttpQuery ?version {string} Specify only one version to be removed
    * @httpQuery ?env {string} environment to publish the project definition

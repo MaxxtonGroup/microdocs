@@ -114,8 +114,8 @@ function checkDependencyCompatible( title: string, dependency: Dependency, depPr
  * Check dependency endpoints are compatible
  * @param title name of the project
  * @param dependency
- * @param dependentProject
- * @param currentProject
+ * @param dependentProject aka producerProject
+ * @param currentProject aka clientProject
  * @param silence Add problems to the client endpoints object
  * @returns {boolean} true if compatible, otherwise false
  */
@@ -128,11 +128,11 @@ function checkEndpoints( title: string, dependency: Dependency, dependentProject
         var clientEndpoint           = dependency.paths[ path ][ method ];
         clientEndpoint.path          = path;
         clientEndpoint.requestMethod = method;
-        var producerEndpoint         = findEndpoint( clientEndpoint, path, method, dependentProject );
+        var producerEndpoint         = findEndpoint( clientEndpoint, path, method, currentProject, dependentProject );
         if ( producerEndpoint != null ) {
           // execute checks on the endpoint
-          checkPathParameters(clientEndpoint, producerEndpoint, problemReport );
-          checkQueryParameters(clientEndpoint, producerEndpoint, problemReport );
+          checkPathParameters(clientEndpoint, producerEndpoint, currentProject, dependentProject, problemReport );
+          checkQueryParameters(clientEndpoint, producerEndpoint, currentProject, dependentProject, problemReport );
           checkBodyParameters(clientEndpoint, producerEndpoint, currentProject, dependentProject, problemReport );
           checkResponseBody(clientEndpoint, producerEndpoint, currentProject, dependentProject, problemReport );
         } else {
@@ -157,18 +157,18 @@ function checkEndpoints( title: string, dependency: Dependency, dependentProject
 
 /**
  * Find an endpoint in a given project
- * @param project project to search in
+ * @param producerProject project to search in
  * @param path path of the endpoint
  * @param method request method of the endpoint
  * @returns {null,Path} returns Path or null if it does not exists
  */
-function findEndpoint( clientEndpoint: Path, clientPath: string, clientMethod: string, project: Project ): Path {
+function findEndpoint( clientEndpoint: Path, clientPath: string, clientMethod: string, clientProject:Project, producerProject: Project ): Path {
   let bestMatch: Path = null;
   let errorCount      = 0;
   let warningCount    = 0;
   let variableCount   = 0;
-  for ( let producerPath in project.paths ) {
-    if ( project.paths[ producerPath ][ clientMethod ] ) {
+  for ( let producerPath in producerProject.paths ) {
+    if ( producerProject.paths[ producerPath ][ clientMethod ] ) {
       // match via wildcards in regexp
       const expression = '^' + producerPath.replace( new RegExp( "\/", 'g' ), '\/' ).replace( new RegExp( "\\{.*?\\}", 'g' ), '([^\/]+)' ) + '$';
       const regExp     = new RegExp( expression );
@@ -176,7 +176,7 @@ function findEndpoint( clientEndpoint: Path, clientPath: string, clientMethod: s
 
       if ( match && match.length >= 1 ) {
         // build endpoint if match
-        const endpoint         = project.paths[ producerPath ][ clientMethod ];
+        const endpoint         = producerProject.paths[ producerPath ][ clientMethod ];
         endpoint.path          = producerPath;
         endpoint.requestMethod = clientMethod;
         let variables          = 0;
@@ -186,7 +186,7 @@ function findEndpoint( clientEndpoint: Path, clientPath: string, clientMethod: s
 
         // check problems
         const report = new ProblemReporter();
-        checkPathParameters( clientEndpoint, endpoint, report );
+        checkPathParameters( clientEndpoint, endpoint, clientProject, producerProject, report );
         let resultErrorCount   = report.getProblems().filter( problem => problem.level === ProblemLevels.ERROR ).length;
         let resultWarningCount = report.getProblems().filter( problem => problem.level === ProblemLevels.WARNING ).length;
 

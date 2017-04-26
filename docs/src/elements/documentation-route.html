@@ -104,6 +104,7 @@
         right: 0;
         z-index: 1;
         padding: 20px 50px;
+        overflow: auto;
       }
 
       article marked-element {
@@ -111,7 +112,7 @@
         height: 100%;
       }
 
-      article .error-text{
+      article .error-text {
         position: absolute;
         top: 0;
         left: 0;
@@ -134,6 +135,10 @@
         width: 40px;
         position: relative;
         top: -2px;
+      }
+
+      .markdown-container{
+        padding-bottom: 20px;
       }
     </style>
     <paper-button id="header" on-click="_activateDropdown" on-blur="_deactiveDropdown">
@@ -166,19 +171,21 @@
         </paper-menu>
       </nav>
       <article>
-        <template is="dom-if" if="[[loadError]]">
-          <div class="error-text">
+          <template is="dom-if" if="[[loadError]]">
+            <div class="error-text">
             <span>
               <iron-icon icon="close"></iron-icon>
               Could not load this page
             </span>
-          </div>
-        </template>
-        <template is="dom-if" if="[[!loadError]]">
-          <marked-element markdown="[[documentContent]]">
-            <div class="markdown-html"></div>
-          </marked-element>
-        </template>
+            </div>
+          </template>
+          <template is="dom-if" if="[[!loadError]]">
+            <div class="markdown-container">
+              <marked-element markdown="[[documentContent]]">
+                <div class="markdown-html"></div>
+              </marked-element>
+            </div>
+          </template>
       </article>
     </div>
 
@@ -309,10 +316,10 @@
         }, 100);
       },
 
-      _computeDocumentUrl: function (name,routeData) {
-          var doc = routeData.document || 'index';
-          var url = "docs/" + name + "/" + doc + ".md";
-          return url;
+      _computeDocumentUrl: function (name, routeData) {
+        var doc = routeData.document || 'index';
+        var url = "docs/" + name + "/" + doc + ".md";
+        return url;
       },
 
       _onDocumentUrl: function () {

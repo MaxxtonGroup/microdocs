@@ -5,7 +5,6 @@ import {BaseRoute} from "./route";
 
 /**
  * @controller
- * @baseUrl /api/v1
  */
 export class ReindexRoute extends BaseRoute {
 
@@ -13,7 +12,7 @@ export class ReindexRoute extends BaseRoute {
 
   /**
    * Start the reindex process
-   * @httpPut /reindex
+   * @httpPut /api/v1/reindex
    * @httpQuery ?env {string} environment to publish the project definition
    * @httpResponse 200 {Problem[]}
    */

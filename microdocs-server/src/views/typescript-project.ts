@@ -7,6 +7,7 @@ export default function ( env:string, projects:Project[], projectNodes:ProjectNo
   let className = snakeToCamel(current.info.title);
   className = className.substring(0,1).toUpperCase() + className.substring(1);
   className = className.replace(/Service$/, 'Client');
+  let description = current.info ? current.info.description.replace(/\n/g, '\n *') : `Client for the ${current.info.title}`;
   let content:string = `
 import { Injectable } from "@angular/core";
 import { Response } from "@angular/http";
@@ -20,7 +21,7 @@ import {
 import { RestService } from "../services/rest.service";
 
 /**
- * ${current.info.description.replace(/\n/g, '\n *')}
+ * ${description}
  * @author MicroDocs
  */
 @Client({
