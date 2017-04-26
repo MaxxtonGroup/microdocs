@@ -1,6 +1,6 @@
 {
   "name": "microdocs-ui",
-  "version": "1.6.9",
+  "version": "1.6.10",
   "license": "MIT",
   "angular-cli": {},
   "scripts": {
@@ -25,7 +25,7 @@
     "@angular/platform-browser-dynamic": "^2.3.1",
     "@angular/router": "^3.3.1",
     "@maxxton/angular-rest": "^1.0.0",
-    "@maxxton/microdocs-core": "1.7.1",
+    "@maxxton/microdocs-core": "1.7.3",
     "angular2-prettyjson": "^2.0.3",
     "core-js": "^2.4.1",
     "d3": "^3.5.17",
