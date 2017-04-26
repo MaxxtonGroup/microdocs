@@ -7,7 +7,7 @@ import { environment } from "../../../environments/environment";
 import { MdSnackBar, MdDialog } from "@angular/material";
 import { RouteInfo } from "../../domain/route-info.model";
 import { ImportDialogComponent } from "../import-dialog/import-dialog.component";
-import { ExportDialogComponent } from "../export-dialog/export-dialog.component";
+import { ExportPanelComponent } from "../export-panel/export-panel.component";
 
 @Component( {
   selector: 'sidebar-component',
@@ -154,7 +154,7 @@ export class SidebarComponent {
   }
 
   showExportModal(): void {
-    this.dialog.open( ExportDialogComponent );
+    this.dialog.open( ExportPanelComponent );
   }
 
 }

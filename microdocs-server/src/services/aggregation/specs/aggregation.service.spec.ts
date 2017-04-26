@@ -1,4 +1,4 @@
-/// <reference path="../../../../typings/index.d.ts" />
+
 import { assert } from 'chai';
 import { ProjectSettingsRepositoryMock } from "./mocks/project-settings.repo.mock";
 import { ProjectSettingsRepository } from "../../../repositories/project-settings.repo";
@@ -284,7 +284,7 @@ describe( '#AggregationService:', () => {
       //act
       let result:Problem[] = target.checkProject( 'default', project);
 
-      assert.equal(result.length, 1);
+      assert.equal(result.length, 0);
     } );
 
   } );
