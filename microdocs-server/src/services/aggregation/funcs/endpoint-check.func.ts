@@ -140,7 +140,8 @@ function checkSchema(endpoint: Path, clientSchema: Schema, producerSchema: Schem
           }
           for(var key in clientProperties){
             if(!producerProperties[key]){
-              problemReport.report(ProblemLevels.WARNING, `Unknown property '${path}' in ${placing} body`, endpoint.controller, endpoint.method);
+              let keyPath = path + (path ? '.' : '') + key;
+              problemReport.report(ProblemLevels.WARNING, `Unknown property '${keyPath}' in ${placing} body`, endpoint.controller, endpoint.method);
             }
           }
         } else if (producerSchema.type == SchemaTypes.ARRAY) {
