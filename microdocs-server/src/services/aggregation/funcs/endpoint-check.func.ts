@@ -138,6 +138,11 @@ function checkSchema(endpoint: Path, clientSchema: Schema, producerSchema: Schem
           for (var key in producerProperties) {
             checkSchema(endpoint, clientProperties[key], producerProperties[key], clientProject, producerProject, problemReport, path + (path == '' ? '' : '.') + key, placing);
           }
+          for(var key in clientProperties){
+            if(!producerProperties[key]){
+              problemReport.report(ProblemLevels.WARNING, `Unknown property '${path}' in ${placing} body`, endpoint.controller, endpoint.method);
+            }
+          }
         } else if (producerSchema.type == SchemaTypes.ARRAY) {
           var producerItems = producerSchema.items;
           var clientItems = clientSchema.items;
@@ -146,7 +151,7 @@ function checkSchema(endpoint: Path, clientSchema: Schema, producerSchema: Schem
       }
     } else {
       if (producerSchema.required) {
-        problemReport.report(ProblemLevels.ERROR, "Missing required value at " + path, endpoint.controller, endpoint.method);
+        problemReport.report(ProblemLevels.ERROR, `Missing required property '${path}' in ${placing} body`, endpoint.controller, endpoint.method);
       }
     }
   }

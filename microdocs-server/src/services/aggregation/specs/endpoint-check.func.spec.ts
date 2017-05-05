@@ -695,6 +695,52 @@ describe('#Aggregation: #endpointCheck:', () => {
       // Should detect
       expect(problemReport.hasProblems()).be.true;
     });
+
+    it('Dont match case sensitive property in request body', () => {
+      var problemReport = new ProblemReporter();
+      //client without body
+      var clientEndpoint: Path = <Path>{
+        parameters: [
+          {
+            required: false,
+            'in': 'body',
+            name: 'body',
+            schema: {
+              type: SchemaTypes.OBJECT,
+              properties: {
+                distributionchannelId: {
+                  type: SchemaTypes.INTEGER
+                }
+              }
+            }
+          }
+        ]
+      };
+      //producer with not required body
+      var producerEndpoint: Path = <Path>{
+        parameters: [
+          {
+            required: false,
+            'in': 'body',
+            name: 'body',
+            schema: {
+              type: SchemaTypes.OBJECT,
+              properties: {
+                distributionChannelId: {
+                  type: SchemaTypes.INTEGER
+                }
+              }
+            }
+          }
+        ]
+      };
+
+      //act
+      checkBodyParameters(clientEndpoint, producerEndpoint, {}, {}, problemReport);
+
+      // no problems expected, as the body is not required
+      expect(problemReport.hasProblems()).be.true;
+    });
   });
 
   describe('#responseCheck', () => {
@@ -787,6 +833,48 @@ describe('#Aggregation: #endpointCheck:', () => {
           "default": {
             schema: {
               type: SchemaTypes.BOOLEAN
+            }
+          }
+        }
+      };
+
+      // act
+      checkResponseBody(clientEndpoint, producerEndpoint, {}, {}, problemReport);
+
+      // should give problems
+      expect(problemReport.hasProblems()).be.true;
+    });
+
+    it('Dont match case sensitive property in response body', () => {
+      var problemReport = new ProblemReporter();
+
+      // client
+      var clientEndpoint: Path = <Path>{
+        responses: {
+          "default": {
+            schema: {
+              type: SchemaTypes.OBJECT,
+              properties: {
+                distributionchannelId: {
+                  type: SchemaTypes.INTEGER
+                }
+              }
+            }
+          }
+        }
+      };
+
+      // producer
+      var producerEndpoint: Path = <Path>{
+        responses: {
+          "default": {
+            schema: {
+              type: SchemaTypes.OBJECT,
+              properties: {
+                distributionChannelId: {
+                  type: SchemaTypes.INTEGER
+                }
+              }
             }
           }
         }
