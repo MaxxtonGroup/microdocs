@@ -174,6 +174,8 @@ function matchType(clientParam: Parameter, producerParam: Parameter): boolean {
     if (producerParam.enum.indexOf(clientParam.default) > -1) {
       return true;
     }
+  }else if(producerParam.type === SchemaTypes.ENUM && clientParam.type === SchemaTypes.STRING){
+    return true;
   }
 
   // Match reverse enum
