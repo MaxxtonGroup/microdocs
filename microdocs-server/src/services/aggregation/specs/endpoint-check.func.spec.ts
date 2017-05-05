@@ -540,6 +540,42 @@ describe('#Aggregation: #endpointCheck:', () => {
       expect(problemReport.hasProblems()).be.false;
     });
 
+    it('Matching enum and string in request body', () => {
+      var problemReport = new ProblemReporter();
+      //client without body
+      var clientEndpoint: Path = <Path>{
+        parameters: [
+          {
+            required: false,
+            'in': 'body',
+            name: 'body',
+            schema: {
+              type: SchemaTypes.STRING
+            }
+          }
+        ]
+      };
+      //producer with not required body
+      var producerEndpoint: Path = <Path>{
+        parameters: [
+          {
+            required: false,
+            'in': 'body',
+            name: 'body',
+            schema: {
+              type: SchemaTypes.ENUM
+            }
+          }
+        ]
+      };
+
+      //act
+      checkBodyParameters(clientEndpoint, producerEndpoint, {}, {}, problemReport);
+
+      // no problems expected, as the body is not required
+      expect(problemReport.hasProblems()).be.false;
+    });
+
     it('do not ignore body when not required but is available', () => {
       var problemReport = new ProblemReporter();
       //client with body, but wrong schema type
@@ -840,6 +876,38 @@ describe('#Aggregation: #endpointCheck:', () => {
 
       // should give problems
       expect(problemReport.hasProblems()).be.true;
+    });
+
+    it('Matching enum and string in response body', () => {
+      var problemReport = new ProblemReporter();
+
+      // client expect response body
+      var clientEndpoint: Path = <Path>{
+        responses: {
+          "default": {
+            schema: {
+              type: SchemaTypes.STRING
+            }
+          }
+        }
+      };
+
+      // producer has no response body
+      var producerEndpoint: Path = <Path>{
+        responses: {
+          "default": {
+            schema: {
+              type: SchemaTypes.ENUM
+            }
+          }
+        }
+      };
+
+      // act
+      checkResponseBody(clientEndpoint, producerEndpoint, {}, {}, problemReport);
+
+      // should give problems
+      expect(problemReport.hasProblems()).be.false;
     });
   });
 
