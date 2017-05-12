@@ -923,6 +923,124 @@ describe('#Aggregation: #endpointCheck:', () => {
       expect(problemReport.hasProblems()).be.true;
     });
 
+    it('Match inherit producer property', () => {
+      var problemReport = new ProblemReporter();
+
+      // client
+      var clientEndpoint: Path = <Path>{
+        responses: {
+          "default": {
+            schema: {
+              type: SchemaTypes.OBJECT,
+              properties: {
+                distributionChannelId: {
+                  type: SchemaTypes.INTEGER
+                },
+                parentId: {
+                  required: true,
+                  type: SchemaTypes.INTEGER
+                }
+              }
+            }
+          }
+        }
+      };
+
+      // producer
+      var producerEndpoint: Path = <Path>{
+        responses: {
+          "default": {
+            schema: {
+              type: SchemaTypes.OBJECT,
+              properties: {
+                distributionChannelId: {
+                  type: SchemaTypes.INTEGER
+                }
+              },
+              allOf: [{
+                $ref: "#/ParentObject"
+              }]
+            }
+          }
+        }
+      };
+      var producerProject = {
+        ParentObject: {
+          type: SchemaTypes.OBJECT,
+          properties: {
+            parentId: {
+              type: SchemaTypes.INTEGER
+            }
+          }
+        }
+      };
+
+      // act
+      checkResponseBody(clientEndpoint, producerEndpoint, {}, producerProject, problemReport);
+
+      // should give problems
+      expect(problemReport.hasProblems()).be.false;
+    });
+
+    it('Match inherit client property', () => {
+      var problemReport = new ProblemReporter();
+
+      // client
+      var clientEndpoint: Path = <Path>{
+        responses: {
+          "default": {
+            schema: {
+              type: SchemaTypes.OBJECT,
+              properties: {
+                distributionChannelId: {
+                  type: SchemaTypes.INTEGER
+                }
+              },
+              allOf: [{
+                $ref: "#/ParentObject"
+              }]
+            }
+          }
+        }
+      };
+      var clientProject = {
+        ParentObject: {
+          type: SchemaTypes.OBJECT,
+          properties: {
+            parentId: {
+              type: SchemaTypes.INTEGER
+            }
+          }
+        }
+      };
+
+      // producer
+      var producerEndpoint: Path = <Path>{
+        responses: {
+          "default": {
+            schema: {
+              type: SchemaTypes.OBJECT,
+              properties: {
+                distributionChannelId: {
+                  type: SchemaTypes.INTEGER
+                },
+                parentId: {
+                  required: true,
+                  type: SchemaTypes.INTEGER
+                }
+              }
+            }
+          }
+        }
+      };
+
+      // act
+      checkResponseBody(clientEndpoint, producerEndpoint, clientProject, {}, problemReport);
+
+      // should give problems
+      expect(problemReport.hasProblems()).be.false;
+    });
+
     it('Producer missing a property', () => {
       var problemReport = new ProblemReporter();
 

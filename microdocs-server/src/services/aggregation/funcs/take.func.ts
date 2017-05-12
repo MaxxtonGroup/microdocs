@@ -10,8 +10,8 @@ import { ProjectInfo } from "@maxxton/microdocs-core/domain/common/project-info.
 export function takeEverything(pipe:Pipe<any>){
   pipe.projects.forEach( (projectInfo:ProjectInfo) => {
     projectInfo.getVersions().forEach((version:string) => {
-      projectInfo.version = version;
-      let report = pipe.reportRepo.getProject(pipe.env, projectInfo);
+      let versionInfo = projectInfo.getVersion(version);
+      let report = pipe.reportRepo.getProject(pipe.env, versionInfo);
       pipe.result.pushProject(report);
     })
   });

@@ -54,7 +54,7 @@ export class ProjectSettingsJsonRepository implements ProjectSettingsRepository 
     var projectsFolder:string = dataFolder + "/projects";
     var projects = fsHelper.getFiles(projectsFolder);
     if(projects){
-      projects.map(project => project.split('\\.')[0]).forEach(project => {
+      projects.map(project => project.split('.')[0]).forEach(project => {
         let projectFile = projectsFolder + '/' + project;
         settings.projects[project] = this.loadFile(projectFile);
       });
