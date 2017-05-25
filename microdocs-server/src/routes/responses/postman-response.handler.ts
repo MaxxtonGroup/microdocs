@@ -1,11 +1,12 @@
 
-import {Project, Schema, Path, ProjectInfo, ProjectTree, ParameterPlacings} from "@maxxton/microdocs-core/domain";
+import { Project, Schema, Path, ProjectInfo, ProjectTree, ParameterPlacings } from "@maxxton/microdocs-core/domain";
 import * as uuid from 'uuid';
 import * as express from "express";
-import {MicroDocsResponseHandler} from "./microdocs-response.handler";
-import {Config} from "../../config";
-import {ProjectJsonRepository} from "../../repositories/json/project-json.repo";
+import { MicroDocsResponseHandler } from "./microdocs-response.handler";
+import { Config } from "../../config";
+import { ProjectJsonRepository } from "../../repositories/json/project-json.repo";
 import { PostmanAdapter } from  "@maxxton/microdocs-core/adapter";
+import { mergeProjects } from "@maxxton/microdocs-core/helpers"
 
 export class PostmanResponseHandler extends MicroDocsResponseHandler {
 
@@ -33,64 +34,33 @@ export class PostmanResponseHandler extends MicroDocsResponseHandler {
   }
 
   postmans(projectTree: ProjectTree, env: string): {} {
-    let postmanAdapter = new MyPostmanAdapter();
-    var collection: any = postmanAdapter.getPostmanBase();
+    let config: { name: string, description: string, version: string, baseUrl: string } = {
+      name: Config.get('application-name'),
+      version: Config.get('application-version').toString(),
+      description: Config.get('application-description'),
+      baseUrl: this.getBaseUrl()
+    };
 
-    projectTree.projects.forEach(projectNode => {
-      var project = this.injection.ProjectRepository().getAggregatedProject(env, projectNode.title, projectNode.version);
-      var subCollection = postmanAdapter.adapt(project);
-      collection.item.push({
-        name: projectNode.title,
-        description: project.info && project.info.description ? project.info.description : 'Folder for ' + projectNode.title,
-        item: subCollection
-      })
-    });
+    let projects = projectTree.projects.map(projectNode => this.injection.ProjectRepository().getAggregatedProject(env, projectNode.title, projectNode.version));
+    let project: Project = mergeProjects(projects, config);
 
-    return collection;
+    return this.postman(project);
   }
 
   postman(project: Project): {} {
-    let postmanAdapter = new MyPostmanAdapter();
-    var collection: any = postmanAdapter.getPostmanBase(project);
-    collection.item = postmanAdapter.adapt(project);
-    return collection;
-  }
-}
-
-class MyPostmanAdapter extends PostmanAdapter {
-  adapt(project: Project): {}[] {
-    return super.adapt(project);
+    let postmanAdapter = new PostmanAdapter();
+    return postmanAdapter.adapt(project);
   }
 
-  getPostmanBase(project?: Project): {} {
-    var collection: any = { item: [], info: {} };
-
-    collection['info'] = {
-      name: Config.get('application-name'),
-      version: Config.get('application-version').toString(),
-      description: Config.get('application-description')
-    };
-    collection.info.schema = "https://schema.getpostman.com/json/collection/v2.0.0/collection.json";
-    collection.info._postman_id = uuid['v4']();
-
+  getBaseUrl(): string {
     // get base url
-    var schema: string = Config.get('application-schema');
-    var host: string = Config.get('application-host');
-    var basePath: string = Config.get('application-basePath');
-    var host: string = "localhost:8080";
+    let schema: string = Config.get('application-schema');
+    let host: string = Config.get('application-host') || "localhost:8080";
+    let basePath: string = Config.get('application-basePath');
     while (basePath.indexOf('/') == 0) {
       basePath = basePath.substr(1);
     }
-
-    var baseUrl = schema + "://" + host + "/" + basePath;
-    collection['variables'] = [
-      {
-        id: 'baseUrl',
-        type: 'string',
-        value: baseUrl
-      }
-    ];
-
-    return collection;
+    let baseUrl = schema + "://" + host + "/" + basePath;
+    return baseUrl;
   }
 }
