@@ -6,23 +6,47 @@ import * as fsHelper from '../../helpers/file.helper';
 import {ProjectSettingsRepository} from "../project-settings.repo";
 import {Config} from "../../config";
 import {ProjectSettings, Environments} from '@maxxton/microdocs-core/domain';
+import { Settings } from "../../domain/settings.model";
+import { Metadata } from "../../domain/metadata.model";
 
 export class ProjectSettingsJsonRepository implements ProjectSettingsRepository {
 
-  public getEnvs(): {[name: string]: Environments} {
-    console.info("Load project envs");
-    var dataFolder: string = __dirname + '/../../../' + Config.get("dataFolder") + "/config";
-    var projectFile: string = dataFolder + "/envs";
-    var envs: {[name: string]: Environments} = {};
-    envs = this.loadFile(projectFile) || envs;
-    if (!envs || Object.keys(envs).length == 0) {
-      envs = {default: {default: true}};
+  public getMetadata(): Metadata {
+    console.info("Load metadata");
+    var dataFolder: string = __dirname + '/../../../' + Config.get("dataFolder") + "/database";
+    var metadataFile: string = dataFolder + "/metadata.json";
+    if(fs.existsSync(metadataFile)){
+      let json = fs.readFileSync(metadataFile).toString();
+      let metadata = JSON.parse(json);
+      return metadata;
+    }else{
+      return {};
     }
-
-    return envs;
   }
 
-  public getSettings(): ProjectSettings {
+  public saveMetadata( metadata: Metadata ): void {
+    console.info("Save metadata");
+    var dataFolder: string = __dirname + '/../../../' + Config.get("dataFolder") + "/database";
+    var metadataFile: string = dataFolder + "/metadata.json";
+    let json = JSON.stringify(metadata);
+    fs.writeFileSync(metadataFile, json);
+  }
+
+
+  public getSettings(): Settings {
+    console.info("Load project envs");
+    var dataFolder: string = __dirname + '/../../../' + Config.get("dataFolder") + "/config";
+    var settingsFile: string = dataFolder + "/settings";
+    var settings: Settings = {};
+    settings = this.loadFile(settingsFile) || settings;
+    if (!settings || !settings.envs || Object.keys(settings.envs).length == 0) {
+      settings = {envs:{default: {default: true}}};
+    }
+
+    return settings;
+  }
+
+  public getProjectSettings(): ProjectSettings {
     console.info("Load project settings");
     var dataFolder: string = __dirname + '/../../../' + Config.get("dataFolder") + "/config/scripts";
     var settings: ProjectSettings = {global: {}, environments: {}, groups: {}, projects: {}};

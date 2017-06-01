@@ -1,9 +1,0 @@
-{
-  "development": {
-    "default": true
-  },
-  "acceptance": {},
-  "production": {},
-  "remote-development": {},
-  "test": {}
-}

@@ -1,59 +1,60 @@
-import {ProjectRepository} from "./repositories/project.repo";
-import {ProjectSettingsRepository} from "./repositories/project-settings.repo";
-import {ReportRepository} from "./repositories/report.repo";
-import {ProjectService} from "./services/project.service";
-import {AggregationService} from "./services/aggregation.service";
-import {ProjectJsonRepository} from "./repositories/json/project-json.repo";
-import {ReportJsonRepository} from "./repositories/json/report-json.repo";
-import {ProjectSettingsJsonRepository} from "./repositories/json/project-settings-json.repo";
+import { ProjectRepository } from "./repositories/project.repo";
+import { ProjectSettingsRepository } from "./repositories/project-settings.repo";
+import { ReportRepository } from "./repositories/report.repo";
+import { ProjectService } from "./services/project.service";
+import { AggregationService } from "./services/aggregation.service";
+import { ProjectJsonRepository } from "./repositories/json/project-json.repo";
+import { ReportJsonRepository } from "./repositories/json/report-json.repo";
+import { ProjectSettingsJsonRepository } from "./repositories/json/project-settings-json.repo";
+import { PostmanService } from "./services/postman.service";
+import { PostmanClient } from "./client/postman.client";
 /**
  * @author Steven Hermans
  */
 export interface InjectionConfig {
-  
-  projectRepository:new () => ProjectRepository;
-  projectSettingsRepository:new () => ProjectSettingsRepository;
-  reportRepository:new () => ReportRepository;
-  
-  projectService:new (projectRepo:ProjectRepository) => ProjectService;
-  aggregationService:new (injection:Injection) => AggregationService;
-  
+
+  projectRepository: new () => ProjectRepository;
+  projectSettingsRepository: new () => ProjectSettingsRepository;
+  reportRepository: new () => ReportRepository;
+
+  projectService: new ( projectRepo: ProjectRepository, postmanService: PostmanService ) => ProjectService;
+  aggregationService: new ( injection: Injection ) => AggregationService;
+
 }
 
-export class DefaultInjectionConfig implements InjectionConfig{
-  
-  projectRepository = ProjectJsonRepository;
+export class DefaultInjectionConfig implements InjectionConfig {
+
+  projectRepository         = ProjectJsonRepository;
   projectSettingsRepository = ProjectSettingsJsonRepository;
-  reportRepository = ReportJsonRepository;
-  projectService = ProjectService;
-  aggregationService = AggregationService;
-  
+  reportRepository          = ReportJsonRepository;
+  projectService            = ProjectService;
+  aggregationService        = AggregationService;
+
 }
 
-export class Injection{
-  
-  constructor(private config:InjectionConfig = new DefaultInjectionConfig()){}
-  
-  public ProjectRepository():ProjectRepository{
+export class Injection {
+
+  constructor( private config: InjectionConfig = new DefaultInjectionConfig() ) {
+  }
+
+  public ProjectRepository(): ProjectRepository {
     return new this.config.projectRepository();
   }
-  
-  public ProjectSettingsRepository():ProjectSettingsRepository{
+
+  public ProjectSettingsRepository(): ProjectSettingsRepository {
     return new this.config.projectSettingsRepository();
   }
-  
-  public ReportRepository():ReportRepository{
+
+  public ReportRepository(): ReportRepository {
     return new this.config.reportRepository();
   }
-  
-  public ProjectService():ProjectService{
-    return new this.config.projectService(
-      this.ProjectRepository()
-    );
+
+  public ProjectService(): ProjectService {
+    return new this.config.projectService( this.ProjectRepository(), new PostmanService( this ) );
   }
-  
-  public AggregationService():AggregationService{
-    return new this.config.aggregationService(this);
+
+  public AggregationService(): AggregationService {
+    return new this.config.aggregationService( this );
   }
-  
+
 }

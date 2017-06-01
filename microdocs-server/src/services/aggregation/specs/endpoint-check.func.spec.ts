@@ -612,6 +612,57 @@ describe('#Aggregation: #endpointCheck:', () => {
       expect(problemReport.hasProblems()).be.true;
     });
 
+    it('Ignore Json Ignore property', () => {
+      var problemReport = new ProblemReporter();
+      //client with body, but wrong schema type
+      var clientEndpoint: Path = <Path>{
+        parameters: [
+          {
+            required: false,
+            'in': 'body',
+            name: 'body',
+            schema: {
+              type: SchemaTypes.OBJECT,
+              properties: {
+                name: {
+                  type: SchemaTypes.STRING
+                }
+              }
+            }
+          }
+        ]
+      };
+      //producer with not required body
+      var producerEndpoint: Path = <Path>{
+        parameters: [
+          {
+            required: false,
+            'in': 'body',
+            name: 'body',
+            schema: {
+              type: SchemaTypes.OBJECT,
+              properties: {
+                name: {
+                  type: SchemaTypes.STRING,
+                  mappings: {
+                    json: {
+                      ignore: true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ]
+      };
+
+      // act
+      checkBodyParameters(clientEndpoint, producerEndpoint, {}, {}, problemReport);
+
+      // should has problems, because the schema types are not equals. This indicates that the body is checked
+      expect(problemReport.hasProblems()).be.true;
+    });
+
     it('nested schema with correct types', () => {
       var problemReport = new ProblemReporter();
       //client with nested schema as body

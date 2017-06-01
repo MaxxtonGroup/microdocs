@@ -1,0 +1,13 @@
+{
+  "envs": {
+    "development": {
+      "default": true,
+      "postmanMergeProjects": true,
+      "postmanApiKey": "a9b63f180667478e908979e991b445bf"
+    },
+    "acceptance": {},
+    "production": {},
+    "remote-development": {},
+    "test": {}
+  }
+}

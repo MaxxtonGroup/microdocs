@@ -1,10 +1,18 @@
 
 import {ProjectSettings, Environments} from '@maxxton/microdocs-core/domain';
+import { Settings } from "../domain/settings.model";
+import { Metadata } from "../domain/metadata.model";
 
 export interface ProjectSettingsRepository{
   
-  getEnvs(): {[name: string]: Environments};
+  getSettings(): Settings;
 
-  getSettings():ProjectSettings;
+  getProjectSettings():ProjectSettings;
+
+  getMetadata(): Metadata;
+
+  saveMetadata(metadata:Metadata):void;
+
+
 
 }

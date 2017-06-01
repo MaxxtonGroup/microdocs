@@ -82,7 +82,7 @@ export abstract class BaseRoute {
 
   public getEnv(req:Request, scope:BaseRoute):string{
     var env = req.query.env;
-    var envs = scope.injection.ProjectSettingsRepository().getEnvs();
+    var envs = scope.injection.ProjectSettingsRepository().getSettings().envs;
 
     if(env == undefined){
       for(var envName in envs){
