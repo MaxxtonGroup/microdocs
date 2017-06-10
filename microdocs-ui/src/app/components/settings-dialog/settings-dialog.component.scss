@@ -1,0 +1,19 @@
+
+.settings-panel{
+  width: 900px;
+  height: 600px;
+  position: relative;
+}
+
+.left-panel{
+  position: absolute;
+  width: 250px;
+  height: 100%;
+  border-right: 1px solid #cccccc;
+}
+.right-panel{
+  position: absolute;
+  right: 0;
+  width: 650px;
+  height: 100%;
+}

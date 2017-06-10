@@ -1,16 +1,15 @@
-
 @import '../../../assets/scss/settings';
 
 .import-dialog {
-  width: 500px;
+  width: 800px;
 
-  h2{
+  h2 {
     color: map_get($md-green, 500);
     font-size: 20px;
     margin-bottom: 20px;
   }
 
-  h2 md-icon{
+  h2 md-icon {
     position: relative;
     top: 5px;
     color: white;
@@ -23,21 +22,12 @@
     background-color: map_get($md-green, 500);
   }
 
-  md-input-container{
-    width: 100%;
+  #jsoneditor {
+    height: 500px;
+    margin-bottom: 20px;
   }
 
-  textarea {
-    resize: none;
-    font-family: monospace;
-  }
-
-  label {
-    color: $primary !important;
-    cursor: default !important;
-  }
-
-  button{
+  button {
     background-color: map_get($md-green, 500);
     color: white;
   }

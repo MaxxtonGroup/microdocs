@@ -121,7 +121,7 @@
       position: absolute;
       display: inline-block;
       height: 100%;
-      width: 50%;
+      width: 25%;
       transition: 0.2s ease all;
 
       md-icon{
@@ -136,20 +136,22 @@
 
     a.import-button{
       color: md-color(md-palette($md-green));
-      width: 33%;
       left: 0;
     }
 
     a.export-button{
-      left: 33%;
-      width: 34%;
+      left: 25%;
       color: md-color(md-palette($md-blue));
     }
 
     a.reindex-button{
       color: md-color(md-palette($md-blue-grey));
-      width: 33%;
-      left: 67%;
+      left: 50%;
+    }
+
+    a.settings-button{
+      color: md-color(md-palette($md-blue-grey));
+      left: 75%;
     }
     a:hover{
       background-color: map_get($md-grey, 300);

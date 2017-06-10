@@ -1,7 +1,10 @@
 import {Component, Input, Output, EventEmitter} from "@angular/core";
 import {Router} from "@angular/router";
-import {Project, Problem, ProblemResponse} from "@maxxton/microdocs-core/domain";
+import { Project, Problem, ProblemResponse, SchemaTypes, ParameterPlacings } from "@maxxton/microdocs-core/domain";
 import {ProjectService} from "../../services/project.service";
+import { MdDialog, MdSnackBar } from "@angular/material";
+
+declare var JSONEditor;
 
 /**
  * @author Steven Hermans
@@ -13,62 +16,87 @@ import {ProjectService} from "../../services/project.service";
 })
 export class ImportDialogComponent{
 
-  project:Project = null;
-  projectInfo:ProjectInfo = new ProjectInfo();
-
-  jsonError:string = "";
-  generalError:string = "";
+  templateDivRef : any;
+  editorRef : any;
   problemsErrors:string[] = [];
-  valid:boolean = false;
-  projectDefinition:string = '';
+  generalError:string;
 
-  constructor(private projectService:ProjectService, private router:Router){}
+  constructor(private projectService:ProjectService, private router:Router, private snackbar: MdSnackBar, private dialog: MdDialog){}
 
-  onProjectInserted($event){
-    this.projectDefinition = $event.target.value;
-    this.jsonError = "";
-    try{
-      this.project = JSON.parse(this.projectDefinition);
-    }catch(e){
-      this.valid = false;
-      this.jsonError = "Invalid json";
-      return;
-    }
+  ngAfterViewInit(){
+    this.templateDivRef = document.getElementById('jsoneditor');
+    this.createDefaultObjectViewer();
+  }
 
-    if(this.project.info){
-      if(this.project.info.title)
-        this.projectInfo.title = this.project.info.title;
-      if(this.project.info.group)
-        this.projectInfo.group = this.project.info.group;
-      if(this.project.info.version)
-        this.projectInfo.version = this.project.info.version;
-    }
+  createDefaultObjectViewer(){
+    let options = {
+      mode: 'code',
+      modes: ['code', 'tree'], // allowed modes
+      templates: [
+        {
+          text: 'Path',
+          title: 'Insert a new Path',
+          className: 'jsoneditor-type-object',
+          field: '/api/v1/peanuts',
+          value: {
+            get: {
+              description: '',
+              parameters: [
+                {
+                  name: 'filter',
+                  description: '',
+                  in: ParameterPlacings.QUERY,
+                  type: SchemaTypes.STRING
+                }
+              ]
+            }
+          }
+        },
+      ]
+    };
+    this.editorRef = new JSONEditor(this.templateDivRef, options, {
+      info: {
+        title: "awesome-service",
+        version: "1.0.0",
+        group: "default"
+      },
+      paths: {
+        '/api/v1/peanuts': {
+          get: {
+
+          }
+        }
+      }
+    });    //Default Initialization
   }
 
   onSubmit(){
-    this.generalError = "";
     this.problemsErrors = [];
-    if(this.jsonError){
-      this.generalError = this.jsonError;
+    let project:Project = <Project> this.editorRef.get();
+
+    if(!project.info){
+      this.generalError = "'info' object is missing";
       return;
     }
 
-    if(!this.projectInfo.title || this.projectInfo.title.trim() === ""){
-      this.generalError = "Project name is empty";
+    if(!project.info.title || project.info.title.trim() === ""){
+      this.generalError = "'info.title' is missing";
       return;
     }
-    if(!this.projectInfo.group || this.projectInfo.group.trim() === ""){
-      this.generalError = "Group is empty";
+    if(!project.info.group || project.info.group.trim() === ""){
+      this.generalError = "'info.group' is missing";
       return;
     }
-    if(!this.projectInfo.version || this.projectInfo.version.trim() === ""){
-      this.generalError = "Version is empty";
+    if(!project.info.version || project.info.version.trim() === ""){
+      this.generalError = "'info.version' is missing";
       return;
     }
 
-    this.projectService.importProject(this.project, this.projectInfo.title, this.projectInfo.group, this.projectInfo.version).subscribe((problemResponse:ProblemResponse) => {
+    this.projectService.importProject(project, project.info.title, project.info.group, project.info.version).subscribe((problemResponse:ProblemResponse) => {
       if(problemResponse.status === 'ok') {
-        let url = "/projects/" + this.projectInfo.group + "/" + this.projectInfo.title + "?version=" + this.projectInfo.version + "&env=" + this.projectService.getSelectedEnv();
+        this.dialog.closeAll();
+        this.snackbar.open( `Added project: ${project.info.title}`, undefined, {duration: 3000} );
+        let url = "/projects/" + project.info.title + "?version=" + project.info.version + "&env=" + this.projectService.getSelectedEnv();
         this.projectService.refreshProjects( this.projectService.getSelectedEnv(), true );
         this.router.navigateByUrl( url );
       }else{

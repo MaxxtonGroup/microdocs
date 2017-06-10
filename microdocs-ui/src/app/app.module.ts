@@ -36,6 +36,7 @@ import { ImportDialogComponent } from "./components/import-dialog/import-dialog.
 import { ExportPanelComponent } from "./components/export-panel/export-panel.component";
 import { DialogBaseComponent } from './components/dialog-base/dialog-base.component';
 import { ExportDialogComponent } from './components/export-dialog/export-dialog.component';
+import { SettingsDialogComponent } from "./components/settings-dialog/settings-dialog.component";
 
 @NgModule({
   declarations: [
@@ -56,6 +57,7 @@ import { ExportDialogComponent } from './components/export-dialog/export-dialog.
     WelcomeComponent,
     ImportDialogComponent,
     ExportDialogComponent,
+    SettingsDialogComponent,
     DialogBaseComponent,
     ExportPanelComponent,
 
@@ -64,11 +66,12 @@ import { ExportDialogComponent } from './components/export-dialog/export-dialog.
     FilterByFieldPipe,
     NotEmptyPipe,
     EmptyPipe,
-    ObjectIteratorPipe
+    ObjectIteratorPipe,
   ],
   entryComponents: [
     ImportDialogComponent,
-    ExportPanelComponent
+    ExportPanelComponent,
+    SettingsDialogComponent
   ],
   imports: [
     BrowserModule,
