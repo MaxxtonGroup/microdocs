@@ -2,6 +2,7 @@ pipeline {
   agent any
   parameters {
     string(name: 'TAG', defaultValue: '', description: 'Docker tag')
+    string(name: 'CORE_VERSION', defaultValue: '', description: 'MicroDocs Core version')
     string(name: 'CLI_VERSION', defaultValue: '', description: 'MicroDocs ClI version')
   }
 
@@ -17,6 +18,7 @@ pipeline {
       steps {
         unstash name: 'source'
         dir('microdocs-server') {
+          sh "npm install @maxxton/microdocs-core@${env.CORE_VERSION}"
           sh 'npm install'
           sh 'npm version ' + env.TAG
           sh 'npm run prepublish'
@@ -32,6 +34,7 @@ pipeline {
       steps {
         unstash name: 'source'
         dir('microdocs-ui') {
+          sh "npm install @maxxton/microdocs-core@${env.CORE_VERSION}"
           sh 'npm install'
           sh 'npm version ' + env.TAG
           sh './node_modules/.bin/ng build --prod'
