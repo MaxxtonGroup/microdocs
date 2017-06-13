@@ -25,7 +25,7 @@
     "@angular/platform-browser-dynamic": "2.3.1",
     "@angular/router": "3.3.1",
     "@maxxton/angular-rest": "1.0.0",
-    "@maxxton/microdocs-core": "1.7.3",
+    "@maxxton/microdocs-core": "1.8.0",
     "angular2-prettyjson": "2.0.3",
     "core-js": "2.4.1",
     "d3": "3.5.17",

@@ -1,0 +1,14 @@
+version: '3'
+services:
+  microdocs-ui:
+    build:
+      context: ../../
+      dockerfile: ./microdocs/microdocs-ui/Dockerfile
+    volumes:
+     - ../../microdocs-core/dist/adapter:/app/@maxxton/microdocs-core/dist/adapter
+     - ../../microdocs-core/dist/builder:/app/@maxxton/microdocs-core/dist/builder
+     - ../../microdocs-core/dist/domain:/app/@maxxton/microdocs-core/dist/domain
+     - ../../microdocs-core/dist/helpers:/app/@maxxton/microdocs-core/dist/helpers
+     - ../../microdocs-core/dist/pre-processor:/app/@maxxton/microdocs-core/dist/pre-processor
+     - ./src:/app/@maxxton/microdocs-ui/src:ro
+     - ./dist:/app/@maxxton/microdocs-ui/dist

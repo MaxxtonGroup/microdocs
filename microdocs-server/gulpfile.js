@@ -1,7 +1,8 @@
 'use strict';
 var gulp = require('gulp');
+var nodemon = require('gulp-nodemon');
 var tscConfig = require('./src/tsconfig.json');
-var Builder = require('./node_modules/@maxxton/microdocs-core/build').Builder;
+var Builder = require('./build').Builder;
 
 var settings = {
   distFolder: 'dist',
@@ -10,6 +11,16 @@ var settings = {
 };
 
 var builder = new Builder(settings);
+
+gulp.task('watch', ['prepublish'], function (cb) {
+  builder.watch(cb);
+  nodemon({
+    script: 'dist/index.js',
+    debug: true,
+    ext: 'js html',
+    env: { 'NODE_ENV': 'development' }
+  })
+});
 
 gulp.task('default', ['prepublish'], function (cb) {
   builder.watch(cb);
