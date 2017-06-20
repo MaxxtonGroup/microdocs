@@ -777,6 +777,54 @@ describe('#Aggregation: #endpointCheck:', () => {
       // no problems expected, as the body is not required
       expect(problemReport.hasProblems()).be.true;
     });
+
+    it('Ignore downstream check', () => {
+      var problemReport = new ProblemReporter();
+      //client without body
+      var clientEndpoint: Path = <Path>{
+        parameters: [
+          {
+            required: false,
+            'in': 'body',
+            name: 'body',
+            schema: {
+              type: SchemaTypes.OBJECT,
+              properties: {
+                distributionChannelId: {
+                  type: SchemaTypes.INTEGER,
+                  mappings: {
+                    downstreamCheck: {
+                      ignore: true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ]
+      };
+      //producer with not required body
+      var producerEndpoint: Path = <Path>{
+        parameters: [
+          {
+            required: false,
+            'in': 'body',
+            name: 'body',
+            schema: {
+              type: SchemaTypes.OBJECT,
+              properties: {
+              }
+            }
+          }
+        ]
+      };
+
+      //act
+      checkBodyParameters(clientEndpoint, producerEndpoint, {}, {}, problemReport);
+
+      // no problems expected, as the body is not required
+      expect(problemReport.hasProblems()).be.false;
+    });
   });
 
   describe('#responseCheck', () => {
@@ -1104,6 +1152,49 @@ describe('#Aggregation: #endpointCheck:', () => {
           "default": {
             schema: {
               type: SchemaTypes.ENUM
+            }
+          }
+        }
+      };
+
+      // act
+      checkResponseBody(clientEndpoint, producerEndpoint, {}, {}, problemReport);
+
+      // should give problems
+      expect(problemReport.hasProblems()).be.false;
+    });
+
+    it('Ignore downstream check', () => {
+      var problemReport = new ProblemReporter();
+
+      // client expect response body
+      var clientEndpoint: Path = <Path>{
+        responses: {
+          "default": {
+            schema: {
+              type: SchemaTypes.OBJECT,
+              properties: {
+                distributionChannelId: {
+                  type: SchemaTypes.INTEGER,
+                  mappings: {
+                    downstreamCheck: {
+                      ignore: true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      };
+
+      // producer has no response body
+      var producerEndpoint: Path = <Path>{
+        responses: {
+          "default": {
+            schema: {
+              type: SchemaTypes.OBJECT,
+              properties: {}
             }
           }
         }
