@@ -134,10 +134,22 @@ function checkSchema(endpoint: Path, clientSchema: Schema, producerSchema: Schem
       } else {
         if (producerSchema.type == SchemaTypes.OBJECT) {
           var producerProperties = producerSchema.properties;
-          var clientProperties = clientSchema.properties;
+          var clientProperties:{[name:string]:Schema} = {};
+
+          // filter properties for ignore downstreamCheck
+          for (let key in clientSchema.properties){
+            let property = clientSchema.properties[key];
+            if(!property.mappings || !property.mappings.downstreamCheck || !property.mappings.downstreamCheck.ignore){
+              clientProperties[key] = property;
+            }
+          }
+
+          // Check each producer properties
           for (var key in producerProperties) {
             checkSchema(endpoint, clientProperties[key], producerProperties[key], clientProject, producerProject, problemReport, path + (path == '' ? '' : '.') + key, placing);
           }
+
+          // Check unknown client properties
           for(var key in clientProperties){
             if(!producerProperties[key]){
               let keyPath = path + (path ? '.' : '') + key;
