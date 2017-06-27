@@ -7,6 +7,8 @@ import * as path from "path";
 import * as exphbs from 'express-handlebars';
 import * as multer from 'multer';
 
+import * as logger from './logger'
+import {yaml} from "./middelware/yaml-parser";
 import {Config} from "./config";
 import {BaseRoute} from "./routes/route";
 import {ProjectsRoute} from "./routes/projects.route";
@@ -68,12 +70,17 @@ class Server {
    */
   private config() {
     //mount logger
-    // this.app.use(logger("logs/logfile.txt"));
+    // this.app.use(logger);
     
     //mount helmet
     this.app.use(helmet());
+
+    //mount custom parser
+    this.app.use(yaml({
+      limit: '1mb',
+    }));
     
-    //mount json form parser
+    // mount json form parser
     this.app.use(bodyParser.json({
       limit: '1mb'
     }));
