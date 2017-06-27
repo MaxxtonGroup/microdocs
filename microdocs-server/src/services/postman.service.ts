@@ -1,58 +1,61 @@
 
 import { Project } from "@maxxton/microdocs-core/domain";
+import { PostmanAdapter } from "@maxxton/microdocs-core/adapter/postman.adapter";
 import { Injection } from "../injections";
 import { PostmanResponseHandler } from "../routes/responses/postman-response.handler";
 import { PostmanClient } from "../client/postman.client";
 
-export class PostmanService{
+export class PostmanService {
 
-  constructor( private injection:Injection ) {
+  constructor(private injection: Injection) {
   }
 
-  public syncCollection(project:Project, env:string):void{
+  public syncCollection(project: Project, env: string): void {
+    console.info(`Sync postman collection: ${project.info.title}:${project.info.version}`);
     let settings = this.injection.ProjectSettingsRepository().getSettings();
-    let apiKey:string = settings.envs[env].postmanApiKey;
-    if(apiKey){
-      let collection = new PostmanResponseHandler(this.injection).postman(project);
+    let apiKey: string = settings.envs[env].postmanApiKey;
+    if (apiKey) {
+      let postmanAdapter = new PostmanAdapter();
+      let collection = postmanAdapter.adapt(project);
       let collectionInfo = this.getCollectionInfo(env, project.info.title);
-      if(collectionInfo && collectionInfo.postmanId && collectionInfo.collectionId){
-        new PostmanClient().updateCollection(collection, collectionInfo, apiKey).then((collectionInfo:{collectionId:string, postmanId:string}) => {
+      if (collectionInfo && collectionInfo.postmanId && collectionInfo.collectionId) {
+        new PostmanClient().updateCollection(collection, collectionInfo, apiKey).then((collectionInfo: { collectionId: string, postmanId: string }) => {
           try {
             console.info("Updated postman collection ", collectionInfo.collectionId);
-          }catch(e){
+          } catch (e) {
             console.error(e);
           }
-        }, (err:any) => console.error(err));
-      }else{
+        }, (err: any) => console.error(err));
+      } else {
         new PostmanClient().createCollection(collection, apiKey).then((collectionInfo) => {
           try {
-            this.saveCollectionInfo( env, project.info.title, collectionInfo );
+            this.saveCollectionInfo(env, project.info.title, collectionInfo);
             console.info("Created postman collection ", collectionInfo);
-          }catch(e){
+          } catch (e) {
             console.error(e);
           }
-        }, (err:any) => console.error(err));
+        }, (err: any) => console.error(err));
       }
     }
   }
 
-  private getCollectionInfo(env:string, projectTitle:string):{collectionId:string, postmanId:string}{
+  private getCollectionInfo(env: string, projectTitle: string): { collectionId: string, postmanId: string } {
     let metadata = this.injection.ProjectSettingsRepository().getMetadata();
-    if(metadata && metadata.envs && metadata.envs[env] && metadata.envs[env].postmanCollections && metadata.envs[env].postmanCollections[projectTitle]){
+    if (metadata && metadata.envs && metadata.envs[env] && metadata.envs[env].postmanCollections && metadata.envs[env].postmanCollections[projectTitle]) {
       return metadata.envs[env].postmanCollections[projectTitle];
     }
     return null;
   }
 
-  private saveCollectionInfo(env:string, projectTitle:string, collectionInfo:{collectionId:string, postmanId:string}){
+  private saveCollectionInfo(env: string, projectTitle: string, collectionInfo: { collectionId: string, postmanId: string }) {
     let metadata = this.injection.ProjectSettingsRepository().getMetadata();
-    if(!metadata.envs){
+    if (!metadata.envs) {
       metadata.envs = {};
     }
-    if(!metadata.envs[env]){
+    if (!metadata.envs[env]) {
       metadata.envs[env] = {};
     }
-    if(!metadata.envs[env].postmanCollections){
+    if (!metadata.envs[env].postmanCollections) {
       metadata.envs[env].postmanCollections = {};
     }
     metadata.envs[env].postmanCollections[projectTitle] = collectionInfo;

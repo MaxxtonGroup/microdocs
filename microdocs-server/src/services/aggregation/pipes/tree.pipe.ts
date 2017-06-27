@@ -14,6 +14,7 @@ export class TreePipe extends Pipe<ProjectTree>{
   }
 
   protected run():ProjectTree {
+    this.forwardResult();
     return buildTree(this);
   }
 

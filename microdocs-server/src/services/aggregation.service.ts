@@ -1,6 +1,8 @@
 import { Project, Problem, ProjectTree } from "@maxxton/microdocs-core/domain";
 import { pipe } from "./aggregation/aggregation-pipeline";
 import { Injection } from "../injections";
+import { postmanSync } from "./aggregation/hooks";
+
 /**
  * @author Steven Hermans
  */
@@ -19,6 +21,7 @@ export class AggregationService {
         .buildTags()
         .storeIndex()
         .storeProjects()
+        .postAction(postmanSync)
         .asTree();
   }
 
@@ -32,6 +35,7 @@ export class AggregationService {
         .buildTags()
         .storeIndex()
         .storeProjects()
+        .postAction(postmanSync)
         .asTree();
   }
 

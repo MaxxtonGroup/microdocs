@@ -6,7 +6,7 @@ import { PostmanService } from "./postman.service";
 
 export class ProjectService{
 
-  constructor(private projectRepo:ProjectRepository, private postmanService:PostmanService){}
+  constructor(private projectRepo:ProjectRepository){}
 
   public storeAggregatedProjects(env:string, projectTree:ProjectTree) : void{
     this.projectRepo.storeAggregatedProjects(env, projectTree);
@@ -14,10 +14,6 @@ export class ProjectService{
 
   public storeAggregatedProject(env:string, project:Project) : void{
     this.addResponseExamples(project);
-
-    if(project.info.isLatestVersion()) {
-      this.postmanService.syncCollection( project, env );
-    }
 
     this.projectRepo.storeAggregatedProject(env, project);
   }

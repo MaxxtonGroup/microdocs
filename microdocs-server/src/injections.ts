@@ -17,7 +17,7 @@ export interface InjectionConfig {
   projectSettingsRepository: new () => ProjectSettingsRepository;
   reportRepository: new () => ReportRepository;
 
-  projectService: new ( projectRepo: ProjectRepository, postmanService: PostmanService ) => ProjectService;
+  projectService: new ( projectRepo: ProjectRepository ) => ProjectService;
   aggregationService: new ( injection: Injection ) => AggregationService;
 
 }
@@ -50,7 +50,7 @@ export class Injection {
   }
 
   public ProjectService(): ProjectService {
-    return new this.config.projectService( this.ProjectRepository(), new PostmanService( this ) );
+    return new this.config.projectService( this.ProjectRepository() );
   }
 
   public AggregationService(): AggregationService {

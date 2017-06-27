@@ -4,6 +4,8 @@ import { ProjectService } from "../project.service";
 import { ReportRepository } from "../../repositories/report.repo";
 import { ProjectSettingsRepository } from "../../repositories/project-settings.repo";
 import { AggregationPipeline } from "./aggregation-pipeline";
+import { Hook } from './hooks/hook';
+
 /**
  * @author Steven Hermans
  */
@@ -62,6 +64,10 @@ export abstract class Pipe<T> {
    */
   get result(): AggregationResult {
     return this._result;
+  }
+
+  protected forwardResult(): void {
+    this._result = this.prev._result;
   }
 
   /**
@@ -270,6 +276,15 @@ export abstract class Pipe<T> {
   }
 
   /**
+   * Build tags
+   * @return {Pipe}
+   */
+  public postAction(hook:Hook): Pipe<any> {
+    this._pipeline.addHook(hook);
+    return this;
+  }
+
+  /**
    * Return result as project tree
    * @return {ProjectTree}
    */
@@ -278,7 +293,9 @@ export abstract class Pipe<T> {
     let pipe   = new TreePipe( this.pipeline );
     pipe._prev = this;
     this._next = pipe;
-    return pipe.process();
+    let result = pipe.process();
+    this._pipeline.finish();
+    return result;
   }
 
   /**
@@ -290,7 +307,9 @@ export abstract class Pipe<T> {
     let pipe   = new ProblemsPipe( this.pipeline );
     pipe._prev = this;
     this._next = pipe;
-    return pipe.process();
+    let result = pipe.process();
+    this._pipeline.finish();
+    return result;
   }
 }
 

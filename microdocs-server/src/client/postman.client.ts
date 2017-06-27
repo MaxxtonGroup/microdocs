@@ -22,7 +22,7 @@ export class PostmanClient{
           if ( response.statusCode >= 200 && response.statusCode < 300 ) {
             resolve( {collectionId: data.collection.uid, postmanId: data.collection.id} );
           } else {
-            let message = "Wrong response status " + response.statusCode + ", expected 2xx -> body:\n " + data.toString();
+            let message = "Wrong response status " + response.statusCode + ", expected 2xx -> body:\n " + JSON.stringify(data);
             reject( message );
           }
         } ).on( 'error', ( error: any ) => {

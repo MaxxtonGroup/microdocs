@@ -1,0 +1,1 @@
+export { postmanSync } from './postman-hook';
