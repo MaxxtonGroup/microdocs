@@ -1,9 +1,0 @@
-FROM node:6
-EXPOSE 3000
-WORKDIR /microdocs/microdocs-server
-RUN npm set registry http://192.168.252.165:4873/
-RUN echo @maxxton:registry=https://npm.maxxton.com > .npmrc
-ADD microdocs-server/config.yml .
-ADD microdocs-server/package.json .
-RUN npm install --prod && npm install nodemon
-CMD ./node_modules/.bin/nodemon --watch dist dist/index.js
