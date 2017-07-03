@@ -18,7 +18,7 @@ pipeline {
       steps {
         unstash name: 'source'
         dir('microdocs-server') {
-          sh "node -d -e \"var fs = require('fs'); var pJson = require('./package.json'); pJson.dependencies['@maxxton/microdocs-core'] = '${env.CORE_VERSION}'; fs.writeFileSync('./package.json', pJson);\""
+          sh "node -p -e \"var fs = require('fs'); var pJson = require('./package.json'); pJson.dependencies['@maxxton/microdocs-core'] = '${env.CORE_VERSION}'; fs.writeFileSync('./package.json', JSON.stringify(pJson));\""
           sh 'npm install'
           sh 'npm version ' + env.TAG
           sh 'npm run prepublish'
@@ -34,7 +34,7 @@ pipeline {
       steps {
         unstash name: 'source'
         dir('microdocs-ui') {
-          sh "node -d -e \"var fs = require('fs'); var pJson = require('./package.json'); pJson.dependencies['@maxxton/microdocs-core'] = '${env.CORE_VERSION}'; fs.writeFileSync('./package.json', pJson);\""
+          sh "node -p -e \"var fs = require('fs'); var pJson = require('./package.json'); pJson.dependencies['@maxxton/microdocs-core'] = '${env.CORE_VERSION}'; fs.writeFileSync('./package.json', JSON.stringify(pJson));\""
           sh 'npm install'
           sh 'npm version ' + env.TAG
           sh './node_modules/.bin/ng build --prod'
