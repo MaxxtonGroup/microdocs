@@ -45,12 +45,10 @@ function Builder(settings) {
   };
 
   function _clean(cb) {
-    gulp.src(settings.distFolder + '/*', {read: false})
-        .pipe(vinylPaths(del))
-        .on('error', gutil.log)
-        .on('finish', function () {
-          cb();
-        });
+    gutil.log('Starting ', gutil.colors.cyan('_clean'));
+    del.sync([settings.distFolder + '/*']);
+    gutil.log('Finished ', gutil.colors.cyan('_clean'));
+    cb();
   }
 
   function _build(cb) {
@@ -73,7 +71,7 @@ function Builder(settings) {
         .on('error', gutil.log)
         .on('finish', function () {
           gutil.log('Finished ', gutil.colors.cyan('_deployMisc'));
-          if(typeof(cb) === 'function') {
+          if (typeof(cb) === 'function') {
             cb();
           }
         });
