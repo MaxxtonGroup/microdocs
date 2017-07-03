@@ -844,7 +844,7 @@ describe('#Aggregation: #endpointCheck:', () => {
                 distributionChannelId: {
                   type: SchemaTypes.INTEGER,
                   mappings: {
-                    downstreamCheck: {
+                    client: {
                       ignore: true
                     }
                   }
@@ -864,6 +864,57 @@ describe('#Aggregation: #endpointCheck:', () => {
             schema: {
               type: SchemaTypes.OBJECT,
               properties: {
+              }
+            }
+          }
+        ]
+      };
+
+      //act
+      checkBodyParameters(clientEndpoint, producerEndpoint, {}, {}, problemReport);
+
+      // no problems expected, as the body is not required
+      expect(problemReport.hasProblems()).be.false;
+    });
+
+    it('Map client name', () => {
+      var problemReport = new ProblemReporter();
+      //client without body
+      var clientEndpoint: Path = <Path>{
+        parameters: [
+          {
+            required: false,
+            'in': 'body',
+            name: 'body',
+            schema: {
+              type: SchemaTypes.OBJECT,
+              properties: {
+                distributionChannelId: {
+                  type: SchemaTypes.INTEGER,
+                  mappings: {
+                    client: {
+                      name: 'resourceId'
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ]
+      };
+      //producer with not required body
+      var producerEndpoint: Path = <Path>{
+        parameters: [
+          {
+            required: false,
+            'in': 'body',
+            name: 'body',
+            schema: {
+              type: SchemaTypes.OBJECT,
+              properties: {
+                resourceId: {
+                  type: SchemaTypes.INTEGER
+                }
               }
             }
           }
@@ -1228,7 +1279,7 @@ describe('#Aggregation: #endpointCheck:', () => {
                 distributionChannelId: {
                   type: SchemaTypes.INTEGER,
                   mappings: {
-                    downstreamCheck: {
+                    client: {
                       ignore: true
                     }
                   }
@@ -1256,6 +1307,100 @@ describe('#Aggregation: #endpointCheck:', () => {
 
       // should give problems
       expect(problemReport.hasProblems()).be.false;
+    });
+
+    it('Map json name', () => {
+      var problemReport = new ProblemReporter();
+
+      // client expect response body
+      var clientEndpoint: Path = <Path>{
+        responses: {
+          "default": {
+            schema: {
+              type: SchemaTypes.OBJECT,
+              properties: {
+                distributionChannelId: {
+                  type: SchemaTypes.INTEGER,
+                  mappings: {
+                    json: {
+                      name: 'resourceId'
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      };
+
+      // producer has no response body
+      var producerEndpoint: Path = <Path>{
+        responses: {
+          "default": {
+            schema: {
+              type: SchemaTypes.OBJECT,
+              properties: {
+                distributionChannelId: {
+                  type: SchemaTypes.INTEGER
+                }
+              }
+            }
+          }
+        }
+      };
+
+      // act
+      checkResponseBody(clientEndpoint, producerEndpoint, {}, {}, problemReport);
+
+      // should give problems
+      expect(problemReport.hasProblems()).be.true;
+    });
+
+    it('Map client name', () => {
+      var problemReport = new ProblemReporter();
+
+      // client expect response body
+      var clientEndpoint: Path = <Path>{
+        responses: {
+          "default": {
+            schema: {
+              type: SchemaTypes.OBJECT,
+              properties: {
+                distributionChannelId: {
+                  type: SchemaTypes.INTEGER,
+                  mappings: {
+                    client: {
+                      name: 'resourceId'
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      };
+
+      // producer has no response body
+      var producerEndpoint: Path = <Path>{
+        responses: {
+          "default": {
+            schema: {
+              type: SchemaTypes.OBJECT,
+              properties: {
+                distributionChannelId: {
+                  type: SchemaTypes.INTEGER
+                }
+              }
+            }
+          }
+        }
+      };
+
+      // act
+      checkResponseBody(clientEndpoint, producerEndpoint, {}, {}, problemReport);
+
+      // should give problems
+      expect(problemReport.hasProblems()).be.true;
     });
   });
 

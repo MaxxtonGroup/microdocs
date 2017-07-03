@@ -126,39 +126,45 @@ function checkSchema(endpoint: Path, clientSchema: Schema, producerSchema: Schem
   if (producerSchema != null && producerSchema != undefined) {
     if (clientSchema != null && clientSchema != undefined) {
       if (!matchType(clientSchema, producerSchema)) {
-        var position = "";
+        let position = "";
         if (path != '') {
           position = ' at ' + path;
         }
         problemReport.report(ProblemLevels.WARNING, "Type mismatches in " + placing + " body" + position + ", expected: " + producerSchema.type + ", found: " + clientSchema.type, endpoint.controller, endpoint.method);
       } else {
         if (producerSchema.type == SchemaTypes.OBJECT) {
-          var producerProperties = producerSchema.properties;
-          var clientProperties:{[name:string]:Schema} = {};
-
-          // filter properties for ignore downstreamCheck
-          for (let key in clientSchema.properties){
-            let property = clientSchema.properties[key];
-            if(!property.mappings || !property.mappings.downstreamCheck || !property.mappings.downstreamCheck.ignore){
-              clientProperties[key] = property;
-            }
-          }
+          let producerProperties = producerSchema.properties;
+          let clientProperties = clientSchema.properties;
 
           // Check each producer properties
-          for (var key in producerProperties) {
-            checkSchema(endpoint, clientProperties[key], producerProperties[key], clientProject, producerProject, problemReport, path + (path == '' ? '' : '.') + key, placing);
+          for (let key in producerProperties) {
+            // Find client Property by name
+            let producerProperty = producerProperties[key];
+            if(!isProducerIgnored(producerProperty)) {
+              let propertyName = getProducerPropertyMappingName(key, producerProperty);
+              let clientProperty = findClientPropertyByName(propertyName, clientProperties);
+
+              checkSchema(endpoint, clientProperty, producerProperty, clientProject, producerProject, problemReport, path + (path == '' ? '' : '.') + key, placing);
+            }
           }
 
           // Check unknown client properties
-          for(var key in clientProperties){
-            if(!producerProperties[key]){
-              let keyPath = path + (path ? '.' : '') + key;
-              problemReport.report(ProblemLevels.WARNING, `Unknown property '${keyPath}' in ${placing} body`, endpoint.controller, endpoint.method);
+          for (let key in clientProperties) {
+            let clientProperty = clientProperties[key];
+            if(!isClientIgnored(clientProperty)) {
+              let name = getClientPropertyMappingName(key, clientProperty);
+
+              let producerProperty = findProducerPropertyByName(name, producerProperties);
+
+              if (!producerProperty) {
+                let keyPath = path + (path ? '.' : '') + key;
+                problemReport.report(ProblemLevels.WARNING, `Unknown property '${keyPath}' in ${placing} body`, endpoint.controller, endpoint.method);
+              }
             }
           }
         } else if (producerSchema.type == SchemaTypes.ARRAY) {
-          var producerItems = producerSchema.items;
-          var clientItems = clientSchema.items;
+          let producerItems = producerSchema.items;
+          let clientItems = clientSchema.items;
           checkSchema(endpoint, clientItems, producerItems, clientProject, producerProject, problemReport, path + (path == '' ? '' : '.') + "0", placing);
         }
       }
@@ -192,7 +198,7 @@ function matchType(clientParam: Parameter, producerParam: Parameter): boolean {
     if (producerParam.enum.indexOf(clientParam.default) > -1) {
       return true;
     }
-  }else if(producerParam.type === SchemaTypes.ENUM && clientParam.type === SchemaTypes.STRING){
+  } else if (producerParam.type === SchemaTypes.ENUM && clientParam.type === SchemaTypes.STRING) {
     return true;
   }
 
@@ -213,5 +219,132 @@ function matchType(clientParam: Parameter, producerParam: Parameter): boolean {
     }
   }
 
+  return false;
+}
+
+/**
+ * Find matching client property by name and ignore
+ * @param name
+ * @param properties
+ * @returns {Schema}
+ */
+function findClientPropertyByName(name: string, properties: {[key: string]: Schema}): Schema {
+  return Object.keys(properties)
+  // Filter json.ignore
+    .filter(key => {
+      let property = properties[key];
+      if (property.mappings && property.mappings.json && property.mappings.json.ignore) {
+        return false;
+      }
+      return true;
+    })
+    // Filter client.ignore
+    .filter(key => {
+      let property = properties[key];
+      if (property.mappings && property.mappings.client && property.mappings.client.ignore) {
+        return false;
+      }
+      return true;
+    })
+    // Filter name
+    .filter(key => {
+      let property = properties[key];
+      let propertyName = getClientPropertyMappingName(key, property);
+      return propertyName === name;
+    }).map(clientKey => properties[clientKey])[0];
+}
+
+/**
+ * Find matching producer property by name and ignore
+ * @param name
+ * @param properties
+ * @returns {Schema}
+ */
+function findProducerPropertyByName(name: string, properties: {[key: string]: Schema}): Schema {
+  return Object.keys(properties)
+    // Filter json.ignore
+    .filter(key => {
+      let property = properties[key];
+      if (property.mappings && property.mappings.json && property.mappings.json.ignore) {
+        return false;
+      }
+      return true;
+    })
+    // Filter name
+    .filter(key => {
+      let property = properties[key];
+      let propertyName = getProducerPropertyMappingName(key, property);
+      return propertyName === name;
+    }).map(clientKey => properties[clientKey])[0];
+}
+
+/**
+ * Get Client property name
+ * Taking mappings in account
+ * @param key
+ * @param property
+ * @returns {string}
+ */
+function getClientPropertyMappingName(key: string, property: Schema): string {
+  if (property.mappings) {
+    if (property.mappings.client && property.mappings.client.name) {
+      // Find client.name
+      return property.mappings.client.name;
+    }
+    if (property.mappings.json && property.mappings.json.name) {
+      // Find json.name
+      return property.mappings.json.name;
+    }
+  }
+  // Fallback on key
+  return key;
+}
+
+/**
+ * Get Producer property name
+ * Taking mappings in account
+ * @param key
+ * @param property
+ * @returns {string}
+ */
+function getProducerPropertyMappingName(key: string, property: Schema): string {
+  if (property.mappings) {
+    if (property.mappings.json && property.mappings.json.name) {
+      // Find json.name
+      return property.mappings.json.name;
+    }
+  }
+  // Fallback on key
+  return key;
+}
+
+/**
+ * Check if property is not ignored on client side
+ * @param property
+ * @returns {boolean}
+ */
+function isClientIgnored(property: Schema):boolean{
+  if (property.mappings){
+    if(property.mappings.json && property.mappings.json.ignore){
+      return true;
+    }
+    if(property.mappings.client && property.mappings.client.ignore){
+      return true;
+    }
+  }
+  return false;
+}
+
+/**
+ * Check if property is not ignored on producer side
+ * @param property
+ * @returns {boolean}
+ */
+function isProducerIgnored(property: Schema):boolean{
+  if (property.mappings){
+    if(property.mappings.json && property.mappings.json.ignore){
+      return true;
+    }
+  }
   return false;
 }

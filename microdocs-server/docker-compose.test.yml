@@ -5,15 +5,9 @@ services:
       context: ../../
       dockerfile: ./microdocs/microdocs-server/Dockerfile
     command: ./node_modules/.bin/gulp test
-    ports:
-     - 3000:3000
-     - 5858:5858
     volumes:
-     - ../../microdocs-core/dist/adapter:/app/@maxxton/microdocs-core/dist/adapter
-     - ../../microdocs-core/dist/builder:/app/@maxxton/microdocs-core/dist/builder
-     - ../../microdocs-core/dist/domain:/app/@maxxton/microdocs-core/dist/domain
-     - ../../microdocs-core/dist/helpers:/app/@maxxton/microdocs-core/dist/helpers
-     - ../../microdocs-core/dist/pre-processor:/app/@maxxton/microdocs-core/dist/pre-processor
+     - ../../microdocs-core/dist:/app/@maxxton/microdocs-server/node_modules/@maxxton/microdocs-core
      - ../microdocs-ui/dist:/app/@maxxton/microdocs-ui/dist:ro
      - ./src:/app/@maxxton/microdocs-server/src:ro
      - ./data:/app/@maxxton/microdocs-server/data
+     - ./dist:/app/@maxxton/microdocs-server/dist
