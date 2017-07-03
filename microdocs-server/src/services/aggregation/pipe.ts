@@ -171,6 +171,15 @@ export abstract class Pipe<T> {
   }
 
   /**
+   * Remove report from the current pipe
+   * @return {Pipe} return this pipe
+   */
+  public remove( title:string ): Pipe<any> {
+    this.result.removeProject(title);
+    return this;
+  }
+
+  /**
    * Add a report to the current pipe
    * @return {Pipe} return this pipe
    */

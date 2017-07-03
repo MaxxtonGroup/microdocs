@@ -52,6 +52,7 @@ function resolveRestClient( pipe: Pipe<any>, reporter: ProblemReporter, project:
     reporter.report( ProblemLevels.ERROR, "Unknown project: " + depTitle, dependency.component );
     return;
   }
+  console.info("Resolve " + project.info.title + ":" + project.info.version + " against " + depProject.info.title + ":" + depProject.info.version);
 
   var projectInfo = pipe.projects.filter( info => info.title === depTitle )[ 0 ];
   if ( projectInfo ) {

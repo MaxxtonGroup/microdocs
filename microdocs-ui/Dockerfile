@@ -13,6 +13,5 @@ RUN npm install
 
 # Build microdocs-ui
 ADD ./microdocs-core/dist /app/@maxxton/microdocs-core/dist
-ADD ./microdocs/microdocs-ui/src ./src
 ADD ./microdocs/microdocs-ui/angular-cli.json ./
 CMD rm -rf ./dist/* && ./node_modules/.bin/ng build --watch
