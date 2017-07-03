@@ -44,6 +44,7 @@ export class AggregationService {
 //    report.info.getVersions().push(report.info.version);
     let problems = pipe( this.injection, env )
         .takeLatest()
+        .remove( report.info.title )
         .take( report )
         .preProcess()
         .combineIncludes()

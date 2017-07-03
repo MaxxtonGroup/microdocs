@@ -18,6 +18,7 @@ gulp.task('watch', ['prepublish'], function (cb) {
     script: 'dist/index.js',
     debug: true,
     ext: 'js html',
+    exec: 'node --debug=5858',
     env: { 'NODE_ENV': 'development' }
   })
 });
