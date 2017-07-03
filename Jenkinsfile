@@ -21,6 +21,7 @@ pipeline {
           sh "node -p -e \"var fs = require('fs'); var pJson = require('./package.json'); pJson.dependencies['@maxxton/microdocs-core'] = '${env.CORE_VERSION}'; fs.writeFileSync('./package.json', JSON.stringify(pJson));\""
           sh 'npm install'
           sh 'npm version ' + env.TAG
+          sh 'npm run test'
           sh 'npm run prepublish'
           sh 'cp .npmrc dist/.npmrc'
           dir('dist') {
