@@ -73,7 +73,7 @@ export class PublishRoute extends BaseRoute {
 
       //get body
       var report:Project = null;
-      if ( req.get( 'content-type' ) === 'application/json' ) {
+      if ( req._body ) {
         report = req.body;
       } else {
         handler.handleUnsupportedMediaType( req, res );

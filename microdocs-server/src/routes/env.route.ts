@@ -18,7 +18,10 @@ export class EnvRoute extends BaseRoute {
   public projects(req: express.Request, res: express.Response, next: express.NextFunction, scope:BaseRoute) {
     var handler = scope.getDefaultHandler();
     try {
-      var envs = scope.injection.ProjectSettingsRepository().getEnvs();
+      var envs = scope.injection.ProjectSettingsRepository().getSettings().envs;
+      for(let env in envs){
+        delete envs[env].postmanApiKey
+      }
       handler.response(req, res, 200, envs);
     } catch (e) {
       scope.getDefaultHandler().handleInternalServerError(req, res, e);

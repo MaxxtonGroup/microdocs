@@ -22,11 +22,19 @@ export class AggregationResult{
     return projectTitles;
   }
 
-  public getProjectVersions(title:string):string[]{
+  public getProjectVersions(title:string):string[] {
     return this._result.filter( project => project.info.title === title).map( project => project.info.version);
   }
 
-  public getProject(title:string, version:string):Project{
+  public getLatestProjectVersion(title:string):string {
+    let project = this._result.filter( project => project.info.title === title)[0];
+    if(project){
+      return project.info.getLatestVersion().version;
+    }
+    return null;
+  }
+
+  public getProject(title:string, version:string):Project {
     let matches = this._result.filter( project => project.info.title === title && project.info.version === version);
     if(matches.length > 0){
       return matches[0];

@@ -9,6 +9,12 @@
   <span class="example-spacer"></span>
 
   <template [ngIf]="!error && !loading">
+    <template [ngIf]="project.info.postmanCollection | notEmpty">
+      <a target="_blank" class="postman-button" href="https://app.getpostman.com/run-collection/{{project.info.postmanCollection}}">
+        <img src="https://run.pstmn.io/button.svg">
+      </a>
+    </template>
+    <a href=""></a>
     <md-icon class="deprecate-button" mdTooltip="Mark this project as deprecated" [class.selected]="project.deprecated === true" (click)="toggleDeprecated()">broken_image</md-icon>
     <md-icon class="export-button disabled" mdTooltip="Disabled" (click)="showExportModal()">file_download</md-icon>
     <md-icon class="edit-button disabled" mdTooltip="Disabled" (click)="showEditModal()">edit</md-icon>

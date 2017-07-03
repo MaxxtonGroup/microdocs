@@ -5,12 +5,15 @@ import { Injection } from "../../injections";
 import { TakePipe } from "./pipes/take.pipe";
 import { Pipe } from "./pipe";
 import { ProjectInfo, Problem, Project } from "@maxxton/microdocs-core/domain";
+import { Hook } from './hooks/hook';
+import { AggregationResult } from './aggregation-result';
 
 /**
  * @author Steven Hermans
  */
 export class AggregationPipeline {
 
+  private _injection:Injection;
   private _projectService:ProjectService;
   private _reportRepo:ReportRepository;
   private _projectSettingsRepo:ProjectSettingsRepository;
@@ -18,9 +21,12 @@ export class AggregationPipeline {
   private _projects:ProjectInfo[];
   private _scope:Project;
   private _problems:Problem[] = [];
+  private _postHooks:Hook[] = [];
+  private _next: Pipe<any>;
 
-  public constructor( env:string, projectService:ProjectService, reportRepo:ReportRepository, projectSettingsRepo:ProjectSettingsRepository ) {
+  public constructor( env:string, injection:Injection, projectService:ProjectService, reportRepo:ReportRepository, projectSettingsRepo:ProjectSettingsRepository ) {
     this._env                 = env;
+    this._injection           = injection;
     this._projectService      = projectService;
     this._reportRepo          = reportRepo;
     this._projectSettingsRepo = projectSettingsRepo;
@@ -49,6 +55,10 @@ export class AggregationPipeline {
     return this._projectSettingsRepo;
   }
 
+  get injections():Injection {
+    return this._injection;
+  }
+
 
   /**
    * Add report as input for the pipeline
@@ -56,8 +66,12 @@ export class AggregationPipeline {
    */
   public take = ( report:Project ):Pipe<any> => {
     console.info('take ' + report.info.title);
+    if(this._next){
+      throw new Error("Pipe already started");
+    }
     this._scope = report;
-    return new TakePipe( this, report ).process();
+    this._next = new TakePipe( this, report ).process();
+    return this._next;
   };
 
   /**
@@ -65,7 +79,11 @@ export class AggregationPipeline {
    */
   public takeEverything = ():Pipe<any> => {
     console.info('take everything');
-    return new TakePipe( this ).process();
+    if(this._next){
+      throw new Error("Pipe already started");
+    }
+    this._next = new TakePipe( this ).process();
+    return this._next;
   };
 
   /**
@@ -74,7 +92,11 @@ export class AggregationPipeline {
    */
   public takeLatest = ( maxAmount:number = 1 ):Pipe<any> => {
     console.info('take latest ' + maxAmount);
-    return new TakePipe( this, maxAmount ).process();
+    if(this._next){
+      throw new Error("Pipe already started");
+    }
+    this._next = new TakePipe( this, maxAmount ).process();
+    return this._next;
   };
 
   /**
@@ -101,8 +123,56 @@ export class AggregationPipeline {
     problems.forEach( problem => this._problems.push( problem ) );
   }
 
+  public addHook( hook:Hook ):void {
+    this._postHooks.push( hook );
+  }
+
+    /**
+   * Get the first pipe
+   * @return {Pipe}
+   */
+  get first(): Pipe<any> {
+    if(this._next){
+      return this._next.first;
+    }
+    return null;
+  }
+
+  /**
+   * Get the last pipe
+   * @return {Pipe}
+   */
+  get last(): Pipe<any> {
+    if(this._next){
+      return this._next.last;
+    }
+    return null;
+  }  
+  
+  /**
+   * Get the result of this pipe
+   * @return {AggregationResult}
+   */
+  get result(): AggregationResult {
+    return this.last.result;
+  }
+
+  public finish():void {
+    if(this._postHooks.length > 0){
+      setTimeout(() => {
+        try {
+          for(let i = 0; i < this._postHooks.length; i++){
+            this._postHooks[i].run(this, this._injection);
+          }
+        } catch(e) {
+          console.error(e);
+        }
+      }, 20);
+    }
+  }
+
 }
 
 export function pipe( injection:Injection, env:string ):AggregationPipeline {
-  return new AggregationPipeline( env, injection.ProjectService(), injection.ReportRepository(), injection.ProjectSettingsRepository() );
+  return new AggregationPipeline( env, injection, injection.ProjectService(), injection.ReportRepository(), injection.ProjectSettingsRepository() );
 }

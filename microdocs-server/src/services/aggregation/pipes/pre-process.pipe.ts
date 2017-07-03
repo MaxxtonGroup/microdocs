@@ -11,7 +11,7 @@ export class PreProcessPipe extends ProcessPipe {
   private preProcessor:PreProcessor = new MicroDocsPreProcessor();
 
   protected runEach( project:Project ):Project {
-    return preProcess(this.pipeline, this.preProcessor, project, this.pipeline.projectSettingsRepo.getSettings());
+    return preProcess(this.pipeline, this.preProcessor, project, this.pipeline.projectSettingsRepo.getProjectSettings());
   }
 
 

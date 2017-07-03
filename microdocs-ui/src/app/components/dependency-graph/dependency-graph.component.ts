@@ -367,7 +367,7 @@ export class DependencyGraphComponent {
       .data( self.force.links() )
       .enter().append( "path" )
       .attr( "class", function ( d ) {
-        var problems = d.problems && d.problems > 0 ? ' problems' : '';
+        var problems = d.problems && d.problems > 0 ? ' errors' : '';
         return "overview-link " + d.type + problems;
       } )
       .attr( "marker-end", function ( d ) {

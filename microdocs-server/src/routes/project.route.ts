@@ -47,6 +47,12 @@ export class ProjectRoute extends BaseRoute {
         // load project
         var project = projectRepo.getAggregatedProject(env, title, version);
 
+        // load postman collectionId
+        let metadata = scope.injection.ProjectSettingsRepository().getMetadata();
+        if(metadata.envs && metadata.envs[env] && metadata.envs[env].postmanCollections && metadata.envs[env].postmanCollections[title]){
+          project.info.postmanCollection = metadata.envs[env].postmanCollections[title].collectionId;
+        }
+
         // return project
         if (project == null) {
           handler.handleNotFound(req, res);
