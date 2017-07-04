@@ -13,6 +13,7 @@ import { StandaloneProjectClient } from "./clients/standalone-project.client";
 import { SidebarComponent } from "./components/sidebar/sidebar.component";
 import { DashboardComponent } from "./components/dashboard/dashboard.component";
 import { MaterialModule } from "@angular/material";
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import 'hammerjs';
 import { SidebarListComponent } from './components/sidebar-list/sidebar-list.component';
 import { IconGeneratorComponent } from './components/icon-generator/icon-generator.component';
@@ -36,6 +37,7 @@ import { ImportDialogComponent } from "./components/import-dialog/import-dialog.
 import { ExportPanelComponent } from "./components/export-panel/export-panel.component";
 import { DialogBaseComponent } from './components/dialog-base/dialog-base.component';
 import { ExportDialogComponent } from './components/export-dialog/export-dialog.component';
+import { AceEditorDirective  } from 'ng2-ace-editor';
 
 @NgModule({
   declarations: [
@@ -64,7 +66,8 @@ import { ExportDialogComponent } from './components/export-dialog/export-dialog.
     FilterByFieldPipe,
     NotEmptyPipe,
     EmptyPipe,
-    ObjectIteratorPipe
+    ObjectIteratorPipe,
+    AceEditorDirective
   ],
   entryComponents: [
     ImportDialogComponent,
@@ -74,7 +77,8 @@ import { ExportDialogComponent } from './components/export-dialog/export-dialog.
     BrowserModule,
     FormsModule,
     HttpModule,
-    MaterialModule.forRoot(),
+    MaterialModule,
+    NoopAnimationsModule,
     RouterModule.forRoot([
       {
         path: 'dashboard',

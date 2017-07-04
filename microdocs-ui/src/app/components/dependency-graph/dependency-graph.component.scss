@@ -160,12 +160,12 @@
       }
 
       path.uses {
-        stroke: map_get($md-grey, 800);
+        stroke: map_get($mat-grey, 800);
         stroke-dasharray: 4, 3;
       }
 
       path.marker-end-uses {
-        stroke: map_get($md-grey, 800);
+        stroke: map_get($mat-grey, 800);
       }
 
       path.errors, path.marker-end-errors {

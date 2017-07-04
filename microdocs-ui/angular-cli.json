@@ -20,9 +20,13 @@
       "styles": [
         "styles.scss"
       ],
-      "scripts": [],
+      "scripts": [
+        "../node_modules/ace-builds/src-min/ace.js",
+        "../node_modules/ace-builds/src-min/theme-chrome.js",
+        "../node_modules/ace-builds/src-min/mode-yaml.js"
+      ],
+      "environmentSource": "environments/environment.ts",
       "environments": {
-        "source": "environments/environment.ts",
         "dev": "environments/environment.ts",
         "dev-standalone": "environments/environment.standalone.ts",
         "prod": "environments/environment.prod.ts",

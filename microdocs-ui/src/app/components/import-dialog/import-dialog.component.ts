@@ -1,7 +1,8 @@
-import {Component, Input, Output, EventEmitter} from "@angular/core";
+import {Component, Input, Output, EventEmitter, ViewChild} from "@angular/core";
 import {Router} from "@angular/router";
 import {Project, Problem, ProblemResponse} from "@maxxton/microdocs-core/domain";
 import {ProjectService} from "../../services/project.service";
+import * as yaml from 'js-yaml';
 
 /**
  * @author Steven Hermans
@@ -20,19 +21,23 @@ export class ImportDialogComponent{
   generalError:string = "";
   problemsErrors:string[] = [];
   valid:boolean = false;
-  projectDefinition:string = '';
+  text:string = '';
 
   constructor(private projectService:ProjectService, private router:Router){}
 
-  onProjectInserted($event){
-    this.projectDefinition = $event.target.value;
+  onProjectInserted(text){
+    this.text = text;
     this.jsonError = "";
     try{
-      this.project = JSON.parse(this.projectDefinition);
+      this.project = JSON.parse(this.text);
     }catch(e){
-      this.valid = false;
-      this.jsonError = "Invalid json";
-      return;
+      try{
+        this.project = yaml.load(this.text);
+      }catch(ee){
+        this.valid = false;
+        this.jsonError = "Invalid json";
+        return;
+      }
     }
 
     if(this.project.info){

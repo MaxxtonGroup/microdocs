@@ -4,35 +4,24 @@
     Add Project
   </h2>
   <div class="row">
-    <md-input-container class="example-full-width">
-      <textarea rows="5" md-input placeholder="Paste here your definitions" (keyup)="onProjectInserted($event)" [value]="projectDefinition"></textarea>
-    </md-input-container>
+    <div ace-editor
+        [(text)]="text"
+        [mode]="'yaml'"
+        [theme]="'chrome'"
+        [readOnly]="false"
+        [autoUpdateContent]="true"
+        [durationBeforeCallback]="1000"
+        (textChanged)="onProjectInserted($event)"
+        class="editor"></div>
     <div class="text-danger text-right">{{jsonError}}</div>
   </div>
-  <template [ngIf]="project != null">
-    <div class="row">
-      <md-input-container class="example-full-width">
-        <input md-input placeholder="Project name"  [(ngModel)]="projectInfo.title" name="title">
-      </md-input-container>
-    </div>
-    <div class="row">
-      <md-input-container class="example-full-width">
-        <input md-input placeholder="Group"  [(ngModel)]="projectInfo.group" name="group">
-      </md-input-container>
-    </div>
-    <div class="row">
-      <md-input-container class="example-full-width">
-        <input md-input placeholder="Version"  [(ngModel)]="projectInfo.version" name="version">
-      </md-input-container>
-    </div>
-    <div class="row">
-      <button md-raised-button (click)="onSubmit()">Add Project</button>
-      <span class="text-danger">{{generalError}}</span>
-    </div>
-    <div class="row">
-      <ul>
-        <li class="text-danger" *ngFor="let error of problemsErrors">{{error}}</li>
-      </ul>
-    </div>
-  </template>
+  <div class="row">
+    <button md-raised-button (click)="onSubmit()">Add Project</button>
+    <span class="text-danger">{{generalError}}</span>
+  </div>
+  <div class="row">
+    <ul>
+      <li class="text-danger" *ngFor="let error of problemsErrors">{{error}}</li>
+    </ul>
+  </div>
 </div>
