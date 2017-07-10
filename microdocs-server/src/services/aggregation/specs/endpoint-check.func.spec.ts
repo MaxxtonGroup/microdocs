@@ -927,6 +927,64 @@ describe('#Aggregation: #endpointCheck:', () => {
       // no problems expected, as the body is not required
       expect(problemReport.hasProblems()).be.false;
     });
+
+    it('AnyOf', () => {
+      var problemReport = new ProblemReporter();
+      //client without body
+      var clientEndpoint: Path = <Path>{
+        parameters: [
+          {
+            required: false,
+            'in': 'body',
+            name: 'body',
+            schema: {
+              type: SchemaTypes.OBJECT,
+              properties: {
+                distributionChannelId: {
+                  type: SchemaTypes.INTEGER
+                },
+                resourceId: {
+                  type: SchemaTypes.INTEGER
+                }
+              }
+            }
+          }
+        ]
+      };
+      //producer with not required body
+      var producerEndpoint: Path = <Path>{
+        parameters: [
+          {
+            required: false,
+            'in': 'body',
+            name: 'body',
+            schema: {
+              type: SchemaTypes.OBJECT,
+              properties: {
+                distributionChannelId: {
+                  type: SchemaTypes.INTEGER
+                }
+              },
+              anyOf: [
+                {
+                  properties: {
+                    resourceId: {
+                      type: SchemaTypes.INTEGER
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      };
+
+      //act
+      checkBodyParameters(clientEndpoint, producerEndpoint, {}, {}, problemReport);
+
+      // no problems expected, as the body is not required
+      expect(problemReport.hasProblems()).be.false;
+    });
   });
 
   describe('#responseCheck', () => {
@@ -1401,6 +1459,61 @@ describe('#Aggregation: #endpointCheck:', () => {
 
       // should give problems
       expect(problemReport.hasProblems()).be.true;
+    });
+
+    it('AnyOf', () => {
+      var problemReport = new ProblemReporter();
+
+      // client expect response body
+      var clientEndpoint: Path = <Path>{
+        responses: {
+          "default": {
+            schema: {
+              type: SchemaTypes.OBJECT,
+              properties: {
+                distributionChannelId: {
+                  type: SchemaTypes.INTEGER
+                },
+                resourceId: {
+                  type: SchemaTypes.INTEGER
+                }
+              }
+            }
+          }
+        }
+      };
+
+      // producer has no response body
+      var producerEndpoint: Path = <Path>{
+        responses: {
+          "default": {
+            schema: {
+              type: SchemaTypes.OBJECT,
+              properties: {
+                distributionChannelId: {
+                  type: SchemaTypes.INTEGER
+                }
+              },
+              anyOf: [
+                {
+                  type: SchemaTypes.OBJECT,
+                  properties: {
+                    resourceId: {
+                      type: SchemaTypes.INTEGER
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      };
+
+      // act
+      checkResponseBody(clientEndpoint, producerEndpoint, {}, {}, problemReport);
+
+      // should give problems
+      expect(problemReport.hasProblems()).be.false;
     });
   });
 

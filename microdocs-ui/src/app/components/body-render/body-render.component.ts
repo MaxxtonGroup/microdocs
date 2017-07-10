@@ -26,7 +26,11 @@ export class BodyRenderComponent {
   }
 
   ngOnChanges(){
-    this.example = SchemaHelper.generateExample(this.schema, undefined, [], this.schemaList);
+    this.selectSchema(this.schema);
+  }
+
+  selectSchema(schema:Schema):void{
+    this.example = SchemaHelper.generateExample(schema, undefined, [], this.schemaList);
   }
 
 }
