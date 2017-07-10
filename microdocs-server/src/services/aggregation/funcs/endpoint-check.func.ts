@@ -133,35 +133,77 @@ function checkSchema(endpoint: Path, clientSchema: Schema, producerSchema: Schem
         problemReport.report(ProblemLevels.WARNING, "Type mismatches in " + placing + " body" + position + ", expected: " + producerSchema.type + ", found: " + clientSchema.type, endpoint.controller, endpoint.method);
       } else {
         if (producerSchema.type == SchemaTypes.OBJECT) {
-          let producerProperties = producerSchema.properties;
-          let clientProperties = clientSchema.properties;
+          let producerViews = collectViews(producerSchema);
+          let clientViews = collectViews(clientSchema);
 
-          // Check each producer properties
-          for (let key in producerProperties) {
-            // Find client Property by name
-            let producerProperty = producerProperties[key];
-            if(!isProducerIgnored(producerProperty)) {
-              let propertyName = getProducerPropertyMappingName(key, producerProperty);
-              let clientProperty = findClientPropertyByName(propertyName, clientProperties);
+          // Check each view for problems
+          let problemReporters: ProblemReporter[] = [];
+          producerViews.forEach(producerView => {
+            clientViews.forEach(clientView => {
+              let reporter = new ProblemReporter(problemReport.getRootObject());
+              problemReporters.push(reporter);
 
-              checkSchema(endpoint, clientProperty, producerProperty, clientProject, producerProject, problemReport, path + (path == '' ? '' : '.') + key, placing);
-            }
-          }
+              let producerProperties = producerView.properties;
+              let clientProperties = clientView.properties;
 
-          // Check unknown client properties
-          for (let key in clientProperties) {
-            let clientProperty = clientProperties[key];
-            if(!isClientIgnored(clientProperty)) {
-              let name = getClientPropertyMappingName(key, clientProperty);
+              // Check each producer properties
+              if (producerProperties) {
+                for (let key in producerProperties) {
+                  // Find client Property by name
+                  let producerProperty = producerProperties[key];
+                  if (!isProducerIgnored(producerProperty)) {
+                    let propertyName = getProducerPropertyMappingName(key, producerProperty);
+                    let clientProperty = findClientPropertyByName(propertyName, clientProperties);
 
-              let producerProperty = findProducerPropertyByName(name, producerProperties);
-
-              if (!producerProperty) {
-                let keyPath = path + (path ? '.' : '') + key;
-                problemReport.report(ProblemLevels.WARNING, `Unknown property '${keyPath}' in ${placing} body`, endpoint.controller, endpoint.method);
+                    checkSchema(endpoint, clientProperty, producerProperty, clientProject, producerProject, reporter, path + (path == '' ? '' : '.') + key, placing);
+                  }
+                }
               }
+
+              // Check unknown client properties
+              if (clientProperties) {
+                for (let key in clientProperties) {
+                  let clientProperty = clientProperties[key];
+                  if (!isClientIgnored(clientProperty)) {
+                    let name = getClientPropertyMappingName(key, clientProperty);
+
+                    let producerProperty:Schema = null;
+                    if(producerProperties) {
+                      producerProperty = findProducerPropertyByName(name, producerProperties);
+                    }
+                      if (!producerProperty) {
+                        let keyPath = path + (path ? '.' : '') + key;
+                        reporter.report(ProblemLevels.WARNING, `Unknown property '${keyPath}' in ${placing} body`, endpoint.controller, endpoint.method);
+                      }
+                  }
+                }
+              }
+
+              // Decorate problems with view info
+              if(producerViews.length > 1 || clientViews.length > 1) {
+                reporter.getRawProblems().forEach(problem => {
+                  problem.message = "[" + clientView.name + " > " + producerView.name + "] " + problem.message;
+                });
+              }
+            });
+          });
+
+          if (problemReporters.filter(reporter => !reporter.hasProblems()).length == 0) {
+            // No matching view
+            if (problemReporters.length > 1) {
+              let position = "";
+              if (path != '') {
+                position = ' at ' + path;
+              }
+              problemReport.report(ProblemLevels.ERROR, `No matching view in ${placing} body${position}`, endpoint.controller, endpoint.method);
             }
+            problemReporters.forEach(r => {
+              r.getRawProblems().forEach(problem => {
+                problemReport.getRawProblems().push(problem);
+              });
+            });
           }
+
         } else if (producerSchema.type == SchemaTypes.ARRAY) {
           let producerItems = producerSchema.items;
           let clientItems = clientSchema.items;
@@ -262,7 +304,7 @@ function findClientPropertyByName(name: string, properties: {[key: string]: Sche
  */
 function findProducerPropertyByName(name: string, properties: {[key: string]: Schema}): Schema {
   return Object.keys(properties)
-    // Filter json.ignore
+  // Filter json.ignore
     .filter(key => {
       let property = properties[key];
       if (property.mappings && property.mappings.json && property.mappings.json.ignore) {
@@ -323,12 +365,12 @@ function getProducerPropertyMappingName(key: string, property: Schema): string {
  * @param property
  * @returns {boolean}
  */
-function isClientIgnored(property: Schema):boolean{
-  if (property.mappings){
-    if(property.mappings.json && property.mappings.json.ignore){
+function isClientIgnored(property: Schema): boolean {
+  if (property.mappings) {
+    if (property.mappings.json && property.mappings.json.ignore) {
       return true;
     }
-    if(property.mappings.client && property.mappings.client.ignore){
+    if (property.mappings.client && property.mappings.client.ignore) {
       return true;
     }
   }
@@ -340,11 +382,28 @@ function isClientIgnored(property: Schema):boolean{
  * @param property
  * @returns {boolean}
  */
-function isProducerIgnored(property: Schema):boolean{
-  if (property.mappings){
-    if(property.mappings.json && property.mappings.json.ignore){
+function isProducerIgnored(property: Schema): boolean {
+  if (property.mappings) {
+    if (property.mappings.json && property.mappings.json.ignore) {
       return true;
     }
   }
   return false;
+}
+
+function collectViews(schema: Schema): Schema[] {
+  let views = [schema];
+  if (schema.anyOf) {
+    schema.anyOf.forEach(view => {
+      let baseCopy: Schema = {};
+      for (let key in schema) {
+        if (key !== 'anyOf') {
+          baseCopy[key] = schema[key];
+        }
+      }
+      SchemaHelper.merge(baseCopy, view);
+      views.push(baseCopy);
+    });
+  }
+  return views;
 }
