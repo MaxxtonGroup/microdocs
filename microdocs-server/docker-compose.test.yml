@@ -4,10 +4,7 @@ services:
     build:
       context: ../../
       dockerfile: ./microdocs/microdocs-server/Dockerfile
-    command:
-     - yarn
-     - run
-     - test
+    command: ./node_modules/.bin/gulp test
     volumes:
      - ../../microdocs-core/dist:/app/@maxxton/microdocs-server/node_modules/@maxxton/microdocs-core
      - ../microdocs-ui/dist:/app/@maxxton/microdocs-ui/dist:ro

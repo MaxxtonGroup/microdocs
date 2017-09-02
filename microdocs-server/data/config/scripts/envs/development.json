@@ -22,5 +22,4 @@
       "sourceLink": "https://stash.maxxton.com/projects/${groupCode}/repos/${project.info.title}/browse/${sourcePath}${definitionName|replace \\\\. /}.java"
     }
   }
-
 }

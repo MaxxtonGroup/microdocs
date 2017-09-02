@@ -1,7 +1,8 @@
-import { Environment } from "./environment.model";
 
-export interface Settings {
+import { Environments } from "@maxxton/microdocs-core/domain";
 
-  envs?: Environment[];
+export interface Settings{
+
+  envs?: {[name: string]: Environments};
 
 }
