@@ -1,0 +1,12 @@
+{
+  "extends": ["tslint:latest"],
+  "rules": {
+    "interface-name": [false],
+    "no-empty-interface": false,
+    "object-literal-sort-keys": [false],
+    "trailing-comma": [false],
+    "no-invalid-template-strings": [false],
+    "no-string-literal": false,
+    "no-console": false
+  }
+}

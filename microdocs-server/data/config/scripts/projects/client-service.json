@@ -1,0 +1,11 @@
+{
+  "paths": {
+    "{path}": {
+      "{method}": {
+        "~~~IF": {
+          "condition": "[].map(i => new RegExp(i.replace(/\\*\\*/, '*').replace(/\\*/g, '(.*)'))).filter(i => i.exec(\"/api/v1/test/hoi/lala\"))"
+        }
+      }
+    }
+  }
+}
