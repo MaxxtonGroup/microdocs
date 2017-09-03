@@ -7,8 +7,10 @@ import { App } from "@webscale/boot";
 import { LoggerFactory } from "@webscale/logging";
 import { storage } from "../../property-keys";
 import * as yaml from "js-yaml";
+import { DEFAULT_FULL_SCHEMA } from "js-yaml";
 
-const logger = LoggerFactory.create();
+const logger   = LoggerFactory.create();
+const YAML_EXT = ".yml";
 
 @Service()
 export class SettingsYamlRepository extends SettingsRepository {
@@ -21,31 +23,30 @@ export class SettingsYamlRepository extends SettingsRepository {
    * @returns {Promise<Settings>}
    */
   public async getSettings(): Promise<Settings> {
-    let settingsFile = pathUtil.resolve(process.cwd(),
-      this.app.properties.getString(storage.yaml.settingsFile, '/data/config/settings.json'));
-    logger.debug("Load settings from: ", settingsFile);
-    return new Promise<Settings>((resolve, reject) => {
-      fs.exists(settingsFile, exists => {
-        if (exists) {
-          fs.readFile(settingsFile, (err, data) => {
-            if (err) {
-              reject(err);
+    let settingsFile = pathUtil.resolve( process.cwd(),
+        this.app.properties.getString( storage.yaml.settingsFile, 'data/config/settings' + YAML_EXT ) );
+    return new Promise<Settings>( ( resolve, reject ) => {
+      fs.exists( settingsFile, exists => {
+        if ( exists ) {
+          fs.readFile( settingsFile, ( err, data ) => {
+            if ( err ) {
+              reject( err );
             } else {
               try {
                 let string = data.toString();
-                logger.silly("settings: ", string);
-                let settings = yaml.safeLoad(string);
-                resolve(<Settings>settings);
-              } catch (e) {
-                reject(e);
+                logger.silly( "settings: ", string );
+                let settings = yaml.safeLoad( string, { schema: DEFAULT_FULL_SCHEMA } );
+                resolve( <Settings>settings );
+              } catch ( e ) {
+                reject( e );
               }
             }
-          });
+          } );
         } else {
-          resolve(null);
+          resolve( null );
         }
-      });
-    });
+      } );
+    } );
   }
 
 }

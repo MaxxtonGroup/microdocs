@@ -11,6 +11,6 @@ export interface Hook {
    * Run when the pipeline has completed
    * @param pipeline the aggregation pipeline
    */
-  run( pipeline: AggregationPipeline, injection: Injection ): void;
+  run( pipeline: AggregationPipeline ): void;
 
 }

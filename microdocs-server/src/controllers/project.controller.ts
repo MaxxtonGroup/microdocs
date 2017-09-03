@@ -4,13 +4,18 @@ import {
   Patch, NotFoundError,
 } from "routing-controllers";
 import { Inject } from "typedi";
-import { Project, ProjectInfo, ProjectTree } from "@maxxton/microdocs-core/domain";
+import { Project, ProjectMetadata, ProjectTree } from "@maxxton/microdocs-core/domain";
 import { SettingsService } from "../services/settings.service";
 import { Environment } from "../domain/environment.model";
 import { ProjectService } from "../services/project.service";
 import { OpPatch } from "json-patch";
+import { Validator, ValidatorResult } from "jsonschema";
+import { IndexService } from "../services/index.service";
 
-@JsonController("/api/v2")
+/**
+ * Controller for managing projects and tags
+ */
+@JsonController( "/api/v2" )
 export class ProjectController {
 
 
@@ -18,16 +23,18 @@ export class ProjectController {
   private projectService: ProjectService;
   @Inject()
   private settingsService: SettingsService;
+  @Inject()
+  private indexService: IndexService;
 
   /**
-   * List of projects info
+   * List of projects
    * @param {string} envName
-   * @returns {Promise<ProjectInfo[]>}
+   * @returns {Promise<ProjectMetadata[]>}
    */
-  @Get("/projects")
-  public async getProjects( @QueryParam("env", { required: false }) envName?: string ): Promise<ProjectInfo[]> {
-    let env = await this.getEnv(envName);
-    return await this.projectService.getProjectInfos(env);
+  @Get( "/projects" )
+  public async getProjects( @QueryParam( "env", { required: false } ) envName?: string ): Promise<ProjectMetadata[]> {
+    let env = await this.getEnv( envName );
+    return await this.projectService.getProjectMetadatas( env );
   }
 
   /**
@@ -37,76 +44,123 @@ export class ProjectController {
    * @param {string} groupFilter
    * @returns {Promise<ProjectTree>}
    */
-  @Get("/projects/tree")
-  public async getProjectTree( @QueryParam("env", { required: false }) envName?: string, @QueryParam("projects", { required: false }) projectFilter?: string, @QueryParam("groups", { required: false }) groupFilter?: string ): Promise<ProjectTree> {
-    let env = await this.getEnv(envName);
-    let tree = await this.projectService.getProjectTree(env, projectFilter ? projectFilter.split(",") : [], groupFilter ? groupFilter.split(",") : []);
-    if(!tree){
-      throw new NotFoundError(`Environment '${env.name}' is not indexed yet, try to index it using: POST /api/v2/projects/reindex?env=${env.name}`)
+  @Get( "/projects/tree" )
+  public async getProjectTree( @QueryParam( "env", { required: false } ) envName?: string, @QueryParam( "projects", { required: false } ) projectFilter?: string, @QueryParam( "groups", { required: false } ) groupFilter?: string ): Promise<ProjectTree> {
+    let env  = await this.getEnv( envName );
+    let tree = await this.projectService.getProjectTree( env, projectFilter ? projectFilter.split( "," ) : [], groupFilter ? groupFilter.split( "," ) : [] );
+    if ( !tree ) {
+      throw new NotFoundError( `Environment '${env.name}' is not indexed yet, try to index it using: POST /api/v2/projects/reindex?env=${env.name}` )
     }
     return tree;
   }
 
   /**
-   * Get project info
-   * @param {string} title
-   * @param {string} envName
-   * @returns {Promise<ProjectInfo>}
+   * Reindex an environment
+   * @param envName
+   * @return {Promise<ProjectTree>}
    */
-  @Get("/projects/:title")
-  public async getProjectInfo( @Param("title") title: string, @QueryParam("env", { required: false }) envName?: string ): Promise<ProjectInfo> {
-    let env = await this.getEnv(envName);
-    let projectInfo = await this.projectService.getProjectInfo(env, title);
-    if (!projectInfo) {
-      throw new NotFoundError(`Project '${title}' doesn't exists on environment '${env.name}'`);
-    }
-    return projectInfo;
+  @Put( "/projects/reindex" )
+  public async reindex( @QueryParam( "env", { required: false } ) envName?: string ): Promise<ProjectTree> {
+    let env = await this.getEnv( envName );
+    return this.indexService.startIndexing( env );
   }
 
   /**
-   * Get version of project
+   * Get project metadata
    * @param {string} title
    * @param {string} envName
-   * @param {string} version version of the project or 'latest' for the latest version
+   * @returns {Promise<ProjectMetadata>}
+   */
+  @Get( "/projects/:title" )
+  public async getProjectMetadata( @Param( "title" ) title: string, @QueryParam( "env", { required: false } ) envName?: string ): Promise<ProjectMetadata> {
+    let env             = await this.getEnv( envName );
+    let projectMetadata = await this.projectService.getProjectMetadata( env, title );
+    if ( !projectMetadata ) {
+      throw new NotFoundError( `Project '${title}' doesn't exists on environment '${env.name}'` );
+    }
+    return projectMetadata;
+  }
+
+  /**
+   * Get a project
+   * @param {string} title
+   * @param {string} envName
+   * @param {string} tag tag of the project or 'latest' for the latest one
    * @returns {Promise<Project>}
    */
-  @Get("/projects/:title/:version")
-  public async getProjectByVersion( @Param("title") title: string, @Param("version") version: string, @QueryParam("env", { required: false }) envName?: string ): Promise<Project> {
-    let env = await this.getEnv(envName);
-    let project = await this.projectService.getProject(env, title, version);
-    if (!project) {
-      let projectInfo = await this.projectService.getProjectInfo(env, title);
-      if (!projectInfo) {
-        throw new NotFoundError(`Project '${title}' doesn't exists on environment '${env.name}'`);
+  @Get( "/projects/:title/:tag" )
+  public async getProjectByTag( @Param( "title" ) title: string, @Param( "tag" ) tag: string, @QueryParam( "env", { required: false } ) envName?: string ): Promise<Project> {
+    let env     = await this.getEnv( envName );
+    let project = await this.projectService.getProject( env, title, tag );
+    if ( !project ) {
+      let projectMetadata = await this.projectService.getProjectMetadata( env, title );
+      if ( !projectMetadata ) {
+        throw new NotFoundError( `Project '${title}' doesn't exists on environment '${env.name}'` );
       } else {
-        throw new NotFoundError(`Project '${title}:${version}' doesn't exists on environment '${env.name}'`);
+        throw new NotFoundError( `Project '${title}:${tag}' doesn't exists on environment '${env.name}'` );
       }
     }
     return project;
   }
 
   /**
-   * Store new project
+   * Store a new project
    * @param {Project} report
    * @param {string} title
-   * @param {string} version
+   * @param {string} tag
+   * @param {string} from
    * @param {string} envName
    * @returns {Promise<Project>}
    */
-  @Put("/project/:title/:version")
-  public async storeProject( @Body() report: Project | any, @Param("title") title: string, @Param("version") version: string, @QueryParam("env", { required: false }) envName?: string ): Promise<Project> {
-    if (!report.info) {
-      report.info = {};
-    }
-    if (title) {
-      report.info.title = title;
-    }
-    if (version) {
-      report.info.version = version;
+  @Post( "/projects/:title" )
+  public async storeProject( @Body( { required: false } ) report: Project, @Param( "title" ) title: string, @QueryParam( "tag", { required: false } ) tag?: string, @QueryParam( "from", { required: false } ) from?: string, @QueryParam( "env", { required: false } ) envName?: string ): Promise<Project> {
+    let env = await this.getEnv( envName );
+
+    if ( report && Object.keys( report ).length > 0 && from ) {
+      throw new BadRequestError( `'from' cannot be used in combination with a body. The 'from' option is used to promote an existing tag with a new tag` );
     }
 
-    let env = await this.getEnv(envName);
-    return await this.projectService.addProject(env, report);
+    if ( from ) {
+      // Promote report
+      let newReport = await this.projectService.addTag( env, title, from, tag );
+      if ( !newReport ) {
+        throw new BadRequestError( `Tag '${from}' doesn't exists for project '${title}'` );
+      }
+      return newReport;
+    } else if ( report ) {
+      // Validate new report
+      let validationResult = this.validateReport_2_0( report );
+      if ( !validationResult.valid ) {
+        throw new BadRequestError( <any>validationResult.errors.map( error => (error as any).stack ) );
+      } else {
+        // Store project
+        return await this.projectService.addProject( env, report, title, tag );
+      }
+    } else {
+      throw new BadRequestError( `Request body is missing` );
+    }
+  }
+
+  /**
+   * Replace a project
+   * @param {Project} report
+   * @param {string} title
+   * @param {string} tag
+   * @param {string} envName
+   * @returns {Promise<Project>}
+   */
+  @Put( "/projects/:title/:tag" )
+  public async overwriteProject( @Body() report: Project | any, @Param( "title" ) title: string, @QueryParam( "tag" ) tag: string, @QueryParam( "env", { required: false } ) envName?: string ): Promise<Project> {
+    let env = await this.getEnv( envName );
+
+    // Validate new report
+    let validationResult = this.validateReport_2_0( report );
+    if ( !validationResult.valid ) {
+      throw new BadRequestError( <any>validationResult.errors.map( error => (error as any).stack ) );
+    } else {
+      // Store project
+      return await this.projectService.addProject( env, report, title, tag );
+    }
   }
 
   /**
@@ -115,68 +169,68 @@ export class ProjectController {
    * @param {string} envName
    * @returns {Promise<void>}
    */
-  @Delete("/project/:title")
-  @OnUndefined(204)
-  public async deleteProject( @Param("title") title: string, @QueryParam("env", { required: false }) envName?: string ): Promise<void> {
-    let env = await this.getEnv(envName);
-    let deleted = await this.projectService.deleteProject(env, title);
-    if(!deleted){
-      throw new NotFoundError(`Project '${title}' doesn't exists on environment '${env.name}'`);
+  @Delete( "/projects/:title" )
+  @OnUndefined( 204 )
+  public async deleteProject( @Param( "title" ) title: string, @QueryParam( "env", { required: false } ) envName?: string ): Promise<void> {
+    let env     = await this.getEnv( envName );
+    let deleted = await this.projectService.deleteProject( env, title );
+    if ( !deleted ) {
+      throw new NotFoundError( `Project '${title}' doesn't exists on environment '${env.name}'` );
     }
   }
 
   /**
-   * Delete version of project
+   * Remove tag from project
    * @param {string} title
-   * @param {string} version version of the project or 'latest' for the latest version
+   * @param {string} tag tag to remove
    * @param {string} envName
    * @returns {Promise<void>}
    */
-  @Delete("/project/:title/:version")
-  @OnUndefined(204)
-  public async deleteProjectVersion( @Param("title") title: string, @Param("version") version: string, @QueryParam("env", { required: false }) envName?: string ): Promise<void> {
-    let env = await this.getEnv(envName);
-    let deleted = await this.projectService.deleteProject(env, title, version);
-    if (deleted) {
-      throw new NotFoundError(`Project '${title}' doesn't exists on environment '${env.name}'`);
+  @Delete( "/projects/:title/:tag" )
+  @OnUndefined( 204 )
+  public async deleteProjectTag( @Param( "title" ) title: string, @Param( "tag" ) tag: string, @QueryParam( "env", { required: false } ) envName?: string ): Promise<void> {
+    let env     = await this.getEnv( envName );
+    let deleted = await this.projectService.deleteTag( env, title, tag );
+    if ( !deleted ) {
+      throw new NotFoundError( `Project '${title}' doesn't exists on environment '${env.name}'` );
     }
   }
 
   /**
-   * Patch all versions of a project
+   * Patch all tags of a project
    * @param {string} title
    * @param {OpPatch[]} patches List of JSON Patch objects (see http://jsonpatch.com/)
    * @param {string} envName
-   * @returns {Promise<ProjectInfo>}
+   * @returns {Promise<ProjectMetadata>}
    */
-  @Patch("/project/:title")
-  public async patchProject( @Body() patches: OpPatch[], @Param("title") title: string, @QueryParam("env", { required: false }) envName?: string ): Promise<ProjectInfo> {
-    let env = await this.getEnv(envName);
-    let projectInfo = await this.projectService.patchProject(env, patches, title);
-    if (!projectInfo) {
-      throw new NotFoundError(`Project '${title}' doesn't exists on environment '${env.name}'`);
+  @Patch( "/projects/:title" )
+  public async patchProject( @Body() patches: OpPatch[], @Param( "title" ) title: string, @QueryParam( "env", { required: false } ) envName?: string ): Promise<ProjectMetadata> {
+    let env             = await this.getEnv( envName );
+    let projectMetadata = await this.projectService.patchProject( env, patches, title );
+    if ( !projectMetadata ) {
+      throw new NotFoundError( `Project '${title}' doesn't exists on environment '${env.name}'` );
     }
-    return projectInfo;
+    return projectMetadata;
   }
 
   /**
-   * Patch project version
+   * Patch project tag
    * @param {string} title
-   * @param {string} version version of the project or 'latest' for the latest version
+   * @param {string} tag tag of the project or 'latest' for the latest tag
    * @param {OpPatch[]} patches List of JSON Patch objects (see http://jsonpatch.com/)
    * @param {string} envName
    * @returns {Promise<Project>}
    */
-  @Patch("/project/:title/:version")
-  public async patchProjectVersion( @Body() patches: OpPatch[], @Param("title") title: string, @Param("version") version: string, @QueryParam("env", { required: false }) envName?: string ): Promise<Project> {
-    let env = await this.getEnv(envName);
-    let project = await this.projectService.patchProjectVersion(env, patches, title, version);
-    if (!project) {
-      let projectInfo = await this.projectService.getProjectInfo(env, title);
-      if (!projectInfo) {
-        throw new NotFoundError(`Project '${title}' doesn't exists on environment '${env.name}'`);
+  @Patch( "/projects/:title/:tag" )
+  public async patchProjectTag( @Body() patches: OpPatch[], @Param( "title" ) title: string, @Param( "tag" ) tag: string, @QueryParam( "env", { required: false } ) envName?: string ): Promise<Project> {
+    let env     = await this.getEnv( envName );
+    let project = await this.projectService.patchProjectTag( env, patches, title, tag );
+    if ( !project ) {
+      let projectMetadata = await this.projectService.getProjectMetadata( env, title );
+      if ( !projectMetadata ) {
+        throw new NotFoundError( `Project '${title}' doesn't exists on environment '${env.name}'` );
       } else {
-        throw new NotFoundError(`Project '${title}:${version}' doesn't exists on environment '${env.name}'`);
+        throw new NotFoundError( `Project '${title}:${tag}' doesn't exists on environment '${env.name}'` );
       }
     }
     return project;
@@ -190,15 +244,61 @@ export class ProjectController {
    * @returns Environment
    */
   private async getEnv( envName?: string ): Promise<Environment> {
-    let env = await this.settingsService.getEnv(envName);
-    if (!env) {
-      if (envName) {
-        throw new BadRequestError(`environment '${envName}' doesn't exists, make sure it is specified in the settings`);
+    let env = await this.settingsService.getEnv( envName );
+    if ( !env ) {
+      if ( envName ) {
+        throw new BadRequestError( `environment '${envName}' doesn't exists, make sure it is specified in the settings` );
       } else {
-        throw new BadRequestError(`No default environment specified, use the 'env' query parameter to explicit select an environment`);
+        throw new BadRequestError( `No default environment specified, use the 'env' query parameter to explicit select an environment` );
       }
     }
     return env;
+  }
+
+  /**
+   * Validate report
+   * @param report
+   * @return {string[]} validate issues
+   */
+  private validateReport_2_0( report: Project ): ValidatorResult {
+
+    let validator   = new Validator();
+    let schema: any = {
+      "title": "A JSON Schema for MicroDocs 2.0 API.",
+      "id": "http://microdocs.io/v2/schema.json#",
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "type": "object",
+      "required": [
+        "microdocs"
+      ],
+      "additionalProperties": true,
+      "patternProperties": {
+        "^x-": {
+          "$ref": "#/definitions/vendorExtension"
+        }
+      },
+      "properties": {
+        "microdocs": {
+          "type": "string",
+          "enum": [
+            "2.0"
+          ],
+          "description": "The MicroDocs version of this document."
+        }
+      },
+      "definitions": {
+        "vendorExtension": {
+          "description": "Any property starting with x- is valid.",
+          "additionalProperties": true,
+          "additionalItems": true
+        }
+      }
+    };
+
+    // validate
+    let result = validator.validate( report, schema );
+
+    return result;
   }
 
 }

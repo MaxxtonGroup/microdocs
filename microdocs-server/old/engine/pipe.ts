@@ -1,8 +1,5 @@
 import { Project, ProjectTree, ProjectInfo, Problem } from "@maxxton/microdocs-core/domain";
 import { AggregationResult } from "./aggregation-result";
-import { ProjectService } from "../project.service";
-import { ReportRepository } from "../../repositories_old/report.repo";
-import { ProjectSettingsRepository } from "../../repositories_old/project-settings.repo";
 import { AggregationPipeline } from "./aggregation-pipeline";
 import { Hook } from './hooks/hook';
 

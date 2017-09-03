@@ -1,6 +1,5 @@
 import { Middleware, ExpressErrorMiddlewareInterface } from "routing-controllers";
-import { LoggerFactory } from "@webscale/logging";
-import { LogLevel } from "../../node_modules/@webscale/logging/logging/log-level";
+import { LoggerFactory, LogLevel } from "@webscale/logging";
 
 const logger = LoggerFactory.create();
 
@@ -29,6 +28,7 @@ export class ErrorHandler implements ExpressErrorMiddlewareInterface {
         break;
       case 500:
         errorMessage = "Internal Server Error";
+        logger.error(error);
         break;
     }
     if (errorMessage) {
@@ -41,7 +41,7 @@ export class ErrorHandler implements ExpressErrorMiddlewareInterface {
       }
     }
 
-    response.status(error.status || 500).json(body);
+    response.status(body.status || 500).json(body);
   }
 
 }

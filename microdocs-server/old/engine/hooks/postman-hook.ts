@@ -6,7 +6,7 @@ import { PostmanService } from '../../postman.service'
 
 export class PostmanHook implements Hook {
 
-  public run( pipeline:AggregationPipeline, injection: Injection ):void {
+  public run( pipeline:AggregationPipeline ):void {
     let postmanService = new PostmanService(injection);
     let result = pipeline.result;
     result.getProjects().forEach(title => {

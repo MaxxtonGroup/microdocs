@@ -1,4 +1,4 @@
-import { Project, ProjectInfo, ProjectTree } from "@maxxton/microdocs-core/domain";
+import { Project, ProjectMetadata, ProjectTree } from "@maxxton/microdocs-core/domain";
 import { Environment } from "../domain/environment.model";
 
 export interface DocumentRepository {
@@ -28,44 +28,53 @@ export interface DocumentRepository {
   /**
    * Store document
    * @param {Environment} env
+   * @param {string} title
    * @param {Project} document
    * @returns {Promise<Project>}
    */
-  storeDocument( env: Environment, document: Project ): Promise<Project>;
+  storeDocument( env: Environment, title:string, document: Project ): Promise<Project>;
 
   /**
    * Load document
    * @param {Environment} env
    * @param {string} title
-   * @param {string} version
+   * @param {string} id
    * @returns {Promise<Project>}
    */
-  loadDocument( env: Environment, title: string, version: string ): Promise<Project>;
+  loadDocument( env: Environment, title: string, id: string ): Promise<Project>;
+
+  /**
+   * Load all document ids
+   * @param {Environment} env
+   * @param {string} title
+   * @returns {Promise<string[]>}
+   */
+  loadDocuments(env:Environment, title:string) :Promise<string[]>;
 
   /**
    * Delete document
    * @param {Environment} env
    * @param {string} title
-   * @param {string} version
+   * @param {string} id
    * @returns {Promise<boolean>}
    */
-  deleteDocument( env: Environment, title: string, version: string ): Promise<boolean>;
+  deleteDocument( env: Environment, title: string, id: string ): Promise<boolean>;
 
   /**
    * Save document index
    * @param {Environment} env
-   * @param {ProjectInfo} index
-   * @returns {Promise<ProjectInfo>}
+   * @param {ProjectMetadata} index
+   * @returns {Promise<ProjectMetadata>}
    */
-  storeIndex( env: Environment, index: ProjectInfo ): Promise<ProjectInfo>;
+  storeIndex( env: Environment, index: ProjectMetadata ): Promise<ProjectMetadata>;
 
   /**
    * Load document index
    * @param {Environment} env
    * @param {string} title
-   * @returns {Promise<ProjectInfo>}
+   * @returns {Promise<ProjectMetadata>}
    */
-  loadIndex( env: Environment, title: string ): Promise<ProjectInfo>;
+  loadIndex( env: Environment, title: string ): Promise<ProjectMetadata>;
 
   /**
    * Delete document index
@@ -78,8 +87,8 @@ export interface DocumentRepository {
   /**
    * Load all document indexes
    * @param {Environment} env
-   * @returns {Promise<ProjectInfo[]>}
+   * @returns {Promise<ProjectMetadata[]>}
    */
-  loadIndexes(env:Environment) :Promise<ProjectInfo[]>;
+  loadIndexes(env:Environment) :Promise<ProjectMetadata[]>;
 
 }

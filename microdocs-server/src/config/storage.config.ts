@@ -19,8 +19,8 @@ export class StorageConfig {
 
     if (storageDriver.toLowerCase() === DRIVER_YAML) {
       logger.info("Configure Yaml storage driver");
-      let projectsStorageFolder = app.properties.getString(storage.yaml.projectsFolder, "/data/projects");
-      let reportsStorageFolder = app.properties.getString(storage.yaml.reportsFolder, "/data/reports");
+      let projectsStorageFolder = app.properties.getString(storage.yaml.projectsFolder, "data/projects");
+      let reportsStorageFolder = app.properties.getString(storage.yaml.reportsFolder, "data/reports");
 
       let projectRepository = new DocumentYamlRepository(projectsStorageFolder);
       let reportRepository = new DocumentYamlRepository(reportsStorageFolder);
