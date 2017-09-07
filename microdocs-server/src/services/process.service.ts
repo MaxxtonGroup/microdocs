@@ -91,6 +91,7 @@ export class ProcessService {
         }
       });
       this.cache[ env.name ][ title ][ documentId ] = promise;
+      return promise;
     } else {
       // Return cached item
       return Promise.resolve( item );
@@ -102,9 +103,41 @@ export class ProcessService {
    * @param document
    * @return {Project}
    */
-  private preProcessDocument( document: Project ): Project {
+  private preProcessDocument( document: Project ): void {
     //todo: implement preprocessor
-    return document;
   }
 
+  /**
+   * Merge INCLUDED dependencies with the current document
+   * @param document
+   */
+  private mergeIncludeDependencies( document: Project ):void {
+    //todo: implement mergeIncludeDependencies
+  }
+
+  /**
+   * Resolve REST dependencies
+   * @param document
+   * @param problemReport
+   */
+  private resolveRestDependencies( document: Project, problemReport: ProblemReport ):void {
+    //todo: implement mergeIncludeDependencies
+  }
+
+  /**
+   * Resolve USED dependencies
+   * @param document
+   * @param problemReport
+   */
+  private resolveUsesDependencies( document: Project, problemReport: ProblemReport ):void {
+    //todo: implement resolveUsesDependencies
+  }
+
+  /**
+   * Generate search tags for a document
+   * @param document
+   */
+  private generateSearchTags( document: Project ):void {
+    //todo: implement generateSearchTags
+  }
 }
