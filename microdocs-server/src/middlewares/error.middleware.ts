@@ -4,7 +4,7 @@ import { LoggerFactory, LogLevel } from "@webscale/logging";
 const logger = LoggerFactory.create();
 
 @Middleware({ type: "after" })
-export class ErrorHandler implements ExpressErrorMiddlewareInterface {
+export class ErrorMiddleware implements ExpressErrorMiddlewareInterface {
 
   error(error: any, request: any, response: any, next: (err?: any) => any) {
     let body: any = {
@@ -28,7 +28,9 @@ export class ErrorHandler implements ExpressErrorMiddlewareInterface {
         break;
       case 500:
         errorMessage = "Internal Server Error";
-        logger.error(error);
+        if(error.stack) {
+          logger.error( error.stack );
+        }
         break;
     }
     if (errorMessage) {

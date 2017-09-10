@@ -15,20 +15,23 @@ const YAML_EXT = ".yml";
 @Service()
 export class SettingsYamlRepository extends SettingsRepository {
 
-  @Inject()
-  private app: App;
+  private settingsFile:string;
+
+  constructor(private app: App){
+    super();
+    this.settingsFile = pathUtil.resolve( process.cwd(),
+        this.app.properties.getString( storage.yaml.settingsFile, 'data/config/settings' + YAML_EXT ) );
+  }
 
   /**
    * Load settings from /data/config/settings.json
    * @returns {Promise<Settings>}
    */
   public async getSettings(): Promise<Settings> {
-    let settingsFile = pathUtil.resolve( process.cwd(),
-        this.app.properties.getString( storage.yaml.settingsFile, 'data/config/settings' + YAML_EXT ) );
     return new Promise<Settings>( ( resolve, reject ) => {
-      fs.exists( settingsFile, exists => {
+      fs.exists( this.settingsFile, exists => {
         if ( exists ) {
-          fs.readFile( settingsFile, ( err, data ) => {
+          fs.readFile( this.settingsFile, ( err, data ) => {
             if ( err ) {
               reject( err );
             } else {

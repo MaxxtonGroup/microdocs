@@ -20,7 +20,8 @@ export class WebConfig {
     const webServer = createExpressServer({
       defaultErrorHandler: false,
       controllers: [__dirname + "/../controllers/**/*.js"],
-      middlewares: [__dirname + "/../middlewares/**/*.js"]
+      middlewares: [__dirname + "/../middlewares/**/*.js"],
+      interceptors: [__dirname + "/../interceptors/**/*.js"]
     });
 
     // Start webserver

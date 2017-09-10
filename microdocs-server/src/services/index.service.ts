@@ -1,7 +1,10 @@
 import { Service } from "typedi";
 import { Environment } from "../domain/environment.model";
 import { ProjectTree } from "@maxxton/microdocs-core/domain";
+import { LoggerFactory } from "@webscale/logging";
 import * as workerFarm from "worker-farm";
+
+const loggger = LoggerFactory.create();
 
 /**
  * Service for starting index tasks async
@@ -27,17 +30,19 @@ export class IndexService {
    */
   public startIndexing( env: Environment, projectTitle?: string, documentId?: string ): Promise<ProjectTree> {
     if ( !this.workers[ env.name ] ) {
-      console.info("create worker ");
+      loggger.info("Create worker ");
       this.workers[ env.name ] = this.createWorker();
     }
     let worker = this.workers[ env.name ];
     return new Promise<ProjectTree>( ( resolve, reject ) => {
       try {
+        loggger.info("Start worker: " + env.name);
         worker( env, projectTitle, documentId, ( err: any, result: ProjectTree ) => {
           if ( err ) {
+            loggger.warn("Failed worker: " + env.name);
             reject( err );
           } else {
-            console.log(result);
+            loggger.info("Finish worker: " + env.name);
             resolve(result);
           }
         } );

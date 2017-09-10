@@ -1,5 +1,5 @@
 import {
-  BadRequestError, Get, JsonController, QueryParam, Param, Post, Body, Put, Delete,
+  BadRequestError, Get, Controller, QueryParam, Param, Post, Body, Put, Delete,
   OnUndefined,
   Patch, NotFoundError,
 } from "routing-controllers";
@@ -15,7 +15,7 @@ import { IndexService } from "../services/index.service";
 /**
  * Controller for managing projects and tags
  */
-@JsonController( "/api/v2" )
+@Controller( "/api/v2" )
 export class ProjectController {
 
 
@@ -110,10 +110,18 @@ export class ProjectController {
    * @param {string} tag
    * @param {string} from
    * @param {string} envName
+   * @param fromEnvName
+   * @param opaque
    * @returns {Promise<Project>}
    */
   @Post( "/projects/:title" )
-  public async storeProject( @Body( { required: false } ) report: Project, @Param( "title" ) title: string, @QueryParam( "tag", { required: false } ) tag?: string, @QueryParam( "from", { required: false } ) from?: string, @QueryParam( "env", { required: false } ) envName?: string ): Promise<Project> {
+  public async storeProject( @Body( { required: false } ) report: Project,
+                             @Param( "title" ) title: string,
+                             @QueryParam( "tag", { required: false } ) tag?: string,
+                             @QueryParam( "from", { required: false } ) from?: string,
+                             @QueryParam( "env", { required: false } ) envName?: string,
+                             @QueryParam( "fromEnv", { required: false } ) fromEnvName?: string,
+                             @QueryParam( "opaque", { required: false } ) opaque?: boolean ): Promise<Project> {
     let env = await this.getEnv( envName );
 
     if ( report && Object.keys( report ).length > 0 && from ) {
@@ -122,7 +130,11 @@ export class ProjectController {
 
     if ( from ) {
       // Promote report
-      let newReport = await this.projectService.addTag( env, title, from, tag );
+      let fromEnv = env;
+      if ( fromEnvName.toLowerCase() !== envName.toLowerCase() ) {
+        fromEnv = await this.getEnv( fromEnvName );
+      }
+      let newReport = await this.projectService.addTag( env, title, from, fromEnv, tag, opaque );
       if ( !newReport ) {
         throw new BadRequestError( `Tag '${from}' doesn't exists for project '${title}'` );
       }

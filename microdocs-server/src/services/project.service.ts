@@ -99,6 +99,44 @@ export class ProjectService {
   }
 
   /**
+   * Get raw project
+   * @param {Environment} env
+   * @param {string} title
+   * @param {string} tag
+   * @returns {Promise<Project>}
+   */
+  public async getRawProject( env: Environment, title: string, tag?: string ): Promise<Project> {
+    let index = await this.getProjectMetadata(env, title);
+    if(!index){
+      return null;
+    }
+
+    let project:Project = null;
+
+    if(!tag){
+      if(!index.latestTag){
+        return null;
+      }
+      tag = index.latestTag;
+    }
+    tag = tag.toLowerCase();
+
+    // Load by id
+    project = await this.reportRepository.loadDocument(env, title, tag);
+
+    if(!project && index.tags[tag]){
+      // Load by tag
+      project = await this.reportRepository.loadDocument(env, title, index.tags[tag].id);
+    }
+    if(!project){
+      return null;
+    }
+
+    project.info.tag = tag;
+    return this.enrichProject(project, index);
+  }
+
+  /**
    * Add project
    * @param {Environment} env
    * @param {Project} report
@@ -132,10 +170,11 @@ export class ProjectService {
     if(tag){
       index.tags[tag.toLowerCase()] = {
         id: report.id,
+        deprecated: report.deprecated,
         updateTime: report.info.publishTime
       }
     }
-    index.latestTag = this.sortTags(index)[0];
+    index.latestTag = ProjectService.sortTags(index, true)[0];
 
     // Store index
     await this.reportRepository.storeIndex(env, index);
@@ -156,15 +195,17 @@ export class ProjectService {
    * @param env
    * @param title
    * @param tag
+   * @param newEnv
    * @param newTag
+   * @param opaque
    * @return {Promise<Project>}
    */
-  public async addTag(env:Environment, title:string, tag:string, newTag:string):Promise<Project> {
+  public async addTag(env:Environment, title:string, tag:string, newEnv:Environment, newTag:string, opaque:boolean = false):Promise<Project> {
     tag = tag.toLowerCase();
     newTag = newTag.toLowerCase();
 
     // Load index
-    let index = await this.reportRepository.loadIndex(env, title);
+    let index = await this.reportRepository.loadIndex(newEnv, title);
     if(!index){
       return null;
     }
@@ -177,12 +218,19 @@ export class ProjectService {
     if(!project.info){
       project.info = {};
     }
+    // Store again if env is different
+    if(env.name.toLowerCase() !== newEnv.name.toLowerCase()){
+      project = await this.reportRepository.storeDocument(env, title, project);
+    }
 
     // Update index
     index.tags[newTag] = {
       id: project.id,
-      updateTime: project.info.publishTime
+      updateTime: new Date().toISOString(),
+      deprecated: project.deprecated,
+      opaque: opaque
     };
+    index.latestTag = ProjectService.sortTags(index, true)[0];
 
     await this.reportRepository.storeIndex(env, index);
     project.info.tag = newTag;
@@ -226,13 +274,13 @@ export class ProjectService {
     if(reportIndex && reportIndex.tags && reportIndex.tags[tag]){
       edited = true;
       delete reportIndex.tags[tag];
-      reportIndex.latestTag = this.sortTags(reportIndex)[0];
+      reportIndex.latestTag = ProjectService.sortTags(reportIndex, true)[0];
       await this.reportRepository.storeIndex(env, reportIndex);
     }
     if(projectIndex && projectIndex.tags && projectIndex.tags[tag]){
       edited = true;
       delete projectIndex.tags[tag];
-      projectIndex.latestTag = this.sortTags(projectIndex)[0];
+      projectIndex.latestTag = ProjectService.sortTags(projectIndex, true)[0];
       await this.projectRepository.storeIndex(env, projectIndex);
     }
 
@@ -253,8 +301,9 @@ export class ProjectService {
       return null;
     }
     //todo: patch every document instead of only the one with the tags
-    let promises = Object.keys(index.tags).map(tag => this.patchProjectTag(env, patches, title, tag, false));
-    await Promise.all(promises);
+    for(let tag in index.tags){
+      await this.patchProjectTag(env, patches, title, tag, false);
+    }
 
     // Start reindex
     this.indexService.startIndexing(env, title).then();
@@ -272,12 +321,24 @@ export class ProjectService {
    */
   public async patchProjectTag( env: Environment, patches: OpPatch[], title: string, tag: string, reindex:boolean = true ): Promise<Project> {
     // Patch one version
-    let project = this.getProject(env, title, tag);
+    let project = await this.getProject(env, title, tag);
     if (!project) {
       return null;
     } else {
+      let deprecated = project.deprecated;
       let patchedProject = applyPatch(project, patches);
       await this.reportRepository.storeDocument(env, title, patchedProject);
+
+      if(deprecated !== patchedProject.deprecated){
+        // Update index
+        let index = await this.reportRepository.loadIndex(env, title);
+        let t = index.tags[tag];
+        if(t){
+          t.deprecated = patchedProject.deprecated;
+          index.latestTag = ProjectService.sortTags(index, true)[0];
+          await this.reportRepository.storeIndex(env, index);
+        }
+      }
 
       if(reindex){
         // Start reindex
@@ -387,17 +448,22 @@ export class ProjectService {
     project.info.title = index.title;
     project.info.color = index.color;
     project.info.group = index.group;
-    project.info.tags = this.sortTags(index);
+    project.info.tags = ProjectService.sortTags(index);
     return project;
   }
 
   /**
    * Sort tags from newest to oldest
    * @param index
+   * @param filterDeprecated
    * @return sorted tags
    */
-  private sortTags(index:ProjectMetadata):string[] {
-    return Object.keys(index.tags).sort((t1, t2) => Date.parse(index.tags[t2].updateTime) - Date.parse(index.tags[t1].updateTime));
+  public static sortTags(index:ProjectMetadata, filterDeprecated:boolean = false):string[] {
+    let tags = Object.keys(index.tags).sort((t1, t2) => Date.parse(index.tags[t2].updateTime) - Date.parse(index.tags[t1].updateTime));
+    if(filterDeprecated){
+      tags = tags.filter(t => index.tags[t].deprecated !== true);
+    }
+    return tags;
   }
 }
 
