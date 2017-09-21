@@ -9,6 +9,10 @@
     "@types/express" "*"
     "@types/node" "*"
 
+"@types/bytes@^2.5.1":
+  version "2.5.1"
+  resolved "https://registry.yarnpkg.com/@types/bytes/-/bytes-2.5.1.tgz#392c42adb65e16d32328b82b58fbc1611b75da89"
+
 "@types/chai@^4.0.3":
   version "4.0.3"
   resolved "https://registry.yarnpkg.com/@types/chai/-/chai-4.0.3.tgz#6c2264b195cd2bb4c95c108487e13df0c8567c3e"
@@ -25,6 +29,10 @@
   dependencies:
     "@types/express-serve-static-core" "*"
     "@types/serve-static" "*"
+
+"@types/http-errors@^1.6.1":
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/@types/http-errors/-/http-errors-1.6.1.tgz#367744a6c04b833383f497f647cc3690b0cd4055"
 
 "@types/js-yaml@^3.9.0":
   version "3.9.0"
@@ -58,6 +66,12 @@
   dependencies:
     "@types/express-serve-static-core" "*"
     "@types/mime" "*"
+
+"@types/type-is@^1.6.0":
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/@types/type-is/-/type-is-1.6.0.tgz#66b4af6115374f86c041bceb6f3824b17cb5c28b"
+  dependencies:
+    "@types/node" "*"
 
 "@types/uuid@^3.4.0":
   version "3.4.0"

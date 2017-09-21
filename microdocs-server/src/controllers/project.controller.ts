@@ -1,7 +1,7 @@
 import {
   BadRequestError, Get, Controller, QueryParam, Param, Post, Body, Put, Delete,
   OnUndefined,
-  Patch, NotFoundError,
+  Patch, NotFoundError, Authorized,
 } from "routing-controllers";
 import { Inject } from "typedi";
 import { Project, ProjectMetadata, ProjectTree } from "@maxxton/microdocs-core/domain";
@@ -11,6 +11,7 @@ import { ProjectService } from "../services/project.service";
 import { OpPatch } from "json-patch";
 import { Validator, ValidatorResult } from "jsonschema";
 import { IndexService } from "../services/index.service";
+import { Roles } from "../security/roles";
 
 /**
  * Controller for managing projects and tags
@@ -32,6 +33,7 @@ export class ProjectController {
    * @returns {Promise<ProjectMetadata[]>}
    */
   @Get( "/projects" )
+  @Authorized(Roles.VIEW)
   public async getProjects( @QueryParam( "env", { required: false } ) envName?: string ): Promise<ProjectMetadata[]> {
     let env = await this.getEnv( envName );
     return await this.projectService.getProjectMetadatas( env );
@@ -45,6 +47,7 @@ export class ProjectController {
    * @returns {Promise<ProjectTree>}
    */
   @Get( "/projects/tree" )
+  @Authorized(Roles.VIEW)
   public async getProjectTree( @QueryParam( "env", { required: false } ) envName?: string, @QueryParam( "projects", { required: false } ) projectFilter?: string, @QueryParam( "groups", { required: false } ) groupFilter?: string ): Promise<ProjectTree> {
     let env  = await this.getEnv( envName );
     let tree = await this.projectService.getProjectTree( env, projectFilter ? projectFilter.split( "," ) : [], groupFilter ? groupFilter.split( "," ) : [] );
@@ -60,6 +63,7 @@ export class ProjectController {
    * @return {Promise<ProjectTree>}
    */
   @Put( "/projects/reindex" )
+  @Authorized(Roles.EDIT)
   public async reindex( @QueryParam( "env", { required: false } ) envName?: string ): Promise<ProjectTree> {
     let env = await this.getEnv( envName );
     return this.indexService.startIndexing( env );
@@ -72,6 +76,7 @@ export class ProjectController {
    * @returns {Promise<ProjectMetadata>}
    */
   @Get( "/projects/:title" )
+  @Authorized(Roles.VIEW)
   public async getProjectMetadata( @Param( "title" ) title: string, @QueryParam( "env", { required: false } ) envName?: string ): Promise<ProjectMetadata> {
     let env             = await this.getEnv( envName );
     let projectMetadata = await this.projectService.getProjectMetadata( env, title );
@@ -89,6 +94,7 @@ export class ProjectController {
    * @returns {Promise<Project>}
    */
   @Get( "/projects/:title/:tag" )
+  @Authorized(Roles.VIEW)
   public async getProjectByTag( @Param( "title" ) title: string, @Param( "tag" ) tag: string, @QueryParam( "env", { required: false } ) envName?: string ): Promise<Project> {
     let env     = await this.getEnv( envName );
     let project = await this.projectService.getProject( env, title, tag );
@@ -115,6 +121,7 @@ export class ProjectController {
    * @returns {Promise<Project>}
    */
   @Post( "/projects/:title" )
+  @Authorized(Roles.PUBLISH)
   public async storeProject( @Body( { required: false } ) report: Project,
                              @Param( "title" ) title: string,
                              @QueryParam( "tag", { required: false } ) tag?: string,
@@ -162,6 +169,7 @@ export class ProjectController {
    * @returns {Promise<Project>}
    */
   @Put( "/projects/:title/:tag" )
+  @Authorized(Roles.EDIT)
   public async overwriteProject( @Body() report: Project | any, @Param( "title" ) title: string, @QueryParam( "tag" ) tag: string, @QueryParam( "env", { required: false } ) envName?: string ): Promise<Project> {
     let env = await this.getEnv( envName );
 
@@ -183,6 +191,7 @@ export class ProjectController {
    */
   @Delete( "/projects/:title" )
   @OnUndefined( 204 )
+  @Authorized(Roles.EDIT)
   public async deleteProject( @Param( "title" ) title: string, @QueryParam( "env", { required: false } ) envName?: string ): Promise<void> {
     let env     = await this.getEnv( envName );
     let deleted = await this.projectService.deleteProject( env, title );
@@ -200,6 +209,7 @@ export class ProjectController {
    */
   @Delete( "/projects/:title/:tag" )
   @OnUndefined( 204 )
+  @Authorized(Roles.EDIT)
   public async deleteProjectTag( @Param( "title" ) title: string, @Param( "tag" ) tag: string, @QueryParam( "env", { required: false } ) envName?: string ): Promise<void> {
     let env     = await this.getEnv( envName );
     let deleted = await this.projectService.deleteTag( env, title, tag );
@@ -216,6 +226,7 @@ export class ProjectController {
    * @returns {Promise<ProjectMetadata>}
    */
   @Patch( "/projects/:title" )
+  @Authorized(Roles.EDIT)
   public async patchProject( @Body() patches: OpPatch[], @Param( "title" ) title: string, @QueryParam( "env", { required: false } ) envName?: string ): Promise<ProjectMetadata> {
     let env             = await this.getEnv( envName );
     let projectMetadata = await this.projectService.patchProject( env, patches, title );
@@ -234,6 +245,7 @@ export class ProjectController {
    * @returns {Promise<Project>}
    */
   @Patch( "/projects/:title/:tag" )
+  @Authorized(Roles.EDIT)
   public async patchProjectTag( @Body() patches: OpPatch[], @Param( "title" ) title: string, @Param( "tag" ) tag: string, @QueryParam( "env", { required: false } ) envName?: string ): Promise<Project> {
     let env     = await this.getEnv( envName );
     let project = await this.projectService.patchProjectTag( env, patches, title, tag );
@@ -247,7 +259,6 @@ export class ProjectController {
     }
     return project;
   }
-
 
   /**
    * Get the environment by name

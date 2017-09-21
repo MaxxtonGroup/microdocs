@@ -1,11 +1,11 @@
-import { Get, JsonController, Param } from "routing-controllers";
+import { Get, Controller, Param } from "routing-controllers";
 import { Inject, Service } from "typedi";
 import { SettingsService } from "../services/settings.service";
 import { Environment } from "../domain/environment.model";
 import { Settings } from "../domain/settings.model";
 
 @Service()
-@JsonController("/api/v2")
+@Controller("/api/v2")
 export class SettingsController {
 
   @Inject()
@@ -43,7 +43,7 @@ export class SettingsController {
    * @param {string} envName
    * @returns {Promise<Environment>}
    */
-  @Get("/settings/envs/{name}")
+  @Get("/settings/envs/:name")
   public getEnvironment( @Param("name") envName: string ): Promise<Environment> {
     return this.settingsService.getEnv(envName);
   }

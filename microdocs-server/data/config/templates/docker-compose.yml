@@ -1,4 +1,4 @@
 version: '3'
 services:
   {project}:
-    image: {project}:${TAG}
+    image: ${project}:${TAG}

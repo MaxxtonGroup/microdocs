@@ -10,7 +10,7 @@ const MINE_JSON = [ "application/json" ];
 
 import {Interceptor, InterceptorInterface, Action} from "routing-controllers";
 
-@Interceptor({priority: 2})
+@Interceptor()
 export class JSONResponseInterceptor implements InterceptorInterface {
 
   intercept(action: Action, content: any) {

@@ -26,4 +26,12 @@ export abstract class ScriptRepository {
    */
   public abstract async storeScript( env: Environment, script: Script ): Promise<Script>;
 
+  /**
+   * Delete script
+   * @param env
+   * @param name
+   * @returns Promise<boolean>
+   */
+  public abstract async deleteScript( env: Environment, name: string ): Promise<boolean>;
+
 }
