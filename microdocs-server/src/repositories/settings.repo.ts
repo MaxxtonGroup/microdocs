@@ -1,4 +1,4 @@
-import { Settings } from "../domain/settings.model";
+import { Settings } from "@maxxton/microdocs-core/domain";
 
 
 export abstract class SettingsRepository {

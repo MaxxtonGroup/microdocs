@@ -1,0 +1,18 @@
+<div class="body-render-header">
+  <h5>
+    Body
+    <template [ngIf]="mimes | notEmpty">
+      (<span class="mime" *ngFor="let mime of mimes; let last = last">
+                    {{mime}}
+                    <template [ngIf]="!last">,</template>
+                </span>)
+    </template>
+  </h5>
+  <div class="tab-container">
+    <span class="tab" (click)="selectSchema(schema)">{{schema.name||"Base"}}</span>
+    <span class="tab" *ngFor="let subSchema of schema.anyOf" (click)="selectSchema(subSchema)">{{subSchema.name}}</span>
+  </div>
+  <template [ngIf]="example | notEmpty">
+    <prettyjson [obj]="example"></prettyjson>
+  </template>
+</div>

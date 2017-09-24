@@ -1,10 +1,13 @@
-<div class="page-content">
-  <template [ngIf]="empty && !loading">
-    <welcome></welcome>
-  </template>
-  <template [ngIf]="!empty && !loading">
-    <simple-card text="Projects Overview" [paper]="true">
-      <dependency-graph [nodes]="nodes" [env]="env"></dependency-graph>
-    </simple-card>
-  </template>
-</div>
+<ng-template [ngIf]="empty && !loading">
+  <welcome></welcome>
+</ng-template>
+<ng-template [ngIf]="!empty && !loading">
+  <div class="page-content">
+
+    <!--<simple-card text="Projects Overview" [paper]="true">-->
+    <!--<dependency-graph [nodes]="projects" [env]="env"></dependency-graph>-->
+    <!--</simple-card>-->
+  </div>
+</ng-template>
+
+

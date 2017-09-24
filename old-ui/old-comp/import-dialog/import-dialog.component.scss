@@ -1,0 +1,49 @@
+
+@import '../../../assets/scss/settings';
+
+.import-dialog {
+  width: 500px;
+
+  h2{
+    color: map_get($mat-green, 500);
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+
+  h2 mat-icon{
+    position: relative;
+    top: 5px;
+    color: white;
+    border-radius: 100%;
+    padding: 5px;
+    height: 36px;
+    width: 36px;
+    text-align: center;
+    margin-right: 10px;
+    background-color: map_get($mat-green, 500);
+  }
+
+  mat-input-container{
+    width: 100%;
+  }
+
+  textarea {
+    resize: none;
+    font-family: monospace;
+  }
+
+  label {
+    color: $primary !important;
+    cursor: default !important;
+  }
+
+  button{
+    background-color: map_get($mat-green, 500);
+    color: white;
+  }
+
+  .text-danger {
+    color: $error;
+    height: 30px;
+  }
+}

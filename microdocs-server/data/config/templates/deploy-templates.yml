@@ -1,0 +1,14 @@
+title: deploy-template
+type: ObjectTemplate:v1
+template:
+  ~~~for: 'project of projects'
+  ~~~each:
+    - version: v1
+      kind: DeploymentConfig
+      metadata:
+        name: ${project.info.title}-${project.info.tag}
+        labels:
+          app: ${project.info.title}
+          version: ${project.info.tag}
+
+

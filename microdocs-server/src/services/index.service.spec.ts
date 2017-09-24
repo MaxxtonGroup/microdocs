@@ -7,9 +7,8 @@ describe("index.service", () => {
 
   it("schedule task", (done: (err?: any) => void) => {
     let indexService = new IndexService(mockIndexModule);
-    indexService.startIndexing({ name: "test1" }).then(projectTree => {
+    indexService.startIndexing({ name: "test1" }).then(problemReport => {
       try{
-        assert.isDefined(projectTree.getProject("test1"));
         done();
       }catch(e){
         done(e);
@@ -26,9 +25,8 @@ describe("index.service", () => {
     Promise.all([task1, task2, task3]).then(results => {
 
     }).catch(e => done(e));
-    indexService.startIndexing({ name: "test1" }).then(projectTree => {
+    indexService.startIndexing({ name: "test1" }).then(problemReport => {
       try{
-        assert.isDefined(projectTree.getProject("test1"));
         done();
       }catch(e){
         done(e);

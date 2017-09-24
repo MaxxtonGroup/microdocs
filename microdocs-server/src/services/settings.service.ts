@@ -1,7 +1,6 @@
 import { Inject, Service } from "typedi";
-import { Environment } from "../domain/environment.model";
-import { Settings } from "../domain/settings.model";
-import { SettingsYamlRepository } from "../repositories/yaml/settings.yaml-repo";
+import { Environment, Settings } from "@maxxton/microdocs-core/domain";
+import { SettingsRepository } from "../repositories/settings.repo";
 
 /**
  * Service for settings related data
@@ -9,8 +8,8 @@ import { SettingsYamlRepository } from "../repositories/yaml/settings.yaml-repo"
 @Service()
 export class SettingsService {
 
-  @Inject()
-  private settingsRepository: SettingsYamlRepository;
+  @Inject("settingsRepository")
+  private settingsRepository: SettingsRepository;
 
   /**
    * Get all settings

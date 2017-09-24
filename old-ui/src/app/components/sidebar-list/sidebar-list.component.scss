@@ -1,0 +1,41 @@
+
+@import '../../../assets/scss/settings';
+
+
+md-list{
+  padding: 0;
+  font-size: 11px;
+
+  a{
+    text-decoration: none ;
+  }
+
+  md-list-item{
+    cursor: pointer;
+
+    md-icon{
+      width: 24px;
+      height: 24px;
+    }
+
+    icon-generator{
+      width: 34px;
+      position: relative;
+      top: 3px;
+    }
+
+    @each $name, $color in $colors {
+      .#{$name} md-icon {
+        color: map_get($color, 500);
+      }
+    }
+  }
+
+  md-list-item:hover{
+    color: $accent;
+    background: #f4f4f4;
+    h4{
+      color: $accent;
+    }
+  }
+}

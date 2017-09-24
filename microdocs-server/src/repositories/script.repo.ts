@@ -1,5 +1,5 @@
 import { Script } from "@maxxton/microdocs-core/pre-processor/script.model";
-import { Environment } from "../domain/environment.model";
+import { Environment } from "@maxxton/microdocs-core/domain";
 
 export abstract class ScriptRepository {
 

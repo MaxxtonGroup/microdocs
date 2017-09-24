@@ -23,10 +23,10 @@ export class DependenciesRestHelper {
    * Resolve REST dependencies
    * @param strict compatibility checking
    * @param project
-   * @param scope
+   * @param scopeDocument
    * @return {Promise<ProblemReport>}
    */
-  public async resolveRestDependencies( strict: boolean, project: Project, scope?: string ): Promise<ProblemReport> {
+  public async resolveRestDependencies( strict: boolean, project: Project, scopeDocument?: Project ): Promise<ProblemReport> {
     let problemReport = new ProblemReport();
     // Don't resolve project if it is   already resolved
     if ( this.doneList[ project.info.title + ":" + project.info.tag ] ) {
@@ -36,13 +36,12 @@ export class DependenciesRestHelper {
 
     if ( project.dependencies ) {
       for ( let depTitle in project.dependencies ) {
-        if ( (scope && (scope === depTitle || scope === project.info.title)) || !scope ) {
-          let reverse: boolean       = scope && (scope === depTitle);
+        if((scopeDocument && scopeDocument.info.title.toLowerCase() === depTitle.toLowerCase()) || !scopeDocument){
           let dependency: Dependency = project.dependencies[ depTitle ];
           if ( dependency.type === DependencyTypes.REST ) {
             let report = new ProblemReport();
-            await this.resolveProject( strict, report, project, dependency, depTitle, scope, reverse );
-            if ( reverse ) {
+            await this.resolveProject( strict, report, project, dependency, depTitle, scopeDocument );
+            if ( scopeDocument ) {
               report.reverse();
             }
             problemReport.addAll( report );
@@ -60,63 +59,68 @@ export class DependenciesRestHelper {
    * @param project
    * @param dependency
    * @param depTitle
-   * @param scope
-   * @param reverse
+   * @param scopeDocument
    */
-  public async resolveProject( strict: boolean, report: ProblemReport, project: Project, dependency: Dependency, depTitle: string, scope: string, reverse: boolean ): Promise<void> {
+  public async resolveProject( strict: boolean, report: ProblemReport, project: Project, dependency: Dependency, depTitle: string, scopeDocument?: Project ): Promise<void> {
     // Find the matching version
     let depProject: Project;
-    if ( dependency.tag ) {
-      depProject = await this.documentCacheHelper.loadDocument( report, depTitle, dependency.tag );
-    } else {
-      depProject = await this.documentCacheHelper.loadDocument( report, depTitle );
-    }
-    if ( !depProject ) {
-      let title = dependency.tag ? depTitle + ":" + dependency.tag : depTitle;
-      report.add( {
-        level: Level.Error,
-        message: `Project ${project.info.title} depends on ${title}, but that project/tag doesn't exists in MicroDocs`,
-        hint: `Add ${title} to MicroDocs`,
-        sourcePath: `dependencies.${depTitle}`,
-        source: project
-      } );
-      return;
-    }
-    if ( depProject.deprecated === true ) {
-      let title = dependency.tag ? depTitle + ":" + dependency.tag : depTitle;
-      report.add( {
-        level: Level.Warning,
-        message: `Project ${project.info.title} depends on ${title}, but that project/tag is deprecated`,
-        hint: `Update the version of ${depTitle} to a non deprecated version`,
-        sourcePath: `dependencies.${depTitle}`,
-        source: project,
-        target: depProject
-      } );
+    if(scopeDocument){
+      depProject = scopeDocument;
+    }else {
+      if ( dependency.tag ) {
+        depProject = await this.documentCacheHelper.loadDocument( report, depTitle, dependency.tag );
+      } else {
+        depProject = await this.documentCacheHelper.loadDocument( report, depTitle );
+      }
+      if ( !depProject ) {
+        let title = dependency.tag ? depTitle + ":" + dependency.tag : depTitle;
+        report.add( {
+          level: Level.Error,
+          message: `Project ${project.info.title} depends on ${title}, but that project/tag doesn't exists in MicroDocs`,
+          hint: `Add ${title} to MicroDocs`,
+          sourcePath: `dependencies.${depTitle}`,
+          source: project
+        } );
+        return;
+      }
+      if ( depProject.deprecated === true ) {
+        let title = dependency.tag ? depTitle + ":" + dependency.tag : depTitle;
+        report.add( {
+          level: Level.Warning,
+          message: `Project ${project.info.title} depends on ${title}, but that project/tag is deprecated`,
+          hint: `Update the version of ${depTitle} to a non deprecated version`,
+          sourcePath: `dependencies.${depTitle}`,
+          source: project,
+          target: depProject
+        } );
+      }
     }
 
     let dependencyReport = this.checkDependencyCompatible( depTitle, dependency, depProject, project, strict );
     report.addAll( dependencyReport );
-    if ( dependencyReport.isCompatible( strict ) ) {
-      dependency.tag = depProject.info.tag;
-    } else {
-      let olderDepProject: Project = null;
-      let olderProblemReport;
-      do {
-        olderProblemReport = new ProblemReport();
-        olderDepProject    = this.documentCacheHelper.loadPreviousDocument( olderProblemReport, depTitle, olderDepProject ? olderDepProject.info.tag : depProject.info.tag );
-        if ( olderDepProject ) {
-          olderProblemReport = this.checkDependencyCompatible( depTitle, dependency, olderDepProject, project, strict );
-        }
-      } while ( !olderProblemReport.isCompatible( strict ) && olderDepProject != null );
-      if ( olderDepProject && olderDepProject.info && olderDepProject.info.tag ) {
-        dependency.tag = olderDepProject.info.tag;
-      } else {
+    if(!scopeDocument) {
+      if ( dependencyReport.isCompatible( strict ) ) {
         dependency.tag = depProject.info.tag;
+      } else {
+        let olderDepProject: Project = null;
+        let olderProblemReport;
+        do {
+          olderProblemReport = new ProblemReport();
+          olderDepProject    = this.documentCacheHelper.loadPreviousDocument( olderProblemReport, depTitle, olderDepProject ? olderDepProject.info.tag : depProject.info.tag );
+          if ( olderDepProject ) {
+            olderProblemReport = this.checkDependencyCompatible( depTitle, dependency, olderDepProject, project, strict );
+          }
+        } while ( !olderProblemReport.isCompatible( strict ) && olderDepProject != null );
+        if ( olderDepProject && olderDepProject.info && olderDepProject.info.tag ) {
+          dependency.tag = olderDepProject.info.tag;
+        } else {
+          dependency.tag = depProject.info.tag;
+        }
       }
     }
 
     // Resolve nested rest dependencies first
-    this.resolveRestDependencies( strict, depProject, scope );
+    this.resolveRestDependencies( strict, depProject, scopeDocument );
   }
 
   /**

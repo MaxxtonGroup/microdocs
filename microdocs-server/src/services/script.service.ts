@@ -1,7 +1,7 @@
 import { Inject, Service } from "typedi";
-import { Environment } from "../domain/environment.model";
+import { Environment } from "@maxxton/microdocs-core/domain";
 import { Script } from "@maxxton/microdocs-core/pre-processor/script.model";
-import { ScriptYamlRepository } from "../repositories/yaml/script.yaml-repo";
+import { ScriptRepository } from "../repositories/script.repo";
 
 /**
  * Manage preprocess scripts
@@ -9,8 +9,8 @@ import { ScriptYamlRepository } from "../repositories/yaml/script.yaml-repo";
 @Service()
 export class ScriptService {
 
-  @Inject()
-  private scriptRepository: ScriptYamlRepository;
+  @Inject("scriptRepository")
+  private scriptRepository: ScriptRepository;
 
   /**
    * Get the names of the scripts for an environment

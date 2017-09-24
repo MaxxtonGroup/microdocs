@@ -13,7 +13,7 @@ md-toolbar{
   left: 0;
   right: 0;
 
-  .version-box{
+  .tag-box{
     background: none;
     border: none;
     outline: none;
@@ -37,19 +37,19 @@ md-toolbar{
   }
 
   md-icon.export-button{
-    color: map_get($md-blue, 500);
+    color: map_get($mat-blue, 500);
   }
 
   md-icon.edit-button{
-    color: map_get($md-green, 500);
+    color: map_get($mat-green, 500);
   }
 
   md-icon.delete-button{
-    color: map_get($md-red, 500);
+    color: map_get($mat-red, 500);
   }
 
   md-icon.deprecate-button{
-    color: map_get($md-blue-grey, 500);
+    color: map_get($mat-blue-grey, 500);
   }
 
   md-icon:hover, md-icon.selected{
@@ -57,7 +57,7 @@ md-toolbar{
   }
 
   md-icon.disabled{
-    color: map_get($md-grey, 500);
+    color: map_get($mat-grey, 500);
     background-color: transparent;
     cursor: default;
   }
@@ -93,7 +93,7 @@ md-toolbar{
     color: $warning;
   }
   h2{
-    color: map_get($md-grey, 700);
+    color: map_get($mat-grey, 700);
   }
 }
 
@@ -185,7 +185,7 @@ project-route .client-problem .icon{
 }
 
 project-route .client-problem .client-problem-desc{
-  color: map_get($md-red, 500);
+  color: map_get($mat-red, 500);
 }
 
 project-route modal .card{
@@ -204,7 +204,7 @@ project-route .error-page{
   }
 
   h1.error{
-    color: map_get($md-red, 500);
+    color: map_get($mat-red, 500);
   }
 
   h1 i {

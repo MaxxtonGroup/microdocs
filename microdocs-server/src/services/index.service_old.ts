@@ -1,5 +1,5 @@
 import { Service } from "typedi";
-import { Environment } from "../domain/environment.model";
+import { Environment } from "@maxxton/microdocs-core/domain";
 import { LoggerFactory, Logger, LogLevel } from "@webscale/logging";
 import { fork } from "child_process";
 import { ProjectTree } from "@maxxton/microdocs-core/domain";

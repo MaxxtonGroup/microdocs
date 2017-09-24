@@ -4,7 +4,7 @@ import * as pathUtil from "path";
 import * as mkdirp from "mkdirp";
 import { Project, ProjectMetadata, ProjectTree } from "@maxxton/microdocs-core/domain";
 import { LoggerFactory } from "@webscale/logging";
-import { Environment } from "../../domain/environment.model";
+import { Environment } from "@maxxton/microdocs-core/domain";
 import { DocumentRepository } from "../document.repo";
 import { v4 as uuid } from "uuid";
 import { DEFAULT_FULL_SCHEMA } from "js-yaml";
@@ -38,7 +38,8 @@ export class DocumentYamlRepository implements DocumentRepository {
         let filePath = this.getTreePath( env );
         logger.silly( "store tree: " + filePath );
 
-        let yamlDocument = yaml.safeDump( tree, {schema: DEFAULT_FULL_SCHEMA } );
+        let unlinkedTree = tree.unlink();
+        let yamlDocument = yaml.safeDump( unlinkedTree, {schema: DEFAULT_FULL_SCHEMA } );
         this.makeParentDir( filePath ).then( () => {
           fs.writeFile( filePath, yamlDocument, ( err ) => {
             if ( err ) {
@@ -71,7 +72,8 @@ export class DocumentYamlRepository implements DocumentRepository {
               if ( err ) {
                 reject( err );
               } else {
-                let tree = yaml.safeLoad( data.toString(), {schema: DEFAULT_FULL_SCHEMA } ) as ProjectTree;
+                let unlinkedTree = yaml.safeLoad( data.toString(), {schema: DEFAULT_FULL_SCHEMA } ) as ProjectTree;
+                let tree = ProjectTree.link(unlinkedTree);
                 resolve( tree );
               }
             } );

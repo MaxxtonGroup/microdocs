@@ -14,6 +14,7 @@
     ],
 
     "declaration": true,
+    "sourceMap": true,
     "removeComments": true,
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,

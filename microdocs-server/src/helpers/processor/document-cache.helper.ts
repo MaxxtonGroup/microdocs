@@ -1,4 +1,4 @@
-import { Environment } from "../../domain/environment.model";
+import { Environment } from "@maxxton/microdocs-core/domain";
 import { Project, ProblemReport } from "@maxxton/microdocs-core/domain";
 import { PreProcessor, Script } from "@maxxton/microdocs-core/pre-processor";
 import { ScriptService } from "../../services/script.service";
@@ -18,8 +18,8 @@ export class DocumentCacheHelper {
 
   private env: Environment;
   private scripts: Script[];
-  private reportCache: { [projectName: string]: { [documentId: string]: Project | Promise<Project> } };
-  private projectCache: { [projectName: string]: { [documentId: string]: Project | Promise<Project> } };
+  private reportCache: { [projectName: string]: { [documentId: string]: Project | Promise<Project> } } = {};
+  private projectCache: { [projectName: string]: { [documentId: string]: Project | Promise<Project> } } = {};
 
   constructor( env: Environment, preProcessor: PreProcessor, scriptService: ScriptService, projectService: ProjectService ) {
     this.env                       = env;
@@ -60,6 +60,24 @@ export class DocumentCacheHelper {
   }
 
   /**
+   * Cache document
+   * @param document
+   */
+  public async addDocument( document: Project ): Promise<void> {
+    // Preprocess it
+    this.preProcessDocument( document );
+
+    // Resolve INCLUDES dependencies
+    await this.mergeIncludeDependencies( document );
+
+    // Add to cache
+    if ( !this.reportCache[ document.info.title ] ) {
+      this.reportCache[ document.info.title ] = {};
+    }
+    this.reportCache[ document.info.title ][document.id] = document;
+  }
+
+  /**
    * Load document and preprocess it, caching enabled
    * @param problemReport
    * @param title
@@ -77,14 +95,15 @@ export class DocumentCacheHelper {
       let promise                                                   = new Promise<Project>( ( resolve, reject ) => {
         try {
           // Load document
-          this.projectService.getRawProject( this.env, title, documentId ).then( document => {
+          this.projectService.getRawProject( this.env, title, documentId ).then( async (document) => {
             try {
               if ( document ) {
                 // Preprocess it
                 this.preProcessDocument( document );
 
                 // Resolve INCLUDES dependencies
-                this.mergeIncludeDependencies( document );
+                let problemReport = await this.mergeIncludeDependencies( document );
+                //todo: do something with the problemReport
               }
 
               // Return and set cache item for the next one
@@ -131,7 +150,7 @@ export class DocumentCacheHelper {
     } );
   }
 
-  private mergeIncludeDependencies( document: Project ) {
-    this.dependenciesIncludeHelper.resolveIncludesDependencies( document );
+  private mergeIncludeDependencies( document: Project ):Promise<ProblemReport> {
+    return this.dependenciesIncludeHelper.resolveIncludesDependencies( document );
   }
 }

@@ -1,12 +1,12 @@
 import {
   BadRequestError, Get, Controller, QueryParam, Param, Post, Body, Put, Delete,
   OnUndefined,
-  Patch, NotFoundError,
+  Patch, NotFoundError
 } from "routing-controllers";
 import { Inject } from "typedi";
-import { Project, ProjectMetadata, ProjectTree } from "@maxxton/microdocs-core/domain";
+import { Project, ProjectMetadata, ProjectTree, ProblemReport } from "@maxxton/microdocs-core/domain";
 import { SettingsService } from "../services/settings.service";
-import { Environment } from "../domain/environment.model";
+import { Environment } from "@maxxton/microdocs-core/domain";
 import { ProjectService } from "../services/project.service";
 import { OpPatch } from "json-patch";
 import { Validator, ValidatorResult } from "jsonschema";
@@ -44,14 +44,14 @@ export class ProjectController {
    * @param {string} groupFilter
    * @returns {Promise<ProjectTree>}
    */
-  @Get( "/projects/tree" )
-  public async getProjectTree( @QueryParam( "env", { required: false } ) envName?: string, @QueryParam( "projects", { required: false } ) projectFilter?: string, @QueryParam( "groups", { required: false } ) groupFilter?: string ): Promise<ProjectTree> {
+  @Get( "/tree" )
+  public async getProjectTree( @QueryParam( "env", { required: false } ) envName?: string, @QueryParam( "projects", { required: false } ) projectFilter?: string, @QueryParam( "groups", { required: false } ) groupFilter?: string ): Promise<any> {
     let env  = await this.getEnv( envName );
     let tree = await this.projectService.getProjectTree( env, projectFilter ? projectFilter.split( "," ) : [], groupFilter ? groupFilter.split( "," ) : [] );
     if ( !tree ) {
       throw new NotFoundError( `Environment '${env.name}' is not indexed yet, try to index it using: POST /api/v2/projects/reindex?env=${env.name}` )
     }
-    return tree;
+    return tree.unlink();
   }
 
   /**
@@ -59,10 +59,30 @@ export class ProjectController {
    * @param envName
    * @return {Promise<ProjectTree>}
    */
-  @Put( "/projects/reindex" )
-  public async reindex( @QueryParam( "env", { required: false } ) envName?: string ): Promise<ProjectTree> {
+  @Post( "/reindex" )
+  public async reindex( @QueryParam( "env", { required: false } ) envName?: string ): Promise<ProblemReport> {
     let env = await this.getEnv( envName );
     return this.indexService.startIndexing( env );
+  }
+
+  /**
+   * Check a document for problems
+   * @param document
+   * @param envName
+   * @return {Promise<ProblemReport>}
+   */
+  @Post( "/check" )
+  public async checkDocument( @Body() document: Project, @QueryParam( "env", { required: false } ) envName?: string ): Promise<ProblemReport> {
+    let env = await this.getEnv( envName );
+
+    // Validate new report
+    let validationResult = this.validateReport_2_0( document );
+    if ( !validationResult.valid ) {
+      throw new BadRequestError( <any>validationResult.errors.map( error => (error as any).stack ) );
+    } else {
+      // Check document
+      return this.projectService.checkDocument(env, document);
+    }
   }
 
   /**
@@ -131,7 +151,7 @@ export class ProjectController {
     if ( from ) {
       // Promote report
       let fromEnv = env;
-      if ( fromEnvName.toLowerCase() !== envName.toLowerCase() ) {
+      if ( fromEnvName && fromEnvName.toLowerCase() !== envName.toLowerCase() ) {
         fromEnv = await this.getEnv( fromEnvName );
       }
       let newReport = await this.projectService.addTag( env, title, from, fromEnv, tag, opaque );

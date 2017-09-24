@@ -1,3 +1,0 @@
-envs:
- - name: development
-   default: true

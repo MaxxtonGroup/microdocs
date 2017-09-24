@@ -1,6 +1,6 @@
 
 @import 'assets/scss/settings';
-@import 'app/components/dependency-graph/dependency-graph.component';
+//@import 'app/components/dependency-graph/dependency-graph.component';
 
 * {
   box-sizing: border-box;
@@ -96,4 +96,10 @@ a:hover{
 
 prettyjson > pre{
   margin: 0 !important;
+}
+
+.page-content{
+  margin: 2rem auto 0 8rem;
+  width: auto !important;
+  max-width: 1200px !important;
 }

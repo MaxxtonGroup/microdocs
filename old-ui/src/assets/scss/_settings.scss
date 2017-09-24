@@ -1,0 +1,41 @@
+
+@import '~@angular/material/core/theming/all-theme';
+@include md-core();
+
+$candy-app-primary: md-palette($md-blue);
+$candy-app-accent:  md-palette($md-orange, A700);
+$candy-app-error:    md-palette($md-red);
+$candy-app-warn:    md-palette($md-deep-orange);
+$candy-app-info: md-palette($md-blue);
+$candy-app-theme: md-light-theme($candy-app-primary, $candy-app-accent, $candy-app-warn);
+@include angular-material-theme($candy-app-theme);
+
+$primary: md-color($candy-app-primary);
+$accent: md-color($candy-app-accent);
+$error:    md-color($candy-app-error);
+$warning:    md-color($candy-app-warn);
+$info:    md-color($candy-app-info);
+$primary-opacity: rgba(33, 150, 243, 0.5);
+
+$colors: (
+  red: $md-red,
+  pink: $md-pink,
+  purple: $md-purple,
+  deep-purple: $md-deep-purple,
+  indigo: $md-indigo,
+  blue: $md-blue,
+  light-blue: $md-light-blue,
+  cyan: $md-cyan,
+  teal: $md-teal,
+  green: $md-green,
+  light-green: $md-light-green,
+  lime: $md-lime,
+  yellow: $md-yellow,
+  amber: $md-amber,
+  orange: $md-orange,
+  deep-orange: $md-deep-orange,
+  brown: $md-brown,
+  grey: $md-grey,
+  blue-grey: $md-blue-grey,
+
+);

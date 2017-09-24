@@ -1,0 +1,206 @@
+
+@import '../../../assets/scss/settings';
+
+.graph {
+  position: relative;
+
+  .option-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 50px;
+    background-color: white;
+
+    .dropdown {
+      position: absolute;
+      left: 0;
+      height: 100%;
+      width: 200px;
+
+      .dropdown-header {
+        position: absolute;
+        z-index: 1;
+        display: inline-block;
+        padding: 14px 10px;
+        font-size: 1.5em;
+        cursor: pointer;
+
+        mat-icon {
+          position: relative;
+          top: 5px;
+          transition: 0.2s ease transform;
+        }
+      }
+
+      .overlay-wrapper {
+        display: block;
+        position: absolute;
+        bottom: 0;
+        padding-bottom: 50px;
+        width: 200px;
+        box-shadow: none;
+        background-color: white;
+        transition: 0.2s ease box-shadow;
+
+        .overlay {
+          overflow: hidden;
+          height: auto;
+          max-height: 0px;
+          transition: 0s ease max-height;
+
+          .overlay-item {
+            padding: 5px 10px;
+            cursor: pointer;
+            position: relative;
+            color: $primary;
+
+            mat-icon {
+              position: relative;
+              top: 4px;
+            }
+            .title {
+              font-size: 1.3em;
+              position: absolute;
+              top: 13px;
+              left: 35px;
+              right: 10px;
+            }
+          }
+        }
+      }
+    }
+    .dropdown.expanded {
+      .dropdown-header mat-icon {
+        transform: rotate(180deg);
+      }
+      .overlay-wrapper {
+        box-shadow: rgba(0, 0, 0, 0.227451) 0px 3px 10px 0px, rgba(0, 0, 0, 0.156863) 0px 3px 10px 0px !important;
+
+        .overlay {
+          max-height: 500px;
+          transition: 0.5s ease max-height;
+        }
+      }
+    }
+
+    .option-button {
+      position: absolute;
+      right: 0;
+      height: 50px;
+      width: 50px;
+      padding: 10px;
+      border-radius: 100%;
+      cursor: pointer;
+
+      mat-icon {
+        font-size: 30px;
+        height: 30px;
+        width: 30px;
+      }
+
+      span {
+        display: none;
+      }
+    }
+    .option-button:hover {
+      background-color: rgba(0, 0, 0, 0.1);
+
+      span {
+        display: inline-block;
+        width: 100px;
+        text-align: center;
+        position: relative;
+        left: -40px;
+        top: 15px;
+        background-color: black;
+        color: white;
+        border-radius: 5px;
+        padding: 5px;
+      }
+      span:before {
+        content: ' ';
+        position: absolute;
+        bottom: 90%;
+        left: 50%;
+        width: 10px;
+        height: 10px;
+        background-color: black;
+        transform: rotate(45deg);
+      }
+    }
+    .option-button.selected {
+      background-color: rgba(0, 0, 0, 0.1);
+      color: $primary;
+    }
+
+    .show-tags-button {
+      right: 0;
+    }
+
+    .show-inherit-button {
+      right: 60px;
+    }
+  }
+
+  .container {
+
+    svg {
+      width: 100%;
+      height: 75vh;
+
+      path {
+        fill: none;
+        stroke: $primary;
+        stroke-width: 1.5px;
+      }
+
+      path.includes {
+        stroke-dasharray: 4, 3;
+      }
+
+      path.uses {
+        stroke: map_get($mat-grey, 800);
+        stroke-dasharray: 4, 3;
+      }
+
+      path.marker-end-uses {
+        stroke: map_get($mat-grey, 800);
+      }
+
+      path.errors, path.marker-end-errors {
+        stroke: $error;
+      }
+
+      path.warning, path.marker-end-warning {
+        stroke: $warning;
+      }
+
+      circle {
+        fill: #FF9800;
+        stroke: #333;
+        stroke-width: 0.5px;
+      }
+
+      @each $name, $color in $colors {
+        circle.#{$name} {
+          fill: map_get($color, 500);
+          stroke: map_get($color, 800);
+        }
+      }
+
+      text {
+        font-size: 10px;
+        text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
+        cursor: pointer;
+      }
+    }
+  }
+}
+
+.graph.small {
+  .container svg {
+    width: 100%;
+    height: 200px;
+  }
+}

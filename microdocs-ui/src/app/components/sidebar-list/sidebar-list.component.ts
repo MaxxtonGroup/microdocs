@@ -12,7 +12,7 @@ export class SidebarListComponent {
   }
 
   @Input()
-  private routes: any[];
+  public routes: any[];
 
   public getIcon( route: RouteInfo ): string {
     if ( route.open ) {

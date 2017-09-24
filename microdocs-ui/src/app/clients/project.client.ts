@@ -1,4 +1,4 @@
-import { ProjectTree, Project, Environments, ProjectChangeRule, ProblemResponse } from "@maxxton/microdocs-core/domain";
+import { ProjectTree, Project, ProjectChangeRule, ProblemReport, Settings, ProjectMetadata } from "@maxxton/microdocs-core/domain";
 import { Observable } from "rxjs/Observable";
 import { Response } from "@angular/http";
 
@@ -10,26 +10,34 @@ export interface ProjectClient {
   /**
    * Loads all projects
    */
-  loadProjects( env:string ):Observable<ProjectTree>;
+  loadProjects( env:string ):Observable<ProjectMetadata[]>;
+
+  /**
+   * Loads projectTree
+   */
+  loadTree( env:string ):Observable<ProjectTree>;
 
   /**
    * Load project
    */
-  loadProject( env:string, title:string, version?:string ):Observable<Project>;
+  loadProject( env:string, title:string, tag?:string ):Observable<Project>;
 
-  /**
-   * Load all the environments
-   */
-  getEnvs():Observable<{[key:string]:Environments}>;
+  getSettings():Observable<Settings>;
 
 
-  importProject( env:string, project:Project, title:string, group:string, version:string ):Observable<ProblemResponse>;
+  addProject( env:string, project:Project, title:string, tag:string ):Observable<Project>;
 
-  deleteProject( env:string, title:string, version?:string ):Observable<Response>;
+  deleteProject( env:string, title:string ):Observable<Response>;
 
-  updateProject( env:string, title:string, rules:ProjectChangeRule[], version?:string ):Observable<Response>;
+  deleteDocument( env:string, title:string, tag:string ):Observable<Response>;
+
+  updateProject( env:string, title:string, rules:ProjectChangeRule[] ):Observable<Response>;
+
+  updateDocument( env:string, title:string, rules:ProjectChangeRule[], tag:string ):Observable<Response>;
 
   reindex( env:string ):Observable<Response>;
+
+  check( env:string, project:Project ):Observable<ProblemReport>;
 
 
 }

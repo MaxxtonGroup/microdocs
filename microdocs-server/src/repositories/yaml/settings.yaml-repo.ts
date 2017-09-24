@@ -1,7 +1,7 @@
 import * as fs from "fs"
 import * as pathUtil from "path";
 import { SettingsRepository } from "../settings.repo";
-import { Settings } from "../../domain/settings.model";
+import { Settings } from "@maxxton/microdocs-core/domain";
 import { Inject, Service, Token } from "typedi";
 import { App } from "@webscale/boot";
 import { LoggerFactory } from "@webscale/logging";
@@ -12,15 +12,10 @@ import { DEFAULT_FULL_SCHEMA } from "js-yaml";
 const logger   = LoggerFactory.create();
 const YAML_EXT = ".yml";
 
-@Service()
 export class SettingsYamlRepository extends SettingsRepository {
 
-  private settingsFile:string;
-
-  constructor(private app: App){
+  constructor(private settingsFile:string){
     super();
-    this.settingsFile = pathUtil.resolve( process.cwd(),
-        this.app.properties.getString( storage.yaml.settingsFile, 'data/config/settings' + YAML_EXT ) );
   }
 
   /**

@@ -1,5 +1,5 @@
 import { Project, ProjectMetadata, ProjectTree } from "@maxxton/microdocs-core/domain";
-import { Environment } from "../domain/environment.model";
+import { Environment } from "@maxxton/microdocs-core/domain";
 
 export interface DocumentRepository {
 

@@ -10,7 +10,7 @@ const MIME_YAML = [ "text/yaml", "text/x-yaml", "application/yaml", "application
 
 import {Interceptor, InterceptorInterface, Action} from "routing-controllers";
 
-@Interceptor({priority: 1})
+@Interceptor({priority: 2})
 export class YamlResponseInterceptor implements InterceptorInterface {
 
   intercept(action: Action, content: any) {

@@ -5,5 +5,11 @@
     "watch-standalone": "cd microdocs-ui && ng build --watch --env=dev-standalone",
     "start-docker": "docker-compose up --build",
     "start-npm-cache": "docker-compose -f docker-compose-npm-cache.yml up"
+  },
+  "dependencies": {
+    "@angular/animations": "^4.4.3",
+    "@angular/cdk": "^2.0.0-beta.11",
+    "@angular/material": "^2.0.0-beta.11",
+    "angular2-prettyjson": "^2.0.5"
   }
 }

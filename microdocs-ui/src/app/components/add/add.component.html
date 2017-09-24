@@ -1,0 +1,41 @@
+<div class="page-content">
+  <h1>Import Rest Api Definition</h1>
+  <div>An Api Definition is a format which describes a Rest Api.</div>
+
+
+  <md-vertical-stepper [linear]="true">
+    <md-step [stepControl]="firstFormGroup">
+      <form [formGroup]="firstFormGroup">
+        <ng-template mdStepLabel>Upload definition file</ng-template>
+        <md-form-field>
+          <textarea mdInput placeholder="Rest Api Definition" required formControlName="definition" (keyup)="onDefinitionChanges($event)"></textarea>
+        </md-form-field>
+        <div class="description">Supported formats are: <strong>MicroDocs 2.0</strong></div>
+        <div>
+          <button md-raised-button color="primary" mdStepperNext>Next</button>
+        </div>
+      </form>
+    </md-step>
+    <!--<md-step>-->
+    <!--<form>-->
+    <!--<ng-template mdStepLabel>Check definition file</ng-template>-->
+    <!--<md-spinner></md-spinner>-->
+    <!--<div>-->
+    <!--<button md-button mdStepperPrevious>Back</button>-->
+    <!--<button md-raised-button color="primary" mdStepperNext>Next</button>-->
+    <!--</div>-->
+    <!--</form>-->
+    <!--</md-step>-->
+    <md-step>
+      <ng-template mdStepLabel>Publish <strong>{{getDefinitionTitle(definition)}}</strong></ng-template>
+      <div>
+        <button md-button mdStepperPrevious [disabled]="loading">Back</button>
+        <button md-raised-button color="primary" (click)="publish(definition)" [disabled]="loading">Publish</button>
+        <md-spinner *ngIf="loading" class="publish-loader"></md-spinner>
+        <span *ngIf="error" class="error">{{error}}</span>
+      </div>
+    </md-step>
+  </md-vertical-stepper>
+</div>
+
+

@@ -9,21 +9,16 @@ import { DEFAULT_FULL_SCHEMA } from "js-yaml";
 
 import { storage } from "../../property-keys";
 import { ScriptRepository } from "../script.repo";
-import { Environment } from "../../domain/environment.model";
+import { Environment } from "@maxxton/microdocs-core/domain";
 import { Script } from "@maxxton/microdocs-core/pre-processor/script.model";
 
 const logger   = LoggerFactory.create();
 const YAML_EXT = ".yml";
 
-@Service()
 export class ScriptYamlRepository extends ScriptRepository {
 
-  scriptFolder: string;
-
-  constructor(private app: App) {
+  constructor(private scriptFolder: string) {
     super();
-    this.scriptFolder = pathUtil.resolve( process.cwd(),
-        this.app.properties.getString( storage.yaml.scriptsFolder, 'data/config/scripts' + YAML_EXT ) );
   }
 
   /**

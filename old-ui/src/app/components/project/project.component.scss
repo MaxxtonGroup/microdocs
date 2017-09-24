@@ -1,0 +1,225 @@
+
+@import '../../../assets/scss/settings';
+
+.example-spacer {
+  flex: 1 1 auto;
+}
+
+md-toolbar{
+  background-color: white;
+  box-shadow: rgba(0, 0, 0, 0.117647) 0px 1px 6px 0px, rgba(0, 0, 0, 0.117647) 0px 1px 6px 0px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+
+  .version-box{
+    background: none;
+    border: none;
+    outline: none;
+    height: 40px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-left: 20px;
+  }
+
+  .postman-button{
+    padding-right: 5px;
+    padding-top: 5px;
+  }
+
+  md-icon{
+    width: 50px;
+    height: 50px;
+    padding: 13px;
+    border-radius: 100%;
+    cursor: pointer;
+  }
+
+  md-icon.export-button{
+    color: map_get($md-blue, 500);
+  }
+
+  md-icon.edit-button{
+    color: map_get($md-green, 500);
+  }
+
+  md-icon.delete-button{
+    color: map_get($md-red, 500);
+  }
+
+  md-icon.deprecate-button{
+    color: map_get($md-blue-grey, 500);
+  }
+
+  md-icon:hover, md-icon.selected{
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+
+  md-icon.disabled{
+    color: map_get($md-grey, 500);
+    background-color: transparent;
+    cursor: default;
+  }
+}
+
+.project-content{
+  position: absolute;
+  top: 64px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: auto;
+}
+.page-content{
+  margin: 2rem auto 0 8rem;
+  width: auto !important;
+  max-width: 1200px !important;
+}
+
+.error-page{
+  text-align: center;
+  md-icon{
+    font-size: 40px;
+    width: 40px;
+    height: 40px;
+    position: relative;
+    top: 8px;
+  }
+  h1{
+    color: $error;
+  }
+  h1.warning{
+    color: $warning;
+  }
+  h2{
+    color: map_get($md-grey, 700);
+  }
+}
+
+dependency-graph{
+  display: block;
+  height: 200px;
+  margin-top: 10px;
+  border: 1px solid #d6d6d6;
+  border-radius: 2px;
+}
+
+
+
+
+project-route .page-content{
+  width: auto !important;
+  max-width: 106.66667rem !important;
+  padding: 0px !important;
+}
+
+project-route .project-content{
+  transition: 0.2s ease opacity;
+  opacity: 1;
+}
+
+project-route .project-content.loading{
+  opacity: 0;
+}
+
+project-route .card {
+  box-shadow: none !important;
+  padding: 5px 20px;
+  background: none;
+  margin: 0;
+}
+
+project-route .card .card-section.header{
+  border: none;
+}
+
+project-route .card .float-right{
+  float: none;
+  position: relative;
+  top: 3px;
+}
+
+project-route card .card-section.content{
+  padding-top: 0px;
+}
+
+project-route .info-content{
+  min-height: 20px;
+}
+
+project-route dependency-graph{
+  display: block;
+  height: 200px;
+  margin-top: 10px;
+  border: 1px solid #d6d6d6;
+  border-radius: 2px;
+}
+
+project-route .project-desc{
+  font-size: 14px;
+}
+
+project-route .time-box{
+  position: absolute;
+  right: 20px;
+  top: 0;
+  text-align: right;
+  font-size: 12px;
+  color: gray;
+  line-height: 13px;
+}
+
+project-route .project-links ul{
+  margin: 5px 0;
+}
+
+project-route model-panel card.model-card .card{
+  box-shadow: rgba(0, 0, 0, 0.227451) 0px 3px 10px 0px, rgba(0, 0, 0, 0.156863) 0px 3px 10px 0px !important;
+  border: none;
+}
+
+project-route .client-problem .icon{
+  position: relative;
+  top: 5px;
+}
+
+project-route .client-problem .client-problem-desc{
+  color: map_get($md-red, 500);
+}
+
+project-route modal .card{
+  background-color: white;
+  box-shadow: rgba(0, 0, 0, 0.227451) 0px 3px 10px 0px, rgba(0, 0, 0, 0.156863) 0px 3px 10px 0px !important;
+}
+
+project-route .error-page{
+  h1 {
+    padding: 40px;
+    text-align: center;
+    font-size: 2rem;
+    text-transform: capitalize;
+    font-weight: 400;
+    color: $accent;
+  }
+
+  h1.error{
+    color: map_get($md-red, 500);
+  }
+
+  h1 i {
+    font-size: 40px;
+    height: 40px;
+    width: 40px;
+    position: relative;
+    top: 10px;
+    margin-right: 10px;
+  }
+
+  h2 {
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: #656565;
+  }
+}

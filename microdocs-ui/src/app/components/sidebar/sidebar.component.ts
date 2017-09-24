@@ -1,13 +1,13 @@
 import { Component, HostBinding, Input, Output, EventEmitter } from "@angular/core";
 import { Notification } from "rxjs/Notification";
 import { Observable } from "rxjs/Observable";
-import { ProjectTree } from "@maxxton/microdocs-core/domain";
+import { ProjectMetadata } from "@maxxton/microdocs-core/domain";
 import { ProjectService } from "../../services/project.service";
 import { environment } from "../../../environments/environment";
 import { MdSnackBar, MdDialog } from "@angular/material";
 import { RouteInfo } from "../../domain/route-info.model";
-import { ImportDialogComponent } from "../import-dialog/import-dialog.component";
-import { ExportPanelComponent } from "../export-panel/export-panel.component";
+//import { ImportDialogComponent } from "../import-dialog/import-dialog.component";
+//import { ExportPanelComponent } from "../export-panel/export-panel.component";
 
 @Component( {
   selector: 'sidebar-component',
@@ -26,7 +26,7 @@ export class SidebarComponent {
 
 
   @Input()
-  projects: Observable<Notification<ProjectTree>>;
+  projects: Observable<Notification<ProjectMetadata[]>>;
 
   menu: Object = [];
 
@@ -38,7 +38,7 @@ export class SidebarComponent {
   @Input()
   selectedEnv: string;
 
-  node: ProjectTree;
+  projectList: ProjectMetadata[];
 
   @Output( 'envChange' )
   change = new EventEmitter();
@@ -49,14 +49,14 @@ export class SidebarComponent {
 
   ngOnInit() {
     this.projects.subscribe( notification => {
-      notification.do( node => {
-        this.node = node;
+      notification.do( projectList => {
+        this.projectList = projectList;
         this.initMenu()
       } );
     } );
   }
 
-  onEnvVersion( newEnv ) {
+  onEnvChange( newEnv ) {
     this.change.emit( newEnv );
   }
 
@@ -74,9 +74,9 @@ export class SidebarComponent {
       name: 'Overview',
       icon: 'home'
     } ];
-    let filteredNodes           = this.filterNodes( this.node, this.searchQuery );
-    filteredNodes.projects.forEach( projectNode => {
-      let groupName = projectNode.group;
+    let filteredProjects           = this.filterProjects( this.projectList, this.searchQuery );
+    filteredProjects.forEach( project => {
+      let groupName = project.group;
       if ( groupName == undefined ) {
         groupName = "default";
       }
@@ -85,7 +85,7 @@ export class SidebarComponent {
         menus.push( { name: groupName, icon: 'folder', iconOpen: 'folder_open', children: [], open: true } );
       }
       // add project
-      let problems  = projectNode.problems;
+      let problems  = project.problems;
       let icon      = null;
       let iconColor = null;
       if ( problems != undefined && problems != null && problems > 0 ) {
@@ -94,32 +94,31 @@ export class SidebarComponent {
       }
       let groupRoute = menus.filter( group => group.name == groupName )[ 0 ];
       groupRoute.children.push( {
-        path: pathPrefix + projectNode.title,
-        pathParams: { version: projectNode.version, env: this.selectedEnv },
-        name: projectNode.title,
+        path: pathPrefix + project.title,
+        pathParams: { env: this.selectedEnv },
+        name: project.title,
         postIcon: icon,
         postIconColor: iconColor,
         generateIcon: true,
-        generateIconColor: projectNode.color
+        generateIconColor: project.color
       } );
     } );
-    console.info( menus );
     this.menu = menus;
   }
 
-  private filterNodes( projectTree: ProjectTree, query: string ): ProjectTree {
-    let newNode  = new ProjectTree();
+  private filterProjects( projects: ProjectMetadata[], query: string ): ProjectMetadata[] {
+    let newProjects:ProjectMetadata[] = [];
     let keywords = query.split( ' ' );
-    projectTree.projects.forEach( projectNode => {
+    projects.forEach( project => {
       let hit = true;
       if ( !query || query.trim().length == 0 ) {
         hit = true;
       } else {
         for ( let i = 0; i < keywords.length; i++ ) {
-          if ( projectNode.title.toLowerCase().indexOf( keywords[ i ].toLowerCase() ) == -1 ) {
+          if ( project.title.toLowerCase().indexOf( keywords[ i ].toLowerCase() ) == -1 ) {
             hit = false;
-            if ( projectNode.tags ) {
-              projectNode.tags.forEach( tag => {
+            if ( project.searchTags ) {
+              project.searchTags.forEach( tag => {
                 if ( tag.toLowerCase().indexOf( keywords[ i ].toLowerCase() ) != -1 ) {
                   hit = true;
                 }
@@ -129,10 +128,10 @@ export class SidebarComponent {
         }
       }
       if ( hit ) {
-        newNode.projects.push( projectNode );
+        newProjects.push( project );
       }
     } );
-    return newNode;
+    return newProjects;
   }
 
   doReindex() {
@@ -150,11 +149,11 @@ export class SidebarComponent {
   }
 
   showImportModal(): void {
-    this.dialog.open( ImportDialogComponent );
+//    this.dialog.open( ImportDialogComponent );
   }
 
   showExportModal(): void {
-    this.dialog.open( ExportPanelComponent );
+//    this.dialog.open( ExportPanelComponent );
   }
 
 }

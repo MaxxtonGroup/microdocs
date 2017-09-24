@@ -1,6 +1,6 @@
 <md-sidenav-container>
   <md-sidenav mode="side" opened="true">
-    <sidebar-component [projects]="projects" [selectedEnv]="selectedEnv" [envs]="envs" (envChange)="onEnvVersion($event)"></sidebar-component>
+    <sidebar-component [projects]="projects" [selectedEnv]="selectedEnv" [envs]="envs" (envChange)="onEnvChange($event)"></sidebar-component>
   </md-sidenav>
   <div class="my-content">
     <router-outlet></router-outlet>
@@ -10,7 +10,7 @@
 
 <!--<div class="main-container grid-block horizontal app-content">-->
 
-  <!--<sidebar-component [projects]="projects" [selectedEnv]="selectedEnv" [envs]="envs" (envChange)="onEnvVersion($event)"></sidebar-component>-->
+  <!--<sidebar-component [projects]="projects" [selectedEnv]="selectedEnv" [envs]="envs" (envChange)="onEnvChange($event)"></sidebar-component>-->
 
   <!--&lt;!&ndash;main content&ndash;&gt;-->
   <!--<div class="content" id="page-content">-->

@@ -1,0 +1,10 @@
+<div class="page-content">
+  <template [ngIf]="empty && !loading">
+    <welcome></welcome>
+  </template>
+  <template [ngIf]="!empty && !loading">
+    <simple-card text="Projects Overview" [paper]="true">
+      <dependency-graph [nodes]="nodes" [env]="env"></dependency-graph>
+    </simple-card>
+  </template>
+</div>

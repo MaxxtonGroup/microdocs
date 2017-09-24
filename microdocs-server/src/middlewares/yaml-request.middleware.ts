@@ -6,7 +6,7 @@ import {json} from "body-parser";
 const logger = LoggerFactory.create();
 
 @Middleware({ type: "before" })
-export class JSONRequestMiddleware implements ExpressMiddlewareInterface {
+export class YamlRequestMiddleware implements ExpressMiddlewareInterface {
 
   public use( request: Request, response: Response, next: ( err?: any ) => any ): any {
     let middleware = json({

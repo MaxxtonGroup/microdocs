@@ -1,4 +1,4 @@
 version: '3'
 services:
-  {project}:
-    image: {project}:${TAG}
+  {project.info.title of projects}:
+    image: ${project.info.title}:${TAG}

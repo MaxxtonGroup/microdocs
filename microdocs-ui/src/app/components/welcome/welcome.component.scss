@@ -1,9 +1,17 @@
+.cover {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: #E3F2FD;
+}
+
 .welcome {
   padding: 20px;
   text-align: center;
   h1 {
-    color: #f26922;
-    font-size: 35px;
+    color: #424242;
+    margin-top: 10vh;
+    font-size: 40px;
   }
   h4 {
     font-weight: normal;

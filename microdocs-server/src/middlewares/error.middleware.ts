@@ -43,7 +43,9 @@ export class ErrorMiddleware implements ExpressErrorMiddlewareInterface {
       }
     }
 
-    response.status(body.status || 500).json(body);
+    try {
+      response.status( body.status || 500 ).json( body );
+    }catch(e){}
   }
 
 }

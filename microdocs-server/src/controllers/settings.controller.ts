@@ -1,11 +1,10 @@
-import { Get, JsonController, Param } from "routing-controllers";
+import { Get, Controller, Param } from "routing-controllers";
 import { Inject, Service } from "typedi";
 import { SettingsService } from "../services/settings.service";
-import { Environment } from "../domain/environment.model";
-import { Settings } from "../domain/settings.model";
+import { Environment, Settings} from "@maxxton/microdocs-core/domain";
 
 @Service()
-@JsonController("/api/v2")
+@Controller("/api/v2")
 export class SettingsController {
 
   @Inject()

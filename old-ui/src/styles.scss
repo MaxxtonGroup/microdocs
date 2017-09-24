@@ -1,0 +1,99 @@
+
+@import 'assets/scss/settings';
+@import 'app/components/dependency-graph/dependency-graph.component';
+
+* {
+  box-sizing: border-box;
+}
+
+body{
+  background: #fff;
+  color: #222;
+  padding: 0;
+  margin: 0;
+  font-family: "Roboto", "Open Sans", "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  line-height: 1;
+  position: relative;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+app-root{
+  height: 100%;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Roboto", "Open Sans", "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  color: #222;
+  text-rendering: optimizeLegibility;
+  margin-top: 0.2rem;
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+}
+
+a, .link {
+  text-decoration: none;
+  color: $info;
+  cursor: pointer;
+
+  .link-icon{
+    position: relative;
+    top: 8px;
+  }
+}
+
+a:hover{
+  text-decoration: underline;
+}
+
+.text{
+  font-size: 14px;
+}
+
+.text ul{
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.error, .warning, .info{
+  padding-bottom: 20px;
+
+  md-icon{
+    position: relative;
+    top: 8px;
+  }
+}
+
+.error{
+  color: $error;
+}
+
+.warning{
+  color: $warning;
+}
+
+.info{
+  color: $info;
+}
+
+.highlight-container{
+  .highlight{
+    color: $primary;
+  }
+}
+
+.md-list-item {
+  height: 38px !important;
+  .md-list-text h4 {
+    font-size: 14px;
+  }
+}
+
+prettyjson > pre{
+  margin: 0 !important;
+}

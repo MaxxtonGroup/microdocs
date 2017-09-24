@@ -1,0 +1,30 @@
+md-form-field {
+  width: 600px;
+}
+
+textarea {
+  height: 50vh;
+}
+
+.description{
+  font-size:13px;
+  margin-bottom: 15px;
+}
+
+md-spinner {
+  height: 40px;
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+.publish-loader {
+  height: 25px;
+  display: inline-block;
+  margin: 0;
+  position: relative;
+  top: 5px;
+}
+
+.error {
+  padding-left: 10px;
+}

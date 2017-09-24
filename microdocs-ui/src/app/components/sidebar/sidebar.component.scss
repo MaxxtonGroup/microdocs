@@ -70,6 +70,13 @@
     }
   }
 
+  input {
+    border: none;
+    background: none;
+    outline: none;
+    height: 40px;
+  }
+
   .search-box{
     position: relative;
     min-height: 33px;
@@ -135,7 +142,7 @@
     }
 
     a.import-button{
-      color: md-color(md-palette($md-green));
+      color: mat-color(mat-palette($mat-green));
       width: 33%;
       left: 0;
     }
@@ -143,22 +150,22 @@
     a.export-button{
       left: 33%;
       width: 34%;
-      color: md-color(md-palette($md-blue));
+      color: mat-color(mat-palette($mat-blue));
     }
 
     a.reindex-button{
-      color: md-color(md-palette($md-blue-grey));
+      color: mat-color(mat-palette($mat-blue-grey));
       width: 33%;
       left: 67%;
     }
     a:hover{
-      background-color: map_get($md-grey, 300);
+      background-color: map_get($mat-grey, 300);
     }
   }
 
   .footer{
     padding: 10px;
-    background-color: map_get($md-grey, 300);
+    background-color: map_get($mat-grey, 300);
     font-size: 14px;
     a{
       color: $primary;
