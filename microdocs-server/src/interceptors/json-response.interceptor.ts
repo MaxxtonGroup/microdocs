@@ -10,8 +10,8 @@ const MINE_JSON = [ "application/json" ];
 
 import {Interceptor, InterceptorInterface, Action} from "routing-controllers";
 
-@Interceptor({priority: 1})
-export class JsonResponseInterceptor implements InterceptorInterface {
+@Interceptor()
+export class JSONResponseInterceptor implements InterceptorInterface {
 
   intercept(action: Action, content: any) {
     let mime = action.request.accepts( MINE_JSON );

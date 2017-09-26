@@ -42,7 +42,7 @@ export class SettingsController {
    * @param {string} envName
    * @returns {Promise<Environment>}
    */
-  @Get("/settings/envs/{name}")
+  @Get("/settings/envs/:name")
   public getEnvironment( @Param("name") envName: string ): Promise<Environment> {
     return this.settingsService.getEnv(envName);
   }

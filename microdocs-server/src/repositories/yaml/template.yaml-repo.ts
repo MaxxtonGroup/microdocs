@@ -8,38 +8,43 @@ import * as yaml from "js-yaml";
 import { DEFAULT_FULL_SCHEMA } from "js-yaml";
 
 import { storage } from "../../property-keys";
-import { ScriptRepository } from "../script.repo";
-import { Environment } from "@maxxton/microdocs-core/domain";
-import { Script } from "@maxxton/microdocs-core/pre-processor/script.model";
+import { TemplateRepository } from "../template.repo";
+import { Environment } from "../../domain/environment.model";
 
 const logger   = LoggerFactory.create();
 const YAML_EXT = ".yml";
 
-export class ScriptYamlRepository extends ScriptRepository {
+@Service()
+export class TemplateYamlRepository extends TemplateRepository {
 
-  constructor(private scriptFolder: string) {
+  templatesFolder: string;
+
+  constructor(private app: App) {
     super();
+    this.templatesFolder = pathUtil.resolve( process.cwd(),
+        this.app.properties.getString( storage.yaml.templatesFolder, 'data/config/templates' ) );
   }
 
   /**
-   * Load script names for an environment
+   * Load template names for an environment
    * @param env
+   * @param projectName
    * @returns Promise<string[]>
    */
-  public loadScriptNames( env: Environment ): Promise<string[]> {
+  public loadTemplateNames( env: Environment, projectName:string ): Promise<string[]> {
     return new Promise( ( resolve, reject ) => {
       try {
-        let folder = pathUtil.join( this.scriptFolder, env.name.toLowerCase() );
+        let folder = pathUtil.join( this.templatesFolder, env.name.toLowerCase(), projectName.toLowerCase() );
         fs.exists( folder, exists => {
           if ( exists ) {
             fs.readdir( folder, ( err, fileNames ) => {
               if ( err ) {
                 reject( err );
               } else {
-                let scriptNames = fileNames
+                let templateNames = fileNames
                     .filter( fileName => fileName.endsWith( YAML_EXT ) )
                     .map( fileName => fileName.replace( YAML_EXT, "" ).toLowerCase() );
-                resolve( scriptNames );
+                resolve( templateNames );
               }
             } );
           } else {
@@ -53,16 +58,17 @@ export class ScriptYamlRepository extends ScriptRepository {
   }
 
   /**
-   * Load script
+   * Load template
    * @param env
+   * @param projectName
    * @param name
-   * @returns Promise<Script>
+   * @returns Promise<Template>
    */
-  public loadScript( env: Environment, name: string ): Promise<Script> {
+  public loadTemplate( env: Environment, projectName:string, name: string ): Promise<Template> {
     return new Promise( ( resolve, reject ) => {
       try {
-        let filePath = pathUtil.join( this.scriptFolder, env.name.toLowerCase(), name.toLowerCase() + YAML_EXT );
-        logger.silly( "load script: " + filePath );
+        let filePath = pathUtil.join( this.templatesFolder, env.name.toLowerCase(), projectName.toLowerCase(), name.toLowerCase() + YAML_EXT );
+        logger.silly( "load template: " + filePath );
 
         fs.exists( filePath, exists => {
           if ( exists ) {
@@ -70,8 +76,8 @@ export class ScriptYamlRepository extends ScriptRepository {
               if ( err ) {
                 reject( err );
               } else {
-                let script = yaml.safeLoad( data.toString(), { schema: DEFAULT_FULL_SCHEMA } ) as Script;
-                resolve( script );
+                let template = yaml.safeLoad( data.toString(), { schema: DEFAULT_FULL_SCHEMA } ) as Template;
+                resolve( template );
               }
             } );
           } else {
@@ -85,24 +91,25 @@ export class ScriptYamlRepository extends ScriptRepository {
   }
 
   /**
-   * Store script
+   * Store template
    * @param env
-   * @param script
-   * @returns Promise<Script>
+   * @param projectName
+   * @param template
+   * @returns Promise<Template>
    */
-  public storeScript( env: Environment, script: Script ): Promise<Script> {
+  public storeTemplate( env: Environment, projectName:string, template: Template ): Promise<Template> {
     return new Promise( ( resolve, reject ) => {
       try {
-        let filePath = pathUtil.join( this.scriptFolder, env.name.toLowerCase(), script.name.toLowerCase() + YAML_EXT );
-        logger.silly( "store script: " + filePath );
+        let filePath = pathUtil.join( this.templatesFolder, env.name.toLowerCase(), projectName.toLowerCase(), template.name.toLowerCase() + YAML_EXT );
+        logger.silly( "store template: " + filePath );
 
-        let yamlDocument = yaml.safeDump( script, { schema: DEFAULT_FULL_SCHEMA } );
+        let yamlDocument = yaml.safeDump( template, { schema: DEFAULT_FULL_SCHEMA } );
         this.makeParentDir( filePath ).then( () => {
           fs.writeFile( filePath, yamlDocument, ( err ) => {
             if ( err ) {
               reject( err );
             } else {
-              resolve( script );
+              resolve( template );
             }
           } );
         } ).catch( reject );
@@ -115,16 +122,17 @@ export class ScriptYamlRepository extends ScriptRepository {
 
 
   /**
-   * Delete script
+   * Delete template
    * @param env
+   * @param projectName
    * @param name
    * @returns Promise<boolean>
    */
-  public async deleteScript( env: Environment, name: string ): Promise<boolean>{
+  public async deleteTemplate( env: Environment, projectName:string, name: string ): Promise<boolean>{
     return new Promise<boolean>( ( resolve, reject ) => {
       try {
-        let filePath = pathUtil.join( this.scriptFolder, env.name.toLowerCase(), name.toLowerCase() + YAML_EXT );
-        logger.silly( "delete script: " + filePath );
+        let filePath = pathUtil.join( this.resolve, env.name.toLowerCase(), projectName.toLowerCase(), name.toLowerCase() + YAML_EXT );
+        logger.silly( "delete template: " + filePath );
 
         fs.exists( filePath, exists => {
           if ( exists ) {

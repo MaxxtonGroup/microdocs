@@ -43,6 +43,16 @@ export class ScriptService {
   }
 
   /**
+   * Delete a script by name
+   * @param env
+   * @param name name of the script
+   * @return {Promise<Script>}
+   */
+  public deleteScript( env: Environment, name: string ): Promise<Script> {
+    return this.scriptRepository.deleteScript( env, name );
+  }
+
+  /**
    * Add a new script
    * @param env
    * @param script

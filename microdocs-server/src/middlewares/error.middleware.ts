@@ -1,12 +1,15 @@
-import { Middleware, ExpressErrorMiddlewareInterface } from "routing-controllers";
+import { Middleware, ExpressErrorMiddlewareInterface, Action } from "routing-controllers";
 import { LoggerFactory, LogLevel } from "@webscale/logging";
+import { JSONResponseInterceptor } from "../interceptors/json-response.interceptor";
+import { YamlResponseInterceptor } from "../interceptors/yaml-response.interceptor";
+import { Request, Response } from "express";
 
 const logger = LoggerFactory.create();
 
 @Middleware({ type: "after" })
 export class ErrorMiddleware implements ExpressErrorMiddlewareInterface {
 
-  error(error: any, request: any, response: any, next: (err?: any) => any) {
+  error(error: any, request: Request, response: Response, next: (err?: any) => any) {
     let body: any = {
       message: error.message,
       path: request.path
@@ -43,9 +46,15 @@ export class ErrorMiddleware implements ExpressErrorMiddlewareInterface {
       }
     }
 
-    try {
-      response.status( body.status || 500 ).json( body );
-    }catch(e){}
+    body.status = body.status || 500;
+    let action:Action = {
+      request: request,
+      response: response
+    };
+    body = new JSONResponseInterceptor().intercept(action, body);
+    body = new YamlResponseInterceptor().intercept(action, body);
+    response.status(body.status || 500).send(body);
+    next();
   }
 
 }
