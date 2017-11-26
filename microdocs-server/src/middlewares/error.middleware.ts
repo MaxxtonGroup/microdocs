@@ -1,10 +1,7 @@
 import { Middleware, ExpressErrorMiddlewareInterface, Action } from "routing-controllers";
-import { LoggerFactory, LogLevel } from "@webscale/logging";
-import { JSONResponseInterceptor } from "../interceptors/json-response.interceptor";
-import { YamlResponseInterceptor } from "../interceptors/yaml-response.interceptor";
 import { Request, Response } from "express";
-
-const logger = LoggerFactory.create();
+import * as logger from "winston";
+import { ValidationError } from "validator.ts/ValidationError";
 
 @Middleware({ type: "after" })
 export class ErrorMiddleware implements ExpressErrorMiddlewareInterface {
@@ -14,7 +11,11 @@ export class ErrorMiddleware implements ExpressErrorMiddlewareInterface {
       message: error.message,
       path: request.path
     };
-    body.status = error.httpCode || 500;
+    if(error instanceof ValidationError){
+      body.status = 400;
+      body.errors = (<ValidationError>error).errors;
+    }
+    body.status = error.httpCode || body.status || 500;
     let errorMessage = "Error";
     switch (body.status) {
       case 400:
@@ -39,7 +40,7 @@ export class ErrorMiddleware implements ExpressErrorMiddlewareInterface {
     if (errorMessage) {
       body.error = errorMessage;
     }
-    if (logger.shouldLog(LogLevel.debug)) {
+    if (logger.level === "debug") {
       let stack = error.stack;
       if (stack) {
         body.stack = stack.split("\n");
@@ -47,12 +48,6 @@ export class ErrorMiddleware implements ExpressErrorMiddlewareInterface {
     }
 
     body.status = body.status || 500;
-    let action:Action = {
-      request: request,
-      response: response
-    };
-    body = new JSONResponseInterceptor().intercept(action, body);
-    body = new YamlResponseInterceptor().intercept(action, body);
     response.status(body.status || 500).send(body);
     next();
   }

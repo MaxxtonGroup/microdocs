@@ -1,0 +1,6 @@
+
+application:
+  profiles: develop
+
+logger:
+  level: debug

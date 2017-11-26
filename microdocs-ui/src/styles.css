@@ -1,0 +1,55 @@
+
+body {
+  font-family: "Open sans", helvetica, arial;
+
+  transition: 0.1s ease background-color;
+  background-color: #ececec;
+  padding: 0;
+  margin: 0;
+}
+
+/** Headings */
+h1 {
+  font-weight: normal;
+  color: #ff9800;
+  border-bottom: 1px solid #e6e6e6;
+  padding-bottom: 10px;
+  margin-top: 0.83em;
+  margin-bottom: 0.83em;
+  font-size: 1.5em;
+}
+
+/** Header **/
+
+header {
+  transition: 0.2s ease opacity;
+  opacity: 1 !important;
+  background-color: white;
+  width: 100%;
+  height: 80px;
+  box-shadow: rgba(0, 0, 0, 0.117647) 0px 1px 6px 0px, rgba(0, 0, 0, 0.117647) 0px 1px 6px 0px;
+}
+
+header .logo {
+  font-size: 24px;
+  text-decoration: none;
+  margin-top: 17px;
+  display: inline-block;
+  margin-left: 30px;
+}
+
+header .logo .logo-img{
+  height: 45px;
+}
+
+header .logo .blue {
+  color: #2196F3;
+}
+
+header .logo .orange {
+  color: #FF9800;
+}
+
+.btn {
+  cursor: pointer;
+}

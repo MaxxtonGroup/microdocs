@@ -1,0 +1,12 @@
+/api/v2:
+  /projects:
+    /: list of projects
+    /{projectName}:
+      /: project info
+      /...: project level stuff
+      /repos:
+        /: list of repos
+        /{repoName}:
+          /: repo info
+          /....: repo level stuff
+          

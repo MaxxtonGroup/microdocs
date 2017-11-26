@@ -29,6 +29,7 @@
     "**/*.mock.ts",
     "node_modules",
     "dist",
-    "old"
+    "old",
+    "old2"
   ]
 }

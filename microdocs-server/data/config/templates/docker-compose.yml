@@ -1,4 +1,17 @@
 version: '3'
 services:
-  {project.info.title of projects}:
-    image: ${project.info.title}:${TAG}
+  ~~~for: 'project of projects'
+  ${project.info.title}:
+    image: ${project.info.title}:${project.info.tag}
+    container_name: ${this.image}_v${root.version}
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    ports:
+      ~~~if: 'project.deploy.expose | notEmpty'
+      ~~~then: 'project.deploy.expose[0]'
+      ~~~else: 'hello world | number'
+    volumes:
+      ~~~for: 'volume of project.deploy.volumes'
+      ~~~each: '${volume.host}:${volume.container}'
+    volumes: '${project.deploy.volumes.map(volume => `${volume.host}:${volume.container}`)}'

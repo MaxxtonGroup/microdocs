@@ -1,0 +1,13 @@
+<article *ngIf="projects">
+  <ng-template *ngIf="projects.length > 0; let projects; else createProject">
+    <h1>Projects</h1>
+    <div class="project-list">
+      <div class="project-item" *ngFor="let project of projects">
+        <span class="project-name">{{project.name}}</span>
+      </div>
+    </div>
+  </ng-template>
+  <ng-template #createProject>
+    <app-create-project></app-create-project>
+  </ng-template>
+</article>
