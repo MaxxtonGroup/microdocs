@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Project } from '../models/project.model';
 import { Observable } from 'rxjs/Observable';
-import { Client, Get, MediaType, Produces, RestClient } from 'angular-async-http/dist';
+import { Client, Get, MediaType, Produces, RestClient, Post, Body } from 'angular-async-http/dist';
 import { Http } from '@angular/http';
 
 @Injectable()
@@ -20,6 +20,12 @@ export class ProjectClient extends RestClient {
   @Get('/projects')
   @Produces(MediaType.JSON)
   public getProjects(): Observable<Project[]> {
+    return null;
+  }
+
+  @Post('/projects')
+  @Produces(MediaType.JSON)
+  public createProject(@Body project: Project): Observable<Project> {
     return null;
   }
 

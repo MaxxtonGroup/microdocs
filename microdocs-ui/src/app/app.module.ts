@@ -8,16 +8,27 @@ import { ProjectService } from './services/project.service';
 import { ProjectClient } from './clients/project.client';
 import { HttpModule } from '@angular/http';
 import { RouterModule } from '@angular/router';
-import { Routes } from './clients/routes';
+import { Routes } from './routes';
 import { CreateProjectComponent } from './components/create-project/create-project.component';
 import { FormsModule } from "@angular/forms";
+import { NotificationService } from "./services/notification.service";
+import { ProjectComponent } from './components/project/project.component';
+import { SidebarComponent } from './components/project/sidebar/sidebar.component';
+import { ContentComponent } from './components/project/content/content.component';
+import { ProjectSettingsComponent } from "./components/project/project-settings/project-settings.component";
+import { ProjectDashboardComponent } from './components/projects/project-dashboard/project-dashboard.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HeaderComponent,
     ProjectsComponent,
-    CreateProjectComponent
+    CreateProjectComponent,
+    ProjectComponent,
+    SidebarComponent,
+    ContentComponent,
+    ProjectSettingsComponent,
+    ProjectDashboardComponent
   ],
   imports: [
     BrowserModule,
@@ -29,7 +40,8 @@ import { FormsModule } from "@angular/forms";
   ],
   providers: [
     ProjectClient,
-    ProjectService
+    ProjectService,
+    NotificationService
   ],
   bootstrap: [AppComponent]
 })

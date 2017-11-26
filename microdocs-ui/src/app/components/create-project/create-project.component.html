@@ -1,13 +1,15 @@
-<h1>Create a Project</h1>
-<form (ngSubmit)="onSubmit()" #projectForm="ngForm">
-  <div class="form-group">
-    <label for="name">Name</label>
-    <input type="text" class="form-control" id="name" required minlength="1" [(ngModel)]="model.name" name="name" #name="ngModel" autofocus>
-    <div *ngIf="!name.valid && (name.dirty || name.touched)"
-         class="alert alert-danger">
-      Name is required
+<article class="paper">
+  <h1>Create a Project</h1>
+  <form (ngSubmit)="onSubmit()" #projectForm="ngForm">
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input type="text" class="form-control" id="name" required minlength="1" [(ngModel)]="model.name" name="name" #name="ngModel" autofocus>
+      <div *ngIf="!name.valid && (name.dirty || name.touched)"
+           class="alert alert-danger">
+        Name is required
+      </div>
     </div>
-  </div>
 
-  <button type="submit" class="btn btn-success" [disabled]="!projectForm.form.valid">Create project</button>
-</form>
+    <button type="submit" class="btn btn-success" [disabled]="!projectForm.form.valid">Create project</button>
+  </form>
+</article>

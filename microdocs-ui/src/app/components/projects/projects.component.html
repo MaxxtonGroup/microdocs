@@ -1,13 +1,15 @@
-<article *ngIf="projects">
-  <ng-template *ngIf="projects.length > 0; let projects; else createProject">
+<article *ngIf="projects" class="paper">
+  <div *ngIf="projects.length > 0; else createProject">
+    <a routerLink="/create-project" class="btn btn-link create-project">Create a Project</a>
     <h1>Projects</h1>
     <div class="project-list">
       <div class="project-item" *ngFor="let project of projects">
-        <span class="project-name">{{project.name}}</span>
+        <a routerLink="/projects/{{project.code}}" class="project-name">{{project.name}}</a>
+        <i class="material-icons edit-project" routerLink="/projects/{{project.code}}/settings" title="Project Settings">settings</i>
       </div>
     </div>
-  </ng-template>
-  <ng-template #createProject>
-    <app-create-project></app-create-project>
-  </ng-template>
+  </div>
 </article>
+<ng-template #createProject>
+  <app-create-project></app-create-project>
+</ng-template>

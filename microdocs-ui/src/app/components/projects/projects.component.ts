@@ -24,4 +24,8 @@ export class ProjectsComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
+  deleteProject(projectCode: string) {
+
+  }
+
 }
