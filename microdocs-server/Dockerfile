@@ -1,4 +1,4 @@
-FROM node:6
+FROM node:9.11.1-alpine
 
 # Install dependencies
 WORKDIR /app/@maxxton/microdocs-server
