@@ -17,9 +17,14 @@ export function buildTree( pipe:Pipe<any> ):ProjectTree {
   return projectTree;
 }
 
-function buildNode( pipe:Pipe<any>, projectInfo:ProjectInfo ):ProjectNode {
+function buildNode( pipe:Pipe<any>, projectInfo:ProjectInfo, stack: string[] = [] ):ProjectNode {
   let projectNode = new ProjectNode( projectInfo.title, undefined, projectInfo.group, projectInfo.version, projectInfo.getVersions());
   projectNode.color = projectInfo.color;
+
+  if(stack.indexOf(projectInfo.title + ":" + projectInfo.version) > -1){
+    return projectNode;
+  }
+  stack.push(projectInfo.title + ":" + projectInfo.version);
 
   // load project
   let project = pipe.getPrevProject( projectNode.title, projectNode.version );
@@ -37,7 +42,7 @@ function buildNode( pipe:Pipe<any>, projectInfo:ProjectInfo ):ProjectNode {
         if ( dependency.inherit !== true ) {
           let depProject:Project = pipe.getPrevProject( depTitle, dependency.version );
           if(depProject) {
-            let depProjectNode    = buildNode( pipe, depProject.info );
+            let depProjectNode    = buildNode( pipe, depProject.info, stack );
             let problemCount   = dependency.problems ? dependency.problems.length : 0;
             let dependencyNode = new DependencyNode( depProjectNode, dependency.type, problemCount );
             projectNode.addDependency( dependencyNode );

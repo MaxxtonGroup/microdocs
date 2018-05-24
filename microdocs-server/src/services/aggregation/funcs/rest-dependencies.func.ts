@@ -40,13 +40,14 @@ export function resolveRestDependencies( pipe: Pipe<any>, project: Project, scop
 
 function resolveRestClient( pipe: Pipe<any>, reporter: ProblemReporter, project: Project, dependency: Dependency, depTitle: string, scope?: Project, reverse: boolean = false ) {
   // Find the matching version
+  console.info("find: " + project.info.title);
   let depProject: Project;
   if ( dependency.version ) {
     depProject = pipe.getPrevProject( depTitle, dependency.version );
   }
-  // if ( !depProject ) {
-  //   depProject = pipe.getPrevProjectVersion( depTitle, dependency.version );
-  // }
+  if ( !depProject ) {
+    depProject = pipe.getPrevProjectVersion( depTitle, dependency.version );
+  }
 
   if ( depProject == null ) {
     reporter.report( ProblemLevels.ERROR, "Unknown project: " + depTitle, dependency.component );
@@ -79,7 +80,7 @@ function resolveRestClient( pipe: Pipe<any>, reporter: ProblemReporter, project:
   }
 
   // Resolve nested rest dependencies first
-  resolveRestDependencies( pipe, depProject, scope );
+  //resolveRestDependencies( pipe, depProject, scope );
 }
 
 /**
