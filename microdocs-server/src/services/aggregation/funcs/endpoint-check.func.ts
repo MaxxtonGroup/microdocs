@@ -89,9 +89,9 @@ export function checkBodyParameters(clientEndpoint: Path, producerEndpoint: Path
       clientParams.some(clientParam => {
         if (producerParam.in == clientParam.in) {
           exists = true;
-          var producerSchema: Schema = SchemaHelper.collect(producerParam.schema, [], producerProject);
-          var clientSchema = SchemaHelper.collect(clientParam.schema, [], clientProject);
-          checkSchema(clientEndpoint, clientSchema, producerSchema, clientProject, producerProject, problemReport, "", 'request');
+          // var producerSchema: Schema = SchemaHelper.collect(producerParam.schema, [], producerProject);
+          // var clientSchema = SchemaHelper.collect(clientParam.schema, [], clientProject);
+          // checkSchema(clientEndpoint, clientSchema, producerSchema, clientProject, producerProject, problemReport, "", 'request');
           return true;
         }
         return false;
@@ -112,9 +112,9 @@ export function checkResponseBody(clientEndpoint: Path, producerEndpoint: Path, 
       producerEndpoint.responses['default'] != undefined && producerEndpoint.responses['default'] != null &&
       producerEndpoint.responses['default'].schema != undefined && producerEndpoint.responses['default'].schema != null) {
 
-      let producerSchema = SchemaHelper.collect(producerEndpoint.responses['default'].schema, [], producerProject);
-      let clientSchema = SchemaHelper.collect(clientEndpoint.responses['default'].schema, [], clientProject);
-      checkSchema(clientEndpoint, clientSchema, producerSchema, clientProject, producerProject, problemReport, '', 'response');
+      // let producerSchema = SchemaHelper.collect(producerEndpoint.responses['default'].schema, [], producerProject);
+      // let clientSchema = SchemaHelper.collect(clientEndpoint.responses['default'].schema, [], clientProject);
+      // checkSchema(clientEndpoint, clientSchema, producerSchema, clientProject, producerProject, problemReport, '', 'response');
     } else {
       problemReport.report(ProblemLevels.ERROR, "There is no response body", clientEndpoint.controller, clientEndpoint.method);
     }

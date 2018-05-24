@@ -12,7 +12,7 @@ import { checkPathParameters, checkQueryParameters, checkBodyParameters, checkRe
  * @param scope
  */
 export function resolveRestDependencies( pipe: Pipe<any>, project: Project, scope?: Project ) {
-  // Don't resolve project if it is   already resolved
+  // Don't resolve project if it is already resolved
   if ( pipe.result.getProject( project.info.title, project.info.version ) != null ) {
     return;
   }
@@ -44,15 +44,14 @@ function resolveRestClient( pipe: Pipe<any>, reporter: ProblemReporter, project:
   if ( dependency.version ) {
     depProject = pipe.getPrevProject( depTitle, dependency.version );
   }
-  if ( !depProject ) {
-    depProject = pipe.getPrevProjectVersion( depTitle, dependency.version );
-  }
+  // if ( !depProject ) {
+  //   depProject = pipe.getPrevProjectVersion( depTitle, dependency.version );
+  // }
 
   if ( depProject == null ) {
     reporter.report( ProblemLevels.ERROR, "Unknown project: " + depTitle, dependency.component );
     return;
   }
-  console.info("Resolve " + project.info.title + ":" + project.info.version + " against " + depProject.info.title + ":" + depProject.info.version);
 
   var projectInfo = pipe.projects.filter( info => info.title === depTitle )[ 0 ];
   if ( projectInfo ) {
