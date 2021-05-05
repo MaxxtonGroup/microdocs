@@ -1,0 +1,41 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "projects": {
+    "angular:": {
+      "root": "",
+      "sourceRoot": "src",
+      "projectType": "application",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outDir": "dist",
+            "assets": [
+              "assets",
+              "favicon.ico"
+            ],
+            "index": "index.html",
+            "main": "main.ts",
+            "test": "test.ts",
+            "tsconfig": "tsconfig.json",
+            "prefix": "app",
+            "mobile": false,
+            "styles": [
+              "styles.scss"
+            ],
+            "scripts": [],
+            "environments": {
+              "source": "environments/environment.ts",
+              "dev": "environments/environment.ts",
+              "dev-standalone": "environments/environment.standalone.ts",
+              "prod": "environments/environment.prod.ts",
+              "standalone": "environments/environment.prod.standalone.ts"
+            }
+          }
+        }
+      }
+    }
+  }
+}
