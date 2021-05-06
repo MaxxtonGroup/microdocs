@@ -27,7 +27,7 @@
 **/
 .icon-generator {
   @each $name, $color in $colors {
-    span.#{$name} {
+    span.#{"" + $name} {
       background: map_get($color, 500);
     }
   }

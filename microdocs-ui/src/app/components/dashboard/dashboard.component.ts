@@ -1,12 +1,10 @@
-import {Component} from "@angular/core";
+import { Component } from "@angular/core";
 
-import {ProjectTree} from '@maxxton/microdocs-core/domain';
-//import {DependencyGraph} from '../../panels/dependency-graph/dependency-graph';
-import {ProjectService} from "../../services/project.service";
-import {Subject} from "rxjs/Subject";
-import {ReplaySubject} from "rxjs/ReplaySubject";
-import {Router} from "@angular/router";
-//import {WelcomePanel} from "../../panels/welcome-panel/welcome.panel";
+import { ProjectTree } from '@maxxton/microdocs-core/dist/domain';
+import { ProjectService } from "../../services/project.service";
+import { ReplaySubject, Subject } from "rxjs";
+import { Router } from "@angular/router";
+
 
 /**
  * Dashboard route (page that shows the most important information to a user)

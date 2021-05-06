@@ -1,12 +1,11 @@
-/// ./d3.d.ts
 import { Component, ViewContainerRef, Input, SimpleChanges } from "@angular/core";
 import { Router } from "@angular/router";
 import * as d3 from "d3";
-import { Subject } from "rxjs/Subject";
-import { Subscription } from "rxjs/Subscription";
+import { Subject } from "rxjs";
+import { Subscription } from "rxjs";
 import { ProjectService } from "../../services/project.service";
 import { StringUtil } from "../../helpers/string.util";
-import { ProjectTree, ProjectNode, DependencyNode, DependencyTypes } from "@maxxton/microdocs-core/domain";
+import { ProjectTree, ProjectNode, DependencyNode, DependencyTypes } from "@maxxton/microdocs-core/dist/domain";
 
 // import {Observable} from "rxjs";
 
@@ -22,22 +21,28 @@ export class DependencyGraphComponent {
   private subscription: Subscription;
 
   private dropdownExpanded: boolean = false;
-  private groupToggles: GroupItem[] = [];
+  private groupToggles: Array<GroupItem> = [];
 
   @Input()
-  private nodes: Subject<ProjectTree>;
+  nodes: Subject<ProjectTree>;
+
   @Input()
-  private projectName: string;
+  projectName: string;
+
   @Input()
-  private env: string;
+  env: string;
+
   @Input()
-  private showVersions: boolean    = false;
+  showVersions: boolean    = false;
+
   @Input()
-  private showInheritance: boolean = true;
+  showInheritance: boolean = true;
+
   @Input()
-  private showOptionBar: boolean            = true;
+  showOptionBar: boolean            = true;
+
   @Input()
-  private small: boolean           = false;
+  small: boolean           = false;
 
   constructor( private containerRef: ViewContainerRef, private router: Router, private projectService: ProjectService ) {
     this.showVersions    = this.isShowVersions();
@@ -65,14 +70,14 @@ export class DependencyGraphComponent {
   }
 
   private updateData() {
-    var newTree = new ProjectTree();
+    const newTree = new ProjectTree();
     if ( this.data && this.data.projects ) {
       this.data.projects
         .filter( projectNode => this.groupToggles.filter( groupToggle => groupToggle.name === projectNode.group && groupToggle.visible ).length > 0 )
         .forEach( projectNode => newTree.addProject( projectNode ) );
 
       if ( this.projectName ) {
-        var removeNodes: ProjectNode[] = [];
+        const removeNodes: Array<ProjectNode> = [];
         newTree.projects.forEach( projectNode => {
           if ( projectNode.title !== this.projectName ) {
             if ( (projectNode.dependencies == undefined || projectNode.dependencies.filter( dependency => dependency.item.title === this.projectName ).length == 0 ) &&
@@ -86,7 +91,7 @@ export class DependencyGraphComponent {
         removeNodes.forEach( projectNode => newTree.removeProject( projectNode ) );
       }
     }
-    var transformedData = this.transformData( newTree );
+    const transformedData = this.transformData( newTree );
     this.chartData( transformedData );
   }
 
@@ -109,10 +114,10 @@ export class DependencyGraphComponent {
   }
 
   navigate( name: string ) {
-    var segments = name.split( ":" );
+    const segments = name.split( ":" );
     name         = segments[ 0 ];
-    var version  = segments[ 1 ];
-    var results  = this.data.projects.filter( projectNode => projectNode.title === name );
+    let version  = segments[ 1 ];
+    const results  = this.data.projects.filter( projectNode => projectNode.title === name );
     if ( results.length == 0 ) {
       console.error( 'could not find project ' + name );
     } else {
@@ -121,7 +126,7 @@ export class DependencyGraphComponent {
       }
       this.router.navigate( [ '/projects/' + name ], {
         queryParams: {
-          version: version,
+          version,
           env: this.projectService.getSelectedEnv()
         }
       } );
@@ -129,7 +134,7 @@ export class DependencyGraphComponent {
   }
 
   isGroupVisible( name: string ): boolean {
-    var value = window.localStorage.getItem( 'dashboard.visible-groups.' + name );
+    const value = window.localStorage.getItem( 'dashboard.visible-groups.' + name );
     if ( value === 'false' ) {
       return false;
     }
@@ -138,7 +143,7 @@ export class DependencyGraphComponent {
 
   toggleGroup( item: GroupItem ): void {
     item.visible = !item.visible;
-    var key      = 'dashboard.visible-groups.' + item.name;
+    const key      = 'dashboard.visible-groups.' + item.name;
     if ( !item.visible ) {
       localStorage.setItem( key, 'false' );
     } else {
@@ -149,7 +154,7 @@ export class DependencyGraphComponent {
 
   toggleShowVersions() {
     this.showVersions = !this.showVersions;
-    var key           = 'dashboard.showVersions';
+    const key           = 'dashboard.showVersions';
     if ( this.showVersions ) {
       localStorage.setItem( key, 'true' );
     } else {
@@ -159,7 +164,7 @@ export class DependencyGraphComponent {
   }
 
   isShowVersions(): boolean {
-    var value = window.localStorage.getItem( 'dashboard.showVersions' );
+    const value = window.localStorage.getItem( 'dashboard.showVersions' );
     if ( value === 'true' ) {
       return true;
     }
@@ -168,7 +173,7 @@ export class DependencyGraphComponent {
 
   toggleShowInheritance() {
     this.showInheritance = !this.showInheritance;
-    var key              = 'dashboard.showInheritance';
+    const key              = 'dashboard.showInheritance';
     if ( !this.showInheritance ) {
       localStorage.setItem( key, 'false' );
     } else {
@@ -178,7 +183,7 @@ export class DependencyGraphComponent {
   }
 
   isShowInheritance(): boolean {
-    var value = window.localStorage.getItem( 'dashboard.showInheritance' );
+    const value = window.localStorage.getItem( 'dashboard.showInheritance' );
     if ( value === 'false' ) {
       return false;
     }
@@ -186,12 +191,12 @@ export class DependencyGraphComponent {
   }
 
   transformData( projectTree: ProjectTree ) {
-    var nodes = {};
-    var links = [];
+    const nodes = {};
+    const links = [];
     if ( projectTree.projects ) {
-      var tree = projectTree;
+      let tree = projectTree;
       if ( this.showVersions ) {
-        var newTree: ProjectTree = new ProjectTree();
+        const newTree: ProjectTree = new ProjectTree();
         tree.projects.forEach( projectNode => this.transformFlatList( projectNode, newTree ) );
         tree = newTree;
       }
@@ -203,7 +208,7 @@ export class DependencyGraphComponent {
         if ( projectNode.dependencies ) {
           projectNode.dependencies.forEach( dependency => {
             try {
-              var item = <ProjectNode>dependency.item.resolve();
+              const item = dependency.item.resolve() as ProjectNode;
               links.push( {
                 source: projectNode.title,
                 target: item.title,
@@ -216,59 +221,59 @@ export class DependencyGraphComponent {
         }
       } );
     }
-    return { nodes: nodes, links: links };
+    return { nodes, links };
   }
 
   transformFlatList( projectNode: ProjectNode, projectTree: ProjectTree ) {
-    let dependencies: DependencyNode[] = [];
+    const dependencies: Array<DependencyNode> = [];
     if ( projectNode.dependencies ) {
       projectNode.dependencies.forEach( dependency => {
         let item: ProjectNode = dependency.item;
         if ( item.reference ) {
           try {
-            item = <ProjectNode>item.resolve();
+            item = (item.resolve() as ProjectNode);
           } catch ( e ) {
             return;
           }
         } else {
           this.transformFlatList( item, projectTree );
         }
-        let newRefNode       = new ProjectNode( item.title + ":" + item.version );
+        const newRefNode       = new ProjectNode( item.title + ":" + item.version );
         newRefNode.color = item.color;
         newRefNode.reference = "#/" + item.title + ":" + item.version;
-        let newDependency    = new DependencyNode( newRefNode, dependency.type, dependency.problems );
+        const newDependency    = new DependencyNode( newRefNode, dependency.type, dependency.problems );
         dependencies.push( newDependency );
       } );
     }
-    let newProjectNode = new ProjectNode( projectNode.title + ":" + projectNode.version, projectTree, projectNode.group, projectNode.version, projectNode.versions, projectNode.problems );
+    const newProjectNode = new ProjectNode( projectNode.title + ":" + projectNode.version, projectTree, projectNode.group, projectNode.version, projectNode.versions, projectNode.problems );
     newProjectNode.color = projectNode.color;
     dependencies.forEach( dep => newProjectNode.addDependency( dep ) );
     projectTree.addProject( newProjectNode );
   }
 
   transformInheritance( projectTree: ProjectTree ): ProjectTree {
-    var newTree: ProjectTree  = new ProjectTree();
-    var removeNodes: string[] = [];
+    const newTree: ProjectTree  = new ProjectTree();
+    const removeNodes: Array<string> = [];
     projectTree.projects.forEach( projectNode => {
       newTree.addProject( this.transformInheritanceProject( projectNode, removeNodes ) );
     } );
-    var removeList = newTree.projects.filter( projectNode => removeNodes.filter( removeNode => projectNode.title === removeNode ).length > 0 );
+    const removeList = newTree.projects.filter( projectNode => removeNodes.filter( removeNode => projectNode.title === removeNode ).length > 0 );
     removeList.forEach( projectNode => newTree.removeProject( projectNode ) );
     return newTree;
   }
 
-  transformInheritanceProject( projectNode: ProjectNode, removeNodes: string[] ): ProjectNode {
-    var newNode = new ProjectNode( projectNode.title, undefined, projectNode.group, projectNode.version, projectNode.versions, projectNode.problems );
+  transformInheritanceProject( projectNode: ProjectNode, removeNodes: Array<string> ): ProjectNode {
+    const newNode = new ProjectNode( projectNode.title, undefined, projectNode.group, projectNode.version, projectNode.versions, projectNode.problems );
     newNode.color = projectNode.color;
     if ( projectNode.dependencies ) {
-      var addDeps: DependencyNode[]    = [];
-      var removeDeps: DependencyNode[] = [];
+      const addDeps: Array<DependencyNode>    = [];
+      const removeDeps: Array<DependencyNode> = [];
       projectNode.dependencies.forEach( dependencyNode => {
-        var newDep;
+        let newDep;
         if ( !dependencyNode.item.reference ) {
           newDep = new DependencyNode( this.transformInheritanceProject( dependencyNode.item, removeNodes ), dependencyNode.type, dependencyNode.problems );
         } else {
-          var refProjectNode       = new ProjectNode( dependencyNode.item.title );
+          const refProjectNode       = new ProjectNode( dependencyNode.item.title );
           refProjectNode.color = dependencyNode.item.color;
           refProjectNode.reference = dependencyNode.item.reference;
           newDep                   = new DependencyNode( refProjectNode, dependencyNode.type, dependencyNode.problems );
@@ -277,9 +282,9 @@ export class DependencyGraphComponent {
 
         if ( newDep.type === DependencyTypes.INCLUDES ) {
           removeDeps.push( newDep );
-          var item = <ProjectNode>dependencyNode.item.resolve();
+          const item = dependencyNode.item.resolve() as ProjectNode;
           removeNodes.push( item.title );
-          var newSubNode = this.transformInheritanceProject( item, removeNodes );
+          const newSubNode = this.transformInheritanceProject( item, removeNodes );
           newSubNode.dependencies.forEach( dep => addDeps.push( dep ) );
         }
       } );
@@ -290,31 +295,31 @@ export class DependencyGraphComponent {
   }
 
   chartData( data: {} ): void {
-    var self = this;
-    var svg  = d3.select( this.containerRef.element.nativeElement ).select( '.container' ).select( 'svg' ).remove();
+    const self = this;
+//    let svg  = d3.select( this.containerRef.element.nativeElement ).select( '.container' ).select( 'svg' ).remove();
     if ( !data ) {
-      //handle
+      // handle
       console.warn( 'No chart data' );
 
       return;
     }
     this.error = null;
-    var nodes  = data[ 'nodes' ]
-    var links  = data[ 'links' ];
-    links.forEach( function ( link ) {
+    const nodes  = data[ 'nodes' ];
+    const links  = data[ 'links' ];
+    links.forEach( link => {
       link.source = nodes[ link.source ] || (nodes[ link.source ] = { name: link.source });
       link.target = nodes[ link.target ] || (nodes[ link.target ] = { name: link.target });
     } );
 
-    var margin = { top: 0, right: 0, bottom: 0, left: 0 },
-        width  = 960 - margin.left - margin.right,
-        height = 500 - margin.top - margin.bottom;
+    const margin = { top: 0, right: 0, bottom: 0, left: 0 };
+    const width = 960 - margin.left - margin.right;
+    const height = 500 - margin.top - margin.bottom;
 
-    var zoom = d3.behavior.zoom()
+    const zoom = d3.zoom()
       .scaleExtent( [ 1, 10 ] )
       .on( "zoom", zoomed );
 
-    var svg = d3.select( this.containerRef.element.nativeElement )
+    const svg = d3.select( this.containerRef.element.nativeElement )
       .select( '.container' )
       .append( "svg" )
       .attr( "width", width + margin.left + margin.right )
@@ -323,30 +328,28 @@ export class DependencyGraphComponent {
       .attr( "transform", "translate(" + margin.left + "," + margin.right + ")" )
       .call( zoom );
 
-    var rect = svg.append( "rect" )
+    const rect = svg.append( "rect" )
       .attr( "width", width )
       .attr( "height", height )
       .style( "fill", "none" )
       .style( "pointer-events", "all" );
 
-    var container = svg.append( "g" );
+    const container = svg.append( "g" );
 
-    this.force = d3.layout.force()
-      .nodes( d3.values( nodes ) )
-      .links( links )
-      .size( [ this.containerRef.element.nativeElement.getBoundingClientRect().width, this.containerRef.element.nativeElement.getBoundingClientRect().height ] )
-      .linkStrength( 0.1 )
-      .charge( -500 )
-      .on( "tick", tick )
-      .start();
+//    this.force = d3.layout.force()
+//      .nodes( d3.values( nodes ) )
+//      .links( links )
+//      .size( [ this.containerRef.element.nativeElement.getBoundingClientRect().width, this.containerRef.element.nativeElement.getBoundingClientRect().height ] )
+//      .linkStrength( 0.1 )
+//      .charge( -500 )
+//      .on( "tick", tick )
+//      .start();
 
     // Per-type markers, as they don't inherit styles.
     container.append( "defs" ).selectAll( "marker" )
       .data( [ "marker-end", "marker-end-problems", "marker-end-uses" ] )
       .enter().append( "marker" )
-      .attr( "id", function ( d ) {
-        return d;
-      } )
+      .attr( "id", d => d )
       .attr( "viewBox", "0 -5 10 10" )
       .attr( "refX", 15 )
       .attr( "refY", -1.5 )
@@ -354,7 +357,7 @@ export class DependencyGraphComponent {
       .attr( "markerHeight", 6 )
       .attr( "orient", "auto" )
       .append( "path" )
-      .attr( 'class', function ( d ) {
+      .attr( 'class', d => {
         if ( d === 'marker-end-problems' ) {
           return 'marker-end-problems';
         } else if ( d === 'marker-end-uses' ) {
@@ -363,15 +366,15 @@ export class DependencyGraphComponent {
       } )
       .attr( "d", "M0,-5L10,0L0,5" );
 
-    var path = container.append( "g" ).selectAll( "path" )
+    const path = container.append( "g" ).selectAll( "path" )
       .data( self.force.links() )
       .enter().append( "path" )
-      .attr( "class", function ( d ) {
-        var problems = d.problems && d.problems > 0 ? ' errors' : '';
+      .attr( "class", ( d: any ) => {
+        const problems = d.problems && d.problems > 0 ? ' errors' : '';
         return "overview-link " + d.type + problems;
       } )
-      .attr( "marker-end", function ( d ) {
-        let hasProblems = d.problems && d.problems > 0;
+      .attr( "marker-end", (d: any) => {
+        const hasProblems = d.problems && d.problems > 0;
         let suffix      = '';
         if ( hasProblems ) {
           suffix = '-problems';
@@ -381,37 +384,33 @@ export class DependencyGraphComponent {
         return "url(#marker-end" + suffix + ")";
       } );
 
-    var circle = container.append( "g" ).selectAll( "circle" )
+    const circle = container.append( "g" ).selectAll( "circle" )
       .data( self.force.nodes() )
       .enter().append( "circle" )
       .attr( "r", 6 )
-      .attr( "class", d => {
-        if(d.color){
+      .attr( "class", (d: any) => {
+        if (d.color) {
           return d.color;
         }
         return d.group ? StringUtil.getColorCodeFromString( d.group ) : 'dark-gray';
       } )
       .call( self.force.drag()
-        .origin( function ( d ) {
-          return d;
-        } )
+        .origin( d => d )
         .on( "dragstart", dragstarted )
         .on( "drag", dragged )
         .on( "dragend", dragended ) );
 
-    var text = container.append( "g" ).selectAll( "text" )
+    const text = container.append( "g" ).selectAll( "text" )
       .data( self.force.nodes() )
       .enter().append( "text" )
       .attr( "x", 8 )
       .attr( "y", ".31em" )
-      .on( {
-        "click": function () {
-          self.navigate( this.textContent );
+      .on(
+        "click",  (content) => {
+          self.navigate( content.textContent );
         }
-      } )
-      .text( function ( d ) {
-        return d.name;
-      } );
+       )
+      .text( (d: any) => d.name );
 
     function tick() {
       path.attr( "d", linkArc );
@@ -420,9 +419,9 @@ export class DependencyGraphComponent {
     }
 
     function linkArc( d ) {
-      var dx = d.target.x - d.source.x,
-          dy = d.target.y - d.source.y,
-          dr = Math.sqrt( dx * dx + dy * dy );
+      const dx = d.target.x - d.source.x;
+      const dy = d.target.y - d.source.y;
+      const dr = Math.sqrt( dx * dx + dy * dy );
       return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x + "," + d.target.y;
     }
 
@@ -431,11 +430,11 @@ export class DependencyGraphComponent {
     }
 
     function zoomed() {
-      container.attr( "transform", "translate(" + (<any>(d3.event)).translate + ")scale(" + (<any>(d3.event)).scale + ")" );
+//      container.attr( "transform", "translate(" + (((d3 as any).event) as any).translate + ")scale(" + ((d3 as any) as any).scale + ")" );
     }
 
     function dragstarted( d ) {
-      (<any>(d3.event)).sourceEvent.stopPropagation();
+//      (((d3 as any).event) as any).sourceEvent.stopPropagation();
       d3.select( this ).classed( "dragging", true );
     }
 

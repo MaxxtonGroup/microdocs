@@ -1,12 +1,12 @@
 <div class="problem-box error" *ngFor="let problem of problems | filterByField:'level':'error'">
-    <md-icon>error</md-icon>
+    <mat-icon>error</mat-icon>
     <span class="problem">{{problem.message}}</span>
 </div>
 <div class="problem-box warning" *ngFor="let problem of problems | filterByField:'level':'warning'">
-    <md-icon>warning</md-icon>
+    <mat-icon>warning</mat-icon>
     <span class="problem">{{problem.message}}</span>
 </div>
 <div class="problem-box info" *ngFor="let problem of problems | filterByField:'level':'notice'">
-    <md-icon>info</md-icon>
+    <mat-icon>info</mat-icon>
     <span class="problem">{{problem.message}}</span>
 </div>

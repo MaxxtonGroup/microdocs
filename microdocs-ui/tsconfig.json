@@ -17,5 +17,6 @@
     "types": [
       "hammerjs"
     ]
-  }
+  },
+  "exclude": ["node_modules", "**/*.po.ts", "**/*.e2e*"]
 }

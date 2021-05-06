@@ -16,10 +16,15 @@
             "aot": false,
             "outputPath": "dist/",
             "index": "src/index.html",
-            "main": "src/app/main.ts",
+            "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.json",
             "assets": [
+              {
+                "glob": "**/*",
+                "input": "src/data",
+                "output": "./data"
+              },
               {
                 "glob": "**/*",
                 "input": "src/assets",
@@ -49,7 +54,7 @@
             "vendorChunk": true,
             "scripts": [],
             "preserveSymlinks": true,
-            "baseHref": "/reservationmanager/",
+            "baseHref": "/demo",
             "allowedCommonJsDependencies": [
               "moment-timezone",
               "lodash",
@@ -78,8 +83,8 @@
               },
               "fileReplacements": [
                 {
-                  "replace": "src/client/config/dev.ts",
-                  "with": "src/client/config/prod.ts"
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
                 }
               ],
               "aot": true,
@@ -94,31 +99,14 @@
             "browserTarget": "Angular:build",
             "hmr": true,
             "disableHostCheck": true,
-            "servePath": "reservationmanager",
+            "servePath": "",
             "port": 7070
           },
           "configurations": {
             "production": {
               "hmr": false,
               "browserTarget": "Angular:build:production",
-              "servePath": "reservationmanager/en-gb"
-            }
-          }
-        },
-        "build-html": {
-          "builder": "@maxxton/build-tools:mustache",
-          "options": {
-            "file": "node_modules/@maxxton/build-tools/tools/partials/index.mustache",
-            "outFile": "src/client/index-dev.html",
-            "configFile": "angular-config.json",
-            "localeSwitch": false,
-            "locales": "en-gb"
-          },
-          "configurations": {
-            "localized": {
-              "outFile": "src/client/index-prod.html",
-              "localeSwitch": true,
-              "locales": "en-gb,en-us,nl-nl,de-de,fr-fr"
+              "servePath": ""
             }
           }
         },

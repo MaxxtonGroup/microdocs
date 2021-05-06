@@ -1,8 +1,7 @@
 import {Component, Input} from "@angular/core";
-import {PrettyJsonComponent} from 'angular2-prettyjson';
 
-import {SchemaHelper} from "@maxxton/microdocs-core/helpers";
-import {Schema} from "@maxxton/microdocs-core/domain";
+import {SchemaHelper} from "@maxxton/microdocs-core/dist/helpers";
+import {Schema} from "@maxxton/microdocs-core/dist/domain";
 
 @Component({
   selector: 'model',

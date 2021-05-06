@@ -3,24 +3,24 @@
   <div class="option-bar" *ngIf="showOptionBar">
     <div class="dropdown" [class.expanded]="dropdownExpanded">
       <div class="dropdown-header" (click)="dropdownExpanded = !dropdownExpanded">
-        <md-icon>keyboard_arrow_up</md-icon>
+        <mat-icon>keyboard_arrow_up</mat-icon>
         <span>Groups</span>
       </div>
       <div class="overlay-wrapper">
         <div class="overlay">
           <div class="overlay-item" *ngFor="let group of groupToggles" (click)="toggleGroup(group)">
-            <md-icon>{{group.visible ? 'check_box' : 'check_box_outline_blank'}}</md-icon>
+            <mat-icon>{{group.visible ? 'check_box' : 'check_box_outline_blank'}}</mat-icon>
             <span class="title">{{group.name}}</span>
           </div>
         </div>
       </div>
     </div>
     <div class="show-versions-button option-button" [class.selected]="showVersions" (click)="toggleShowVersions()">
-      <md-icon>{{showVersions ? 'call_split' : 'call_merge'}}</md-icon>
+      <mat-icon>{{showVersions ? 'call_split' : 'call_merge'}}</mat-icon>
       <span>Show different used versions</span>
     </div>
     <div class="show-inherit-button option-button" [class.selected]="!showInheritance" (click)="toggleShowInheritance()">
-      <md-icon>{{'device_hub' }}</md-icon>
+      <mat-icon>{{'device_hub' }}</mat-icon>
       <span>Combine inheritance into one node</span>
     </div>
   </div>

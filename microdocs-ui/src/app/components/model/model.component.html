@@ -1,10 +1,10 @@
 <simple-card *ngIf="schema.properties | notEmpty" text="{{schema.name}}" subTitle="{{getSubTitle(schema)}}" paper="true" [open]="false">
     <div *ngIf="schema.description | notEmpty">{{schema.description}}</div>
     <div class="link" *ngIf="schema.sourceLink | notEmpty">
-        <md-icon class="link-icon">keyboard_arrow_right</md-icon>
+        <mat-icon class="link-icon">keyboard_arrow_right</mat-icon>
         <a [href]="schema.sourceLink" target="_blank">source</a>
     </div>
-    <template [ngIf]="example | notEmpty">
+    <ng-template *ngIf="example | notEmpty">
         <prettyjson [obj]="example"></prettyjson>
-    </template>
+    </ng-template>
 </simple-card>

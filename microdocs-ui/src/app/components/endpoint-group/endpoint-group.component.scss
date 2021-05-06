@@ -23,11 +23,11 @@
     position: relative;
     padding: 5px 10px;
     margin-left: 10px;
-    background-color: map_get($md-blue-grey, 500);
+    background-color: map_get($mat-blue-grey, 500);
     color: white;
     border-radius: 5px;
 
-    md-icon {
+    mat-icon {
       position: absolute;
       top: -8px;
       right: -14px;
@@ -35,23 +35,23 @@
   }
 
   .methods > span.get {
-    background-color: map_get($md-green, 500);
+    background-color: map_get($mat-green, 500);
   }
 
   .methods > span.post {
-    background-color: map_get($md-blue, 500);
+    background-color: map_get($mat-blue, 500);
   }
 
   .methods > span.put {
-    background-color: map_get($md-orange, 500);
+    background-color: map_get($mat-orange, 500);
   }
 
   .methods > span.delete {
-    background-color: map_get($md-red, 500);
+    background-color: map_get($mat-red, 500);
   }
 
   .methods > span.path {
-    background-color: map_get($md-brown, 500);
+    background-color: map_get($mat-brown, 500);
   }
 
   .group-content {

@@ -1,10 +1,11 @@
 import { Component, HostBinding, Input, Output, EventEmitter } from "@angular/core";
-import { Notification } from "rxjs/Notification";
-import { Observable } from "rxjs/Observable";
-import { ProjectTree } from "@maxxton/microdocs-core/domain";
+import { Notification } from "rxjs";
+import { Observable } from "rxjs";
+import { ProjectTree } from "@maxxton/microdocs-core/dist/domain";
 import { ProjectService } from "../../services/project.service";
 import { environment } from "../../../environments/environment";
-import { MdSnackBar, MdDialog } from "@angular/material";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { MatDialog } from "@angular/material/dialog";
 import { RouteInfo } from "../../domain/route-info.model";
 import { ImportDialogComponent } from "../import-dialog/import-dialog.component";
 import { ExportPanelComponent } from "../export-panel/export-panel.component";
@@ -43,7 +44,7 @@ export class SidebarComponent {
   @Output( 'envChange' )
   change = new EventEmitter();
 
-  constructor( private projectService: ProjectService, private snackbar: MdSnackBar, private dialog: MdDialog ) {
+  constructor( private projectService: ProjectService, private snackbar: MatSnackBar, private dialog: MatDialog ) {
 
   }
 

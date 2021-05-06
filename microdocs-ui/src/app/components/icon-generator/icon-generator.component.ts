@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, Renderer } from "@angular/core";
+import { Component, Input } from "@angular/core";
 import { StringUtil } from "../../helpers/string.util";
 
 @Component( {
@@ -17,9 +17,6 @@ export class IconGeneratorComponent {
   private small:boolean = false;
 
   private initials: string;
-
-  constructor( private el: ElementRef, private renderer: Renderer ) {
-  }
 
   ngOnChanges() {
     if ( !this.text ) {

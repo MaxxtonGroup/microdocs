@@ -2,7 +2,7 @@
 @import '../../../assets/scss/settings';
 
 
-md-list{
+mat-list{
   padding: 0;
   font-size: 11px;
 
@@ -10,10 +10,10 @@ md-list{
     text-decoration: none ;
   }
 
-  md-list-item{
+  mat-list-item{
     cursor: pointer;
 
-    md-icon{
+    mat-icon{
       width: 24px;
       height: 24px;
     }
@@ -25,13 +25,13 @@ md-list{
     }
 
     @each $name, $color in $colors {
-      .#{$name} md-icon {
+      .#{"" + $name} mat-icon {
         color: map_get($color, 500);
       }
     }
   }
 
-  md-list-item:hover{
+  mat-list-item:hover{
     color: $accent;
     background: #f4f4f4;
     h4{

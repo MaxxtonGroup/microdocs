@@ -63,7 +63,7 @@ a:hover{
 .error, .warning, .info{
   padding-bottom: 20px;
 
-  md-icon{
+  mat-icon{
     position: relative;
     top: 8px;
   }
@@ -87,9 +87,9 @@ a:hover{
   }
 }
 
-.md-list-item {
+.mat-list-item {
   height: 38px !important;
-  .md-list-text h4 {
+  .mat-list-text h4 {
     font-size: 14px;
   }
 }

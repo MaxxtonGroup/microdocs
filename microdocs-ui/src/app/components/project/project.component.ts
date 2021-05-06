@@ -1,17 +1,17 @@
 import {Component} from "@angular/core";
 import {ActivatedRoute, Router, Params} from "@angular/router";
-import {Subject} from "rxjs/Subject";
-import {ReplaySubject} from "rxjs/ReplaySubject";
-import {Subscription} from "rxjs/Subscription";
+import {Subject} from "rxjs";
+import {ReplaySubject} from "rxjs";
+import {Subscription} from "rxjs";
 
-import {Project, Path, Method, Schema, Dependency, ProjectTree, DependencyTypes} from "@maxxton/microdocs-core/domain";
-import {SchemaHelper} from "@maxxton/microdocs-core/helpers/schema/schema.helper";
-import { ProjectChangeRule } from "@maxxton/microdocs-core/domain/settings/project-change-rule.model";
+import {Project, Path, Method, Schema, Dependency, ProjectTree, DependencyTypes} from "@maxxton/microdocs-core/dist/domain";
+import {SchemaHelper} from "@maxxton/microdocs-core/dist/helpers/schema/schema.helper";
+import { ProjectChangeRule } from "@maxxton/microdocs-core/dist/domain/settings/project-change-rule.model";
 
 import {ProjectService} from "../../services/project.service";
 import {environment} from '../../../environments/environment'
 import { StringUtil } from "../../helpers/string.util";
-import { MdDialog } from "@angular/material";
+import { MatDialog } from "@angular/material/dialog";
 import { ExportDialogComponent } from "../export-dialog/export-dialog.component";
 
 
@@ -52,7 +52,7 @@ export class ProjectComponent {
   constructor(private projectService:ProjectService,
               private activatedRoute:ActivatedRoute,
               private router:Router,
-              private mdDialog:MdDialog) {
+              private mdDialog:MatDialog) {
 
     //load metadata
     this.projectService.getProjects().subscribe(notification => {
