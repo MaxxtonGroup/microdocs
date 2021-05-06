@@ -17,9 +17,9 @@
               "favicon.ico"
             ],
             "index": "index.html",
-            "main": "main.ts",
-            "test": "test.ts",
-            "tsconfig": "tsconfig.json",
+            "main": "src/main.ts",
+            "test": "src/test.ts",
+            "tsconfig": "sec/tsconfig.json",
             "prefix": "app",
             "mobile": false,
             "styles": [
