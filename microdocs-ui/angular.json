@@ -1,41 +1,151 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
+  "newProjectRoot": "projects",
   "projects": {
-    "angular:": {
+    "Angular": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
       "prefix": "app",
+      "schematics": {},
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outDir": "dist",
+            "aot": false,
+            "outputPath": "dist/",
+            "index": "src/index.html",
+            "main": "src/app/main.ts",
+            "polyfills": "src/polyfills.ts",
+            "tsConfig": "src/tsconfig.json",
             "assets": [
-              "assets",
-              "favicon.ico"
+              {
+                "glob": "**/*",
+                "input": "src/assets",
+                "output": "./assets"
+              },
+              {
+                "glob": "app-info.json",
+                "input": "",
+                "output": "./"
+              }
             ],
-            "index": "index.html",
-            "main": "src/main.ts",
-            "test": "src/test.ts",
-            "tsconfig": "sec/tsconfig.json",
-            "prefix": "app",
-            "mobile": false,
             "styles": [
-              "styles.scss"
+              "src/styles.scss"
             ],
+            "sourceMap": {
+              "scripts": true,
+              "styles": true,
+              "hidden": false,
+              "vendor": false
+            },
+            "optimization": {
+              "scripts": false,
+              "styles": false
+            },
+            "outputHashing": "none",
+            "commonChunk": true,
+            "vendorChunk": true,
             "scripts": [],
-            "environments": {
-              "source": "environments/environment.ts",
-              "dev": "environments/environment.ts",
-              "dev-standalone": "environments/environment.standalone.ts",
-              "prod": "environments/environment.prod.ts",
-              "standalone": "environments/environment.prod.standalone.ts"
+            "preserveSymlinks": true,
+            "baseHref": "/reservationmanager/",
+            "allowedCommonJsDependencies": [
+              "moment-timezone",
+              "lodash",
+              "xlsx",
+              "rison",
+              "firebase/app",
+              "@firebase/app",
+              "@firebase/component",
+              "@firebase/util"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "bundles",
+              "baseHref": "/",
+              "index": {
+                "input": "src/client/index-dev.html",
+                "output": "index.html"
+              },
+              "fileReplacements": [
+                {
+                  "replace": "src/client/config/dev.ts",
+                  "with": "src/client/config/prod.ts"
+                }
+              ],
+              "aot": true,
+              "outputPath": "dist/",
+              "tsConfig": "src/tsconfig-ivy.json"
             }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "Angular:build",
+            "hmr": true,
+            "disableHostCheck": true,
+            "servePath": "reservationmanager",
+            "port": 7070
+          },
+          "configurations": {
+            "production": {
+              "hmr": false,
+              "browserTarget": "Angular:build:production",
+              "servePath": "reservationmanager/en-gb"
+            }
+          }
+        },
+        "build-html": {
+          "builder": "@maxxton/build-tools:mustache",
+          "options": {
+            "file": "node_modules/@maxxton/build-tools/tools/partials/index.mustache",
+            "outFile": "src/client/index-dev.html",
+            "configFile": "angular-config.json",
+            "localeSwitch": false,
+            "locales": "en-gb"
+          },
+          "configurations": {
+            "localized": {
+              "outFile": "src/client/index-prod.html",
+              "localeSwitch": true,
+              "locales": "en-gb,en-us,nl-nl,de-de,fr-fr"
+            }
+          }
+        },
+       "test": {
+          "builder": "@angular-builders/jest:run",
+          "options": {
+            "tsConfig": "src/client/tsconfig.json",
+            "configPath": "node_modules/@maxxton/build-tools/tools/config/jest.config.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "src/client/tsconfig.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ],
+            "format": "stylish"
           }
         }
       }
     }
+  },
+  "defaultProject": "Angular",
+  "cli": {
+    "analytics": false
   }
 }
