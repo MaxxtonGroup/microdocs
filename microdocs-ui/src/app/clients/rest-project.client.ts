@@ -1,31 +1,21 @@
 import { Injectable } from "@angular/core";
-import { Http, Response } from "@angular/http";
-import {
-    Get, Path, Put, Patch, Query, Body, Map, Produces, MediaType, Client, Delete,
-    RestClient, HttpClient
-} from "@maxxton/angular-rest";
-import { ProjectTree, Project, Environments, ProjectChangeRule, ProblemResponse } from "@maxxton/microdocs-core/domain";
-import { Observable } from "rxjs/Observable";
-import { SchemaHelper } from "@maxxton/microdocs-core/helpers/schema/schema.helper";
+import { HttpClient } from "@angular/common/http";
+import { ProjectTree, Project, Environments, ProjectChangeRule, ProblemResponse } from "@maxxton/microdocs-core/dist/domain";
+import { Observable } from "rxjs";
 import { ProjectClient } from "./project.client";
+import { map } from "rxjs/operators";
+import { SchemaHelper } from "@maxxton/microdocs-core/dist/helpers";
 
 /**
  * Client for integration with the microdocs-server implementation.
  * Uses the Rest api of the microdocs-server
  */
-@Client( {
-  serviceId: 'microdocs-server',
-  baseUrl: "/api/v1",
-  headers: {
-    'Accept': 'application/json',
-    'Content-Type': 'application/json'
-  }
-} )
 @Injectable()
-export class RestProjectClient extends RestClient implements ProjectClient {
+export class RestProjectClient implements ProjectClient {
 
-  constructor( private http:Http ) {
-    super(<any>http);
+  baseUrl = "api/v1";
+
+  constructor( private http: HttpClient ) {
   }
 
   /**
@@ -33,10 +23,8 @@ export class RestProjectClient extends RestClient implements ProjectClient {
    * @httpQuery env for which environment, default is the current one
    * @httpResponse 200 {TreeNode}
    */
-  @Get( "/projects" )
-  @Map( resp => ProjectTree.link( resp.json() ) )
-  public loadProjects( @Query( "env" ) env:string ):Observable<ProjectTree> {
-    return null;
+  public loadProjects( /*@Query( "env" )*/ env: string ): Observable<ProjectTree> {
+    return this.http.get(`${this.baseUrl}/projects`).pipe(map(resp => ProjectTree.link( resp )));
   }
 
   /**
@@ -47,41 +35,41 @@ export class RestProjectClient extends RestClient implements ProjectClient {
    * @httpBody body {Project}
    * @httpResponse 200 {Project}
    */
-  @Get( "/projects/{title}" )
-  @Map( resp => SchemaHelper.resolveObject( resp.json() ) )
-  public loadProject( @Query( "env" ) env:string, @Path( "title" ) title:string, @Query( "version" ) version?:string ):Observable<Project> {
-    return null;
+
+
+  public loadProject( /*@Query( "env" )*/ env: string, /*@Path( "title" )*/ title: string, /*@Query( "version" )*/ version?: string ): Observable<Project> {
+    return this.http.get(`${this.baseUrl}/projects/${title}?env=${env}&version=${version}`).pipe(map(resp => SchemaHelper.resolveObject( resp )));
   }
 
   /**
    * Load all the environments
    * @httpResponse 200 {{[key: string]: Environments}}
    */
-  @Get( "/envs" )
-  @Map( resp => resp.json() )
-  public getEnvs():Observable<{[key:string]:Environments}> {
-    return null
+
+
+  public getEnvs(): Observable<{[key: string]: Environments}> {
+    return this.http.get<{[key: string]: Environments}>(`${this.baseUrl}/envs`);
   }
 
-  @Put( "/projects/{title}" )
-  @Map( resp => resp.json() )
-  public importProject( @Query( "env" ) env:string, @Body project:Project, @Path( "title" ) name:string, @Query( "group" ) group:string, @Query( "version" ) version:string ):Observable<ProblemResponse> {
-    return null;
+
+
+  public importProject( /*@Query( "env" )*/ env: string, /*@Body*/ project: Project, /*@Path( "title" )*/ title: string, /*@Query( "group" )*/ group: string, /*@Query( "version" )*/ version: string ): Observable<ProblemResponse> {
+    return this.http.put(`${this.baseUrl}/projects/${title}?env=${env}&group=${group}&version=${version}`, project).pipe(map(resp => SchemaHelper.resolveObject( resp )));
   }
 
-  @Delete( "/projects/{title}" )
-  public deleteProject( @Query( 'env' ) env:string, @Path( 'title' ) name:string, @Query( 'version' ) version?:string ):Observable<Response> {
-    return null;
+
+  public deleteProject( /*@Query( 'env' )*/ env: string, /*@Path( 'title' )*/ title: string, /*@Query( 'version' )*/ version?: string ): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/projects/${title}`);
   }
 
-  @Patch( "/projects/{title}" )
-  public updateProject( @Query( 'env' ) env:string, @Path( 'title' ) name:string, @Body rules:ProjectChangeRule[], @Query( 'version' ) version?:string ):Observable<Response> {
-    return null;
+
+  public updateProject( /*@Query( 'env' )*/ env: string, /*@Path( 'title' )*/ title: string, /*@Body*/ rules: Array<ProjectChangeRule>, /*@Query( 'version' )*/ version?: string ): Observable<any> {
+    return this.http.put(`${this.baseUrl}/projects/${title}?env=${env}&version=${version}`, rules).pipe(map(resp => SchemaHelper.resolveObject( resp )));
   }
 
-  @Put( "/reindex" )
-  reindex( @Query( 'env' ) env:string ):Observable<Response> {
-    return null;
+
+  reindex( /*@Query( 'env' )*/ env: string ): Observable<any> {
+    return this.http.put(`${this.baseUrl}/reindex?env=${env}`, {});
   }
 
 }

@@ -1,5 +1,5 @@
 import {Component, Input} from "@angular/core";
-import { Schema } from "@maxxton/microdocs-core/domain";
+import { Schema } from "@maxxton/microdocs-core/dist/domain";
 
 /**
  * @author Steven Hermans
@@ -12,9 +12,9 @@ import { Schema } from "@maxxton/microdocs-core/domain";
 export class EndpointGroupComponent {
 
   @Input()
-  endpointGroup:any;
+  endpointGroup: any;
   @Input()
-  schemaList:{[key:string]:Schema};
+  schemaList: {[key: string]: Schema};
 
   hidden = true;
 

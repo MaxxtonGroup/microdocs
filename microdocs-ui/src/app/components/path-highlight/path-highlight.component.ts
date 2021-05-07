@@ -7,17 +7,17 @@ import {Component, Input, ElementRef, SimpleChanges, OnChanges} from "@angular/c
   templateUrl: 'path-highlight.component.html',
   styleUrls: [ 'path-highlight.component.scss' ]
 })
-export class PathHighlightComponent implements OnChanges{
+export class PathHighlightComponent implements OnChanges {
 
-  constructor(private el:ElementRef){
+  constructor(private el: ElementRef) {
   }
 
   @Input()
-  path:string;
+  path: string;
 
   highlightPath = '';
 
-  ngOnChanges(changes: SimpleChanges){
+  ngOnChanges(changes: SimpleChanges) {
     this.highlightPath = this.path
       .replace(new RegExp("\{", 'g'), '<span class="highlight">{')
       .replace(new RegExp("\}", 'g'), '}</span>');

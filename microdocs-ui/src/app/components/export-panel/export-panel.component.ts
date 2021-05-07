@@ -12,18 +12,18 @@ import { ProjectService } from "../../services/project.service";
 export class ExportPanelComponent {
 
   @Input( "project" )
-  defaultProject:string = null;
+  defaultProject: string = null;
   @Input( "version" )
-  defaultVersion:string = null;
+  defaultVersion: string = null;
 
-  allSelected:boolean = true;
-  groupItems:Item[]   = [];
-  projectItems:Item[] = [];
-  format:string       = 'microdocs';
-  error:string        = '';
-  warning:string      = '';
+  allSelected: boolean = true;
+  groupItems: Array<Item>   = [];
+  projectItems: Array<Item> = [];
+  format: string       = 'microdocs';
+  error: string        = '';
+  warning: string      = '';
 
-  constructor( private projectService:ProjectService ) {
+  constructor( private projectService: ProjectService ) {
     projectService.getProjects().subscribe( notification => {
       notification.do( projectTree => {
         this.allSelected  = true;
@@ -43,21 +43,21 @@ export class ExportPanelComponent {
     } );
   }
 
-  selectAll( selected:boolean ) {
+  selectAll( selected: boolean ) {
     this.groupItems.forEach( item => item.selected = selected );
     this.projectItems.forEach( item => item.selected = selected );
     this.allSelected = selected;
   }
 
-  selectItem( item:Item, selected:boolean ) {
+  selectItem( item: Item, selected: boolean ) {
     item.selected = selected;
     if ( item.isGroup() ) {
       this.projectItems.filter( i => i.group === item.name ).forEach( i => i.selected = selected );
     } else {
-      var gItems = this.groupItems.filter( g => item.group === g.name );
+      let gItems = this.groupItems.filter( g => item.group === g.name );
       if ( gItems.length >= 1 ) {
-        var gItem = gItems[ 0 ];
-        var items = this.projectItems.filter( i => i.group === gItem.name );
+        let gItem = gItems[ 0 ];
+        let items = this.projectItems.filter( i => i.group === gItem.name );
         if ( items.filter( i => !i.selected ).length == 0 ) {
           gItem.selected = true;
         } else {
@@ -68,25 +68,25 @@ export class ExportPanelComponent {
     this.allSelected = this.projectItems.filter( p => !p.selected ).length == 0;
     if ( this.defaultVersion && this.defaultProject ) {
       this.warning         = '';
-      var filteredProjects = this.projectItems.filter( p => p.name.toLowerCase() !== this.defaultProject.toLowerCase() && p.selected );
+      let filteredProjects = this.projectItems.filter( p => p.name.toLowerCase() !== this.defaultProject.toLowerCase() && p.selected );
       if ( filteredProjects.length > 0 ) {
         this.warning = "When you select a different project than '" + this.defaultProject + "' the latest version(s) will be used";
       }
     }
   }
 
-  selectFormat( format:string ) {
+  selectFormat( format: string ) {
     this.format = format;
   }
 
   export() {
-    var selectedProjects = this.projectItems.filter( item => item.selected );
+    let selectedProjects = this.projectItems.filter( item => item.selected );
     if ( selectedProjects.length == 0 ) {
       this.error = "No projects selected";
     } else {
-      var exportUrl = "/api/v1/projects";
+      let exportUrl = "/api/v1/projects";
       if ( selectedProjects.length == 1 ) {
-        var selectedProject = selectedProjects[ 0 ];
+        let selectedProject = selectedProjects[ 0 ];
         exportUrl += '/' + encodeURIComponent( selectedProject.name ) + "?export=" + encodeURIComponent( this.format );
         if ( this.defaultVersion && this.defaultProject.toLowerCase() === selectedProject.name.toLowerCase() ) {
           exportUrl += "&version=" + encodeURIComponent( this.defaultVersion );
@@ -94,9 +94,9 @@ export class ExportPanelComponent {
       } else {
         exportUrl += "?export=" + encodeURIComponent( this.format );
         if ( !this.allSelected ) {
-          var groups = this.groupItems.filter( item => item.selected );
+          let groups = this.groupItems.filter( item => item.selected );
           if ( groups.length > 0 ) {
-            var groupQuery = "&groups=";
+            let groupQuery = "&groups=";
             groups.forEach( ( group, index ) => {
               if ( index == 0 ) {
                 groupQuery += encodeURIComponent( group.name );
@@ -106,9 +106,9 @@ export class ExportPanelComponent {
             } );
             exportUrl += groupQuery;
           }
-          var projectsRemaining = this.projectItems.filter( item => item.selected && groups.filter( g => g.name === item.group ).length == 0 );
+          let projectsRemaining = this.projectItems.filter( item => item.selected && groups.filter( g => g.name === item.group ).length == 0 );
           if ( projectsRemaining.length > 0 ) {
-            var projectQuery = "&projects=";
+            let projectQuery = "&projects=";
             projectsRemaining.forEach( ( project, index ) => {
               if ( index == 0 ) {
                 projectQuery += encodeURIComponent( project.name );
@@ -128,9 +128,9 @@ export class ExportPanelComponent {
 
 export class Item {
 
-  public selected:boolean = true;
+  public selected: boolean = true;
 
-  constructor( public name:string, public group:string = null ) {
+  constructor( public name: string, public group: string = null ) {
 
   }
 

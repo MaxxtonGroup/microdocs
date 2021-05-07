@@ -1,32 +1,32 @@
 <div class="import-dialog">
   <h2>
-    <md-icon>add</md-icon>
+    <mat-icon>add</mat-icon>
     Add Project
   </h2>
   <div class="row">
-    <md-input-container class="example-full-width">
-      <textarea rows="5" md-input placeholder="Paste here your definitions" (keyup)="onProjectInserted($event)" [value]="projectDefinition"></textarea>
-    </md-input-container>
+    <mat-form-field class="example-full-width">
+      <textarea rows="5" mat-input placeholder="Paste here your definitions" (keyup)="onProjectInserted($event)" [value]="projectDefinition"></textarea>
+    </mat-form-field>
     <div class="text-danger text-right">{{jsonError}}</div>
   </div>
-  <template [ngIf]="project != null">
+  <ng-container *ngIf="project != null">
     <div class="row">
-      <md-input-container class="example-full-width">
-        <input md-input placeholder="Project name"  [(ngModel)]="projectInfo.title" name="title">
-      </md-input-container>
+      <mat-form-field class="example-full-width">
+        <input mat-input placeholder="Project name"  [(ngModel)]="projectInfo.title" name="title">
+      </mat-form-field>
     </div>
     <div class="row">
-      <md-input-container class="example-full-width">
-        <input md-input placeholder="Group"  [(ngModel)]="projectInfo.group" name="group">
-      </md-input-container>
+      <mat-form-field class="example-full-width">
+        <input mat-input placeholder="Group"  [(ngModel)]="projectInfo.group" name="group">
+      </mat-form-field>
     </div>
     <div class="row">
-      <md-input-container class="example-full-width">
-        <input md-input placeholder="Version"  [(ngModel)]="projectInfo.version" name="version">
-      </md-input-container>
+      <mat-form-field class="example-full-width">
+        <input mat-input placeholder="Version"  [(ngModel)]="projectInfo.version" name="version">
+      </mat-form-field>
     </div>
     <div class="row">
-      <button md-raised-button (click)="onSubmit()">Add Project</button>
+      <button mat-raised-button (click)="onSubmit()">Add Project</button>
       <span class="text-danger">{{generalError}}</span>
     </div>
     <div class="row">
@@ -34,5 +34,5 @@
         <li class="text-danger" *ngFor="let error of problemsErrors">{{error}}</li>
       </ul>
     </div>
-  </template>
+  </ng-container>
 </div>

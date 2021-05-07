@@ -1,8 +1,8 @@
-<template [ngIf]="show">
+<ng-container *ngIf="show">
   <div class="overlay" (click)="close()"></div>
   <div class="dialog-wrapper">
     <div class="dialog-container">
       <ng-content></ng-content>
     </div>
   </div>
-</template>
+</ng-container>

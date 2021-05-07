@@ -1,11 +1,11 @@
-<md-sidenav-container>
-  <md-sidenav mode="side" opened="true">
+<mat-sidenav-container>
+  <mat-sidenav mode="side" opened="true">
     <sidebar-component [projects]="projects" [selectedEnv]="selectedEnv" [envs]="envs" (envChange)="onEnvVersion($event)"></sidebar-component>
-  </md-sidenav>
+  </mat-sidenav>
   <div class="my-content">
     <router-outlet></router-outlet>
   </div>
-</md-sidenav-container>
+</mat-sidenav-container>
 
 
 <!--<div class="main-container grid-block horizontal app-content">-->

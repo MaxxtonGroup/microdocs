@@ -5,7 +5,7 @@
   flex: 1 1 auto;
 }
 
-md-toolbar{
+mat-toolbar{
   background-color: white;
   box-shadow: rgba(0, 0, 0, 0.117647) 0px 1px 6px 0px, rgba(0, 0, 0, 0.117647) 0px 1px 6px 0px;
   position: absolute;
@@ -28,7 +28,7 @@ md-toolbar{
     padding-top: 5px;
   }
 
-  md-icon{
+  mat-icon{
     width: 50px;
     height: 50px;
     padding: 13px;
@@ -36,28 +36,28 @@ md-toolbar{
     cursor: pointer;
   }
 
-  md-icon.export-button{
-    color: map_get($md-blue, 500);
+  mat-icon.export-button{
+    color: map_get($mat-blue, 500);
   }
 
-  md-icon.edit-button{
-    color: map_get($md-green, 500);
+  mat-icon.edit-button{
+    color: map_get($mat-green, 500);
   }
 
-  md-icon.delete-button{
-    color: map_get($md-red, 500);
+  mat-icon.delete-button{
+    color: map_get($mat-red, 500);
   }
 
-  md-icon.deprecate-button{
-    color: map_get($md-blue-grey, 500);
+  mat-icon.deprecate-button{
+    color: map_get($mat-blue-grey, 500);
   }
 
-  md-icon:hover, md-icon.selected{
+  mat-icon:hover, mat-icon.selected{
     background-color: rgba(0, 0, 0, 0.1);
   }
 
-  md-icon.disabled{
-    color: map_get($md-grey, 500);
+  mat-icon.disabled{
+    color: map_get($mat-grey, 500);
     background-color: transparent;
     cursor: default;
   }
@@ -79,7 +79,7 @@ md-toolbar{
 
 .error-page{
   text-align: center;
-  md-icon{
+  mat-icon{
     font-size: 40px;
     width: 40px;
     height: 40px;
@@ -93,7 +93,7 @@ md-toolbar{
     color: $warning;
   }
   h2{
-    color: map_get($md-grey, 700);
+    color: map_get($mat-grey, 700);
   }
 }
 
@@ -185,7 +185,7 @@ project-route .client-problem .icon{
 }
 
 project-route .client-problem .client-problem-desc{
-  color: map_get($md-red, 500);
+  color: map_get($mat-red, 500);
 }
 
 project-route modal .card{
@@ -204,7 +204,7 @@ project-route .error-page{
   }
 
   h1.error{
-    color: map_get($md-red, 500);
+    color: map_get($mat-red, 500);
   }
 
   h1 i {

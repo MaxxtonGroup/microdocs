@@ -13,18 +13,18 @@
     }
     .subtitle{
       margin: 12px 20px;
-      color: map_get($md-grey, 500);
+      color: map_get($mat-grey, 500);
     }
 
-    md-icon {
+    mat-icon {
       position: relative;
       top: 5px;
     }
-    md-icon[hidden] {
+    mat-icon[hidden] {
       display: none;
     }
   }
-  .header:hover md-icon {
+  .header:hover mat-icon {
     color: $accent;
   }
   .content{
@@ -50,7 +50,7 @@
     h1:hover{
       color: $accent;
     }
-    md-icon {
+    mat-icon {
       top: 7px;
     }
   }

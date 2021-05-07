@@ -12,7 +12,7 @@
   </div>
 
   <div class="search-box">
-    <md-icon>search</md-icon>
+    <mat-icon>search</mat-icon>
     <input type="text" placeholder="Search" (val)="searchQuery" (keyup)="onSearchQueryChange($event.target.value)"/>
   </div>
 
@@ -20,19 +20,19 @@
     <sidebar-list [routes]="menu"></sidebar-list>
   </div>
 
-  <template [ngIf]="!config.isStandAlone">
+  <ng-container *ngIf="!config.isStandAlone">
     <div class="controls-box">
       <a (click)="showImportModal()" class="import-button" mdTooltip="Add new project" mdTooltipPosition="above">
-        <md-icon>add</md-icon>
+        <mat-icon>add</mat-icon>
       </a>
       <a (click)="showExportModal()" class="export-button" mdTooltip="Export all projects" mdTooltipPosition="above">
-        <md-icon>file_download</md-icon>
+        <mat-icon>file_download</mat-icon>
       </a>
       <a (click)="doReindex()" class="reindex-button" mdTooltip="Reïndex" mdTooltipPosition="above">
-        <md-icon>refresh</md-icon>
+        <mat-icon>refresh</mat-icon>
       </a>
     </div>
-  </template>
+  </ng-container>
 
   <div class="footer">
     <a class="microdocs-link" target="_blank" [href]="'http://www.microdocs.io'">microdocs.io</a>

@@ -1,7 +1,7 @@
 <div class="endpoint">
-  <template [ngIf]="endpoint.problems | notEmpty">
+  <ng-container *ngIf="endpoint.problems | notEmpty">
     <problem-box [problems]="endpoint.problems"></problem-box>
-  </template>
+  </ng-container>
   <div class="description">
             <span *ngIf="endpoint.operationId | notEmpty">
                 <a *ngIf="endpoint | notEmpty:'method.sourceLink'" class="link" [href]="endpoint.method.sourceLink" target="_blank">{{endpoint.operationId}}()</a>
@@ -10,10 +10,10 @@
             </span>
     {{endpoint.description}}
   </div>
-  <template [ngIf]="endpoint.parameters | notEmpty">
+  <ng-container *ngIf="endpoint.parameters | notEmpty">
     <h4>Request</h4>
     <div class="request">
-      <template [ngIf]="endpoint.parameters | filterByField:'in':['query','path'] | notEmpty">
+      <ng-container *ngIf="endpoint.parameters | filterByField:'in':['query','path'] | notEmpty">
         <h5>Parameters</h5>
         <ul>
           <table class="parameter-table">
@@ -28,35 +28,35 @@
             </tr>
           </table>
         </ul>
-      </template>
-      <template [ngIf]="endpoint.parameters | filterByField:'in':'body' | notEmpty">
+      </ng-container>
+      <ng-container *ngIf="endpoint.parameters | filterByField:'in':'body' | notEmpty">
         <div *ngFor="let body of endpoint.parameters | filterByField:'in':'body'">
           <body-render [schema]="body.schema" [schemaList]="schemaList" [mimes]="endpoint.consumes"></body-render>
         </div>
-      </template>
+      </ng-container>
     </div>
-  </template>
-  <template [ngIf]="endpoint.responses | notEmpty">
+  </ng-container>
+  <ng-container *ngIf="endpoint.responses | notEmpty">
     <h4>Response</h4>
     <div *ngFor="let response of endpoint.responses | objectIterator | filterByField:'_id':'default'">
-      <template [ngIf]="response | notEmpty">
+      <ng-container *ngIf="response | notEmpty">
         <div class="description response-description">
           {{response.description}}
         </div>
-      </template>
+      </ng-container>
     </div>
     <div *ngFor="let response of endpoint.responses | objectIterator | sortByKey:'_id'" class="response">
-      <template [ngIf]="response | notEmpty">
+      <ng-container *ngIf="response | notEmpty">
         <div class="description response-description">
-          <template [ngIf]="response._id != 'default'">
+          <ng-container *ngIf="response._id != 'default'">
             <span class="response-status">{{response._id + ' ' + getStatusName(response._id)}}</span>
-            <template [ngIf]="response.description | notEmpty"><span> - {{response.description}}</span></template>
-          </template>
+            <ng-container *ngIf="response.description | notEmpty"><span> - {{response.description}}</span></ng-container>
+          </ng-container>
         </div>
-        <template [ngIf]="response.schema | notEmpty">
+        <ng-container *ngIf="response.schema | notEmpty">
           <body-render [schema]="response.schema" [schemaList]="schemaList" [mimes]="endpoint.produces"></body-render>
-        </template>
-      </template>
+        </ng-container>
+      </ng-container>
     </div>
-  </template>
+  </ng-container>
 </div>

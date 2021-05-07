@@ -19,7 +19,7 @@ import {Pipe} from "@angular/core";
 })
 export class EmptyPipe {
 
-  transform(rootValue:any, path?:string):boolean {
+  transform(rootValue: any, path?: string): boolean {
     // check if the rootValue is empty
     if (this.isEmpty(rootValue)) {
       return true;
@@ -27,10 +27,10 @@ export class EmptyPipe {
 
     // follow the path if exists
     if (path != undefined) {
-      var currentObject = rootValue;
-      var segments = path.split(".");
+      let currentObject = rootValue;
+      let segments = path.split(".");
       console.info(segments);
-      for (var i = 0; i < segments.length; i++) {
+      for (let i = 0; i < segments.length; i++) {
         currentObject = currentObject[segments[i]];
         if (this.isEmpty(currentObject)) {
           return true;
@@ -45,7 +45,7 @@ export class EmptyPipe {
    * @param value
    * @returns {boolean}
    */
-  private isEmpty(value:any):boolean {
+  private isEmpty(value: any): boolean {
     if (value == undefined || value == null) {
       return true;
     }
@@ -53,8 +53,8 @@ export class EmptyPipe {
       if (value.length == 0) {
         return true;
       }
-    }else if(typeof(value) == 'object'){
-      if(Object.keys(value).length == 0){
+    } else if (typeof(value) == 'object') {
+      if (Object.keys(value).length == 0) {
         return true;
       }
     }

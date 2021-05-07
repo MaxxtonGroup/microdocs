@@ -5,12 +5,12 @@
   width: 500px;
 
   h2{
-    color: map_get($md-blue, 500);
+    color: map_get($mat-blue, 500);
     font-size: 20px;
     margin-bottom: 20px;
   }
 
-  h2 md-icon{
+  h2 mat-icon{
     position: relative;
     top: 5px;
     color: white;
@@ -20,7 +20,7 @@
     width: 36px;
     text-align: center;
     margin-right: 10px;
-    background-color: map_get($md-blue, 500);
+    background-color: map_get($mat-blue, 500);
   }
 
   h6, h5 {

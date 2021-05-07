@@ -8,9 +8,9 @@ import { Component, OnInit, Input } from '@angular/core';
 export class ExportDialogComponent {
 
   @Input( "project" )
-  defaultProject:string = null;
+  defaultProject: string = null;
   @Input( "version" )
-  defaultVersion:string = null;
+  defaultVersion: string = null;
 
   constructor() { }
 

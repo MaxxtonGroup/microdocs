@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
+import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from "@angular/router";
 import {PrettyJsonModule} from 'angular2-prettyjson';
 
@@ -12,8 +12,8 @@ import { RestProjectClient } from "./clients/rest-project.client";
 import { StandaloneProjectClient } from "./clients/standalone-project.client";
 import { SidebarComponent } from "./components/sidebar/sidebar.component";
 import { DashboardComponent } from "./components/dashboard/dashboard.component";
-import { MaterialModule } from "@angular/material";
-import 'hammerjs';
+import { MatSnackBarModule } from "@angular/material/snack-bar";
+import { MatDialogModule } from "@angular/material/dialog";
 import { SidebarListComponent } from './components/sidebar-list/sidebar-list.component';
 import { IconGeneratorComponent } from './components/icon-generator/icon-generator.component';
 import { SortByHttpMethodPipe } from "./pipes/sort-by-http-method.pipe";
@@ -36,6 +36,13 @@ import { ImportDialogComponent } from "./components/import-dialog/import-dialog.
 import { ExportPanelComponent } from "./components/export-panel/export-panel.component";
 import { DialogBaseComponent } from './components/dialog-base/dialog-base.component';
 import { ExportDialogComponent } from './components/export-dialog/export-dialog.component';
+import { MatSidenavModule } from "@angular/material/sidenav";
+import { MatIconModule } from "@angular/material/icon";
+import { MatListModule } from "@angular/material/list";
+import { MatToolbarModule } from "@angular/material/toolbar";
+import { MatInputModule } from "@angular/material/input";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { CommonModule } from "@angular/common";
 
 @NgModule({
   declarations: [
@@ -72,9 +79,17 @@ import { ExportDialogComponent } from './components/export-dialog/export-dialog.
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     FormsModule,
-    HttpModule,
-    MaterialModule.forRoot(),
+    HttpClientModule,
+    MatDialogModule,
+    MatSnackBarModule,
+    MatSidenavModule,
+    MatIconModule,
+    MatListModule,
+    MatToolbarModule,
+    MatInputModule,
+    CommonModule,
     RouterModule.forRoot([
       {
         path: 'dashboard',

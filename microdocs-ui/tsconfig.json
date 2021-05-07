@@ -1,26 +1,22 @@
 {
   "compilerOptions": {
-    "moduleResolution": "node",
-    "module": "es2015",
-    "target": "es2015",
     "baseUrl": "",
     "declaration": false,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "lib": ["es6", "dom"],
     "mapRoot": "./",
+    "module": "es6",
+    "moduleResolution": "node",
     "outDir": "../dist/out-tsc",
     "sourceMap": true,
+    "target": "es5",
     "typeRoots": [
       "../node_modules/@types"
+    ],
+    "types": [
+      "hammerjs"
     ]
   },
-  "files": [
-    "main.ts",
-    "polyfills.ts"
-  ],
-  "exclude": ["node_modules", "**/*.po.ts", "**/*.e2e*", "src/test.ts"],
-  "angularCompilerOptions": {
-    "enableIvy": false
-  }
+  "exclude": ["node_modules", "**/*.po.ts", "**/*.e2e*"]
 }

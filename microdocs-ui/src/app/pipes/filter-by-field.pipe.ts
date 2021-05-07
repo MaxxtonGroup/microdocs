@@ -13,36 +13,34 @@ import { Pipe } from "@angular/core";
 export class FilterByFieldPipe {
 
   transform( list: any, path: string, value: any ): any {
-    var self = this;
+    let self = this;
     if ( list == undefined || list == null ) {
       return list;
     }
     if ( Array.isArray( list ) ) {
       return list.filter( ( item: Object ) => {
-        var fieldValue = this.getFieldValue( item, path );
+        let fieldValue = this.getFieldValue( item, path );
         return self.filter( fieldValue, value );
       } );
-    }
-    else if ( typeof(list) == 'object' ) {
-      var filteredObject = {};
-      for ( var key in list ) {
-        var fieldValue = this.getFieldValue( list[ key ], path );
+    } else if ( typeof(list) == 'object' ) {
+      let filteredObject = {};
+      for ( let key in list ) {
+        let fieldValue = this.getFieldValue( list[ key ], path );
         if ( self.filter( fieldValue, value ) ) {
           filteredObject[ key ] = list[ key ];
         }
       }
       return filteredObject;
-    }
-    else {
+    } else {
       console.warn( "filterByField requires an Array as input, not " + typeof(list) );
       return list;
     }
   }
 
   filter( fieldValue: any, value: any ): boolean {
-    var equals = fieldValue == value;
+    let equals = fieldValue == value;
     if ( !equals && Array.isArray( value ) ) {
-      value.forEach( ( v: any )=> {
+      value.forEach( ( v: any ) => {
         if ( fieldValue == v ) {
           equals = true;
         }
@@ -52,7 +50,7 @@ export class FilterByFieldPipe {
   }
 
   getFieldValue( item: {}, path: string ): any {
-    var currentItem = item;
+    let currentItem = item;
     path.split( "." ).forEach( segment => {
       if ( currentItem == undefined || currentItem == null ) {
         return true;
