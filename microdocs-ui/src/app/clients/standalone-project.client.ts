@@ -1,14 +1,6 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-//import {
-//  RestClient,
-//  HttpClient,
-//  Get,
-//  Path,
-//  Query,
-//  Map,
-//  Produces, MediaType, Client
-//} from "@maxxton/angular-rest";
+
 import { ProjectTree, Project, Environments, ProjectChangeRule, ProblemResponse } from "@maxxton/microdocs-core/dist/domain";
 import { Observable } from "rxjs";
 import { SchemaHelper } from "@maxxton/microdocs-core/dist/helpers/schema/schema.helper";
@@ -19,14 +11,6 @@ import { map } from "rxjs/operators";
  * Client for the standalone implementation.
  * Uses static json files
  */
-//@Client( {
-//  serviceId: 'static',
-//  baseUrl: "/data",
-//  headers: {
-//    'Accept': 'application/json',
-//    'Content-Type': 'application/json'
-//  }
-//} )
 @Injectable()
 export class StandaloneProjectClient implements ProjectClient {
 
@@ -41,8 +25,8 @@ export class StandaloneProjectClient implements ProjectClient {
    * @httpPath env for which environment, default is the current one
    * @httpResponse 200 {TreeNode}
    */
-//  @Get( "/projects-{env}.json" )
-//  @Map( resp => ProjectTree.link( resp.json() ) )
+
+
   public loadProjects( /*@Path( "env", { value: 'default' } ) */env: string ): Observable<ProjectTree> {
     return this.http.get(`${this.baseUrl}/projects-${env}.json`).pipe(map(resp => ProjectTree.link( resp )));
   }
@@ -54,8 +38,8 @@ export class StandaloneProjectClient implements ProjectClient {
    * @httpPath env for which environment, default is the current one
    * @httpResponse 200 {Project}
    */
-//  @Get( "/projects/{title}-{env}-{version}.json" )
-//  @Map( resp => SchemaHelper.resolveObject( resp.json() ) )
+
+
   public loadProject( /*@Path( "env", { value: 'default' } )*/ env: string, /*@Path( "title" )*/ title: string, /*@Path( "version" )*/ version?: string ): Observable<Project> {
     return this.http.get(`${this.baseUrl}/projects/${title}-${env}-${version}.json`).pipe(map(resp => SchemaHelper.resolveObject( resp )));
   }
@@ -64,8 +48,8 @@ export class StandaloneProjectClient implements ProjectClient {
    * Load all the environments
    * @httpResponse 200 {{[key:string]:Environments}} map of environments
    */
-//  @Get( "/envs.json" )
-//  @Map( resp => resp.json() )
+
+
   public getEnvs(): Observable<{ [key: string]: Environments }> {
     return this.http.get<{[key: string]: Environments}>(`${this.baseUrl}/envs.json`);
   }
@@ -78,7 +62,7 @@ export class StandaloneProjectClient implements ProjectClient {
     throw new Error( 'Delete project is not supported in standalone' );
   }
 
-  public updateProject( env: string, name: string, rules: ProjectChangeRule[], version?: string ): Observable<any> {
+  public updateProject( env: string, name: string, rules: Array<ProjectChangeRule>, version?: string ): Observable<any> {
     throw new Error( 'Update project is not supported in standalone' );
   }
 

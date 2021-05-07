@@ -103,9 +103,9 @@ export class ProjectService {
     this.snackbar.open(friendlyMessage, undefined, {duration: 3000});
 //    this.snackbarService.addNotification( friendlyMessage, undefined, undefined, 'error_outline', undefined );
     try {
-      let body = error.json();
-      let e    = body.error;
-      let msg  = body.message;
+      const body = error.json();
+      const e    = body.error;
+      const msg  = body.message;
       if ( e ) {
         console.error( e + (msg ? ' (' + msg + ')' : '') );
       }

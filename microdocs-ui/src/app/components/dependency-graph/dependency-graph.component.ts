@@ -58,9 +58,9 @@ export class DependencyGraphComponent {
     this.subscription = this.nodes.subscribe( data => {
       this.data = data;
       this.groupToggles = [];
-      if( this.data && this.data.projects ) {
+      if ( this.data && this.data.projects ) {
         this.data.projects.forEach( project => {
-          if( this.groupToggles.filter( groupToggle => groupToggle.name === project.group ).length == 0 ) {
+          if ( this.groupToggles.filter( groupToggle => groupToggle.name === project.group ).length == 0 ) {
             this.groupToggles.push( new GroupItem( project.group, this.isGroupVisible( project.group ) ) );
           }
         } );
@@ -71,16 +71,16 @@ export class DependencyGraphComponent {
 
   private updateData() {
     const newTree = new ProjectTree();
-    if( this.data && this.data.projects ) {
+    if ( this.data && this.data.projects ) {
       this.data.projects
         .filter( projectNode => this.groupToggles.filter( groupToggle => groupToggle.name === projectNode.group && groupToggle.visible ).length > 0 )
         .forEach( projectNode => newTree.addProject( projectNode ) );
 
-      if( this.projectName ) {
+      if ( this.projectName ) {
         const removeNodes: Array<ProjectNode> = [];
         newTree.projects.forEach( projectNode => {
-          if( projectNode.title !== this.projectName ) {
-            if( (projectNode.dependencies == undefined || projectNode.dependencies.filter( dependency => dependency.item.title === this.projectName ).length == 0) &&
+          if ( projectNode.title !== this.projectName ) {
+            if ( (projectNode.dependencies == undefined || projectNode.dependencies.filter( dependency => dependency.item.title === this.projectName ).length == 0) &&
               newTree.projects.filter( projectNode => projectNode.title === this.projectName ).filter( node => node.dependencies.filter( dep => dep.item.title === projectNode.title ).length > 0 ).length == 0 ) {
               removeNodes.push( projectNode );
             } else {
@@ -96,13 +96,13 @@ export class DependencyGraphComponent {
   }
 
   ngOnDestroy() {
-    if( this.subscription ) {
+    if ( this.subscription ) {
       this.subscription.unsubscribe();
     }
   }
 
   onResize() {
-    if( this.force != undefined ) {
+    if ( this.force != undefined ) {
       this.updateData();
     }
   }
@@ -116,10 +116,10 @@ export class DependencyGraphComponent {
     name = segments[ 0 ];
     let version = segments[ 1 ];
     const results = this.data.projects.filter( projectNode => projectNode.title === name );
-    if( results.length == 0 ) {
+    if ( results.length == 0 ) {
       console.error( 'could not find project ' + name );
     } else {
-      if( !version ) {
+      if ( !version ) {
         version = results[ 0 ].version;
       }
       this.router.navigate( [ '/projects/' + name ], {
@@ -133,7 +133,7 @@ export class DependencyGraphComponent {
 
   isGroupVisible( name: string ): boolean {
     const value = window.localStorage.getItem( 'dashboard.visible-groups.' + name );
-    if( value === 'false' ) {
+    if ( value === 'false' ) {
       return false;
     }
     return true;
@@ -142,7 +142,7 @@ export class DependencyGraphComponent {
   toggleGroup( item: GroupItem ): void {
     item.visible = !item.visible;
     const key = 'dashboard.visible-groups.' + item.name;
-    if( !item.visible ) {
+    if ( !item.visible ) {
       localStorage.setItem( key, 'false' );
     } else {
       localStorage.removeItem( key );
@@ -153,7 +153,7 @@ export class DependencyGraphComponent {
   toggleShowVersions() {
     this.showVersions = !this.showVersions;
     const key = 'dashboard.showVersions';
-    if( this.showVersions ) {
+    if ( this.showVersions ) {
       localStorage.setItem( key, 'true' );
     } else {
       localStorage.removeItem( key );
@@ -163,7 +163,7 @@ export class DependencyGraphComponent {
 
   isShowVersions(): boolean {
     const value = window.localStorage.getItem( 'dashboard.showVersions' );
-    if( value === 'true' ) {
+    if ( value === 'true' ) {
       return true;
     }
     return false;
@@ -172,7 +172,7 @@ export class DependencyGraphComponent {
   toggleShowInheritance() {
     this.showInheritance = !this.showInheritance;
     const key = 'dashboard.showInheritance';
-    if( !this.showInheritance ) {
+    if ( !this.showInheritance ) {
       localStorage.setItem( key, 'false' );
     } else {
       localStorage.removeItem( key );
@@ -182,7 +182,7 @@ export class DependencyGraphComponent {
 
   isShowInheritance(): boolean {
     const value = window.localStorage.getItem( 'dashboard.showInheritance' );
-    if( value === 'false' ) {
+    if ( value === 'false' ) {
       return false;
     }
     return true;
@@ -191,19 +191,19 @@ export class DependencyGraphComponent {
   transformData( projectTree: ProjectTree ) {
     const nodes = {};
     const links = [];
-    if( projectTree.projects ) {
+    if ( projectTree.projects ) {
       let tree = projectTree;
-      if( this.showVersions ) {
+      if ( this.showVersions ) {
         const newTree: ProjectTree = new ProjectTree();
         tree.projects.forEach( projectNode => this.transformFlatList( projectNode, newTree ) );
         tree = newTree;
       }
-      if( !this.showInheritance ) {
+      if ( !this.showInheritance ) {
         tree = this.transformInheritance( tree );
       }
       tree.projects.forEach( projectNode => {
         nodes[ projectNode.title ] = { name: projectNode.title, group: projectNode.group, color: projectNode.color };
-        if( projectNode.dependencies ) {
+        if ( projectNode.dependencies ) {
           projectNode.dependencies.forEach( dependency => {
             try {
               const item = dependency.item.resolve() as ProjectNode;
@@ -224,10 +224,10 @@ export class DependencyGraphComponent {
 
   transformFlatList( projectNode: ProjectNode, projectTree: ProjectTree ) {
     const dependencies: Array<DependencyNode> = [];
-    if( projectNode.dependencies ) {
+    if ( projectNode.dependencies ) {
       projectNode.dependencies.forEach( dependency => {
         let item: ProjectNode = dependency.item;
-        if( item.reference ) {
+        if ( item.reference ) {
           try {
             item = (item.resolve() as ProjectNode);
           } catch ( e ) {
@@ -263,12 +263,12 @@ export class DependencyGraphComponent {
   transformInheritanceProject( projectNode: ProjectNode, removeNodes: Array<string> ): ProjectNode {
     const newNode = new ProjectNode( projectNode.title, undefined, projectNode.group, projectNode.version, projectNode.versions, projectNode.problems );
     newNode.color = projectNode.color;
-    if( projectNode.dependencies ) {
+    if ( projectNode.dependencies ) {
       const addDeps: Array<DependencyNode> = [];
       const removeDeps: Array<DependencyNode> = [];
       projectNode.dependencies.forEach( dependencyNode => {
         let newDep;
-        if( !dependencyNode.item.reference ) {
+        if ( !dependencyNode.item.reference ) {
           newDep = new DependencyNode( this.transformInheritanceProject( dependencyNode.item, removeNodes ), dependencyNode.type, dependencyNode.problems );
         } else {
           const refProjectNode = new ProjectNode( dependencyNode.item.title );
@@ -278,7 +278,7 @@ export class DependencyGraphComponent {
         }
         newNode.addDependency( newDep );
 
-        if( newDep.type === DependencyTypes.INCLUDES ) {
+        if ( newDep.type === DependencyTypes.INCLUDES ) {
           removeDeps.push( newDep );
           const item = dependencyNode.item.resolve() as ProjectNode;
           removeNodes.push( item.title );
@@ -293,7 +293,7 @@ export class DependencyGraphComponent {
   }
 
   chartData( data: {} ): void {
-    if( this.force ) {
+    if ( this.force ) {
       this.force.stop();
     }
     const { width, height } = this.containerRef.element.nativeElement.getBoundingClientRect();

@@ -10,15 +10,15 @@ import {Pipe} from "@angular/core";
 })
 export class NotEmptyPipe {
 
-  transform(value:any, path?:string):boolean {
+  transform(value: any, path?: string): boolean {
     if (this.isEmpty(value)) {
       return false;
     }
 
     if (path != undefined) {
-      var currentObject = value;
-      var segments = path.split(".");
-      for (var i = 0; i < segments.length; i++) {
+      let currentObject = value;
+      let segments = path.split(".");
+      for (let i = 0; i < segments.length; i++) {
         currentObject = currentObject[segments[i]];
         if (this.isEmpty(currentObject)) {
           return false;
@@ -28,7 +28,7 @@ export class NotEmptyPipe {
     return true;
   }
 
-  private isEmpty(value:any):boolean {
+  private isEmpty(value: any): boolean {
     if (value == undefined || value == null) {
       return true;
     }
@@ -36,8 +36,8 @@ export class NotEmptyPipe {
       if (value.length == 0) {
         return true;
       }
-    }else if(typeof(value) == 'object'){
-      if(Object.keys(value).length == 0){
+    } else if (typeof(value) == 'object') {
+      if (Object.keys(value).length == 0) {
         return true;
       }
     }

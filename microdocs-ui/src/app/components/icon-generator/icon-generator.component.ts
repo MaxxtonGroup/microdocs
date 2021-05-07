@@ -14,7 +14,7 @@ export class IconGeneratorComponent {
   @Input( "color" )
   private color: string;
   @Input()
-  private small:boolean = false;
+  private small: boolean = false;
 
   private initials: string;
 
@@ -23,8 +23,8 @@ export class IconGeneratorComponent {
       this.initials = null;
       return;
     }
-    let first     = this.text.substr( 0, 1 );
-    let second    = this.text.substr( 1, 1 );
+    const first     = this.text.substr( 0, 1 );
+    const second    = this.text.substr( 1, 1 );
     this.initials = first.toUpperCase() + second.toLowerCase();
 
     if ( !this.color ) {

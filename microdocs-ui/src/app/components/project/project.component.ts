@@ -9,7 +9,7 @@ import {SchemaHelper} from "@maxxton/microdocs-core/dist/helpers/schema/schema.h
 import { ProjectChangeRule } from "@maxxton/microdocs-core/dist/domain/settings/project-change-rule.model";
 
 import {ProjectService} from "../../services/project.service";
-import {environment} from '../../../environments/environment'
+import {environment} from '../../../environments/environment';
 import { StringUtil } from "../../helpers/string.util";
 import { MatDialog } from "@angular/material/dialog";
 import { ExportDialogComponent } from "../export-dialog/export-dialog.component";
@@ -24,23 +24,23 @@ export class ProjectComponent {
 
   config = environment;
 
-  private projects:ProjectTree;
-  private nodes:Subject<ProjectTree> = new ReplaySubject<ProjectTree>(1);
+  private projects: ProjectTree;
+  private nodes: Subject<ProjectTree> = new ReplaySubject<ProjectTree>(1);
 
-  private title:string;
-  private version:string;
-  private versions:string[];
-  private project:Project = {};
+  private title: string;
+  private version: string;
+  private versions: Array<string>;
+  private project: Project = {};
 
-  private loading:boolean = true;
-  private notFound:boolean = false;
-  private error:string;
+  private loading: boolean = true;
+  private notFound: boolean = false;
+  private error: string;
 
-  private subscribtions:Subscription[] = [];
-  private projectSubscribtion:Subscription;
+  private subscribtions: Array<Subscription> = [];
+  private projectSubscribtion: Subscription;
 
-  private queryParams:Params;
-  private pathParams:Params;
+  private queryParams: Params;
+  private pathParams: Params;
 
   private color = 'blue-gray';
 
@@ -49,12 +49,12 @@ export class ProjectComponent {
   private uses = DependencyTypes.USES;
   private includes = DependencyTypes.INCLUDES;
 
-  constructor(private projectService:ProjectService,
-              private activatedRoute:ActivatedRoute,
-              private router:Router,
-              private mdDialog:MatDialog) {
+  constructor(private projectService: ProjectService,
+              private activatedRoute: ActivatedRoute,
+              private router: Router,
+              private mdDialog: MatDialog) {
 
-    //load metadata
+    // load metadata
     this.projectService.getProjects().subscribe(notification => {
       notification.do(projects => {
         this.projects = projects;
@@ -97,7 +97,7 @@ export class ProjectComponent {
     this.loadProject(this.title, this.version);
   }
 
-  loadProject(title:string, version:string) {
+  loadProject(title: string, version: string) {
     if (this.projectSubscribtion) {
       this.projectSubscribtion.unsubscribe();
     }
@@ -109,34 +109,34 @@ export class ProjectComponent {
         this.error = undefined;
       }, (error) => {
         this.loading = false;
-        if(notification.error.status == 404){
+        if (notification.error.status == 404) {
           this.notFound = true;
           this.error = "Not Found";
-        }else{
+        } else {
           this.notFound = false;
-          this.error = "Something went wrong"
+          this.error = "Something went wrong";
         }
       });
     });
   }
 
-  onChangeVersion(version:string) {
-    var url = '/projects/' + this.title;
+  onChangeVersion(version: string) {
+    const url = '/projects/' + this.title;
     this.router.navigate([url], {
       queryParams: {
-        version: version,
+        version,
         env: this.projectService.getSelectedEnv()
       }
     });
   }
 
-  getModelSourceLink(sourceLink:string, name:string, schema:Schema) {
+  getModelSourceLink(sourceLink: string, name: string, schema: Schema) {
     if (sourceLink != null && sourceLink != undefined) {
-      var schemaSettings = {
+      const schemaSettings = {
         class: {
           type: schema.type,
           simpleName: schema.name,
-          name: name,
+          name,
           path: name.replace(new RegExp('\\.', 'g'), '/'),
           lineNumber: 0
         }
@@ -147,15 +147,15 @@ export class ProjectComponent {
     return sourceLink;
   }
 
-  getDependencyLink(dependency:Dependency):string {
+  getDependencyLink(dependency: Dependency): string {
     return '/projects/' + dependency['_id'];
   }
 
-  getLastDependencyParams(dependency:Dependency):{} {
+  getLastDependencyParams(dependency: Dependency): {} {
     return {version: dependency.latestVersion, env: this.projectService.getSelectedEnv()};
   }
 
-  getDependencyParams(dependency:Dependency):{} {
+  getDependencyParams(dependency: Dependency): {} {
     return {version: dependency.version, env: this.projectService.getSelectedEnv()};
   }
 
@@ -164,7 +164,7 @@ export class ProjectComponent {
       this.projects.projects.forEach(project => {
         if (project.title === this.title) {
           this.versions = project.versions;
-          if(this.version && this.versions.indexOf(this.version) == -1){
+          if (this.version && this.versions.indexOf(this.version) == -1) {
             this.versions.push(this.version);
           }
           this.versions = this.versions.sort();
@@ -174,9 +174,9 @@ export class ProjectComponent {
     }
   }
 
-  toggleDeprecated(){
+  toggleDeprecated() {
     this.project.deprecated = !this.project.deprecated;
-    let rules = [
+    const rules = [
         new ProjectChangeRule('deprecated', ProjectChangeRule.TYPE_ALTER, this.project.deprecated, ProjectChangeRule.SCOPE_VERSION)
     ];
     this.projectService.updateProject(this.title, rules, this.version).subscribe(resp => {
@@ -184,19 +184,19 @@ export class ProjectComponent {
     });
   }
 
-  timeEquals(updateTime:string, publishTime:string):boolean{
+  timeEquals(updateTime: string, publishTime: string): boolean {
     return new Date(updateTime).getTime() - new Date(publishTime).getTime() > 1000;
   }
 
-  showExportModal():void{
+  showExportModal(): void {
 //    let ref = this.mdDialog.open(ExportDialogComponent);
   }
 
-  showEditModal():void{
+  showEditModal(): void {
 
   }
 
-  showDeleteModal():void{
+  showDeleteModal(): void {
 
   }
 }

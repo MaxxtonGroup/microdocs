@@ -12,7 +12,7 @@ export class SidebarListComponent {
   }
 
   @Input()
-  private routes: any[];
+  private routes: Array<any>;
 
   public getIcon( route: RouteInfo ): string {
     if ( route.open ) {
@@ -22,16 +22,16 @@ export class SidebarListComponent {
     }
   }
 
-  public isLink( route: RouteInfo):boolean{
+  public isLink( route: RouteInfo): boolean {
     return !!(route.path && route.path.trim());
   }
 
-  public toggleRoute(route:RouteInfo):void{
+  public toggleRoute(route: RouteInfo): void {
     route.open = !route.open;
   }
 
-  public getColor(route:RouteInfo):string{
-    if(route.generateIconColor){
+  public getColor(route: RouteInfo): string {
+    if (route.generateIconColor) {
       return route.generateIconColor;
     }
     return null;

@@ -9,14 +9,14 @@ import {Path, Schema, Project, Method} from '@maxxton/microdocs-core/dist/domain
 export class EndpointComponent {
 
   @Input()
-  private endpoint:Path;
+  private endpoint: Path;
   @Input()
-  private path:string;
+  private path: string;
   @Input()
-  schemaList:{[key:string]:Schema};
+  schemaList: {[key: string]: Schema};
 
-  getStatusName(statusCode : string){
-    switch(statusCode.trim()){
+  getStatusName(statusCode: string) {
+    switch (statusCode.trim()) {
       case '200': return 'OK';
       case '201': return 'CREATED';
       case '204': return 'NO CONTENT';

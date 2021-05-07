@@ -20,11 +20,11 @@ import { Router } from "@angular/router";
 
 export class DashboardComponent {
 
-  loading:boolean = true;
-  empty:boolean = false;
-  nodes:Subject<ProjectTree> = new ReplaySubject<ProjectTree>(1);
+  loading: boolean = true;
+  empty: boolean = false;
+  nodes: Subject<ProjectTree> = new ReplaySubject<ProjectTree>(1);
 
-  constructor(private projectService:ProjectService, private router:Router){
+  constructor(private projectService: ProjectService, private router: Router) {
     this.projectService.getProjects().subscribe(notification => {
       notification.do(data => {
         this.loading = false;

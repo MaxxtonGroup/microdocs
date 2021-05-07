@@ -12,14 +12,14 @@ import { Pipe } from "@angular/core";
 })
 export class ObjectIteratorPipe {
 
-  transform(object:{}) : Array<any>{
-    if(object == undefined || object == null){
+  transform(object: {}): Array<any> {
+    if (object == undefined || object == null) {
       return [];
     }
-    var result : Array<any> = [];
-    for(var key in object){
-      if(key != '_id') {
-        var value = object[key];
+    let result: Array<any> = [];
+    for (let key in object) {
+      if (key != '_id') {
+        let value = object[key];
         if (value != undefined && value != null && typeof(value) == 'object' && !Array.isArray(value)) {
           value._id = key;
         }

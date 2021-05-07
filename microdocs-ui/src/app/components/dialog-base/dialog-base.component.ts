@@ -7,20 +7,20 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 })
 export class DialogBaseComponent {
 
-  private show:boolean = false;
+  private show: boolean = false;
 
   constructor() { }
 
-  public close(){
+  public close() {
     this.show = false;
 
   }
 
-  public open(){
+  public open() {
     this.show = true;
   }
 
-  public toggle(){
+  public toggle() {
     this.show = !this.show;
   }
 

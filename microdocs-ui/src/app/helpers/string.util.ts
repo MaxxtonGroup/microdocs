@@ -1,7 +1,7 @@
 export class StringUtil {
 
   public static getColorCodeFromString( string: string ) {
-    let colorRanges   = {
+    const colorRanges   = {
       'pink': [ 'a', 'b' ],
       'red': [ 'c', 'd' ],
       'orange': [ 'e', 'f' ],
@@ -16,7 +16,7 @@ export class StringUtil {
       'indigo': [ 'w', 'x' ],
       'purple': [ 'y', 'z' ]
     };
-    let first         = string.substr( 0, 1 ).toLowerCase();
+    const first         = string.substr( 0, 1 ).toLowerCase();
     let selectedColor = "amber";
 
     Object.keys( colorRanges ).forEach( function ( color ) {
@@ -24,7 +24,7 @@ export class StringUtil {
         if ( char == first ) {
           selectedColor = color;
         }
-      } )
+      } );
     } );
     return selectedColor;
   }

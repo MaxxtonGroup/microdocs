@@ -12,9 +12,9 @@ import { Schema } from "@maxxton/microdocs-core/dist/domain";
 export class EndpointGroupComponent {
 
   @Input()
-  endpointGroup:any;
+  endpointGroup: any;
   @Input()
-  schemaList:{[key:string]:Schema};
+  schemaList: {[key: string]: Schema};
 
   hidden = true;
 

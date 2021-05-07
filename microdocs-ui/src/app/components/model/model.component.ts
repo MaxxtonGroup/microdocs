@@ -11,22 +11,22 @@ import {Schema} from "@maxxton/microdocs-core/dist/domain";
 export class ModelComponent {
 
   @Input()
-  schema:Schema;
+  schema: Schema;
 
-  example:{};
+  example: {};
 
   ngOnChanges() {
     this.example = SchemaHelper.generateExample(this.schema);
   }
 
-  getSubTitle(schema:Schema){
+  getSubTitle(schema: Schema) {
     let tables = "";
-    if(schema.mappings != undefined && schema.mappings != null &&
+    if (schema.mappings != undefined && schema.mappings != null &&
           schema.mappings.relational != undefined && schema.mappings.relational != null &&
-          schema.mappings.relational.tables != undefined && schema.mappings.relational.tables != null){
+          schema.mappings.relational.tables != undefined && schema.mappings.relational.tables != null) {
       schema.mappings.relational.tables.forEach(table => tables += table + ", ");
-      if(tables.length > 1){
-        tables = "(" + tables.substring(0, tables.length-2) + ")";
+      if (tables.length > 1) {
+        tables = "(" + tables.substring(0, tables.length - 2) + ")";
       }
     }
     return tables;

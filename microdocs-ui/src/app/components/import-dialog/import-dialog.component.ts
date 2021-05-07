@@ -11,67 +11,70 @@ import {ProjectService} from "../../services/project.service";
   templateUrl: 'import-dialog.component.html',
   styleUrls: ['import-dialog.component.scss']
 })
-export class ImportDialogComponent{
+export class ImportDialogComponent {
 
-  project:Project = null;
-  projectInfo:ProjectInfo = new ProjectInfo();
+  project: Project = null;
+  projectInfo: ProjectInfo = new ProjectInfo();
 
-  jsonError:string = "";
-  generalError:string = "";
-  problemsErrors:string[] = [];
-  valid:boolean = false;
-  projectDefinition:string = '';
+  jsonError: string = "";
+  generalError: string = "";
+  problemsErrors: Array<string> = [];
+  valid: boolean = false;
+  projectDefinition: string = '';
 
-  constructor(private projectService:ProjectService, private router:Router){}
+  constructor(private projectService: ProjectService, private router: Router) {}
 
-  onProjectInserted($event){
+  onProjectInserted($event) {
     this.projectDefinition = $event.target.value;
     this.jsonError = "";
-    try{
+    try {
       this.project = JSON.parse(this.projectDefinition);
-    }catch(e){
+    } catch (e) {
       this.valid = false;
       this.jsonError = "Invalid json";
       return;
     }
 
-    if(this.project.info){
-      if(this.project.info.title)
+    if (this.project.info) {
+      if (this.project.info.title) {
         this.projectInfo.title = this.project.info.title;
-      if(this.project.info.group)
+      }
+      if (this.project.info.group) {
         this.projectInfo.group = this.project.info.group;
-      if(this.project.info.version)
+      }
+      if (this.project.info.version) {
         this.projectInfo.version = this.project.info.version;
+      }
     }
   }
 
-  onSubmit(){
+  onSubmit() {
     this.generalError = "";
     this.problemsErrors = [];
-    if(this.jsonError){
+    if (this.jsonError) {
       this.generalError = this.jsonError;
       return;
     }
 
-    if(!this.projectInfo.title || this.projectInfo.title.trim() === ""){
+    if (!this.projectInfo.title || this.projectInfo.title.trim() === "") {
       this.generalError = "Project name is empty";
       return;
     }
-    if(!this.projectInfo.group || this.projectInfo.group.trim() === ""){
+    if (!this.projectInfo.group || this.projectInfo.group.trim() === "") {
       this.generalError = "Group is empty";
       return;
     }
-    if(!this.projectInfo.version || this.projectInfo.version.trim() === ""){
+    if (!this.projectInfo.version || this.projectInfo.version.trim() === "") {
       this.generalError = "Version is empty";
       return;
     }
 
-    this.projectService.importProject(this.project, this.projectInfo.title, this.projectInfo.group, this.projectInfo.version).subscribe((problemResponse:ProblemResponse) => {
-      if(problemResponse.status === 'ok') {
-        let url = "/projects/" + this.projectInfo.group + "/" + this.projectInfo.title + "?version=" + this.projectInfo.version + "&env=" + this.projectService.getSelectedEnv();
+    this.projectService.importProject(this.project, this.projectInfo.title, this.projectInfo.group, this.projectInfo.version).subscribe((problemResponse: ProblemResponse) => {
+      if (problemResponse.status === 'ok') {
+        const url = "/projects/" + this.projectInfo.group + "/" + this.projectInfo.title + "?version=" + this.projectInfo.version + "&env=" + this.projectService.getSelectedEnv();
         this.projectService.refreshProjects( this.projectService.getSelectedEnv(), true );
         this.router.navigateByUrl( url );
-      }else{
+      } else {
         this.problemsErrors = problemResponse.problems.map(problem => problem.message);
       }
     }, error => {
@@ -81,8 +84,8 @@ export class ImportDialogComponent{
 
 }
 
-export class ProjectInfo{
-  title:string;
-  group:string;
-  version:string;
+export class ProjectInfo {
+  title: string;
+  group: string;
+  version: string;
 }

@@ -11,25 +11,25 @@ import {Schema} from '@maxxton/microdocs-core/dist/domain';
 export class BodyRenderComponent {
 
   @Input()
-  private contentTypes:string[];
+  private contentTypes: Array<string>;
   @Input()
-  private schema:Schema;
+  private schema: Schema;
   @Input()
-  private mimes:string[];
+  private mimes: Array<string>;
   @Input()
-  schemaList:{[key:string]:Schema};
+  schemaList: {[key: string]: Schema};
 
-  private example:string;
+  private example: string;
 
-  ngOnInit(){
+  ngOnInit() {
 
   }
 
-  ngOnChanges(){
+  ngOnChanges() {
     this.selectSchema(this.schema);
   }
 
-  selectSchema(schema:Schema):void{
+  selectSchema(schema: Schema): void {
     this.example = SchemaHelper.generateExample(schema, undefined, [], this.schemaList);
   }
 

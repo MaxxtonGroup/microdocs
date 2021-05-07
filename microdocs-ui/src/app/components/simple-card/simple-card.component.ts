@@ -12,9 +12,9 @@ export class SimpleCardComponent {
   @Input()
   private text: string;
   @Input()
-  private subTitle:string;
+  private subTitle: string;
   @Input()
-  private paper:boolean;
+  private paper: boolean;
 
   constructor() {
   }

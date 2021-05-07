@@ -17,24 +17,24 @@ import { ProjectService } from "./services/project.service";
 })
 @Injectable()
 export class AppComponent {
-  private showFullSideBar:boolean = true;
+  private showFullSideBar: boolean = true;
   private user = {};
   private login = {
-    error: <boolean> false,
-    status: <number|string> null
+    error: false as boolean,
+    status: null as number|string
   };
 
-  projects:Subject<Notification<ProjectTree>>;
-  envs:string[];
-  selectedEnv:string;
+  projects: Subject<Notification<ProjectTree>>;
+  envs: Array<string>;
+  selectedEnv: string;
 
-  constructor(private projectService:ProjectService, private router:Router, private activatedRoute: ActivatedRoute) {
+  constructor(private projectService: ProjectService, private router: Router, private activatedRoute: ActivatedRoute) {
     this.projects = this.projectService.getProjects();
 
     projectService.getEnvs().subscribe((envs) => {
       this.envs = Object.keys(envs);
       if (projectService.getSelectedEnv() == undefined) {
-        for (let key in envs) {
+        for (const key in envs) {
           if (envs[key].default) {
             projectService.setSelectedEnv(key);
             this.selectedEnv = key;
@@ -52,7 +52,7 @@ export class AppComponent {
     });
   }
 
-  public onEnvVersion(newEnv:string) {
+  public onEnvVersion(newEnv: string) {
     this.projectService.setSelectedEnv(newEnv);
     this.selectedEnv = newEnv;
 

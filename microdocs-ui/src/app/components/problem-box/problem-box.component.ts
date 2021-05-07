@@ -8,9 +8,9 @@ import {Problem} from "@maxxton/microdocs-core/dist/domain";
   templateUrl: 'problem-box.component.html',
   styleUrls: ['problem-box.component.scss']
 })
-export class ProblemBoxComponent{
+export class ProblemBoxComponent {
 
   @Input()
-  problems:Problem[];
+  problems: Array<Problem>;
 
 }
