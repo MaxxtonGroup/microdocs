@@ -20,7 +20,7 @@
     <sidebar-list [routes]="menu"></sidebar-list>
   </div>
 
-  <ng-template *ngIf="!config.isStandAlone">
+  <ng-container *ngIf="!config.isStandAlone">
     <div class="controls-box">
       <a (click)="showImportModal()" class="import-button" mdTooltip="Add new project" mdTooltipPosition="above">
         <mat-icon>add</mat-icon>
@@ -32,7 +32,7 @@
         <mat-icon>refresh</mat-icon>
       </a>
     </div>
-  </ng-template>
+  </ng-container>
 
   <div class="footer">
     <a class="microdocs-link" target="_blank" [href]="'http://www.microdocs.io'">microdocs.io</a>

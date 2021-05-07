@@ -1,34 +1,34 @@
 <mat-list>
   <span *ngFor="let route of routes">
-    <ng-template *ngIf="isLink(route)">
+    <ng-container *ngIf="isLink(route)">
       <a [routerLink]="[route.path]" [queryParams]="route.pathParams">
-          <ng-template *ngIf="route.generateIcon">
+          <ng-container *ngIf="route.generateIcon">
             <mat-list-item>
               <icon-generator [small]="true" mat-list-avatar [text]="route.name" [color]="getColor(route)"></icon-generator>
               <h4 mat-line>{{route.name}}</h4>
-              <ng-template *ngIf="route.postIcon">
+              <ng-container *ngIf="route.postIcon">
                 <span [class]="route.postIconColor">
                   <mat-icon>{{route.postIcon}}</mat-icon>
                 </span>
-              </ng-template>
+              </ng-container>
             </mat-list-item>
-          </ng-template>
-          <ng-template *ngIf="!route.generateIcon">
+          </ng-container>
+          <ng-container *ngIf="!route.generateIcon">
             <mat-list-item>
               <mat-icon mat-list-avatar>{{getIcon(route)}}</mat-icon>
               <h4 mat-line>{{route.name}}</h4>
             </mat-list-item>
-          </ng-template>
+          </ng-container>
       </a>
-    </ng-template>
-    <ng-template *ngIf="!isLink(route)">
+    </ng-container>
+    <ng-container *ngIf="!isLink(route)">
       <mat-list-item (click)="toggleRoute(route)">
         <mat-icon mat-list-avatar>{{getIcon(route)}}</mat-icon>
         <h4 mat-line>{{route.name}}</h4>
       </mat-list-item>
-      <ng-template *ngIf="route.open">
+      <ng-container *ngIf="route.open">
         <sidebar-list [routes]="route.children"></sidebar-list>
-      </ng-template>
-    </ng-template>
+      </ng-container>
+    </ng-container>
   </span>
 </mat-list>

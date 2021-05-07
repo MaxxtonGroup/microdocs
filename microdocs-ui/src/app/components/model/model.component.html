@@ -4,7 +4,7 @@
         <mat-icon class="link-icon">keyboard_arrow_right</mat-icon>
         <a [href]="schema.sourceLink" target="_blank">source</a>
     </div>
-    <ng-template *ngIf="example | notEmpty">
+    <ng-container *ngIf="example | notEmpty">
         <prettyjson [obj]="example"></prettyjson>
-    </ng-template>
+    </ng-container>
 </simple-card>

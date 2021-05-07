@@ -1,5 +1,6 @@
 <div class="graph" [class.small]="small">
   <div class="container" (window:resize)="onResize($event)"></div>
+
   <div class="option-bar" *ngIf="showOptionBar">
     <div class="dropdown" [class.expanded]="dropdownExpanded">
       <div class="dropdown-header" (click)="dropdownExpanded = !dropdownExpanded">

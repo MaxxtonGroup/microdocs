@@ -1,17 +1,17 @@
 <div class="simple-card" [class.paper]="paper">
   <div class="header" (click)="toggle()">
     <h1>{{text}}</h1>
-    <ng-template *ngIf="subTitle">
+    <ng-container *ngIf="subTitle">
       <span class="subtitle">{{subTitle}}</span>
-    </ng-template>
+    </ng-container>
     <mat-icon [hidden]="isOpened()">expand_more</mat-icon>
     <mat-icon [hidden]="isClosed()">expand_less</mat-icon>
   </div>
-  <ng-template *ngIf="isOpened()">
+  <ng-container *ngIf="isOpened()">
     <div class="content">
       <span class="text">
         <ng-content></ng-content>
       </span>
     </div>
-  </ng-template>
+  </ng-container>
 </div>

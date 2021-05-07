@@ -9,7 +9,7 @@
     </mat-form-field>
     <div class="text-danger text-right">{{jsonError}}</div>
   </div>
-  <ng-template *ngIf="project != null">
+  <ng-container *ngIf="project != null">
     <div class="row">
       <mat-form-field class="example-full-width">
         <input mat-input placeholder="Project name"  [(ngModel)]="projectInfo.title" name="title">
@@ -34,5 +34,5 @@
         <li class="text-danger" *ngFor="let error of problemsErrors">{{error}}</li>
       </ul>
     </div>
-  </ng-template>
+  </ng-container>
 </div>
