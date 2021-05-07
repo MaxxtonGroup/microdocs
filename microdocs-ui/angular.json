@@ -113,8 +113,7 @@
        "test": {
           "builder": "@angular-builders/jest:run",
           "options": {
-            "tsConfig": "src/client/tsconfig.json",
-            "configPath": "node_modules/@maxxton/build-tools/tools/config/jest.config.js"
+            "tsConfig": "src/tsconfig.json"
           }
         },
         "lint": {
