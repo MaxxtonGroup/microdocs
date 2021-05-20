@@ -1,5 +1,4 @@
 
-import { assert } from 'chai';
 import { ProjectSettingsRepositoryMock } from "./mocks/project-settings.repo.mock";
 import { ProjectSettingsRepository } from "../../../repositories/project-settings.repo";
 import { ProjectRepository } from "../../../repositories/project.repo";
@@ -9,7 +8,7 @@ import { ReportRepository } from "../../../repositories/report.repo";
 import { Injection, InjectionConfig } from "../../../injections";
 import { ProjectService } from "../../project.service";
 import { AggregationService } from "../../aggregation.service";
-import { ProjectInfo, Problem, DependencyTypes, SchemaTypes, ParameterPlacings } from "@maxxton/microdocs-core/domain";
+import { ProjectInfo, Problem, DependencyTypes, SchemaTypes, ParameterPlacings } from "@maxxton/microdocs-core/dist/domain";
 
 describe( '#AggregationService:', () => {
 
@@ -82,7 +81,7 @@ describe( '#AggregationService:', () => {
       //act
       let result:Problem[] = target.checkProject( 'default', project);
 
-      assert.equal(result.length, 0);
+      expect(result.length).toEqual( 0);
     } );
 
     it( '#check without forward problems', () => {
@@ -178,7 +177,7 @@ describe( '#AggregationService:', () => {
       //act
       let result:Problem[] = target.checkProject( 'default', project);
 
-      assert.equal(result.length, 1);
+      expect(result.length).toEqual( 1);
     } );
 
     it( '#check without forward problems', () => {
@@ -284,7 +283,7 @@ describe( '#AggregationService:', () => {
       //act
       let result:Problem[] = target.checkProject( 'default', project);
 
-      assert.equal(result.length, 0);
+      expect(result.length).toEqual( 0);
     } );
 
   } );

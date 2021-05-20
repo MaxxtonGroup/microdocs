@@ -1,5 +1,5 @@
-import { Project, ProjectNode, FlatList, ParameterPlacings, Parameter, SchemaTypes, Path, Schema} from "@maxxton/microdocs-core/domain";
-import { SchemaHelper } from "../../node_modules/@maxxton/microdocs-core/helpers/schema/schema.helper";
+import { Project, ProjectNode, FlatList, ParameterPlacings, Parameter, SchemaTypes, Path, Schema} from "@maxxton/microdocs-core/dist/domain";
+import { SchemaHelper } from "../../node_modules/@maxxton/microdocs-core/dist/helpers/schema/schema.helper";
 
 declare var extention:string;
 

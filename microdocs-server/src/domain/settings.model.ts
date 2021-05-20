@@ -1,5 +1,5 @@
 
-import { Environments } from "@maxxton/microdocs-core/domain";
+import { Environments } from "@maxxton/microdocs-core/dist/domain";
 
 export interface Settings{
 

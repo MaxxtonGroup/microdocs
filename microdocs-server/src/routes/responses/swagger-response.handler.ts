@@ -1,30 +1,30 @@
-import {Project, Schema, Path, ProjectInfo, ProjectTree, SchemaTypes} from "@maxxton/microdocs-core/domain";
+import {Project, Schema, Path, ProjectInfo, ProjectTree, SchemaTypes} from "@maxxton/microdocs-core/dist/domain";
 import * as express from "express";
 import {MicroDocsResponseHandler} from "./microdocs-response.handler";
-import { SwaggerAdapter } from  "@maxxton/microdocs-core/adapter";
+import { SwaggerAdapter } from  "@maxxton/microdocs-core/dist/adapter";
 
 export class SwaggerResponseHandler extends MicroDocsResponseHandler {
 
   handleProjects(req: express.Request, res: express.Response, projectTree: ProjectTree, env: string) {
-    var filterMethods: string[] = [];
+    let filterMethods: Array<string> = [];
     if (req.query['method']) {
-      filterMethods = req.query['method'].split(',');
+      filterMethods = (req.query['method']as string).split(',');
     }
-    var project = this.mergeProjects(projectTree, filterMethods, env);
+    const project = this.mergeProjects(projectTree, filterMethods, env);
 
     this.response(req, res, 200, this.swagger(project));
   }
 
   handleProject(req: express.Request, res: express.Response, project: Project, env: string) {
     if (req.query['method']) {
-      var filterMethods = req.query['method'].split(',');
+      const filterMethods = (req.query['method']as string).split(',');
       this.filterMethods(project, filterMethods);
     }
     this.response(req, res, 200, this.swagger(project));
   }
 
   swagger(project: Project): {} {
-    let swaggerAdapter = new SwaggerAdapter();
+    const swaggerAdapter = new SwaggerAdapter();
     swaggerAdapter.adapt(project);
     return project;
   }

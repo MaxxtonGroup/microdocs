@@ -1,4 +1,4 @@
-import { Project, ProjectNode, FlatList } from "@maxxton/microdocs-core/domain";
+import { Project, ProjectNode, FlatList } from "@maxxton/microdocs-core/dist/domain";
 
 declare var extention:string;
 

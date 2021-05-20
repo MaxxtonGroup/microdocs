@@ -1,4 +1,4 @@
-import { Project, Problem, ProjectTree } from "@maxxton/microdocs-core/domain";
+import { Project, Problem, ProjectTree } from "@maxxton/microdocs-core/dist/domain";
 import { pipe } from "./aggregation/aggregation-pipeline";
 import { Injection } from "../injections";
 import { postmanSync } from "./aggregation/hooks";

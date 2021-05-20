@@ -1,7 +1,7 @@
 
 import * as Handlebars from 'handlebars';
-import { SchemaHelper } from "@maxxton/microdocs-core/helpers/schema/schema.helper";
-import { Schema } from "@maxxton/microdocs-core/domain";
+import { SchemaHelper } from "@maxxton/microdocs-core/dist/helpers/schema/schema.helper";
+import { Schema } from "@maxxton/microdocs-core/dist/domain";
 
 Handlebars.registerHelper( 'toUpperCase', function ( str:string ) {
   return str.toUpperCase();

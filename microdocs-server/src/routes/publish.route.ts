@@ -2,10 +2,10 @@
 import * as express from "express";
 
 import { BaseRoute } from "./route";
-import { Project, ProjectInfo, Problem, ProblemLevels } from "@maxxton/microdocs-core/domain";
-import { SchemaHelper } from "@maxxton/microdocs-core/helpers/schema/schema.helper";
+import { Project, ProjectInfo, Problem, ProblemLevels } from "@maxxton/microdocs-core/dist/domain";
+import { SchemaHelper } from "@maxxton/microdocs-core/dist/helpers/schema/schema.helper";
 
-export class PublishZipRoute extends BaseRoute{
+export class PublishZipRoute extends BaseRoute {
 
   mapping = { methods: [ "put" ], path: "/projects/:title", handler: this.publishProject, upload: true };
 
@@ -21,7 +21,7 @@ export class PublishZipRoute extends BaseRoute{
    * @httpResponse 200 {ProblemResponse}
    * @httpResponse 400 Missing title/version/group in the project definitions or missing request body
    */
-  public publishProject( req:express.Request, res:express.Response, next:express.NextFunction, scope:BaseRoute ) {
+  public publishProject( req: express.Request, res: express.Response, next: express.NextFunction, scope: BaseRoute ) {
 //    let tempFolder = getTempFolder()
     next();
   }
@@ -48,31 +48,31 @@ export class PublishRoute extends BaseRoute {
    * @httpResponse 200 {ProblemResponse}
    * @httpResponse 400 Missing title/version/group in the project definitions or missing request body
    */
-  public publishProject( req:express.Request, res:express.Response, next:express.NextFunction, scope:BaseRoute ) {
-    var handler = scope.getHandler( req );
+  public publishProject( req: express.Request & {_body:any}, res: express.Response, next: express.NextFunction, scope: BaseRoute ) {
+    const handler = scope.getHandler( req );
     try {
-      var env = scope.getEnv( req, scope );
+      const env = scope.getEnv( req, scope );
       if ( env == null ) {
         handler.handleBadRequest( req, res, "env '" + req.query.env + "' doesn't exists" );
         return;
       }
 
-      var title                  = req.params.title;
-      var version                = req.query.version;
-      var group                  = req.query.group;
-      if(group){
-        group = decodeURIComponent(group);
+      const title                  = req.params.title;
+      let version                = req.query.version;
+      let group                  = req.query.group;
+      if (group) {
+        group = decodeURIComponent(group as string);
       }
-      var failOnProblems:boolean = true;
-      if(!req.query.force){
-        failOnProblems = false
+      let failOnProblems = true;
+      if (!req.query.force) {
+        failOnProblems = false;
       }
       if ( req.query.failOnProblems == 'false' ) {
         failOnProblems = false;
       }
 
-      //get body
-      var report:Project = null;
+      // get body
+      let report: Project = null;
       if ( req._body ) {
         report = req.body;
       } else {
@@ -81,9 +81,9 @@ export class PublishRoute extends BaseRoute {
       }
 
 
-      //check request body
+      // check request body
       if ( report ) {
-        //check version is provided
+        // check version is provided
         if ( version == undefined || version == "" ) {
           version = SchemaHelper.resolveReference( "info.version", report );
         }
@@ -92,7 +92,7 @@ export class PublishRoute extends BaseRoute {
           return;
         }
 
-        //check group is provided
+        // check group is provided
         if ( group == undefined || group == "" ) {
           group = SchemaHelper.resolveReference( "info.group", report );
         }
@@ -100,27 +100,27 @@ export class PublishRoute extends BaseRoute {
           handler.handleBadRequest( req, res, "Missing group parameter" );
           return;
         }
-        let links = report.info && report.info.links;
-        let description = report.info && report.info.description;
-        let sourceLink = report.info && report.info.sourceLink;
-        let color = report.info && report.info.color;
+        const links = report.info && report.info.links;
+        const description = report.info && report.info.description;
+        const sourceLink = report.info && report.info.sourceLink;
+        const color = report.info && report.info.color;
 
 
-        //set group and version in the report
-        report.info = new ProjectInfo(title, group, version, [version], links, description, sourceLink, new Date().toISOString(), undefined, color);
+        // set group and version in the report
+        report.info = new ProjectInfo(title, group as string, version as string, [version as string], links, description, sourceLink, new Date().toISOString(), undefined, color);
 
-        var aggregationService = scope.injection.AggregationService();
+        const aggregationService = scope.injection.AggregationService();
 
         // check report
-        var reportCopy         = JSON.parse( JSON.stringify( report ) );
-        var problems:Problem[] = aggregationService.checkProject( env, reportCopy );
+        const reportCopy         = JSON.parse( JSON.stringify( report ) );
+        const problems: Array<Problem> = aggregationService.checkProject( env, reportCopy );
 
         if ( !(failOnProblems && problems.filter( problem => problem.level == ProblemLevels.ERROR || problem.level == ProblemLevels.WARNING ).length > 0) ) {
           // save report
           scope.injection.ReportRepository().storeProject( env, report );
 
           // run reindex
-          var treeNode = aggregationService.reindex( env );
+          const treeNode = aggregationService.reindex( env );
         } else {
           console.warn( "Fail publishing due to problems" );
         }

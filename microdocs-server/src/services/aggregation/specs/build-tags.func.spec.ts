@@ -1,6 +1,4 @@
-/// <reference path="../../../../typings/index.d.ts" />
-import { assert } from 'chai';
-import { Project } from "@maxxton/microdocs-core/domain";
+import { Project } from "@maxxton/microdocs-core/dist/domain";
 import { buildTags } from "../funcs/build-tags.func";
 
 
@@ -16,7 +14,7 @@ describe( '#Aggregation: #buildTags:', () => {
 
     let tags = buildTags( project );
 
-    assert.deepEqual(tags, ['api', 'v1', 'tags', 'text', 'messages']);
+    expect(tags).toEqual( ['api', 'v1', 'tags', 'text', 'messages']);
   } );
 
   it( "#build definitions tags", () => {
@@ -33,7 +31,7 @@ describe( '#Aggregation: #buildTags:', () => {
 
     let tags = buildTags( project );
 
-    assert.deepEqual(tags, ['tag', 'message']);
+    expect(tags).toEqual( ['tag', 'message']);
   } );
 
   it( "#build query param tags", () => {
@@ -62,7 +60,7 @@ describe( '#Aggregation: #buildTags:', () => {
 
     let tags = buildTags( project );
 
-    assert.deepEqual(tags, ['api', 'search', 'tag', 'name']);
+    expect(tags).toEqual( ['api', 'search', 'tag', 'name']);
   } );
 
 } );

@@ -1,4 +1,4 @@
-import { Project, ProjectTree, ProjectInfo, Problem } from "@maxxton/microdocs-core/domain";
+import { Project, ProjectTree, ProjectInfo, Problem } from "@maxxton/microdocs-core/dist/domain";
 import { AggregationResult } from "./aggregation-result";
 import { ProjectService } from "../project.service";
 import { ReportRepository } from "../../repositories/report.repo";

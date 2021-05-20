@@ -1,6 +1,6 @@
 import {ProjectRepository} from "../repositories/project.repo";
-import {SchemaHelper} from "@maxxton/microdocs-core/helpers/schema/schema.helper";
-import {ProjectTree, Project} from "@maxxton/microdocs-core/domain";
+import {SchemaHelper} from "@maxxton/microdocs-core/dist/helpers/schema/schema.helper";
+import {ProjectTree, Project} from "@maxxton/microdocs-core/dist/domain";
 
 export class ProjectService {
 

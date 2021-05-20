@@ -1,5 +1,5 @@
 import { Pipe } from "../pipe";
-import { ProjectTree, ProjectInfo, ProjectNode, DependencyNode, Project, Tag, Dependency} from "@maxxton/microdocs-core/domain";
+import { ProjectTree, ProjectInfo, ProjectNode, DependencyNode, Project, Tag, Dependency} from "@maxxton/microdocs-core/dist/domain";
 
 /**
  * Build dependency tree based on the pipe result

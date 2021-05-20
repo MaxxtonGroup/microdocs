@@ -21,23 +21,23 @@ export class ProjectRoute extends BaseRoute {
    * @httpResponse 400 the environment doesn't exists
    * @httpResponse 404 Project definitions for the given title/version/env doesn't exists
    */
-  public projects(req: express.Request, res: express.Response, next: express.NextFunction, scope:BaseRoute) {
-    var handler = scope.getHandler(req);
+  public projects(req: express.Request, res: express.Response, next: express.NextFunction, scope: BaseRoute) {
+    const handler = scope.getHandler(req);
     try {
-      var env = scope.getEnv(req, scope);
+      const env = scope.getEnv(req, scope);
       if (env == null) {
         handler.handleBadRequest(req, res, "env '" + req.query.env + "' doesn't exists");
         return;
       }
 
-      var title = req.params.title;
-      var version = req.query.version;
-      
-      var projectRepo = scope.injection.ProjectRepository();
+      const title = req.params.title;
+      let version = req.query.version;
+
+      const projectRepo = scope.injection.ProjectRepository();
 
       // load latest version if not specified
       if (version == undefined) {
-        var rootNode = projectRepo.getAggregatedProjects(env);
+        const rootNode = projectRepo.getAggregatedProjects(env);
         if (rootNode) {
           rootNode.projects.filter(project => project.title === title.toLowerCase()).forEach(project => version = project.version);
         }
@@ -45,11 +45,11 @@ export class ProjectRoute extends BaseRoute {
 
       if (version != undefined) {
         // load project
-        var project = projectRepo.getAggregatedProject(env, title, version);
+        const project = projectRepo.getAggregatedProject(env, title, version as string);
 
         // load postman collectionId
-        let metadata = scope.injection.ProjectSettingsRepository().getMetadata();
-        if(metadata.envs && metadata.envs[env] && metadata.envs[env].postmanCollections && metadata.envs[env].postmanCollections[title]){
+        const metadata = scope.injection.ProjectSettingsRepository().getMetadata();
+        if (metadata.envs && metadata.envs[env] && metadata.envs[env].postmanCollections && metadata.envs[env].postmanCollections[title]) {
           project.info.postmanCollection = metadata.envs[env].postmanCollections[title].collectionId;
         }
 

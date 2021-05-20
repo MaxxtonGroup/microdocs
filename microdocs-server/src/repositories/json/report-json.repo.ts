@@ -3,10 +3,10 @@ import * as path from 'path';
 
 import {Config} from "../../config";
 import {ReportRepository} from "../report.repo";
-import {Project, ProjectInfo} from "@maxxton/microdocs-core/domain";
+import {Project, ProjectInfo} from "@maxxton/microdocs-core/dist/domain";
 const mkdir = require('mkdir-p');
 import * as fsHelper from '../../helpers/file.helper';
-import { Dependency } from "@maxxton/microdocs-core/domain/dependency/dependency.model";
+import { Dependency } from "@maxxton/microdocs-core/dist/domain/dependency/dependency.model";
 
 /**
  * Json file based repository.

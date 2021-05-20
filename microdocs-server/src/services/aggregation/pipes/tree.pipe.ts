@@ -1,5 +1,5 @@
 import { Pipe } from "../pipe";
-import { ProjectTree } from "@maxxton/microdocs-core/domain/tree/project-tree.model";
+import { ProjectTree } from "@maxxton/microdocs-core/dist/domain/tree/project-tree.model";
 import { buildTree } from "../funcs/tree.func";
 import { AggregationPipeline } from "../aggregation-pipeline";
 

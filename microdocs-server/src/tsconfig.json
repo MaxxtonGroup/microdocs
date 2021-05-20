@@ -24,8 +24,7 @@
     ],
     "types": [
       "node",
-      "jasmine",
-      "chai"
+      "jest"
     ]
   },
   "compileOnSave": false

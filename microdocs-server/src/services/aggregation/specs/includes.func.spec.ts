@@ -1,15 +1,13 @@
-/// <reference path="../../../../typings/index.d.ts" />
-import { assert } from 'chai';
-import { Project, DependencyTypes, ProblemLevels } from "@maxxton/microdocs-core/domain";
+import { Project, DependencyTypes, ProblemLevels } from "@maxxton/microdocs-core/dist/domain";
 import { combineIncludes } from "../funcs/includes.func";
-import { PipeMock } from "./mocks/pipe-mock.spec";
+import { PipeMock } from "./mocks/pipe-mock.mock";
 
 
 describe( '#Aggregation: #combineIncludes:', () => {
 
   it( '#Error when missing dependent project', () => {
-    let pipeMock        = new PipeMock( {} );
-    let project:Project = {
+    const pipeMock        = new PipeMock( {} );
+    const project: Project = {
       dependencies: {
         'test-project': {
           type: DependencyTypes.INCLUDES
@@ -19,20 +17,20 @@ describe( '#Aggregation: #combineIncludes:', () => {
 
     combineIncludes( pipeMock, project );
 
-    assert.deepEqual( [ {
+    expect([ {
       level: ProblemLevels.ERROR,
       message: "Unknown project: test-project"
-    } ], project.dependencies[ 'test-project' ].problems );
+    } ]).toEqual(project.dependencies[ 'test-project' ].problems );
   } );
 
   it( '#Find latest dependent project', () => {
-    let pipeMock        = new PipeMock( {
+    const pipeMock        = new PipeMock( {
       'test-project': {
-        '1.0.0': <Project>{ info: { version: '1.0.0' } },
-        '2.0.0': <Project>{ info: { version: '2.0.0' } }
+        '1.0.0': { info: { version: '1.0.0' } } as Project,
+        '2.0.0': { info: { version: '2.0.0' } } as Project
       }
     } );
-    let project:Project = {
+    const project: Project = {
       dependencies: {
         'test-project': {
           type: DependencyTypes.INCLUDES
@@ -42,17 +40,17 @@ describe( '#Aggregation: #combineIncludes:', () => {
 
     combineIncludes( pipeMock, project );
 
-    assert.deepEqual( project.dependencies[ 'test-project' ].version, '2.0.0' );
+    expect( project.dependencies[ 'test-project' ].version).toEqual( '2.0.0' );
   } );
 
   it( '#Find defined version', () => {
-    let pipeMock        = new PipeMock( {
+    const pipeMock        = new PipeMock( {
       'test-project': {
-        '1.0.0': <Project>{ info: { version: '1.0.0' } },
-        '2.0.0': <Project>{ info: { version: '2.0.0' } }
+        '1.0.0': { info: { version: '1.0.0' } } as Project,
+        '2.0.0': { info: { version: '2.0.0' } } as Project
       }
     } );
-    let project:Project = {
+    const project: Project = {
       dependencies: {
         'test-project': {
           type: DependencyTypes.INCLUDES,
@@ -63,18 +61,18 @@ describe( '#Aggregation: #combineIncludes:', () => {
 
     combineIncludes( pipeMock, project );
 
-    assert.deepEqual( project.dependencies[ 'test-project' ].version, '1.0.0' );
+    expect( project.dependencies[ 'test-project' ].version).toEqual( '1.0.0' );
   } );
 
   it( '#Find not deprecated version', () => {
-    let pipeMock        = new PipeMock( {
+    const pipeMock        = new PipeMock( {
       'test-project': {
-        '1.0.0': <Project>{ info: { version: '1.0.0' } },
-        '2.0.0': <Project>{ info: { version: '2.0.0' }, deprecated: true },
-        '3.0.0': <Project>{ info: { version: '3.0.0' } }
+        '1.0.0': { info: { version: '1.0.0' } } as Project,
+        '2.0.0': { info: { version: '2.0.0' }, deprecated: true } as Project,
+        '3.0.0': { info: { version: '3.0.0' } } as Project
       }
     } );
-    let project:Project = {
+    const project: Project = {
       dependencies: {
         'test-project': {
           type: DependencyTypes.INCLUDES,
@@ -85,26 +83,26 @@ describe( '#Aggregation: #combineIncludes:', () => {
 
     combineIncludes( pipeMock, project );
 
-    assert.deepEqual( project.dependencies[ 'test-project' ].version, '1.0.0' );
+    expect( project.dependencies[ 'test-project' ].version).toEqual( '1.0.0' );
   } );
 
   it( '#Resolve chained include dependency', () => {
-    let pipeMock        = new PipeMock( {
+    const pipeMock        = new PipeMock( {
       'test-project': {
-        '1.0.0': <Project>{
+        '1.0.0': {
           info: { version: '1.0.0', title: 'test-project' },
           dependencies: {
             'test2-project': {
               type: DependencyTypes.INCLUDES
             }
           }
-        }
+        } as any
       },
       'test2-project': {
-        '1.0.0': <Project>{ info: { version: '1.0.0', title: 'test-project' } }
+        '1.0.0': { info: { version: '1.0.0', title: 'test-project' } } as Project
       }
     } );
-    let project:Project = {
+    const project: Project = {
       dependencies: {
         'test-project': {
           type: DependencyTypes.INCLUDES,
@@ -115,13 +113,13 @@ describe( '#Aggregation: #combineIncludes:', () => {
 
     combineIncludes( pipeMock, project );
 
-    assert.deepEqual( pipeMock._store['test-project']['1.0.0'].dependencies['test2-project'].version, '1.0.0' );
+    expect( pipeMock._store['test-project']['1.0.0'].dependencies['test2-project'].version).toEqual( '1.0.0' );
   } );
 
   it( '#Merge components', () => {
-    let pipeMock        = new PipeMock( {
+    const pipeMock        = new PipeMock( {
       'test-project': {
-        '1.0.0': <Project>{
+        '1.0.0': {
           info: { version: '1.0.0', title: 'test-project' },
           components: {
             TestService: {
@@ -131,10 +129,10 @@ describe( '#Aggregation: #combineIncludes:', () => {
               }
             }
           }
-        }
+        } as any
       }
     } );
-    let project:Project = {
+    const project: Project = {
       dependencies: {
         'test-project': {
           type: DependencyTypes.INCLUDES,
@@ -153,13 +151,13 @@ describe( '#Aggregation: #combineIncludes:', () => {
 
     combineIncludes( pipeMock, project );
 
-    assert.deepEqual( project.components['TestService'].methods, {hello:{},bye:{}} );
+    expect( project.components['TestService'].methods).toEqual( {hello: {}, bye: {}} );
   } );
 
   it( '#Merge definitions', () => {
-    let pipeMock        = new PipeMock( {
+    const pipeMock        = new PipeMock( {
       'test-project': {
-        '1.0.0': <Project>{
+        '1.0.0': {
           info: { version: '1.0.0', title: 'test-project' },
           definitions: {
             Task: {
@@ -169,10 +167,10 @@ describe( '#Aggregation: #combineIncludes:', () => {
               }
             }
           }
-        }
+        } as any
       }
     } );
-    let project:Project = {
+    const project: Project = {
       dependencies: {
         'test-project': {
           type: DependencyTypes.INCLUDES,
@@ -191,13 +189,13 @@ describe( '#Aggregation: #combineIncludes:', () => {
 
     combineIncludes( pipeMock, project );
 
-    assert.deepEqual( project.definitions['Task'].properties, {hello:{},bye:{}} );
+    expect( project.definitions['Task'].properties).toEqual( {hello: {}, bye: {}} );
   } );
 
   it( '#Merge dependencies', () => {
-    let pipeMock        = new PipeMock( {
+    const pipeMock        = new PipeMock( {
       'test-project': {
-        '1.0.0': <Project>{
+        '1.0.0': {
           info: { version: '1.0.0', title: 'test-project' },
           dependencies: {
             'dep1': {
@@ -210,10 +208,10 @@ describe( '#Aggregation: #combineIncludes:', () => {
               type: DependencyTypes.REST
             }
           }
-        }
+        } as any
       }
     } );
-    let project:Project = {
+    const project: Project = {
       dependencies: {
         'test-project': {
           type: DependencyTypes.INCLUDES,
@@ -230,8 +228,8 @@ describe( '#Aggregation: #combineIncludes:', () => {
 
     combineIncludes( pipeMock, project );
 
-    assert.deepEqual( project.dependencies, {
-      'test-project' :{
+    expect( project.dependencies).toEqual( {
+      'test-project' : {
         type: DependencyTypes.INCLUDES,
         version: '1.0.0'
       },

@@ -13,7 +13,7 @@ const microDocsResponse = MicroDocsResponseHandler;
 const swaggerResponse = SwaggerResponseHandler;
 const postmanResponse = PostmanResponseHandler;
 
-const responses:{[key:string]:new (injection:Injection)=>BaseResponseHandler} = {
+const responses: {[key: string]: new (injection: Injection) => BaseResponseHandler} = {
   "default": baseResponse,
   "swagger": swaggerResponse,
   "microdocs": microDocsResponse,
@@ -25,8 +25,8 @@ const responses:{[key:string]:new (injection:Injection)=>BaseResponseHandler} = 
  * Adds mapping to the route itself
  */
 export abstract class BaseRoute {
-  
-  constructor(public injection:Injection){}
+
+  constructor(public injection: Injection) {}
 
   /**
    * The mapping of this route
@@ -45,24 +45,24 @@ export abstract class BaseRoute {
    * List of request methods, eg. ['get', 'post']
    * @returns {string[]}
    */
-  public methods(): string[] {
+  public methods(): Array<string> {
     return this.mapping.methods;
   }
 
-  public getDefaultHandler():BaseResponseHandler{
+  public getDefaultHandler(): BaseResponseHandler {
     return new baseResponse(this.injection);
   }
 
-  public getHandler(req: Request):BaseResponseHandler{
-    var exportType = req.query.export;
-    if(exportType == undefined){
+  public getHandler(req: Request): BaseResponseHandler {
+    let exportType = req.query.export as string;
+    if (exportType == undefined) {
       exportType = req.header('export');
-      if(exportType == undefined){
+      if (exportType == undefined) {
         exportType = 'default';
       }
     }
-    var response:new (injection:Injection)=>BaseResponseHandler = responses[exportType.toLowerCase()];
-    if(response == undefined){
+    const response: new (injection: Injection) => BaseResponseHandler = responses[exportType.toLowerCase()];
+    if (response == undefined) {
       return new TemplateResponseHandler(this.injection, exportType.toLowerCase());
     }
     return new response(this.injection);
@@ -72,28 +72,28 @@ export abstract class BaseRoute {
    * Function which handles the request
    * @returns {RequestHandler}
    */
-  public handler(): (req: Request, res: Response, next: NextFunction, scope:BaseRoute) => any {
+  public handler(): (req: Request, res: Response, next: NextFunction, scope: BaseRoute) => any {
     return this.mapping.handler;
   }
 
-  public upload(): boolean{
+  public upload(): boolean {
     return this.mapping.upload;
   }
 
-  public getEnv(req:Request, scope:BaseRoute):string{
-    var env = req.query.env;
-    var envs = scope.injection.ProjectSettingsRepository().getSettings().envs;
+  public getEnv(req: Request, scope: BaseRoute): string {
+    const env: string = req.query.env as string;
+    const envs = scope.injection.ProjectSettingsRepository().getSettings().envs;
 
-    if(env == undefined){
-      for(var envName in envs){
-        if(envs[envName].default){
+    if (env == undefined) {
+      for (const envName in envs) {
+        if (envs[envName].default) {
           return envName.toLowerCase();
         }
       }
       return Object.keys(envs)[0].toLowerCase();
-    }else{
-      for(var envName in envs){
-        if(envName.toLowerCase() == env.toLowerCase()){
+    } else {
+      for (const envName in envs) {
+        if (envName.toLowerCase() == env.toLowerCase()) {
           return envName.toLowerCase();
         }
       }
@@ -106,8 +106,8 @@ export abstract class BaseRoute {
 export interface RequestMapping {
 
   path: string;
-  methods: string[];
-  handler: (req: Request, res: Response, next: NextFunction, scope:BaseRoute) => any;
-  upload?: boolean
+  methods: Array<string>;
+  handler: (req: Request, res: Response, next: NextFunction, scope: BaseRoute) => any;
+  upload?: boolean;
 
 }

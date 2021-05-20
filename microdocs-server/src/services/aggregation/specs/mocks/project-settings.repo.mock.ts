@@ -1,5 +1,5 @@
 import { ProjectRepository } from "../../../../repositories/project.repo";
-import { ProjectTree, Project, Environments, ProjectSettings } from "@maxxton/microdocs-core/domain";
+import { ProjectTree, Project, Environments, ProjectSettings } from "@maxxton/microdocs-core/dist/domain";
 import { ProjectSettingsRepository } from "../../../../repositories/project-settings.repo";
 import { Settings } from "../../../../domain/settings.model";
 import { Metadata } from "../../../../domain/metadata.model";

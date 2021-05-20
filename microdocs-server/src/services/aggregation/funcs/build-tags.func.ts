@@ -1,4 +1,4 @@
-import { Project } from "@maxxton/microdocs-core/domain/project.model";
+import { Project } from "@maxxton/microdocs-core/dist/domain/project.model";
 
 /**
  * Build tags based the project endpoints and definitions

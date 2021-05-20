@@ -1,5 +1,5 @@
 import { Pipe } from "../pipe";
-import { Project } from "@maxxton/microdocs-core/domain/project.model";
+import { Project } from "@maxxton/microdocs-core/dist/domain/project.model";
 
 /**
  * @author Steven Hermans

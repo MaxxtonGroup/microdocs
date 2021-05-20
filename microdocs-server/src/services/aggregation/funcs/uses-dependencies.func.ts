@@ -1,7 +1,7 @@
-import { Project, DependencyTypes, Dependency, ProblemLevels } from "@maxxton/microdocs-core/domain";
+import { Project, DependencyTypes, Dependency, ProblemLevels } from "@maxxton/microdocs-core/dist/domain";
 import { Pipe } from "../pipe";
-import { ProblemReporter } from "@maxxton/microdocs-core/helpers/problem/problem-reporter.helper";
-import { Path } from "@maxxton/microdocs-core/domain/path/path.model";
+import { ProblemReporter } from "@maxxton/microdocs-core/dist/helpers/problem/problem-reporter.helper";
+import { Path } from "@maxxton/microdocs-core/dist/domain/path/path.model";
 
 /**
  * Resolve Rest dependencies with other projects

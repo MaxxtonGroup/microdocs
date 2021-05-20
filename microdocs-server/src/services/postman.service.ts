@@ -1,6 +1,6 @@
 
-import { Project } from "@maxxton/microdocs-core/domain";
-import { PostmanAdapter } from "@maxxton/microdocs-core/adapter/postman.adapter";
+import { Project } from "@maxxton/microdocs-core/dist/domain";
+import { PostmanAdapter } from "@maxxton/microdocs-core/dist/adapter/postman.adapter";
 import { Injection } from "../injections";
 import { PostmanResponseHandler } from "../routes/responses/postman-response.handler";
 import { PostmanClient } from "../client/postman.client";

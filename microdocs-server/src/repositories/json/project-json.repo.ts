@@ -4,9 +4,9 @@ const mkdir = require('mkdir-p');
 
 import {Config} from "../../config";
 import {ProjectRepository} from "../project.repo";
-import { Project, ProjectTree, ProjectInfo } from "@maxxton/microdocs-core/domain";
+import { Project, ProjectTree, ProjectInfo } from "@maxxton/microdocs-core/dist/domain";
 import * as fsHelper from '../../helpers/file.helper';
-import { Dependency } from "@maxxton/microdocs-core/domain/dependency/dependency.model";
+import { Dependency } from "@maxxton/microdocs-core/dist/domain/dependency/dependency.model";
 
 export class ProjectJsonRepository implements ProjectRepository {
   

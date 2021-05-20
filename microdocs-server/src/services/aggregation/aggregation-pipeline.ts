@@ -4,7 +4,7 @@ import { ProjectSettingsRepository } from "../../repositories/project-settings.r
 import { Injection } from "../../injections";
 import { TakePipe } from "./pipes/take.pipe";
 import { Pipe } from "./pipe";
-import { ProjectInfo, Problem, Project } from "@maxxton/microdocs-core/domain";
+import { ProjectInfo, Problem, Project } from "@maxxton/microdocs-core/dist/domain";
 import { Hook } from './hooks/hook';
 import { AggregationResult } from './aggregation-result';
 
