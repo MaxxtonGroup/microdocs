@@ -1,23 +1,23 @@
 import { Project, ProjectNode, FlatList } from "@maxxton/microdocs-core/dist/domain";
 
-declare var extention:string;
+declare var extention: string;
 
-export default function ( env:string, projects:Project[], projectNodes:ProjectNode[], projectNodesFlat:ProjectNode[], current:Project, currentNode?:ProjectNode ):any {
-  let services:any = {};
+export default function ( env: string, projects: Array<Project>, projectNodes: Array<ProjectNode>, projectNodesFlat: Array<ProjectNode>, current: Project, currentNode?: ProjectNode ): any {
+  const services: any = {};
 
-  projectNodesFlat.forEach( ( projectNode:ProjectNode ) => {
-    let service:any                    = buildService( projectNode );
+  projectNodesFlat.forEach( ( projectNode: ProjectNode ) => {
+    const service: any                    = buildService( projectNode );
     services[ service.container_name ] = service;
   } );
 
   if ( currentNode ) {
-    let service:any                    = buildService( currentNode, true );
+    const service: any                    = buildService( currentNode, true );
     services[ service.container_name ] = service;
   }
 
-  function buildService( projectNode:ProjectNode, build:boolean = false ):any {
-    let project     = projects.filter( p => p.info.title === projectNode.title && p.info.version === projectNode.version )[ 0 ];
-    let service:any = {
+  function buildService( projectNode: ProjectNode, build: boolean = false ): any {
+    const project     = projects.filter( p => p.info.title === projectNode.title && p.info.version === projectNode.version )[ 0 ];
+    const service: any = {
       container_name: projectNode.title + '_' + projectNode.version,
       image: projectNode.title + ':' + projectNode.version,
 
@@ -44,9 +44,9 @@ export default function ( env:string, projects:Project[], projectNodes:ProjectNo
     if ( projectNode.dependencies && projectNode.dependencies.length > 0 ) {
       service.links = projectNode.dependencies.map( dependency => {
         // Find container name and alias
-        let containerName:string = dependency.item.title + '_' + dependency.item.version;
-        let alias:string         = dependency.item.title;
-        let depProject           = projects.filter( p => p.info.title === dependency.item.title && p.info.version === dependency.item.version )[ 0 ];
+        let containerName: string = dependency.item.title + '_' + dependency.item.version;
+        let alias: string         = dependency.item.title;
+        const depProject           = projects.filter( p => p.info.title === dependency.item.title && p.info.version === dependency.item.version )[ 0 ];
         if ( depProject ) {
           if ( depProject.deploy && depProject.deploy.containerName ) {
             containerName = depProject.deploy.containerName + '_' + dependency.item.version;
@@ -71,7 +71,7 @@ export default function ( env:string, projects:Project[], projectNodes:ProjectNo
     extension: 'yml',
     body: {
       version: '2',
-      services: services
+      services
     }
   };
-};
+}

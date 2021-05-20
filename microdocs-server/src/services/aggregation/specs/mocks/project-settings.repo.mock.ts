@@ -19,12 +19,12 @@ export class ProjectSettingsRepositoryMock implements ProjectSettingsRepository 
   }
 
   getProjectSettings(): ProjectSettings {
-    return <ProjectSettings>{
+    return {
       global: {},
       environments: {},
       groups: {},
       projects: {}
-    };
+    } as ProjectSettings;
   }
 
 

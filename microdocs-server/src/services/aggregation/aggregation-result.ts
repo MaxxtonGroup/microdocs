@@ -4,7 +4,7 @@ import {Project} from "@maxxton/microdocs-core/dist/domain/project.model";
  */
 export class AggregationResult {
 
-  private _result: Project[] = [];
+  private _result: Array<Project> = [];
 
   public pushProject(project: Project): void {
     if (this.getProject(project.info.title, project.info.version) == null) {
@@ -16,8 +16,8 @@ export class AggregationResult {
     this._result = this._result.filter(project => project.info.title !== title);
   }
 
-  public getProjects(): string[] {
-    let projectTitles: string[] = [];
+  public getProjects(): Array<string> {
+    const projectTitles: Array<string> = [];
     this._result.forEach(project => {
       if (projectTitles.indexOf(project.info.title) == -1) {
         projectTitles.push(project.info.title);
@@ -26,12 +26,12 @@ export class AggregationResult {
     return projectTitles;
   }
 
-  public getProjectVersions(title: string): string[] {
+  public getProjectVersions(title: string): Array<string> {
     return this._result.filter(project => project.info.title === title).map(project => project.info.version);
   }
 
   public getLatestProjectVersion(title: string): string {
-    let project = this._result.filter(project => project.info.title === title)[0];
+    const project = this._result.filter(project => project.info.title === title)[0];
     if (project) {
       return project.info.getLatestVersion().version;
     }
@@ -39,14 +39,14 @@ export class AggregationResult {
   }
 
   public getProject(title: string, version: string): Project {
-    let matches = this._result.filter(project => project.info.title === title && project.info.version === version);
+    const matches = this._result.filter(project => project.info.title === title && project.info.version === version);
     if (matches.length > 0) {
       return matches[0];
     }
     return null;
   }
 
-  get projectList(): Project[] {
+  get projectList(): Array<Project> {
     return this._result;
   }
 

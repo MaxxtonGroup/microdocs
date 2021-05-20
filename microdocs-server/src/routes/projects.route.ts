@@ -20,10 +20,10 @@ export class ProjectsRoute extends BaseRoute {
    * @httpResponse 200 {TreeNode}
    */
   public projects(req: express.Request, res: express.Response, next: express.NextFunction, scope: BaseRoute) {
-    let handler = scope.getHandler(req);
+    const handler = scope.getHandler(req);
     console.info("handler: " + handler);
     try {
-      let env = scope.getEnv(req, scope);
+      const env = scope.getEnv(req, scope);
       if (env == null) {
         handler.handleBadRequest(req, res, "env '" + req.query.env + "' doesn't exists");
         return;
@@ -52,7 +52,7 @@ export class ProjectsRoute extends BaseRoute {
 }
 
 function filterRoot(root: ProjectTree, groups: Array<string>, projects: Array<string>): ProjectTree {
-  let removeProjects: Array<ProjectNode> = [];
+  const removeProjects: Array<ProjectNode> = [];
   root.projects.forEach(project => {
     if (filterProject(project, groups, projects)) {
       removeProjects.push(project);
@@ -66,7 +66,7 @@ function filterRoot(root: ProjectTree, groups: Array<string>, projects: Array<st
 }
 
 function filterProjects(projectNode: ProjectNode, groups: Array<string>, projects: Array<string>): ProjectNode {
-  let removeDependency: Array<DependencyNode> = [];
+  const removeDependency: Array<DependencyNode> = [];
   projectNode.dependencies.forEach(dependency => {
     if (filterProject(dependency.item, groups, projects)) {
       removeDependency.push(dependency);

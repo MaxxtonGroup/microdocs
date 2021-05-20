@@ -7,13 +7,13 @@ import { AggregationPipeline } from "../aggregation-pipeline";
  * Pipe to generate a project tree as result
  * @author Steven Hermans
  */
-export class TreePipe extends Pipe<ProjectTree>{
+export class TreePipe extends Pipe<ProjectTree> {
 
-  constructor( pipeline:AggregationPipeline ) {
+  constructor( pipeline: AggregationPipeline ) {
     super(pipeline);
   }
 
-  protected run():ProjectTree {
+  protected run(): ProjectTree {
     this.forwardResult();
     return buildTree(this);
   }

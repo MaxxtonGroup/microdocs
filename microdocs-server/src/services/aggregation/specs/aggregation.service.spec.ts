@@ -16,9 +16,9 @@ describe( '#AggregationService:', () => {
 
     it( '#check without problems', () => {
       // Arrange
-      let projectSettingsRepo: ProjectSettingsRepository = new ProjectSettingsRepositoryMock();
-      let projectRepo: ProjectRepository                 = new ProjectRepositoryMock();
-      let reportRepo                                     = class extends ReportRepositoryMock {
+      const projectSettingsRepo: ProjectSettingsRepository = new ProjectSettingsRepositoryMock();
+      const projectRepo: ProjectRepository                 = new ProjectRepositoryMock();
+      const reportRepo                                     = class extends ReportRepositoryMock {
         constructor() {
           super( {
             default: {
@@ -46,15 +46,15 @@ describe( '#AggregationService:', () => {
           } );
         }
       };
-      let injectable = new Injection( {
+      const injectable = new Injection( {
         projectRepository: ProjectRepositoryMock,
         projectSettingsRepository: ProjectSettingsRepositoryMock,
         reportRepository: reportRepo,
         projectService: ProjectService,
         aggregationService: AggregationService
       } as InjectionConfig );
-      let target:AggregationService = injectable.AggregationService();
-      let project = {
+      const target: AggregationService = injectable.AggregationService();
+      const project = {
         info: new ProjectInfo('order-project', 'test', '1.0.0', ['1.0.0']),
         dependencies: {
           'customer-project': {
@@ -78,17 +78,17 @@ describe( '#AggregationService:', () => {
         }
       };
 
-      //act
-      let result:Problem[] = target.checkProject( 'default', project);
+      // act
+      const result: Array<Problem> = target.checkProject( 'default', project);
 
       expect(result.length).toEqual( 0);
     } );
 
     it( '#check without forward problems', () => {
       // Arrange
-      let projectSettingsRepo: ProjectSettingsRepository = new ProjectSettingsRepositoryMock();
-      let projectRepo: ProjectRepository                 = new ProjectRepositoryMock();
-      let reportRepo                                     = class extends ReportRepositoryMock {
+      const projectSettingsRepo: ProjectSettingsRepository = new ProjectSettingsRepositoryMock();
+      const projectRepo: ProjectRepository                 = new ProjectRepositoryMock();
+      const reportRepo                                     = class extends ReportRepositoryMock {
         constructor() {
           super( {
             default: {
@@ -142,15 +142,15 @@ describe( '#AggregationService:', () => {
           } );
         }
       };
-      let injectable = new Injection( {
+      const injectable = new Injection( {
         projectRepository: ProjectRepositoryMock,
         projectSettingsRepository: ProjectSettingsRepositoryMock,
         reportRepository: reportRepo,
         projectService: ProjectService,
         aggregationService: AggregationService
       } as InjectionConfig );
-      let target:AggregationService = injectable.AggregationService();
-      let project = {
+      const target: AggregationService = injectable.AggregationService();
+      const project = {
         info: new ProjectInfo('order-project', 'test', '1.0.0', ['1.0.0']),
         dependencies: {
           'customer-project': {
@@ -174,17 +174,17 @@ describe( '#AggregationService:', () => {
         }
       };
 
-      //act
-      let result:Problem[] = target.checkProject( 'default', project);
+      // act
+      const result: Array<Problem> = target.checkProject( 'default', project);
 
       expect(result.length).toEqual( 1);
     } );
 
     it( '#check without forward problems', () => {
       // Arrange
-      let projectSettingsRepo: ProjectSettingsRepository = new ProjectSettingsRepositoryMock();
-      let projectRepo: ProjectRepository                 = new ProjectRepositoryMock();
-      let reportRepo                                     = class extends ReportRepositoryMock {
+      const projectSettingsRepo: ProjectSettingsRepository = new ProjectSettingsRepositoryMock();
+      const projectRepo: ProjectRepository                 = new ProjectRepositoryMock();
+      const reportRepo                                     = class extends ReportRepositoryMock {
         constructor() {
           super( {
             default: {
@@ -245,15 +245,15 @@ describe( '#AggregationService:', () => {
           } );
         }
       };
-      let injectable = new Injection( {
+      const injectable = new Injection( {
         projectRepository: ProjectRepositoryMock,
         projectSettingsRepository: ProjectSettingsRepositoryMock,
         reportRepository: reportRepo,
         projectService: ProjectService,
         aggregationService: AggregationService
       } as InjectionConfig );
-      let target:AggregationService = injectable.AggregationService();
-      let project = {
+      const target: AggregationService = injectable.AggregationService();
+      const project = {
         info: new ProjectInfo('customer-project', 'test', '1.0.0', ['1.0.0']),
         paths: {
           '/api/v1/customers': {
@@ -280,8 +280,8 @@ describe( '#AggregationService:', () => {
         }
       };
 
-      //act
-      let result:Problem[] = target.checkProject( 'default', project);
+      // act
+      const result: Array<Problem> = target.checkProject( 'default', project);
 
       expect(result.length).toEqual( 0);
     } );

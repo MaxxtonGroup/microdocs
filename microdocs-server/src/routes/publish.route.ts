@@ -48,7 +48,7 @@ export class PublishRoute extends BaseRoute {
    * @httpResponse 200 {ProblemResponse}
    * @httpResponse 400 Missing title/version/group in the project definitions or missing request body
    */
-  public publishProject( req: express.Request & {_body:any}, res: express.Response, next: express.NextFunction, scope: BaseRoute ) {
+  public publishProject( req: express.Request & {_body: any}, res: express.Response, next: express.NextFunction, scope: BaseRoute ) {
     const handler = scope.getHandler( req );
     try {
       const env = scope.getEnv( req, scope );

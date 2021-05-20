@@ -12,12 +12,12 @@ export class PostmanService {
 
   public syncCollection(project: Project, env: string): void {
     console.info(`Sync postman collection: ${project.info.title}:${project.info.version}`);
-    let settings = this.injection.ProjectSettingsRepository().getSettings();
-    let apiKey: string = settings.envs[env].postmanApiKey;
+    const settings = this.injection.ProjectSettingsRepository().getSettings();
+    const apiKey: string = settings.envs[env].postmanApiKey;
     if (apiKey) {
-      let postmanAdapter = new PostmanAdapter();
-      let collection = postmanAdapter.adapt(project);
-      let collectionInfo = this.getCollectionInfo(env, project.info.title);
+      const postmanAdapter = new PostmanAdapter();
+      const collection = postmanAdapter.adapt(project);
+      const collectionInfo = this.getCollectionInfo(env, project.info.title);
       if (collectionInfo && collectionInfo.postmanId && collectionInfo.collectionId) {
         new PostmanClient().updateCollection(collection, collectionInfo, apiKey).then((collectionInfo: { collectionId: string, postmanId: string }) => {
           try {
@@ -40,7 +40,7 @@ export class PostmanService {
   }
 
   private getCollectionInfo(env: string, projectTitle: string): { collectionId: string, postmanId: string } {
-    let metadata = this.injection.ProjectSettingsRepository().getMetadata();
+    const metadata = this.injection.ProjectSettingsRepository().getMetadata();
     if (metadata && metadata.envs && metadata.envs[env] && metadata.envs[env].postmanCollections && metadata.envs[env].postmanCollections[projectTitle]) {
       return metadata.envs[env].postmanCollections[projectTitle];
     }
@@ -48,7 +48,7 @@ export class PostmanService {
   }
 
   private saveCollectionInfo(env: string, projectTitle: string, collectionInfo: { collectionId: string, postmanId: string }) {
-    let metadata = this.injection.ProjectSettingsRepository().getMetadata();
+    const metadata = this.injection.ProjectSettingsRepository().getMetadata();
     if (!metadata.envs) {
       metadata.envs = {};
     }

@@ -5,32 +5,32 @@ import { Project } from "@maxxton/microdocs-core/dist/domain/project.model";
  * @param project
  * @return {string[]} list of tags
  */
-export function buildTags(project:Project):string[]{
-  let tags:any = {};
+export function buildTags(project: Project): Array<string> {
+  const tags: any = {};
   if ( project.paths ) {
-    for ( let path in project.paths ) {
-      let segments = path.split( '/' );
+    for ( const path in project.paths ) {
+      const segments = path.split( '/' );
       segments.forEach( segment => {
-        let trimSegment = segment.trim();
-        if ( trimSegment && trimSegment.indexOf('{') == -1){
+        const trimSegment = segment.trim();
+        if ( trimSegment && trimSegment.indexOf('{') == -1) {
           tags[ trimSegment.toLowerCase() ] = null;
         }
       } );
-      for(let method in project.paths[path]){
-        let endpoint = project.paths[path][method];
-        if(endpoint.parameters){
+      for (const method in project.paths[path]) {
+        const endpoint = project.paths[path][method];
+        if (endpoint.parameters) {
           endpoint.parameters.forEach(parameter => {
-            if(parameter.name){
+            if (parameter.name) {
               tags[parameter.name.toLowerCase()] = null;
             }
-          })
+          });
         }
       }
     }
   }
   if ( project.definitions ) {
-    for ( var name in project.definitions ) {
-      let definition = project.definitions[ name ];
+    for ( const name in project.definitions ) {
+      const definition = project.definitions[ name ];
       if ( definition.name && definition.name.trim().length > 0 ) {
         tags[ definition.name.trim().toLowerCase() ] = null;
       }

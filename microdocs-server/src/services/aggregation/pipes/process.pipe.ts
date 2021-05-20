@@ -6,7 +6,7 @@ import { Project } from "@maxxton/microdocs-core/dist/domain/project.model";
  */
 export abstract class ProcessPipe extends Pipe<any> {
 
-  private processedProjects: string[] = [];
+  private processedProjects: Array<string> = [];
 
   protected run(): Pipe<any> {
     this.processedProjects = [];
@@ -21,7 +21,7 @@ export abstract class ProcessPipe extends Pipe<any> {
   public getPrevProject(title: string, version: string): Project {
     let result = this.result.getProject(title, version);
     if (result == null) {
-      let project = this.prev.result.getProject(title, version);
+      const project = this.prev.result.getProject(title, version);
       if (project) {
         if (this.processedProjects.indexOf(project.info.title + ":" + project.info.version) === -1) {
           this.processedProjects.push(project.info.title + ":" + project.info.version);

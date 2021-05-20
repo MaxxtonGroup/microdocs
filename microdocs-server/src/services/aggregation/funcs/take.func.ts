@@ -7,13 +7,13 @@ import { ProjectInfo } from "@maxxton/microdocs-core/dist/domain/common/project-
  * @param pipe
  * @return {AggregationPipeline}
  */
-export function takeEverything(pipe:Pipe<any>){
-  pipe.projects.forEach( (projectInfo:ProjectInfo) => {
-    projectInfo.getVersions().forEach((version:string) => {
-      let info = projectInfo.getVersion(version);
-      let report = pipe.reportRepo.getProject(pipe.env, info);
+export function takeEverything(pipe: Pipe<any>) {
+  pipe.projects.forEach( (projectInfo: ProjectInfo) => {
+    projectInfo.getVersions().forEach((version: string) => {
+      const info = projectInfo.getVersion(version);
+      const report = pipe.reportRepo.getProject(pipe.env, info);
       pipe.result.pushProject(report);
-    })
+    });
   });
 }
 
@@ -23,14 +23,14 @@ export function takeEverything(pipe:Pipe<any>){
  * @param versionAmount amount of versions per project
  * @return {AggregationPipeline}
  */
-export function takeLatest(pipe:Pipe<any>, versionAmount:number):void{
-  pipe.projects.forEach((projectInfo:ProjectInfo) => {
-    var latestVersions = projectInfo.getVersions().reverse().slice(0, versionAmount);
-    latestVersions.forEach((version:string) => {
-      let info = projectInfo.getVersion(version);
-      let report = pipe.reportRepo.getProject(pipe.env, info);
+export function takeLatest(pipe: Pipe<any>, versionAmount: number): void {
+  pipe.projects.forEach((projectInfo: ProjectInfo) => {
+    const latestVersions = projectInfo.getVersions().reverse().slice(0, versionAmount);
+    latestVersions.forEach((version: string) => {
+      const info = projectInfo.getVersion(version);
+      const report = pipe.reportRepo.getProject(pipe.env, info);
       pipe.result.pushProject(report);
-    })
+    });
   });
 }
 

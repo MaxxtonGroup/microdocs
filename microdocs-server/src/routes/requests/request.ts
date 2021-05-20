@@ -4,40 +4,40 @@ import { Project } from "@maxxton/microdocs-core/dist/domain";
  */
 export class Request {
 
-  private _tempFolder:string;
-  private _files:string[];
-  private _microdocsReport:Project;
-  private _validateMessage:string;
+  private _tempFolder: string;
+  private _files: Array<string>;
+  private _microdocsReport: Project;
+  private _validateMessage: string;
 
-  constructor( tempFolder:string ) {
+  constructor( tempFolder: string ) {
     this._tempFolder      = tempFolder;
   }
 
-  get tempFolder():string {
+  get tempFolder(): string {
     return this._tempFolder;
   }
 
-  get files():string[] {
+  get files(): Array<string> {
     return this._files;
   }
 
-  get microdocsReport():Project {
+  get microdocsReport(): Project {
     return this._microdocsReport;
   }
 
-  get validateMessage():string {
+  get validateMessage(): string {
     return this._validateMessage;
   }
 
-  set files( value:string[] ) {
+  set files( value: Array<string> ) {
     this._files = value;
   }
 
-  set microdocsReport( value:Project ) {
+  set microdocsReport( value: Project ) {
     this._microdocsReport = value;
   }
 
-  set validateMessage( value:string ) {
+  set validateMessage( value: string ) {
     this._validateMessage = value;
   }
 }

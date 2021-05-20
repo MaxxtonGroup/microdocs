@@ -13,34 +13,34 @@ export class ProjectSettingsJsonRepository implements ProjectSettingsRepository 
 
   public getMetadata(): Metadata {
     console.info("Load metadata");
-    var dataFolder: string = __dirname + '/../../../' + Config.get("dataFolder") + "/database";
-    var metadataFile: string = dataFolder + "/metadata.json";
-    if(fs.existsSync(metadataFile)){
-      let json = fs.readFileSync(metadataFile).toString();
-      let metadata = JSON.parse(json);
+    const dataFolder: string = __dirname + '/../../../' + Config.get("dataFolder") + "/database";
+    const metadataFile: string = dataFolder + "/metadata.json";
+    if (fs.existsSync(metadataFile)) {
+      const json = fs.readFileSync(metadataFile).toString();
+      const metadata = JSON.parse(json);
       return metadata;
-    }else{
+    } else {
       return {};
     }
   }
 
   public saveMetadata( metadata: Metadata ): void {
     console.info("Save metadata");
-    var dataFolder: string = __dirname + '/../../../' + Config.get("dataFolder") + "/database";
-    var metadataFile: string = dataFolder + "/metadata.json";
-    let json = JSON.stringify(metadata);
+    const dataFolder: string = __dirname + '/../../../' + Config.get("dataFolder") + "/database";
+    const metadataFile: string = dataFolder + "/metadata.json";
+    const json = JSON.stringify(metadata);
     fs.writeFileSync(metadataFile, json);
   }
 
 
   public getSettings(): Settings {
     console.info("Load project envs");
-    var dataFolder: string = __dirname + '/../../../' + Config.get("dataFolder") + "/config";
-    var settingsFile: string = dataFolder + "/settings";
-    var settings: Settings = {};
+    const dataFolder: string = __dirname + '/../../../' + Config.get("dataFolder") + "/config";
+    const settingsFile: string = dataFolder + "/settings";
+    let settings: Settings = {};
     settings = this.loadFile(settingsFile) || settings;
     if (!settings || !settings.envs || Object.keys(settings.envs).length == 0) {
-      settings = {envs:{default: {default: true}}};
+      settings = {envs: {default: {default: true}}};
     }
 
     return settings;
@@ -48,38 +48,38 @@ export class ProjectSettingsJsonRepository implements ProjectSettingsRepository 
 
   public getProjectSettings(): ProjectSettings {
     console.info("Load project settings");
-    var dataFolder: string = __dirname + '/../../../' + Config.get("dataFolder") + "/config/scripts";
-    var settings: ProjectSettings = {global: {}, environments: {}, groups: {}, projects: {}};
+    const dataFolder: string = __dirname + '/../../../' + Config.get("dataFolder") + "/config/scripts";
+    const settings: ProjectSettings = {global: {}, environments: {}, groups: {}, projects: {}};
 
     // Load globals
     settings.global = this.loadFile(dataFolder + "/global");
 
     // Load envs
-    var envFolder:string = dataFolder + "/envs";
-    var envs = fsHelper.getFiles(envFolder);
-    if(envs){
+    const envFolder: string = dataFolder + "/envs";
+    const envs = fsHelper.getFiles(envFolder);
+    if (envs) {
       envs.map(env => env.split('.')[0]).forEach(env => {
-        let envFile = envFolder + '/' + env;
+        const envFile = envFolder + '/' + env;
         settings.environments[env] = this.loadFile(envFile);
       });
     }
 
     // Load groups
-    var groupsFolder:string = dataFolder + "/groups";
-    var groups = fsHelper.getFiles(groupsFolder);
-    if(groups){
+    const groupsFolder: string = dataFolder + "/groups";
+    const groups = fsHelper.getFiles(groupsFolder);
+    if (groups) {
       groups.map(group => group.split('.')[0]).forEach(group => {
-        let groupFile = groupsFolder + '/' + group;
+        const groupFile = groupsFolder + '/' + group;
         settings.groups[group] = this.loadFile(groupFile);
       });
     }
 
     // Load Projects
-    var projectsFolder:string = dataFolder + "/projects";
-    var projects = fsHelper.getFiles(projectsFolder);
-    if(projects){
+    const projectsFolder: string = dataFolder + "/projects";
+    const projects = fsHelper.getFiles(projectsFolder);
+    if (projects) {
       projects.map(project => project.split('.')[0]).forEach(project => {
-        let projectFile = projectsFolder + '/' + project;
+        const projectFile = projectsFolder + '/' + project;
         settings.projects[project] = this.loadFile(projectFile);
       });
     }
@@ -87,15 +87,15 @@ export class ProjectSettingsJsonRepository implements ProjectSettingsRepository 
     return settings;
   }
 
-  private loadFile(path:string):{}{
-    if(fs.existsSync(path + '.js')){
+  private loadFile(path: string): {} {
+    if (fs.existsSync(path + '.js')) {
       console.info('load settings: ' + path + '.js');
-      let content:string = fs.readFileSync(path + '.js').toString();
+      const content: string = fs.readFileSync(path + '.js').toString();
       return eval(content);
     }
-    if(fs.existsSync(path + '.json')){
+    if (fs.existsSync(path + '.json')) {
       console.info('load settings: ' + path + '.json');
-      let content:string = fs.readFileSync(path + '.json').toString();
+      const content: string = fs.readFileSync(path + '.json').toString();
       return JSON.parse(content);
     }
     console.info('cannot load settings: ' + path);

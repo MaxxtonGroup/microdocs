@@ -9,7 +9,7 @@ export class ProjectService {
 
   public storeAggregatedProjects(env: string, projectTree: ProjectTree): void {
 
-    let problems = checkCircularStructure(projectTree);
+    const problems = checkCircularStructure(projectTree);
     if (problems) {
       problems.forEach(problem => {
         console.warn(`[${env}/index] circular structure: ${problem}`);
@@ -22,7 +22,7 @@ export class ProjectService {
   public storeAggregatedProject(env: string, project: Project): void {
     this.addResponseExamples(project);
 
-    let problems = checkCircularStructure(project);
+    const problems = checkCircularStructure(project);
     if (problems) {
       problems.forEach(problem => {
         console.warn(`[${env}/${project.info.title}:${project.info.version}] circular structure: ${problem}`);
@@ -35,13 +35,13 @@ export class ProjectService {
   private addResponseExamples(project: Project) {
     project.swagger = "2.0";
     if (project.paths != undefined) {
-      for (var path in project.paths) {
-        for (var method in project.paths[path]) {
-          var endpoint = project.paths[path][method];
+      for (const path in project.paths) {
+        for (const method in project.paths[path]) {
+          const endpoint = project.paths[path][method];
           if (endpoint.responses != undefined && endpoint.responses['default'] != undefined && endpoint.responses['default'].schema != undefined) {
-            var response = endpoint.responses['default'];
-            var schema = response.schema;
-            var example = SchemaHelper.generateExample(schema, undefined, [], project);
+            const response = endpoint.responses['default'];
+            const schema = response.schema;
+            const example = SchemaHelper.generateExample(schema, undefined, [], project);
             schema.default = example;
           }
         }
@@ -55,17 +55,17 @@ export class ProjectService {
  * @param object
  * @return problems detections
  */
-function checkCircularStructure(object: any, objectStore: {path: string, object: any}[] = [], problems: string[] = [], path: string = '.'): string[] {
-  let stack = objectStore.map(obj => obj);
+function checkCircularStructure(object: any, objectStore: Array<{path: string, object: any}> = [], problems: Array<string> = [], path: string = '.'): Array<string> {
+  const stack = objectStore.map(obj => obj);
 
   if (object && typeof(object) === 'object') {
-    let stackItem = stack.filter(stackItem => stackItem.object === object)[0];
+    const stackItem = stack.filter(stackItem => stackItem.object === object)[0];
     if (stackItem) {
       problems.push(path + " <=> " + stackItem.path);
     } else {
-      stack.push({path: path, object: object});
-      for (let key in object) {
-        let propertyPath = path === '.' ? key : path + '.' + key;
+      stack.push({path, object});
+      for (const key in object) {
+        const propertyPath = path === '.' ? key : path + '.' + key;
         checkCircularStructure(object[key], stack, problems, propertyPath);
       }
     }

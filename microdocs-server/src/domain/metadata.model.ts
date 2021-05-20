@@ -1,12 +1,12 @@
 
-export interface Metadata{
+export interface Metadata {
 
-  envs?:{[env:string]:MetadataEnvironment};
+  envs?: {[env: string]: MetadataEnvironment};
 
 }
 
-export interface MetadataEnvironment{
+export interface MetadataEnvironment {
 
-  postmanCollections?:{[projectTitle:string]:{collectionId:string,postmanId:string}};
+  postmanCollections?: {[projectTitle: string]: {collectionId: string, postmanId: string}};
 
 }

@@ -6,7 +6,7 @@ import { combineIncludes } from "../funcs";
  */
 export class IncludesPipe extends ProcessPipe {
 
-  protected runEach( project:Project ):Project {
+  protected runEach( project: Project ): Project {
     combineIncludes(this, project);
     return project;
   }

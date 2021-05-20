@@ -9,15 +9,15 @@ import * as path from 'path';
  */
 export class BaseRequestHandler {
 
-  public handleRequest(req:express.Request):Request{
-    let tempFolder = getTempFolder();
-    let request = new Request(tempFolder);
-    let contentType:string = req.get('content-type') || req.query['content-type'];
-    let importType:string = req.get('import') || req.query['import'];
+  public handleRequest(req: express.Request): Request {
+    const tempFolder = getTempFolder();
+    const request = new Request(tempFolder);
+    const contentType: string = req.get('content-type') || req.query['content-type'];
+    const importType: string = req.get('import') || req.query['import'];
 
-    if(contentType){
-      let body:{};
-      switch(contentType.toLowerCase()){
+    if (contentType) {
+      let body: {};
+      switch (contentType.toLowerCase()) {
         case 'application/json':
           body = req.body;
           break;
@@ -25,7 +25,7 @@ export class BaseRequestHandler {
           request.validateMessage = `content-type '${contentType}' not supported`;
           break;
       }
-    }else{
+    } else {
       request.validateMessage = `body is missing, did you set the 'content-type'?`;
     }
     return request;

@@ -3,9 +3,9 @@ import { Pipe } from "../pipe";
 /**
  * @author Steven Hermans
  */
-export class ProblemsPipe extends Pipe<Problem[]> {
+export class ProblemsPipe extends Pipe<Array<Problem>> {
 
-  protected run():Problem[] {
+  protected run(): Array<Problem> {
     this.forwardResult();
     return this.pipeline.problems;
   }

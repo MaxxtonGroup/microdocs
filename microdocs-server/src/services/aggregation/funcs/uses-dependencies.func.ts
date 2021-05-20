@@ -9,13 +9,13 @@ import { Path } from "@maxxton/microdocs-core/dist/domain/path/path.model";
  * @param project
  * @param scope
  */
-export function resolveUsesDependencies( pipe:Pipe<any>, project:Project, scope?:Project ) {
+export function resolveUsesDependencies( pipe: Pipe<any>, project: Project, scope?: Project ) {
   if ( project.dependencies ) {
-    for ( let depTitle in project.dependencies ) {
+    for ( const depTitle in project.dependencies ) {
       if ( (scope && (scope.info.title === depTitle || scope.info.title === project.info.title)) || !scope ) {
-        let dependency:Dependency = project.dependencies[ depTitle ];
+        const dependency: Dependency = project.dependencies[ depTitle ];
         if ( dependency.type === DependencyTypes.USES ) {
-          let reporter = new ProblemReporter( project );
+          const reporter = new ProblemReporter( project );
           resolveUsesClient( pipe, reporter, project, dependency, depTitle, scope );
           if ( reporter.hasProblems() ) {
             reporter.publish( dependency, project );
@@ -27,9 +27,9 @@ export function resolveUsesDependencies( pipe:Pipe<any>, project:Project, scope?
   }
 }
 
-function resolveUsesClient( pipe:Pipe<any>, reporter:ProblemReporter, project:Project, dependency:Dependency, depTitle:string, scope?:Project ) {
+function resolveUsesClient( pipe: Pipe<any>, reporter: ProblemReporter, project: Project, dependency: Dependency, depTitle: string, scope?: Project ) {
   // Find the matching version
-  let depProject:Project;
+  let depProject: Project;
   if ( dependency.version ) {
     depProject = pipe.getPrevProject( depTitle, dependency.version );
   }
@@ -42,29 +42,29 @@ function resolveUsesClient( pipe:Pipe<any>, reporter:ProblemReporter, project:Pr
     return;
   }
 
-  var projectInfo = pipe.projects.filter(info => info.title === depTitle)[0];
-  if(projectInfo) {
+  const projectInfo = pipe.projects.filter(info => info.title === depTitle)[0];
+  if (projectInfo) {
     dependency.latestVersion = projectInfo.version;
   }
   let compatible = checkDependencyCompatible(depTitle, dependency, depProject, project, reporter);
-  if(compatible){
+  if (compatible) {
     dependency.version = depProject.info.version;
-  }else{
+  } else {
     let first = true;
-    let olderDepProject:Project = null;
-    while(!compatible && (olderDepProject != null || first)){
+    let olderDepProject: Project = null;
+    while (!compatible && (olderDepProject != null || first)) {
       first = false;
       olderDepProject = pipe.getPrevProjectVersion(depTitle, olderDepProject ? olderDepProject.info.version : depProject.info.version);
-      if(olderDepProject) {
+      if (olderDepProject) {
         compatible = checkDependencyCompatible( depTitle, dependency, olderDepProject, project, new ProblemReporter() );
       }
     }
-    if(olderDepProject && olderDepProject.info && olderDepProject.info.version){
+    if (olderDepProject && olderDepProject.info && olderDepProject.info.version) {
       dependency.version = olderDepProject.info.version;
-    }else{
+    } else {
       dependency.version = depProject.info.version;
     }
-    if(!compatible){
+    if (!compatible) {
       reporter.report( ProblemLevels.ERROR, "Not compatible with: " + depTitle, dependency.component );
     }
   }
@@ -82,9 +82,9 @@ function resolveUsesClient( pipe:Pipe<any>, reporter:ProblemReporter, project:Pr
  * @param reporter
  * @returns {boolean} true if compatible, otherwise false
  */
-function checkDependencyCompatible( title:string, dependency:Dependency, depProject:Project, currentProject:Project, reporter?:ProblemReporter ):boolean {
+function checkDependencyCompatible( title: string, dependency: Dependency, depProject: Project, currentProject: Project, reporter?: ProblemReporter ): boolean {
   if ( dependency.deprecatedVersions && dependency.deprecatedVersions.indexOf( depProject.info.version ) != -1 ) {
-    if(reporter) {
+    if (reporter) {
       reporter.report( ProblemLevels.WARNING, "This project is marked as not compatible with version " + depProject.info.version, dependency.component );
     }
     return false;
