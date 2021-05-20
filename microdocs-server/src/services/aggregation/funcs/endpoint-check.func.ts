@@ -1,12 +1,12 @@
-import {Path, Project, Parameter, ParameterPlacings, ProblemLevels, SchemaTypes, Schema} from "@maxxton/microdocs-core/domain";
-import {ProblemReporter, SchemaHelper} from "@maxxton/microdocs-core/helpers";
+import {Path, Project, Parameter, ParameterPlacings, ProblemLevels, SchemaTypes, Schema} from "@maxxton/microdocs-core/dist/domain";
+import {ProblemReporter, SchemaHelper} from "@maxxton/microdocs-core/dist/helpers";
 
 export function checkQueryParameters(clientEndpoint: Path, producerEndpoint: Path, clientProject: Project, producerProject: Project, problemReport: ProblemReporter): void {
   if (producerEndpoint.parameters) {
-    let parameters = producerEndpoint.parameters.filter(param => param.in === ParameterPlacings.QUERY);
-    let clientParams = clientEndpoint.parameters;
+    const parameters = producerEndpoint.parameters.filter(param => param.in === ParameterPlacings.QUERY);
+    const clientParams = clientEndpoint.parameters;
     parameters.forEach(producerParam => {
-      var exists = false;
+      let exists = false;
       if (clientParams) {
         clientParams.forEach(clientParam => {
           if (producerParam.name == clientParam.name && producerParam.in == clientParam.in) {
@@ -28,22 +28,22 @@ export function checkQueryParameters(clientEndpoint: Path, producerEndpoint: Pat
 
 export function checkPathParameters(clientEndpoint: Path, producerEndpoint: Path, clientProject: Project, producerProject: Project, problemReport: ProblemReporter): void {
   // match via wildcards in regexp
-  var expression = '^' + producerEndpoint.path.replace(new RegExp("\/", 'g'), '\/').replace(new RegExp("\\{.*?\\}", 'g'), '(.+)') + '$';
-  var clientExp = new RegExp(expression);
-  var producerExp = new RegExp("\\{.*?\\}", 'g');
-  var clientMatches: string[] = clientEndpoint.path.match(clientExp);
-  var producerMatches: string[] = producerEndpoint.path.match(producerExp);
+  const expression = '^' + producerEndpoint.path.replace(new RegExp("\/", 'g'), '\/').replace(new RegExp("\\{.*?\\}", 'g'), '(.+)') + '$';
+  const clientExp = new RegExp(expression);
+  const producerExp = new RegExp("\\{.*?\\}", 'g');
+  const clientMatches: Array<string> = clientEndpoint.path.match(clientExp);
+  const producerMatches: Array<string> = producerEndpoint.path.match(producerExp);
 
   if (clientMatches && producerMatches && clientMatches.length == producerMatches.length + 1 && clientMatches.length >= 1) {
     for (let i = 1; i < clientMatches.length; i++) {
-      let producerParamName = producerMatches[i - 1].substr(1, producerMatches[i - 1].length - 2);
-      let producerParam = getPathVariable(producerParamName, producerEndpoint);
+      const producerParamName = producerMatches[i - 1].substr(1, producerMatches[i - 1].length - 2);
+      const producerParam = getPathVariable(producerParamName, producerEndpoint);
       if (producerParam == null) {
         problemReport.report(ProblemLevels.ERROR, "path variable '" + producerParamName + "' is missing on the controller", clientEndpoint.controller, clientEndpoint.method);
       } else {
-        let clientParamName = clientMatches[i];
+        const clientParamName = clientMatches[i];
         if (clientParamName.match(/^\{.*?\}$/)) {
-          var clientParam = getPathVariable(clientParamName.substr(1, clientParamName.length - 2), clientEndpoint);
+          const clientParam = getPathVariable(clientParamName.substr(1, clientParamName.length - 2), clientEndpoint);
           if (clientParam == null) {
             problemReport.report(ProblemLevels.ERROR, "path variable '" + clientParamName.substr(1, clientParamName.length - 2) + "' is missing", clientEndpoint.controller, clientEndpoint.method);
           }
@@ -53,7 +53,7 @@ export function checkPathParameters(clientEndpoint: Path, producerEndpoint: Path
             }
           }
         } else {
-          var value = clientParamName;
+          const value = clientParamName;
           switch (producerParam.type.toLowerCase()) {
             case SchemaTypes.NUMBER:
             case SchemaTypes.INTEGER:
@@ -71,7 +71,7 @@ export function checkPathParameters(clientEndpoint: Path, producerEndpoint: Path
 function getPathVariable(name: string, path: Path): Parameter {
   if (path.parameters != undefined && path.parameters != null) {
     for (let i = 0; i < path.parameters.length; i++) {
-      let param = path.parameters[i];
+      const param = path.parameters[i];
       if (param.name == name && param.in == ParameterPlacings.PATH) {
         return param;
       }
@@ -82,8 +82,8 @@ function getPathVariable(name: string, path: Path): Parameter {
 
 export function checkBodyParameters(clientEndpoint: Path, producerEndpoint: Path, clientProject: Project, producerProject: Project, problemReport: ProblemReporter): void {
   if (producerEndpoint.parameters) {
-    let parameters = producerEndpoint.parameters.filter(param => param.in === ParameterPlacings.BODY);
-    let clientParams = clientEndpoint.parameters;
+    const parameters = producerEndpoint.parameters.filter(param => param.in === ParameterPlacings.BODY);
+    const clientParams = clientEndpoint.parameters;
     parameters.forEach(producerParam => {
       let exists = false;
       clientParams.some(clientParam => {
@@ -133,27 +133,27 @@ function checkSchema(endpoint: Path, clientSchema: Schema, producerSchema: Schem
         problemReport.report(ProblemLevels.WARNING, "Type mismatches in " + placing + " body" + position + ", expected: " + producerSchema.type + ", found: " + clientSchema.type, endpoint.controller, endpoint.method);
       } else {
         if (producerSchema.type == SchemaTypes.OBJECT) {
-          let producerViews = collectViews(producerSchema);
-          let clientViews = collectViews(clientSchema);
+          const producerViews = collectViews(producerSchema);
+          const clientViews = collectViews(clientSchema);
 
           // Check each view for problems
-          let problemReporters: ProblemReporter[] = [];
+          const problemReporters: Array<ProblemReporter> = [];
           producerViews.forEach(producerView => {
             clientViews.forEach(clientView => {
-              let reporter = new ProblemReporter(problemReport.getRootObject());
+              const reporter = new ProblemReporter(problemReport.getRootObject());
               problemReporters.push(reporter);
 
-              let producerProperties = producerView.properties;
-              let clientProperties = clientView.properties;
+              const producerProperties = producerView.properties;
+              const clientProperties = clientView.properties;
 
               // Check each producer properties
               if (producerProperties) {
-                for (let key in producerProperties) {
+                for (const key in producerProperties) {
                   // Find client Property by name
-                  let producerProperty = producerProperties[key];
+                  const producerProperty = producerProperties[key];
                   if (!isProducerIgnored(producerProperty)) {
-                    let propertyName = getProducerPropertyMappingName(key, producerProperty);
-                    let clientProperty = findClientPropertyByName(propertyName, clientProperties);
+                    const propertyName = getProducerPropertyMappingName(key, producerProperty);
+                    const clientProperty = findClientPropertyByName(propertyName, clientProperties);
 
                     checkSchema(endpoint, clientProperty, producerProperty, clientProject, producerProject, reporter, path + (path == '' ? '' : '.') + key, placing);
                   }
@@ -162,17 +162,17 @@ function checkSchema(endpoint: Path, clientSchema: Schema, producerSchema: Schem
 
               // Check unknown client properties
               if (clientProperties) {
-                for (let key in clientProperties) {
-                  let clientProperty = clientProperties[key];
+                for (const key in clientProperties) {
+                  const clientProperty = clientProperties[key];
                   if (!isClientIgnored(clientProperty)) {
-                    let name = getClientPropertyMappingName(key, clientProperty);
+                    const name = getClientPropertyMappingName(key, clientProperty);
 
-                    let producerProperty:Schema = null;
-                    if(producerProperties) {
+                    let producerProperty: Schema = null;
+                    if (producerProperties) {
                       producerProperty = findProducerPropertyByName(name, producerProperties);
                     }
                       if (!producerProperty) {
-                        let keyPath = path + (path ? '.' : '') + key;
+                        const keyPath = path + (path ? '.' : '') + key;
                         reporter.report(ProblemLevels.WARNING, `Unknown property '${keyPath}' in ${placing} body`, endpoint.controller, endpoint.method);
                       }
                   }
@@ -180,7 +180,7 @@ function checkSchema(endpoint: Path, clientSchema: Schema, producerSchema: Schem
               }
 
               // Decorate problems with view info
-              if(producerViews.length > 1 || clientViews.length > 1) {
+              if (producerViews.length > 1 || clientViews.length > 1) {
                 reporter.getRawProblems().forEach(problem => {
                   problem.message = "[" + clientView.name + " > " + producerView.name + "] " + problem.message;
                 });
@@ -205,8 +205,8 @@ function checkSchema(endpoint: Path, clientSchema: Schema, producerSchema: Schem
           }
 
         } else if (producerSchema.type == SchemaTypes.ARRAY) {
-          let producerItems = producerSchema.items;
-          let clientItems = clientSchema.items;
+          const producerItems = producerSchema.items;
+          const clientItems = clientSchema.items;
           checkSchema(endpoint, clientItems, producerItems, clientProject, producerProject, problemReport, path + (path == '' ? '' : '.') + "0", placing);
         }
       }
@@ -274,7 +274,7 @@ function findClientPropertyByName(name: string, properties: {[key: string]: Sche
   return Object.keys(properties)
   // Filter json.ignore
     .filter(key => {
-      let property = properties[key];
+      const property = properties[key];
       if (property.mappings && property.mappings.json && property.mappings.json.ignore) {
         return false;
       }
@@ -282,7 +282,7 @@ function findClientPropertyByName(name: string, properties: {[key: string]: Sche
     })
     // Filter client.ignore
     .filter(key => {
-      let property = properties[key];
+      const property = properties[key];
       if (property.mappings && property.mappings.client && property.mappings.client.ignore) {
         return false;
       }
@@ -290,8 +290,8 @@ function findClientPropertyByName(name: string, properties: {[key: string]: Sche
     })
     // Filter name
     .filter(key => {
-      let property = properties[key];
-      let propertyName = getClientPropertyMappingName(key, property);
+      const property = properties[key];
+      const propertyName = getClientPropertyMappingName(key, property);
       return propertyName === name;
     }).map(clientKey => properties[clientKey])[0];
 }
@@ -306,7 +306,7 @@ function findProducerPropertyByName(name: string, properties: {[key: string]: Sc
   return Object.keys(properties)
   // Filter json.ignore
     .filter(key => {
-      let property = properties[key];
+      const property = properties[key];
       if (property.mappings && property.mappings.json && property.mappings.json.ignore) {
         return false;
       }
@@ -314,8 +314,8 @@ function findProducerPropertyByName(name: string, properties: {[key: string]: Sc
     })
     // Filter name
     .filter(key => {
-      let property = properties[key];
-      let propertyName = getProducerPropertyMappingName(key, property);
+      const property = properties[key];
+      const propertyName = getProducerPropertyMappingName(key, property);
       return propertyName === name;
     }).map(clientKey => properties[clientKey])[0];
 }
@@ -391,12 +391,12 @@ function isProducerIgnored(property: Schema): boolean {
   return false;
 }
 
-function collectViews(schema: Schema): Schema[] {
-  let views = [schema];
+function collectViews(schema: Schema): Array<Schema> {
+  const views = [schema];
   if (schema.anyOf) {
     schema.anyOf.forEach(view => {
-      let baseCopy: Schema = {};
-      for (let key in schema) {
+      const baseCopy: Schema = {};
+      for (const key in schema) {
         if (key !== 'anyOf') {
           baseCopy[key] = schema[key];
         }

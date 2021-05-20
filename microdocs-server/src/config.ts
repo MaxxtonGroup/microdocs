@@ -19,7 +19,7 @@ export class Config {
    */
   public static reload() {
     console.info( "load config" );
-    Config.config = (<any>yamlConfig).load( Config.configFile );
+    Config.config = (yamlConfig as any).load( Config.configFile );
   }
 
   /**
@@ -28,10 +28,10 @@ export class Config {
    * @returns {any} the value of the property or undefined
    */
   public static get( path: string ): any {
-    var paths   = path.split( '.' );
-    var current:any = Config.config;
+    const paths   = path.split( '.' );
+    let current: any = Config.config;
 
-    for ( var i = 0; i < paths.length; ++i ) {
+    for ( let i = 0; i < paths.length; ++i ) {
       if ( current[ paths[ i ] ] == undefined ) {
         return undefined;
       } else {

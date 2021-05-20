@@ -4,20 +4,20 @@ const mkdir = require('mkdir-p');
 
 import {Config} from "../../config";
 import {ProjectRepository} from "../project.repo";
-import { Project, ProjectTree, ProjectInfo } from "@maxxton/microdocs-core/domain";
+import { Project, ProjectTree, ProjectInfo } from "@maxxton/microdocs-core/dist/domain";
 import * as fsHelper from '../../helpers/file.helper';
-import { Dependency } from "@maxxton/microdocs-core/domain/dependency/dependency.model";
+import { Dependency } from "@maxxton/microdocs-core/dist/domain/dependency/dependency.model";
 
 export class ProjectJsonRepository implements ProjectRepository {
-  
-  public removeAggregatedProject(env:string, title:string, version?:string):boolean {
+
+  public removeAggregatedProject(env: string, title: string, version?: string): boolean {
     console.info("Remove project: " + title + ":" + version);
-    
-    var dataFolder:string = __dirname + '/../../../' + Config.get("dataFolder") + "/database/" + env;
-    var projectFolder:string = dataFolder + "/" + title;
-    
+
+    const dataFolder: string = __dirname + '/../../../' + Config.get("dataFolder") + "/database/" + env;
+    const projectFolder: string = dataFolder + "/" + title;
+
     if (version) {
-      var storeFile:string = projectFolder + "/" + version + ".json";
+      const storeFile: string = projectFolder + "/" + version + ".json";
       if (fs.existsSync(storeFile)) {
         fs.unlinkSync(storeFile);
         // cleanEmptyFolders(dataFolder);
@@ -30,34 +30,34 @@ export class ProjectJsonRepository implements ProjectRepository {
         return true;
       }
     }
-    
+
     return false;
   }
-  
-  public getAggregatedProjects(env:string):ProjectTree {
+
+  public getAggregatedProjects(env: string): ProjectTree {
     console.info("Load metadata");
-    var dataFolder:string = __dirname + '/../../../' + Config.get("dataFolder") + "/database/" + env;
-    var metaFile:string = dataFolder + "/projects.json";
+    const dataFolder: string = __dirname + '/../../../' + Config.get("dataFolder") + "/database/" + env;
+    const metaFile: string = dataFolder + "/projects.json";
     if (fs.existsSync(metaFile)) {
-      var string = fs.readFileSync(metaFile).toString();
-      var json = JSON.parse(string);
+      const string = fs.readFileSync(metaFile).toString();
+      const json = JSON.parse(string);
       return ProjectTree.link(json);
     }
     return null;
   }
-  
-  public getAggregatedProject(env:string, title:string, version:string):Project {
+
+  public getAggregatedProject(env: string, title: string, version: string): Project {
     console.info("Load project: " + title + ":" + version);
-    var dataFolder:string = __dirname + '/../../../' + Config.get("dataFolder") + "/database/" + env;
-    var projectFolder:string = dataFolder + "/" + title;
-    var storeFile:string = projectFolder + "/" + version + ".json";
+    const dataFolder: string = __dirname + '/../../../' + Config.get("dataFolder") + "/database/" + env;
+    const projectFolder: string = dataFolder + "/" + title;
+    const storeFile: string = projectFolder + "/" + version + ".json";
     if (fs.existsSync(storeFile)) {
-      var string = fs.readFileSync(storeFile).toString();
-      var json = JSON.parse(string);
-      var project:any = json;
-      if(project.dependencies) {
-        let convertedDependencies:{[key: string]:Dependency} = {};
-        for(let key in project.dependencies){
+      const string = fs.readFileSync(storeFile).toString();
+      const json = JSON.parse(string);
+      const project: any = json;
+      if (project.dependencies) {
+        const convertedDependencies: {[key: string]: Dependency} = {};
+        for (const key in project.dependencies) {
           convertedDependencies[key.toLowerCase()] = project.dependencies[key];
         }
         project.dependencies = convertedDependencies;
@@ -67,28 +67,28 @@ export class ProjectJsonRepository implements ProjectRepository {
     }
     return null;
   }
-  
-  public storeAggregatedProjects(env:string, projectTree:ProjectTree):void {
+
+  public storeAggregatedProjects(env: string, projectTree: ProjectTree): void {
     console.info("Store metadata");
-    var dataFolder:string = __dirname + '/../../../' + Config.get("dataFolder") + "/database/" + env;
-    var metaFile:string = dataFolder + "/projects.json";
-    
+    const dataFolder: string = __dirname + '/../../../' + Config.get("dataFolder") + "/database/" + env;
+    const metaFile: string = dataFolder + "/projects.json";
+
     mkdir.sync(dataFolder);
-    
-    var json = JSON.stringify(projectTree.unlink());
+
+    const json = JSON.stringify(projectTree.unlink());
     fs.writeFileSync(metaFile, json);
   }
-  
-  public storeAggregatedProject(env:string, project:Project):void {
+
+  public storeAggregatedProject(env: string, project: Project): void {
     console.info("Store project: " + project.info.title + ":" + project.info.version);
-    var dataFolder:string = __dirname + '/../../../' + Config.get("dataFolder") + "/database/" + env;
-    var projectFolder:string = dataFolder + "/" + project.info.title;
-    var storeFile:string = projectFolder + "/" + project.info.version + ".json";
-    
+    const dataFolder: string = __dirname + '/../../../' + Config.get("dataFolder") + "/database/" + env;
+    const projectFolder: string = dataFolder + "/" + project.info.title;
+    const storeFile: string = projectFolder + "/" + project.info.version + ".json";
+
     mkdir.sync(projectFolder);
-    
-    var json = JSON.stringify(project);
+
+    const json = JSON.stringify(project);
     fs.writeFileSync(storeFile, json);
   }
-  
+
 }

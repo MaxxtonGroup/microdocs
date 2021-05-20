@@ -1,4 +1,4 @@
-import { Project, ProjectTree, ProjectInfo, Problem } from "@maxxton/microdocs-core/domain";
+import { Project, ProjectTree, ProjectInfo, Problem } from "@maxxton/microdocs-core/dist/domain";
 import { AggregationResult } from "./aggregation-result";
 import { ProjectService } from "../project.service";
 import { ReportRepository } from "../../repositories/report.repo";
@@ -76,7 +76,7 @@ export abstract class Pipe<T> {
    */
   public process(): T {
 
-    let out = this.run();
+    const out = this.run();
 
     return out;
   }
@@ -94,7 +94,7 @@ export abstract class Pipe<T> {
    */
   public getPrevProject( title: string, version: string ): Project {
     if ( this._prev ) {
-      let project = this._prev._result.getProject( title, version );
+      const project = this._prev._result.getProject( title, version );
       if ( project ) {
         return project;
       } else {
@@ -111,12 +111,12 @@ export abstract class Pipe<T> {
    * @return {Project} or null
    */
   public getPrevProjectVersion( title: string, lastVersion?: string ): Project {
-    let projectInfos = this.projects.filter( info => info.title === title );
+    const projectInfos = this.projects.filter( info => info.title === title );
     if ( projectInfos.length > 0 ) {
-      let versions    = projectInfos[ 0 ].getVersions();
+      const versions    = projectInfos[ 0 ].getVersions();
       let nextVersion = versions[ versions.length - 1 ];
       if ( lastVersion ) {
-        let index = versions.indexOf( lastVersion );
+        const index = versions.indexOf( lastVersion );
         if ( index > -1 ) {
           if ( index - 1 >= 0 ) {
             nextVersion = versions[ index - 1 ];
@@ -125,7 +125,7 @@ export abstract class Pipe<T> {
           }
         }
       }
-      let project = this.getPrevProject( title, nextVersion );
+      const project = this.getPrevProject( title, nextVersion );
       if ( !project || project.deprecated === true ) {
         return this.getPrevProjectVersion( title, nextVersion );
       }
@@ -166,7 +166,7 @@ export abstract class Pipe<T> {
    * Get preloaded project info's
    * @return {ProjectInfo[]}
    */
-  get projects(): ProjectInfo[] {
+  get projects(): Array<ProjectInfo> {
     return this.pipeline.projects;
   }
 
@@ -174,7 +174,7 @@ export abstract class Pipe<T> {
    * Remove report from the current pipe
    * @return {Pipe} return this pipe
    */
-  public remove( title:string ): Pipe<any> {
+  public remove( title: string ): Pipe<any> {
     this.result.removeProject(title);
     return this;
   }
@@ -204,7 +204,7 @@ export abstract class Pipe<T> {
    */
   public preProcess(): Pipe<any> {
     console.info( 'preProcess' );
-    let pipe   = new PreProcessPipe( this.pipeline );
+    const pipe   = new PreProcessPipe( this.pipeline );
     pipe._prev = this;
     this._next = pipe;
     return pipe.process();
@@ -216,7 +216,7 @@ export abstract class Pipe<T> {
    */
   public combineIncludes(): Pipe<any> {
     console.info( 'combine Includes' );
-    let pipe   = new IncludesPipe( this.pipeline );
+    const pipe   = new IncludesPipe( this.pipeline );
     pipe._prev = this;
     this._next = pipe;
     return pipe.process();
@@ -229,7 +229,7 @@ export abstract class Pipe<T> {
    */
   public resolveRestDependencies( scope?: Project ): Pipe<any> {
     console.info( 'resolve Rest Dependencies' );
-    let pipe   = new RestDependenciesPipe( this.pipeline, scope );
+    const pipe   = new RestDependenciesPipe( this.pipeline, scope );
     pipe._prev = this;
     this._next = pipe;
     return pipe.process();
@@ -242,7 +242,7 @@ export abstract class Pipe<T> {
    */
   public resolveUsesDependencies( scope?: Project ): Pipe<any> {
     console.info( 'resolve Uses Dependencies' );
-    let pipe   = new UsesDependenciesPipe( this.pipeline, scope );
+    const pipe   = new UsesDependenciesPipe( this.pipeline, scope );
     pipe._prev = this;
     this._next = pipe;
     return pipe.process();
@@ -254,7 +254,7 @@ export abstract class Pipe<T> {
    */
   public storeIndex(): Pipe<any> {
     console.info( 'store Index' );
-    let pipe   = new StoreIndexPipe( this.pipeline );
+    const pipe   = new StoreIndexPipe( this.pipeline );
     pipe._prev = this;
     this._next = pipe;
     return pipe.process();
@@ -266,7 +266,7 @@ export abstract class Pipe<T> {
    */
   public storeProjects(): Pipe<any> {
     console.info( 'store Projects' );
-    let pipe   = new StoreProjectsPipe( this.pipeline );
+    const pipe   = new StoreProjectsPipe( this.pipeline );
     pipe._prev = this;
     this._next = pipe;
     return pipe.process();
@@ -278,7 +278,7 @@ export abstract class Pipe<T> {
    */
   public buildTags(): Pipe<any> {
     console.info( 'build Tags' );
-    let pipe   = new BuildTagsPipe( this.pipeline );
+    const pipe   = new BuildTagsPipe( this.pipeline );
     pipe._prev = this;
     this._next = pipe;
     return pipe.process();
@@ -288,7 +288,7 @@ export abstract class Pipe<T> {
    * Build tags
    * @return {Pipe}
    */
-  public postAction(hook:Hook): Pipe<any> {
+  public postAction(hook: Hook): Pipe<any> {
     this._pipeline.addHook(hook);
     return this;
   }
@@ -299,10 +299,10 @@ export abstract class Pipe<T> {
    */
   public asTree(): ProjectTree {
     console.info( 'as Tree' );
-    let pipe   = new TreePipe( this.pipeline );
+    const pipe   = new TreePipe( this.pipeline );
     pipe._prev = this;
     this._next = pipe;
-    let result = pipe.process();
+    const result = pipe.process();
     this._pipeline.finish();
     return result;
   }
@@ -311,12 +311,12 @@ export abstract class Pipe<T> {
    * Return all found problems
    * @return {Problem[]}
    */
-  public asProblems(): Problem[] {
+  public asProblems(): Array<Problem> {
     console.info( 'as Problems' );
-    let pipe   = new ProblemsPipe( this.pipeline );
+    const pipe   = new ProblemsPipe( this.pipeline );
     pipe._prev = this;
     this._next = pipe;
-    let result = pipe.process();
+    const result = pipe.process();
     this._pipeline.finish();
     return result;
   }

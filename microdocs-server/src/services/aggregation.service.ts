@@ -1,4 +1,4 @@
-import { Project, Problem, ProjectTree } from "@maxxton/microdocs-core/domain";
+import { Project, Problem, ProjectTree } from "@maxxton/microdocs-core/dist/domain";
 import { pipe } from "./aggregation/aggregation-pipeline";
 import { Injection } from "../injections";
 import { postmanSync } from "./aggregation/hooks";
@@ -8,10 +8,10 @@ import { postmanSync } from "./aggregation/hooks";
  */
 export class AggregationService {
 
-  constructor( private injection:Injection ) {
+  constructor( private injection: Injection ) {
   }
 
-  reindex( env:string, maxAmount:number = 1 ):ProjectTree {
+  reindex( env: string, maxAmount: number = 1 ): ProjectTree {
     return pipe( this.injection, env )
         .takeLatest( maxAmount )
         .preProcess()
@@ -25,7 +25,7 @@ export class AggregationService {
         .asTree();
   }
 
-  reindexAll( env:string ):ProjectTree {
+  reindexAll( env: string ): ProjectTree {
     return pipe( this.injection, env )
         .takeEverything()
         .preProcess()
@@ -39,10 +39,10 @@ export class AggregationService {
         .asTree();
   }
 
-  checkProject( env:string, report:Project ):Problem[] {
+  checkProject( env: string, report: Project ): Array<Problem> {
 //    report.info.version = Number.MAX_VALUE + '.0.0';
 //    report.info.getVersions().push(report.info.version);
-    let problems = pipe( this.injection, env )
+    const problems = pipe( this.injection, env )
         .takeLatest()
         .remove( report.info.title )
         .take( report )

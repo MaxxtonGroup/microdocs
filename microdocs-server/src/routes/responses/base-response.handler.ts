@@ -1,24 +1,24 @@
 import * as express from "express";
-import {ProjectTree, Problem, Project, ProblemResponse, ProblemLevels} from '@maxxton/microdocs-core/domain';
+import {ProjectTree, Problem, Project, ProblemResponse, ProblemLevels} from '@maxxton/microdocs-core/dist/domain';
 const yaml = require('js-yaml');
 const xml = require('jsontoxml');
 import {Injection} from "../../injections";
 
 export class BaseResponseHandler {
-  
-  constructor(protected injection:Injection){}
 
-  handleProjects(req: express.Request, res: express.Response, projectTree: ProjectTree, env:string, injection:Injection) {
+  constructor(protected injection: Injection) {}
+
+  handleProjects(req: express.Request, res: express.Response, projectTree: ProjectTree, env: string, injection: Injection) {
     this.response(req, res, 200, projectTree.unlink());
   }
 
-  handleProject(req: express.Request, res: express.Response, project: Project, env:string, injection:Injection) {
+  handleProject(req: express.Request, res: express.Response, project: Project, env: string, injection: Injection) {
     this.response(req, res, 200, project);
   }
 
-  handleProblems(req: express.Request, res: express.Response, problems: Problem[], env:string) {
-    var problemResponse:ProblemResponse = {problems: problems};
-    if (problems.filter(problem => problem.level == ProblemLevels.ERROR || problem.level == ProblemLevels.WARNING).length == 0){
+  handleProblems(req: express.Request, res: express.Response, problems: Array<Problem>, env: string) {
+    const problemResponse: ProblemResponse = {problems};
+    if (problems.filter(problem => problem.level == ProblemLevels.ERROR || problem.level == ProblemLevels.WARNING).length == 0) {
       problemResponse.status = 'ok';
       problemResponse.message = 'No problems found';
     } else {
@@ -29,7 +29,7 @@ export class BaseResponseHandler {
   }
 
   handleUnsupportedMediaType(req: express.Request, res: express.Response) {
-    var contentType = req.header('content-type');
+    const contentType = req.header('content-type');
     this.handleError(req, res, {
       status: 415,
       error: 'Unsupported media type',
@@ -38,7 +38,7 @@ export class BaseResponseHandler {
   }
 
   handleNotAcceptable(req: express.Request, res: express.Response) {
-    var accept = req.header('accept');
+    const accept = req.header('accept');
     this.handleError(req, res, {
       status: 406,
       error: 'Not Acceptable',
@@ -51,7 +51,7 @@ export class BaseResponseHandler {
   }
 
   handleNotFound(req: express.Request, res: express.Response, message?: string) {
-    this.handleError(req, res, {status: 404, error: 'Not Found', message: message});
+    this.handleError(req, res, {status: 404, error: 'Not Found', message});
   }
 
   handleInternalServerError(req: express.Request, res: express.Response, error: Error) {
@@ -72,9 +72,9 @@ export class BaseResponseHandler {
   }
 
   response(req: express.Request, res: express.Response, status: number, object: any) {
-    if(req.get('accept') == undefined || req.accepts('json')){
+    if (req.get('accept') == undefined || req.accepts('json')) {
       this.responseJson(res, status, object);
-    }else if (req.accepts('yml')) {
+    } else if (req.accepts('yml')) {
       this.responseYaml(res, status, object);
     } else if (req.accepts('xml')) {
       this.responseXml(res, status, object);
@@ -96,7 +96,7 @@ export class BaseResponseHandler {
       .header('Access-Control-Allow-Origin', '*')
       .header('content-type', 'application/x-yaml')
       .status(status)
-      .send((<any>yaml).dump(object));
+      .send((yaml as any).dump(object));
   }
 
   protected responseXml(res: express.Response, status: number, object: any) {

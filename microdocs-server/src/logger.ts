@@ -1,9 +1,9 @@
-var winston = require('winston');
-var _ = require('lodash');
-import {Config} from './config'
+const winston = require('winston');
+const _ = require('lodash');
+import {Config} from './config';
 
 // Set up logger
-var customColors = {
+const customColors = {
   trace: 'white',
   debug: 'green',
   info: 'green',
@@ -12,7 +12,7 @@ var customColors = {
   fatal: 'red'
 };
 
-var logger = new(winston.Logger)({
+const logger = new(winston.Logger)({
   colors: customColors,
   levels: {
     trace: 0,
@@ -35,10 +35,10 @@ var logger = new(winston.Logger)({
 winston.addColors(customColors);
 
 // Extend logger object to properly log 'Error' types
-var origLog = logger.log;
+const origLog = logger.log;
 
-logger.log = function (level:any, msg:any) {
-  var objType = Object.prototype.toString.call(msg);
+logger.log = function (level: any, msg: any) {
+  const objType = Object.prototype.toString.call(msg);
   if (objType === '[object Error]') {
     origLog.call(logger, level, msg.toString());
   } else {

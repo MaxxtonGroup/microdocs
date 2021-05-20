@@ -2,16 +2,16 @@
 import * as express from "express";
 
 import {BaseRoute} from "./route";
-import {ProjectTree, ProjectNode, DependencyNode} from '@maxxton/microdocs-core/domain';
+import {ProjectTree, ProjectNode, DependencyNode} from '@maxxton/microdocs-core/dist/domain';
 import {ProjectRepository} from "../repositories/project.repo";
 
 /**
  * @controller
  */
 export class ProjectsRoute extends BaseRoute {
-  
+
   mapping = {methods: ['get'], path: '/projects', handler: this.projects};
-  
+
   /**
    * @httpGet /api/v1/projects
    * @httpQuery ?env {string}
@@ -19,31 +19,31 @@ export class ProjectsRoute extends BaseRoute {
    * @httpQuery ?projects {string[]} filter to include or exclude groups with a '!' in front
    * @httpResponse 200 {TreeNode}
    */
-  public projects(req: express.Request, res: express.Response, next: express.NextFunction, scope:BaseRoute) {
-    var handler = scope.getHandler(req);
+  public projects(req: express.Request, res: express.Response, next: express.NextFunction, scope: BaseRoute) {
+    const handler = scope.getHandler(req);
     console.info("handler: " + handler);
     try {
-      var env = scope.getEnv(req, scope);
+      const env = scope.getEnv(req, scope);
       if (env == null) {
         handler.handleBadRequest(req, res, "env '" + req.query.env + "' doesn't exists");
         return;
       }
-      
-      var rootNode = scope.injection.ProjectRepository().getAggregatedProjects(env);
+
+      let rootNode = scope.injection.ProjectRepository().getAggregatedProjects(env);
       if (rootNode == null) {
         rootNode = new ProjectTree();
       }
-      
-      var groups:string[] = [];
-      var titles:string[] = [];
+
+      let groups: Array<string> = [];
+      let titles: Array<string> = [];
       if (req.query.groups != undefined) {
-        groups = req.query.groups.split(',');
+        groups = (req.query.groups as string).split(',');
       }
       if (req.query.projects != undefined) {
-        titles = req.query.projects.split(',');
+        titles = (req.query.projects as string).split(',');
       }
       rootNode = filterRoot(rootNode, groups, titles);
-      
+
       handler.handleProjects(req, res, rootNode, env, scope.injection);
     } catch (e) {
       scope.getDefaultHandler().handleInternalServerError(req, res, e);
@@ -51,63 +51,63 @@ export class ProjectsRoute extends BaseRoute {
   }
 }
 
-function filterRoot(root:ProjectTree, groups:string[], projects:string[]):ProjectTree{
-  var removeProjects:ProjectNode[] = [];
+function filterRoot(root: ProjectTree, groups: Array<string>, projects: Array<string>): ProjectTree {
+  const removeProjects: Array<ProjectNode> = [];
   root.projects.forEach(project => {
-    if(filterProject(project, groups, projects)){
+    if (filterProject(project, groups, projects)) {
       removeProjects.push(project);
-    }else{
+    } else {
       filterProjects(project, groups, projects);
     }
   });
   removeProjects.forEach(project => delete root.projects[root.projects.indexOf(project)]);
-  
+
   return root;
 }
 
-function filterProjects(projectNode:ProjectNode, groups:string[], projects:string[]):ProjectNode{
-  var removeDependency:DependencyNode[] = [];
+function filterProjects(projectNode: ProjectNode, groups: Array<string>, projects: Array<string>): ProjectNode {
+  const removeDependency: Array<DependencyNode> = [];
   projectNode.dependencies.forEach(dependency => {
-    if(filterProject(dependency.item, groups, projects)){
+    if (filterProject(dependency.item, groups, projects)) {
       removeDependency.push(dependency);
-    }else{
+    } else {
       filterProject(dependency.item, groups, projects);
     }
   });
   removeDependency.forEach(dependency => delete projectNode.dependencies[projectNode.dependencies.indexOf(dependency)]);
-  
+
   return projectNode;
 }
 
-function filterProject(project:ProjectNode, groups:string[], projects:string[]):boolean {
-  var filter = false;
-  
+function filterProject(project: ProjectNode, groups: Array<string>, projects: Array<string>): boolean {
+  let filter = false;
+
   // filter project
   projects.forEach(fTitle => {
     if (fTitle.indexOf('!') == 0) {
-      //ignore
+      // ignore
       fTitle = fTitle.substring(1);
       if (project.title == fTitle) {
         filter = true;
       }
     } else {
-      //select
+      // select
       if (project.title != fTitle) {
         filter = true;
       }
     }
   });
-  
+
   // filter groups
   groups.forEach(group => {
     if (group.indexOf('!') == 0) {
-      //ignore
+      // ignore
       group = group.substring(1);
       if (project.group == group) {
         filter = true;
       }
     } else {
-      //select
+      // select
       if (project.group != group) {
         filter = true;
       }

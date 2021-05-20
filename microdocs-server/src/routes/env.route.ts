@@ -15,12 +15,12 @@ export class EnvRoute extends BaseRoute {
    * @httpGet /api/v1/envs
    * @httpResponse 200 {{[name: string]: Environments}[]}
    */
-  public projects(req: express.Request, res: express.Response, next: express.NextFunction, scope:BaseRoute) {
-    var handler = scope.getDefaultHandler();
+  public projects(req: express.Request, res: express.Response, next: express.NextFunction, scope: BaseRoute) {
+    const handler = scope.getDefaultHandler();
     try {
-      var envs = scope.injection.ProjectSettingsRepository().getSettings().envs;
-      for(let env in envs){
-        delete envs[env].postmanApiKey
+      const envs = scope.injection.ProjectSettingsRepository().getSettings().envs;
+      for (const env in envs) {
+        delete envs[env].postmanApiKey;
       }
       handler.response(req, res, 200, envs);
     } catch (e) {

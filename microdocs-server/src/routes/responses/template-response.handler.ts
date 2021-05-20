@@ -1,6 +1,6 @@
 
 import * as express from "express";
-import { ProjectTree, Problem, Project, Schema, ProblemLevels, FlatList, ProblemResponse } from '@maxxton/microdocs-core/domain';
+import { ProjectTree, Problem, Project, Schema, ProblemLevels, FlatList, ProblemResponse } from '@maxxton/microdocs-core/dist/domain';
 import { Config } from "../../config";
 import * as fs from 'fs';
 import * as path from 'path';
@@ -8,17 +8,17 @@ import * as fsHelper from '../../helpers/file.helper';
 import { MicroDocsResponseHandler } from "./microdocs-response.handler";
 import * as Handlebars from 'handlebars';
 import { Injection } from "../../injections";
-import { ProjectNode } from "@maxxton/microdocs-core/domain/tree/project-node.model";
+import { ProjectNode } from "@maxxton/microdocs-core/dist/domain/tree/project-node.model";
 
 export class TemplateResponseHandler extends MicroDocsResponseHandler {
 
-  constructor( injection:Injection, private templateName:string ) {
+  constructor( injection: Injection, private templateName: string ) {
     super( injection );
     // Load handlebar functions
-    let srcView       = path.join( __dirname, '../../views' );
-    let externalView  = path.join( __dirname, '../../../' + Config.get( "dataFolder" ) + '/config/templates' );
-    let srcFuncs      = path.join( srcView, 'handlebars-functions.js' );
-    let externalFuncs = path.join( externalView, 'handlebars-functions.js' );
+    const srcView       = path.join( __dirname, '../../views' );
+    const externalView  = path.join( __dirname, '../../../' + Config.get( "dataFolder" ) + '/config/templates' );
+    const srcFuncs      = path.join( srcView, 'handlebars-functions.js' );
+    const externalFuncs = path.join( externalView, 'handlebars-functions.js' );
     if ( fs.existsSync( srcFuncs ) ) {
       require( srcFuncs );
     }
@@ -27,50 +27,50 @@ export class TemplateResponseHandler extends MicroDocsResponseHandler {
     }
   }
 
-  handleProjects( req:express.Request, res:express.Response, projectTree:ProjectTree, env:string ) {
+  handleProjects( req: express.Request, res: express.Response, projectTree: ProjectTree, env: string ) {
     res.header( 'Access-Control-Allow-Origin', '*' );
     res.setHeader( 'Content-Type', 'text/plain' );
 
-    let projectsViewFile   = this.findViewFile( 'projects', 'handlebars' );
-    let projectsScriptFile = this.findViewFile( 'projects', 'js' );
-    let projectViewFile    = this.findViewFile( 'project', 'handlebars' );
-    let projectScriptFile  = this.findViewFile( 'project', 'js' );
+    const projectsViewFile   = this.findViewFile( 'projects', 'handlebars' );
+    const projectsScriptFile = this.findViewFile( 'projects', 'js' );
+    const projectViewFile    = this.findViewFile( 'project', 'handlebars' );
+    const projectScriptFile  = this.findViewFile( 'project', 'js' );
     if ( projectsViewFile != null || projectsScriptFile != null ) {
-      var global             = this.getGlobalInfo();
-      var projects:Project[] = [];
+      const global             = this.getGlobalInfo();
+      const projects: Array<Project> = [];
       projectTree.projects.forEach( projectNode => {
-        var project = this.injection.ProjectRepository().getAggregatedProject( env, projectNode.title, projectNode.version );
+        const project = this.injection.ProjectRepository().getAggregatedProject( env, projectNode.title, projectNode.version );
 
         if ( req.query[ 'method' ] ) {
-          var filterMethods = req.query[ 'method' ].split( ',' );
+          const filterMethods = (req.query[ 'method' ] as string).split( ',' );
           this.filterMethods( project, filterMethods );
         }
         projects.push( project );
       } );
       if ( projectsScriptFile != null ) {
         this.renderScript( projectsScriptFile, {
-          projects: projects,
+          projects,
           info: global,
           projectNodes: projectTree.projects,
           projectNodesFlat: projectTree.toFlatList(),
-          env: env
+          env
         }, res );
       } else {
         res.render( projectsViewFile, {
-          projects: projects,
+          projects,
           info: global,
           projectNodes: projectTree.projects,
           projectNodesFlat: projectTree.toFlatList(),
-          env: env
+          env
         } );
       }
 
     } else if ( projectViewFile != null ) {
-      var filterMethods:string[] = [];
+      let filterMethods: Array<string> = [];
       if ( req.query[ 'method' ] ) {
-        filterMethods = req.query[ 'method' ].split( ',' );
+        filterMethods = (req.query[ 'method' ] as string).split( ',' );
       }
-      var project = this.mergeProjects( projectTree, filterMethods, env );
+      const project = this.mergeProjects( projectTree, filterMethods, env );
       this.handleProject( req, res, project, env );
 
     } else {
@@ -78,18 +78,18 @@ export class TemplateResponseHandler extends MicroDocsResponseHandler {
     }
   }
 
-  handleProject( req:express.Request, res:express.Response, project:Project, env:string ) {
+  handleProject( req: express.Request, res: express.Response, project: Project, env: string ) {
     res.header( 'Access-Control-Allow-Origin', '*' );
     res.setHeader( 'Content-Type', 'text/plain' );
 
-    let projectTree        = this.injection.ProjectRepository().getAggregatedProjects( env );
-    let projectsViewFile   = this.findViewFile( 'projects', 'handlebars' );
-    let projectsScriptFile = this.findViewFile( 'projects', 'js' );
-    let projectViewFile    = this.findViewFile( 'project', 'handlebars' );
-    let projectScriptFile  = this.findViewFile( 'project', 'js' );
+    const projectTree        = this.injection.ProjectRepository().getAggregatedProjects( env );
+    const projectsViewFile   = this.findViewFile( 'projects', 'handlebars' );
+    const projectsScriptFile = this.findViewFile( 'projects', 'js' );
+    const projectViewFile    = this.findViewFile( 'project', 'handlebars' );
+    const projectScriptFile  = this.findViewFile( 'project', 'js' );
     if ( projectViewFile != null || projectsViewFile != null || projectsScriptFile != null || projectScriptFile != null ) {
       if ( req.query[ 'method' ] ) {
-        var filterMethods = req.query[ 'method' ].split( ',' );
+        const filterMethods = (req.query[ 'method' ] as string).split( ',' );
         this.filterMethods( project, filterMethods );
       }
 
@@ -98,10 +98,10 @@ export class TemplateResponseHandler extends MicroDocsResponseHandler {
         buildSelf = true;
       }
 
-      let nodePath:string            = projectTree.findNodePath( project.info.title, project.info.version );
-      let projectNode:ProjectNode    = <ProjectNode>projectTree.resolveReference( '#' + nodePath );
-      //let projectNodes:ProjectNode[] = projectNode != null ? [ projectNode ] : [];
-      //let flatList:FlatList          = projectNode != null ? projectNode.toFlatList( false ) : new FlatList();
+      const nodePath: string            = projectTree.findNodePath( project.info.title, project.info.version );
+      const projectNode: ProjectNode    = projectTree.resolveReference( '#' + nodePath ) as ProjectNode;
+      // let projectNodes:ProjectNode[] = projectNode != null ? [ projectNode ] : [];
+      // let flatList:FlatList          = projectNode != null ? projectNode.toFlatList( false ) : new FlatList();
 //      let projects:Project[]         = flatList.map<Project>( n => {
 //        if ( n.title === project.info.title && n.version === project.info.version ) {
 //          return project;
@@ -113,18 +113,18 @@ export class TemplateResponseHandler extends MicroDocsResponseHandler {
       if ( projectsScriptFile != null || projectScriptFile != null ) {
         this.renderScript( projectsScriptFile != null ? projectsScriptFile : projectScriptFile, {
           info: project,
-          env: env,
-          projectNodes: [], //projectNodes,
-          projectNodesFlat: new FlatList(), //flatList,
+          env,
+          projectNodes: [], // projectNodes,
+          projectNodesFlat: new FlatList(), // flatList,
           currentNode: buildSelf ? projectNode : undefined,
           projects: [ project ]
         }, res );
       } else {
         res.render( projectViewFile != null ? projectViewFile : projectsViewFile, {
           info: project,
-          env: env,
-          projectNodes: [], //projectNodes,
-          projectNodesFlat: new FlatList(), //flatList,
+          env,
+          projectNodes: [], // projectNodes,
+          projectNodesFlat: new FlatList(), // flatList,
           currentNode: projectNode
         } );
       }
@@ -133,12 +133,12 @@ export class TemplateResponseHandler extends MicroDocsResponseHandler {
     }
   }
 
-  handleProblems( req:express.Request, res:express.Response, problems:Problem[], env:string ) {
+  handleProblems( req: express.Request, res: express.Response, problems: Array<Problem>, env: string ) {
     res.header( 'Access-Control-Allow-Origin', '*' );
     res.setHeader( 'Content-Type', 'text/plain' );
-    let problemsViewFile = this.findViewFile( 'problems', 'handlebars' );
+    const problemsViewFile = this.findViewFile( 'problems', 'handlebars' );
     if ( problemsViewFile != null ) {
-      var object:ProblemResponse = { problems: problems };
+      const object: ProblemResponse = { problems };
       if ( problems.filter( problem => problem.level == ProblemLevels.ERROR || problem.level == ProblemLevels.WARNING ).length == 0 ) {
         object.status  = 'ok';
         object.message = 'No problems found';
@@ -152,18 +152,18 @@ export class TemplateResponseHandler extends MicroDocsResponseHandler {
     }
   }
 
-  private findViewFile( type:string, ext:string ):string {
-    let externalView = path.join( __dirname, '../../../' + Config.get( "dataFolder" ) + '/config/templates' );
-    let srcView      = path.join( __dirname, '../../views' );
+  private findViewFile( type: string, ext: string ): string {
+    const externalView = path.join( __dirname, '../../../' + Config.get( "dataFolder" ) + '/config/templates' );
+    const srcView      = path.join( __dirname, '../../views' );
 
-    let externalViews   = fsHelper.getFiles( externalView );
-    let externalResults = externalViews.filter( view => view.indexOf( this.templateName ) == 0 && view.lastIndexOf( '-' + type + '.' + ext ) == view.length - ('-' + type + '.' + ext).length );
+    const externalViews   = fsHelper.getFiles( externalView );
+    const externalResults = externalViews.filter( view => view.indexOf( this.templateName ) == 0 && view.lastIndexOf( '-' + type + '.' + ext ) == view.length - ('-' + type + '.' + ext).length );
     if ( externalResults.length > 0 ) {
       return path.join( externalView, externalResults[ 0 ] );
     }
 
-    let srcViews   = fsHelper.getFiles( srcView );
-    let srcResults = srcViews.filter( view => view.indexOf( this.templateName ) == 0 && view.lastIndexOf( '-' + type + '.' + ext ) == view.length - ('-' + type + '.' + ext).length );
+    const srcViews   = fsHelper.getFiles( srcView );
+    const srcResults = srcViews.filter( view => view.indexOf( this.templateName ) == 0 && view.lastIndexOf( '-' + type + '.' + ext ) == view.length - ('-' + type + '.' + ext).length );
     if ( srcResults.length > 0 ) {
       return path.join( __dirname, '../../views', srcResults[ 0 ] );
     }
@@ -171,18 +171,18 @@ export class TemplateResponseHandler extends MicroDocsResponseHandler {
   }
 
 
-  private renderScript( fileName:string, params:{info:Project; env:string; projectNodes:(ProjectNode[]|Array<any>); projectNodesFlat:FlatList; currentNode?:ProjectNode, projects:Project[]}, res:express.Response) {
-    var result:any;
+  private renderScript( fileName: string, params: {info: Project; env: string; projectNodes: (Array<ProjectNode>|Array<any>); projectNodesFlat: FlatList; currentNode?: ProjectNode, projects: Array<Project>}, res: express.Response) {
+    let result: any;
     (function () {
-      let func:( env:string, projects:Project[], projectNodes:ProjectNode[], projectNodesFlat:ProjectNode[], current:Project, currentNode?:ProjectNode ) => {extension:string,body:any};
+      let func: ( env: string, projects: Array<Project>, projectNodes: Array<ProjectNode>, projectNodesFlat: Array<ProjectNode>, current: Project, currentNode?: ProjectNode ) => {extension: string, body: any};
       func   = require( fileName ).default;
       result = func( params.env, params.projects, params.projectNodes, params.projectNodesFlat, params.info, params.currentNode );
     })();
-    if(!result.extension){
+    if (!result.extension) {
       result.extension = 'text';
     }
     res.header('Content-Disposition', 'inline; filename="' + this.templateName + '.' + result.extension);
-    switch(result.extension.toLowerCase()){
+    switch (result.extension.toLowerCase()) {
       case 'text':
         this.responseText(res, 200, result.body);
         break;

@@ -2,7 +2,7 @@
 import * as express from "express";
 
 import {BaseRoute} from "./route";
-import {Problem, ProjectInfo, Project} from "@maxxton/microdocs-core/domain";
+import {Problem, ProjectInfo, Project} from "@maxxton/microdocs-core/dist/domain";
 
 /**
  * @controller
@@ -21,31 +21,31 @@ export class CheckRoute extends BaseRoute {
    * @httpResponse 200 {ProblemResponse}
    * @httpResponse 404 {} Body is missing or project title is missing
    */
-  public projects(req: express.Request, res: express.Response, next: express.NextFunction, scope:BaseRoute) {
-    var handler = scope.getHandler(req);
+  public projects(req: express.Request, res: express.Response, next: express.NextFunction, scope: BaseRoute) {
+    const handler = scope.getHandler(req);
     try {
-      var env = scope.getEnv(req, scope);
+      const env = scope.getEnv(req, scope);
       if (env == null) {
         handler.handleBadRequest(req, res, "env '" + req.query.env + "' doesn't exists");
         return;
       }
 
-      var project = req.body as Project;
+      const project = req.body as Project;
       if (project != null && project != undefined) {
         let title = req.query.project;
-        if(!title){
+        if (!title) {
           title = project.info.title;
         }
-        if(!title){
+        if (!title) {
           handler.handleBadRequest(req, res, 'project param is missing');
           return;
         }
         if (project.info == null || project.info == undefined) {
           project.info = new ProjectInfo(undefined, undefined, undefined, undefined);
         }
-        project.info = new ProjectInfo(title, project.info.group, '9999999999.0.0', ['9999999999.0.0'], project.info.links, project.info.description, project.info.sourceLink);
+        project.info = new ProjectInfo(title as string, project.info.group, '9999999999.0.0', ['9999999999.0.0'], project.info.links, project.info.description, project.info.sourceLink);
 
-        var problems: Problem[] = scope.injection.AggregationService().checkProject(env, project);
+        const problems: Array<Problem> = scope.injection.AggregationService().checkProject(env, project);
         handler.handleProblems(req, res, problems, env);
       } else {
         handler.handleBadRequest(req, res, 'Body is missing');

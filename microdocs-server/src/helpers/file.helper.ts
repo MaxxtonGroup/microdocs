@@ -7,10 +7,10 @@ import { Config } from "../config";
  * @param path
  * @param isRoot
  */
-export function cleanEmptyFolders(path:string, isRoot:boolean = true):void {
+export function cleanEmptyFolders(path: string, isRoot: boolean = true): void {
   if (fs.existsSync(path)) {
     fs.readdirSync(path).forEach(function (file, index) {
-      var curPath:string = path + "/" + file;
+      const curPath: string = path + "/" + file;
       if (fs.lstatSync(curPath).isDirectory()) { // recurse
         cleanEmptyFolders(curPath, false);
       }
@@ -25,10 +25,10 @@ export function cleanEmptyFolders(path:string, isRoot:boolean = true):void {
  * Remove path with sub files and folders
  * @param path
  */
-export function deleteFolderRecursive(path:string):void {
+export function deleteFolderRecursive(path: string): void {
   if (fs.existsSync(path)) {
     fs.readdirSync(path).forEach(function (file, index) {
-      var curPath = path + "/" + file;
+      const curPath = path + "/" + file;
       if (fs.lstatSync(curPath).isDirectory()) { // recurse
         deleteFolderRecursive(curPath);
       } else { // delete file
@@ -44,7 +44,7 @@ export function deleteFolderRecursive(path:string):void {
  * @param srcpath directory
  * @return {string[]} list of folder names
  */
-export function getDirectories(dir:string):string[] {
+export function getDirectories(dir: string): Array<string> {
   if (fs.existsSync(dir)) {
     return fs.readdirSync(dir).filter(function (file) {
       return fs.statSync(path.join(dir, file)).isDirectory();
@@ -58,7 +58,7 @@ export function getDirectories(dir:string):string[] {
  * @param srcpath directory
  * @return {string[]} list of folder names
  */
-export function getFiles(dir:string):string[] {
+export function getFiles(dir: string): Array<string> {
   if (fs.existsSync(dir)) {
     return fs.readdirSync(dir).filter(function (file) {
       return fs.statSync(path.join(dir, file)).isFile();
@@ -72,14 +72,14 @@ export function getFiles(dir:string):string[] {
  * @param dir {string} temp directory
  * @return {string} random folder
  */
-export function getTempFolder():string {
-  let dir = path.join(__dirname, '../../../', Config.get('tempFolder'));
-  if(!fs.existsSync(dir)){
+export function getTempFolder(): string {
+  const dir = path.join(__dirname, '../../../', Config.get('tempFolder'));
+  if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir);
   }
   // Generate random tempFOlder
   let tempFolder = path.join(dir, getRandomString());
-  while(fs.existsSync(tempFolder)){
+  while (fs.existsSync(tempFolder)) {
     // Get new tempFolder if already exists
     tempFolder = path.join(dir, getRandomString());
   }
@@ -92,6 +92,6 @@ export function getTempFolder():string {
  * @param size {number} size of the string
  * @return {string} random string
  */
-export function getRandomString(size:number = 6):string{
-  return Math.random().toString(36).substring(7).substring(0,size);
+export function getRandomString(size: number = 6): string {
+  return Math.random().toString(36).substring(7).substring(0, size);
 }

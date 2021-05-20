@@ -1,7 +1,7 @@
-import { Project, DependencyTypes, Dependency, ProblemLevels, ParameterPlacings } from "@maxxton/microdocs-core/domain";
+import { Project, DependencyTypes, Dependency, ProblemLevels, ParameterPlacings } from "@maxxton/microdocs-core/dist/domain";
 import { Pipe } from "../pipe";
-import { ProblemReporter } from "@maxxton/microdocs-core/helpers/problem/problem-reporter.helper";
-import { Path } from "@maxxton/microdocs-core/domain/path/path.model";
+import { ProblemReporter } from "@maxxton/microdocs-core/dist/helpers/problem/problem-reporter.helper";
+import { Path } from "@maxxton/microdocs-core/dist/domain/path/path.model";
 import { raw } from "body-parser";
 import { checkPathParameters, checkQueryParameters, checkBodyParameters, checkResponseBody } from "./endpoint-check.func";
 
@@ -18,17 +18,17 @@ export function resolveRestDependencies( pipe: Pipe<any>, project: Project, scop
   }
 
   if ( project.dependencies ) {
-    for ( let depTitle in project.dependencies ) {
+    for ( const depTitle in project.dependencies ) {
       if ( (scope && (scope.info.title === depTitle || scope.info.title === project.info.title)) || !scope ) {
-        let reverse: boolean       = scope && (scope.info.title === depTitle);
-        let dependency: Dependency = project.dependencies[ depTitle ];
+        const reverse: boolean       = scope && (scope.info.title === depTitle);
+        const dependency: Dependency = project.dependencies[ depTitle ];
         if ( dependency.type === DependencyTypes.REST ) {
-          let reporter = new ProblemReporter( project );
+          const reporter = new ProblemReporter( project );
           resolveRestClient( pipe, reporter, project, dependency, depTitle, scope, reverse );
 
 
           if ( reporter.hasProblems() ) {
-            let problems = reverse ? reporter.getRawProblems().map( rawProblem => rawProblem.inverse( project, dependency.component ).problem ) : reporter.getProblems();
+            const problems = reverse ? reporter.getRawProblems().map( rawProblem => rawProblem.inverse( project, dependency.component ).problem ) : reporter.getProblems();
             reporter.publish( dependency, project, problems );
             pipe.pipeline.addProblems( problems );
           }
@@ -54,7 +54,7 @@ function resolveRestClient( pipe: Pipe<any>, reporter: ProblemReporter, project:
     return;
   }
 
-  var projectInfo = pipe.projects.filter( info => info.title === depTitle )[ 0 ];
+  const projectInfo = pipe.projects.filter( info => info.title === depTitle )[ 0 ];
   if ( projectInfo ) {
     dependency.latestVersion = projectInfo.version;
   }
@@ -80,7 +80,7 @@ function resolveRestClient( pipe: Pipe<any>, reporter: ProblemReporter, project:
   }
 
   // Resolve nested rest dependencies first
-  //resolveRestDependencies( pipe, depProject, scope );
+  // resolveRestDependencies( pipe, depProject, scope );
 }
 
 /**
@@ -93,7 +93,7 @@ function resolveRestClient( pipe: Pipe<any>, reporter: ProblemReporter, project:
  * @returns {boolean} true if compatible, otherwise false
  */
 function checkDependencyCompatible( title: string, dependency: Dependency, depProject: Project, currentProject: Project, reporter: ProblemReporter, silence: boolean, reverse: boolean, pipe: Pipe<any> ): boolean {
-  let compatible: boolean = true;
+  let compatible = true;
   if ( (dependency.deprecatedVersions && dependency.deprecatedVersions.indexOf( depProject.info.version ) != -1) ) {
     if ( reporter ) {
       reporter.report( ProblemLevels.ERROR, "This project is marked as not compatible with version " + depProject.info.version + " (see other problems)", dependency.component );
@@ -121,15 +121,15 @@ function checkDependencyCompatible( title: string, dependency: Dependency, depPr
  * @returns {boolean} true if compatible, otherwise false
  */
 function checkEndpoints( title: string, dependency: Dependency, dependentProject: Project, currentProject: Project, silence: boolean, reverse: boolean, pipe: Pipe<any> ): boolean {
-  var compatible = true;
+  let compatible = true;
   if ( dependency.paths != undefined ) {
-    for ( var path in dependency.paths ) {
-      for ( var method in dependency.paths[ path ] ) {
-        var problemReport            = new ProblemReporter( currentProject );
-        var clientEndpoint           = dependency.paths[ path ][ method ];
+    for ( const path in dependency.paths ) {
+      for ( const method in dependency.paths[ path ] ) {
+        const problemReport            = new ProblemReporter( currentProject );
+        const clientEndpoint           = dependency.paths[ path ][ method ];
         clientEndpoint.path          = path;
         clientEndpoint.requestMethod = method;
-        var producerEndpoint         = findEndpoint( clientEndpoint, path, method, currentProject, dependentProject );
+        const producerEndpoint         = findEndpoint( clientEndpoint, path, method, currentProject, dependentProject );
         if ( producerEndpoint != null ) {
           // execute checks on the endpoint
           checkPathParameters(clientEndpoint, producerEndpoint, currentProject, dependentProject, problemReport );
@@ -145,7 +145,7 @@ function checkEndpoints( title: string, dependency: Dependency, dependentProject
         if ( problemReport.hasProblems() ) {
           compatible = false;
           if ( !silence ) {
-            let problems = reverse ? problemReport.getRawProblems().map( rawProblem => rawProblem.inverse( dependentProject, producerEndpoint && producerEndpoint.controller, producerEndpoint && producerEndpoint.method ).problem ) : problemReport.getProblems();
+            const problems = reverse ? problemReport.getRawProblems().map( rawProblem => rawProblem.inverse( dependentProject, producerEndpoint && producerEndpoint.controller, producerEndpoint && producerEndpoint.method ).problem ) : problemReport.getProblems();
             problemReport.publish( clientEndpoint, currentProject, problems );
             pipe.pipeline.addProblems( problems );
           }
@@ -163,12 +163,12 @@ function checkEndpoints( title: string, dependency: Dependency, dependentProject
  * @param method request method of the endpoint
  * @returns {null,Path} returns Path or null if it does not exists
  */
-function findEndpoint( clientEndpoint: Path, clientPath: string, clientMethod: string, clientProject:Project, producerProject: Project ): Path {
+function findEndpoint( clientEndpoint: Path, clientPath: string, clientMethod: string, clientProject: Project, producerProject: Project ): Path {
   let bestMatch: Path = null;
   let errorCount      = 0;
   let warningCount    = 0;
   let variableCount   = 0;
-  for ( let producerPath in producerProject.paths ) {
+  for ( const producerPath in producerProject.paths ) {
     if ( producerProject.paths[ producerPath ][ clientMethod ] ) {
       // match via wildcards in regexp
       const expression = '^' + producerPath.replace( new RegExp( "\/", 'g' ), '\/' ).replace( new RegExp( "\\{.*?\\}", 'g' ), '([^\/]+)' ) + '$';
@@ -188,8 +188,8 @@ function findEndpoint( clientEndpoint: Path, clientPath: string, clientMethod: s
         // check problems
         const report = new ProblemReporter();
         checkPathParameters( clientEndpoint, endpoint, clientProject, producerProject, report );
-        let resultErrorCount   = report.getProblems().filter( problem => problem.level === ProblemLevels.ERROR ).length;
-        let resultWarningCount = report.getProblems().filter( problem => problem.level === ProblemLevels.WARNING ).length;
+        const resultErrorCount   = report.getProblems().filter( problem => problem.level === ProblemLevels.ERROR ).length;
+        const resultWarningCount = report.getProblems().filter( problem => problem.level === ProblemLevels.WARNING ).length;
 
         // set as best match if there is no match or it has the fewest problems
         if ( bestMatch == null || variables < variableCount || (variables == variableCount && (resultErrorCount > errorCount || (resultErrorCount == errorCount && resultWarningCount > warningCount))) ) {

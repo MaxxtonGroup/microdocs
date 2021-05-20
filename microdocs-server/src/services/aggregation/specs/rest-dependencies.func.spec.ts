@@ -1,60 +1,59 @@
 
-import { assert } from 'chai';
-import { Project, DependencyTypes, ProblemLevels, ProjectInfo, SchemaTypes } from "@maxxton/microdocs-core/domain";
-import { PipeMock } from "./mocks/pipe-mock.spec";
+import { Project, DependencyTypes, ProblemLevels, ProjectInfo, SchemaTypes } from "@maxxton/microdocs-core/dist/domain";
+import { PipeMock } from "./mocks/pipe-mock.mock";
 import { resolveRestDependencies } from "../funcs/rest-dependencies.func";
 
 
 describe( '#Aggregation: #resolveRestDependencies:', () => {
 
   it( '#Error when missing dependent project', () => {
-    let pipeMock         = new PipeMock( {} );
-    let project: Project = <Project>{
+    const pipeMock         = new PipeMock( {} );
+    const project: Project = {
       info: new ProjectInfo( 'project', 'test-group', '1.0.0', [ '1.0.0' ] ),
       dependencies: {
         'test-project': {
           type: DependencyTypes.REST
         }
       }
-    };
+    } as Project;
 
     resolveRestDependencies( pipeMock, project );
 
-    assert.deepEqual( [ {
+    expect( [ {
       level: ProblemLevels.ERROR,
       message: "Unknown project: test-project"
-    } ], project.dependencies[ 'test-project' ].problems );
+    } ]).toEqual( project.dependencies[ 'test-project' ].problems );
   } );
 
   it( '#Find latest dependent project', () => {
-    let pipeMock         = new PipeMock( {
+    const pipeMock         = new PipeMock( {
       'test-project': {
-        '1.0.0': <Project>{ info: new ProjectInfo( 'test-project', 'test-group', '1.0.0', [ '1.0.0', '2.0.0' ] ) },
-        '2.0.0': <Project>{ info: new ProjectInfo( 'test-project', 'test-group', '2.0.0', [ '1.0.0', '2.0.0' ] ) }
+        '1.0.0': { info: new ProjectInfo( 'test-project', 'test-group', '1.0.0', [ '1.0.0', '2.0.0' ] ) } as Project,
+        '2.0.0': { info: new ProjectInfo( 'test-project', 'test-group', '2.0.0', [ '1.0.0', '2.0.0' ] ) } as Project
       }
     } );
-    let project: Project = <Project>{
+    const project: Project = {
       info: new ProjectInfo( 'project', 'test-group', '1.0.0', [ '1.0.0' ] ),
       dependencies: {
         'test-project': {
           type: DependencyTypes.REST
         }
       }
-    };
+    } as Project;
 
     resolveRestDependencies( pipeMock, project );
 
-    assert.deepEqual( project.dependencies[ 'test-project' ].version, '2.0.0' );
+    expect( project.dependencies[ 'test-project' ].version).toEqual( '2.0.0' );
   } );
 
   it( '#Find defined version', () => {
-    let pipeMock         = new PipeMock( {
+    const pipeMock         = new PipeMock( {
       'test-project': {
-        '1.0.0': <Project>{ info: new ProjectInfo( 'test-project', 'test-group', '1.0.0', [ '1.0.0', '2.0.0' ] ) },
-        '2.0.0': <Project>{ info: new ProjectInfo( 'test-project', 'test-group', '2.0.0', [ '1.0.0', '2.0.0' ] ) }
+        '1.0.0': { info: new ProjectInfo( 'test-project', 'test-group', '1.0.0', [ '1.0.0', '2.0.0' ] ) } as Project,
+        '2.0.0': { info: new ProjectInfo( 'test-project', 'test-group', '2.0.0', [ '1.0.0', '2.0.0' ] ) } as Project
       }
     } );
-    let project: Project = <Project>{
+    const project: Project = {
       info: new ProjectInfo( 'project', 'test-group', '1.0.0', [ '1.0.0' ] ),
       dependencies: {
         'test-project': {
@@ -62,25 +61,25 @@ describe( '#Aggregation: #resolveRestDependencies:', () => {
           version: '1.0.0'
         }
       }
-    };
+    } as Project;
 
     resolveRestDependencies( pipeMock, project );
 
-    assert.deepEqual( project.dependencies[ 'test-project' ].version, '1.0.0' );
+    expect( project.dependencies[ 'test-project' ].version).toEqual( '1.0.0' );
   } );
 
   it( '#Find not deprecated version', () => {
-    let pipeMock         = new PipeMock( {
+    const pipeMock         = new PipeMock( {
       'test-project': {
-        '1.0.0': <Project>{ info: new ProjectInfo( 'test-project', 'test-group', '1.0.0', [ '1.0.0', '2.0.0', '3.0.0' ] ) },
-        '2.0.0': <Project>{
+        '1.0.0': { info: new ProjectInfo( 'test-project', 'test-group', '1.0.0', [ '1.0.0', '2.0.0', '3.0.0' ] ) } as Project,
+        '2.0.0': {
           info: new ProjectInfo( 'test-project', 'test-group', '2.0.0', [ '1.0.0', '2.0.0', '3.0.0' ] ),
           deprecated: true
-        },
-        '3.0.0': <Project>{ info: new ProjectInfo( 'test-project', 'test-group', '3.0.0', [ '1.0.0', '2.0.0', '3.0.0' ] ) }
+        } as Project,
+        '3.0.0': { info: new ProjectInfo( 'test-project', 'test-group', '3.0.0', [ '1.0.0', '2.0.0', '3.0.0' ] ) } as Project
       }
     } );
-    let project: Project = <Project>{
+    const project: Project = {
       info: new ProjectInfo( 'project', 'test-group', '1.0.0', [ '1.0.0' ] ),
       dependencies: {
         'test-project': {
@@ -88,23 +87,23 @@ describe( '#Aggregation: #resolveRestDependencies:', () => {
           version: '2.0.0'
         }
       }
-    };
+    } as Project;
 
     resolveRestDependencies( pipeMock, project );
 
-    assert.deepEqual( project.dependencies[ 'test-project' ].version, '2.0.0' );
-    assert.deepEqual( project.dependencies[ 'test-project' ].problems.length, 1 );
+    expect( project.dependencies[ 'test-project' ].version).toEqual( '2.0.0' );
+    expect( project.dependencies[ 'test-project' ].problems.length).toEqual( 1 );
   } );
 
   it( '#Find not dependency deprecated version', () => {
-    let pipeMock         = new PipeMock( {
+    const pipeMock         = new PipeMock( {
       'test-project': {
-        '1.0.0': <Project>{ info: new ProjectInfo( 'test-project', 'test-group', '1.0.0', [ '1.0.0', '2.0.0', '3.0.0' ] ) },
-        '2.0.0': <Project>{ info: new ProjectInfo( 'test-project', 'test-group', '2.0.0', [ '1.0.0', '2.0.0', '3.0.0' ] ) },
-        '3.0.0': <Project>{ info: new ProjectInfo( 'test-project', 'test-group', '3.0.0', [ '1.0.0', '2.0.0', '3.0.0' ] ) }
+        '1.0.0': { info: new ProjectInfo( 'test-project', 'test-group', '1.0.0', [ '1.0.0', '2.0.0', '3.0.0' ] ) } as Project,
+        '2.0.0': { info: new ProjectInfo( 'test-project', 'test-group', '2.0.0', [ '1.0.0', '2.0.0', '3.0.0' ] ) } as Project,
+        '3.0.0': { info: new ProjectInfo( 'test-project', 'test-group', '3.0.0', [ '1.0.0', '2.0.0', '3.0.0' ] ) } as Project
       }
     } );
-    let project: Project = <Project>{
+    const project: Project = {
       info: new ProjectInfo( 'project', 'test-group', '1.0.0', [ '1.0.0' ] ),
       dependencies: {
         'test-project': {
@@ -112,11 +111,11 @@ describe( '#Aggregation: #resolveRestDependencies:', () => {
           deprecatedVersions: [ '3.0.0', '2.0.0' ]
         }
       }
-    };
+    } as Project;
 
     resolveRestDependencies( pipeMock, project );
 
-    assert.deepEqual( project.dependencies[ 'test-project' ].version, '1.0.0' );
+    expect( project.dependencies[ 'test-project' ].version).toEqual( '1.0.0' );
   } );
 
 
@@ -129,19 +128,19 @@ describe( '#Aggregation: #resolveRestDependencies:', () => {
      */
     it( "Match same paths", () => {
       // Arrange
-      let pipeMock         = new PipeMock( {
+      const pipeMock         = new PipeMock( {
         'test-project': {
-          '3.0.1': <Project>{
+          '3.0.1': {
             info: new ProjectInfo( 'test-project', 'group2', '3.0.1', [ '3.0.1' ] ),
             paths: {
               "/api/v1/test": {
                 get: {}
               }
             }
-          }
+          } as Project
         }
       } );
-      let project: Project = <Project>{
+      const project: Project = {
         info: new ProjectInfo( 'order-project', 'group3', '3.0.0', [ '3.0.0', '2.0.0', '1.0.0' ] ),
         dependencies: {
           'test-project': {
@@ -153,13 +152,13 @@ describe( '#Aggregation: #resolveRestDependencies:', () => {
             }
           }
         }
-      };
+      } as Project;
 
       // Act
       resolveRestDependencies( pipeMock, project );
 
       // Assert
-      assert.isUndefined( project.dependencies[ 'test-project' ].problems );
+      expect( project.dependencies[ 'test-project' ].problems ).toBeUndefined();
     } );
 
     /**
@@ -169,19 +168,19 @@ describe( '#Aggregation: #resolveRestDependencies:', () => {
      */
     it( "Dont match different paths", () => {
       // Arrange
-      let pipeMock         = new PipeMock( {
+      const pipeMock         = new PipeMock( {
         'test-project': {
-          '3.0.1': <Project>{
+          '3.0.1': {
             info: new ProjectInfo( 'test-project', 'group2', '3.0.1', [ '3.0.1' ] ),
             paths: {
               "/api/v1/test": {
                 get: {}
               }
             }
-          }
+          } as Project
         }
       } );
-      let project: Project = <Project>{
+      const project: Project = {
         info: new ProjectInfo( 'order-project', 'group3', '3.0.0', [ '3.0.0', '2.0.0', '1.0.0' ] ),
         dependencies: {
           'test-project': {
@@ -193,13 +192,13 @@ describe( '#Aggregation: #resolveRestDependencies:', () => {
             }
           }
         }
-      };
+      } as Project;
 
       // Act
       resolveRestDependencies( pipeMock, project );
 
       // Assert
-      assert.equal( 1, project.dependencies[ 'test-project' ].problems.length );
+      expect( 1).toEqual( project.dependencies[ 'test-project' ].problems.length );
     } );
 
     /**
@@ -209,19 +208,19 @@ describe( '#Aggregation: #resolveRestDependencies:', () => {
      */
     it( "Dont match different methods", () => {
       // Arrange
-      let pipeMock         = new PipeMock( {
+      const pipeMock         = new PipeMock( {
         'test-project': {
-          '3.0.1': <Project>{
+          '3.0.1': {
             info: new ProjectInfo( 'test-project', 'group2', '3.0.1', [ '3.0.1' ] ),
             paths: {
               "/api/v1/test": {
                 get: {}
               }
             }
-          }
+          } as Project
         }
       } );
-      let project: Project = <Project>{
+      const project: Project = {
         info: new ProjectInfo( 'order-project', 'group3', '3.0.0', [ '3.0.0', '2.0.0', '1.0.0' ] ),
         dependencies: {
           'test-project': {
@@ -233,13 +232,13 @@ describe( '#Aggregation: #resolveRestDependencies:', () => {
             }
           }
         }
-      };
+      } as Project;
 
       // Act
       resolveRestDependencies( pipeMock, project );
 
       // Assert
-      assert.equal( 1, project.dependencies[ 'test-project' ].problems.length );
+      expect( 1).toEqual( project.dependencies[ 'test-project' ].problems.length );
     } );
 
     /**
@@ -249,9 +248,9 @@ describe( '#Aggregation: #resolveRestDependencies:', () => {
      */
     it( "Match both same path params", () => {
       // Arrange
-      let pipeMock         = new PipeMock( {
+      const pipeMock         = new PipeMock( {
         'test-project': {
-          '3.0.1': <Project>{
+          '3.0.1': {
             info: new ProjectInfo( 'test-project', 'group2', '3.0.1', [ '3.0.1' ] ),
             paths: {
               "/api/v{apiVersion}/customers/{customerId}/status": {
@@ -273,10 +272,10 @@ describe( '#Aggregation: #resolveRestDependencies:', () => {
                 }
               }
             }
-          }
+          } as Project
         }
       } );
-      let project: Project = <Project>{
+      const project: Project = {
         info: new ProjectInfo( 'order-project', 'group3', '3.0.0', [ '3.0.0', '2.0.0', '1.0.0' ] ),
         dependencies: {
           'test-project': {
@@ -303,13 +302,13 @@ describe( '#Aggregation: #resolveRestDependencies:', () => {
             }
           }
         }
-      };
+      } as Project;
 
       // Act
       resolveRestDependencies( pipeMock, project );
 
       // Assert
-      assert.isUndefined( project.dependencies[ 'test-project' ].problems );
+      expect( project.dependencies[ 'test-project' ].problems ).toBeUndefined();
     } );
 
     /**
@@ -320,19 +319,19 @@ describe( '#Aggregation: #resolveRestDependencies:', () => {
      */
     it( "Dont match consumer param is missing on the producer", () => {
       // Arrange
-      let pipeMock         = new PipeMock( {
+      const pipeMock         = new PipeMock( {
         'test-project': {
-          '3.0.1': <Project>{
+          '3.0.1': {
             info: new ProjectInfo( 'test-project', 'group2', '3.0.1', [ '3.0.1' ] ),
             paths: {
               "/api/v1/customers/status": {
                 get: {}
               }
             }
-          }
+          } as Project
         }
       } );
-      let project: Project = <Project>{
+      const project: Project = {
         info: new ProjectInfo( 'order-project', 'group3', '3.0.0', [ '3.0.0', '2.0.0', '1.0.0' ] ),
         dependencies: {
           'test-project': {
@@ -344,13 +343,13 @@ describe( '#Aggregation: #resolveRestDependencies:', () => {
             }
           }
         }
-      };
+      } as Project;
 
       // Act
       resolveRestDependencies( pipeMock, project );
 
       // Assert
-      assert.equal( 1, project.dependencies[ 'test-project' ].problems.length );
+      expect( 1).toEqual( project.dependencies[ 'test-project' ].problems.length );
     } );
 
     /**
@@ -360,9 +359,9 @@ describe( '#Aggregation: #resolveRestDependencies:', () => {
      */
     it( "Match producer param is missing on the consumer", () => {
       // Arrange
-      let pipeMock         = new PipeMock( {
+      const pipeMock         = new PipeMock( {
         'test-project': {
-          '3.0.1': <Project>{
+          '3.0.1': {
             info: new ProjectInfo( 'test-project', 'group2', '3.0.1', [ '3.0.1' ] ),
             paths: {
               "/api/v1/customers/{customerId}/status": {
@@ -378,10 +377,10 @@ describe( '#Aggregation: #resolveRestDependencies:', () => {
                 }
               }
             }
-          }
+          } as Project
         }
       } );
-      let project: Project = <Project>{
+      const project: Project = {
         info: new ProjectInfo( 'order-project', 'group3', '3.0.0', [ '3.0.0', '2.0.0', '1.0.0' ] ),
         dependencies: {
           'test-project': {
@@ -393,13 +392,13 @@ describe( '#Aggregation: #resolveRestDependencies:', () => {
             }
           }
         }
-      };
+      } as Project;
 
       // Act
       resolveRestDependencies( pipeMock, project );
 
       // Assert
-      assert.isUndefined( project.dependencies[ 'test-project' ].problems );
+      expect( project.dependencies[ 'test-project' ].problems ).toBeUndefined();
     } );
 
     /**
@@ -410,9 +409,9 @@ describe( '#Aggregation: #resolveRestDependencies:', () => {
      */
     it( 'Take the right path', () => {
       // Arrange
-      let pipeMock         = new PipeMock( {
+      const pipeMock         = new PipeMock( {
         'test-project': {
-          '3.0.1': <Project>{
+          '3.0.1': {
             info: new ProjectInfo( 'test-project', 'group2', '3.0.1', [ '3.0.1' ] ),
             paths: {
               "/api/v1/customers/{customerId}": {
@@ -431,10 +430,10 @@ describe( '#Aggregation: #resolveRestDependencies:', () => {
                 get: {}
               }
             }
-          }
+          } as Project
         }
       } );
-      let project: Project = <Project>{
+      const project: Project = {
         info: new ProjectInfo( 'order-project', 'group3', '3.0.0', [ '3.0.0', '2.0.0', '1.0.0' ] ),
         dependencies: {
           'test-project': {
@@ -446,13 +445,13 @@ describe( '#Aggregation: #resolveRestDependencies:', () => {
             }
           }
         }
-      };
+      } as Project;
 
       // Act
       resolveRestDependencies( pipeMock, project );
 
       // Assert
-      assert.isUndefined( project.dependencies[ 'test-project' ].problems );
+      expect( project.dependencies[ 'test-project' ].problems ).toBeUndefined();
     } );
   } );
 

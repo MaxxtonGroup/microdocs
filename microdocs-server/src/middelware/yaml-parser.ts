@@ -9,81 +9,81 @@ const read = require('body-parser/lib/read');
 const typeis = require('type-is');
 const yamlParser = require('js-yaml');
 
-export function yaml (options:any) {
-  var opts = options || {}
+export function yaml (options: any) {
+  const opts = options || {};
 
-  var limit = typeof opts.limit !== 'number'
+  const limit = typeof opts.limit !== 'number'
     ? bytes.parse(opts.limit || '100kb')
-    : opts.limit
-  var inflate = opts.inflate !== false
-  var strict = opts.strict !== false
-  var type = opts.type || 'application/x-yaml'
-  var verify = opts.verify || false
+    : opts.limit;
+  const inflate = opts.inflate !== false;
+  const strict = opts.strict !== false;
+  const type = opts.type || 'application/x-yaml';
+  const verify = opts.verify || false;
 
   if (verify !== false && typeof verify !== 'function') {
-    throw new TypeError('option verify must be function')
+    throw new TypeError('option verify must be function');
   }
 
   // create the appropriate type checking function
-  var shouldParse = typeof type !== 'function'
+  const shouldParse = typeof type !== 'function'
     ? typeChecker(type)
-    : type
+    : type;
 
-  function parse (body:string) {
+  function parse (body: string) {
     if (body.length === 0) {
       // special-case empty yaml body, as it's a common client-side mistake
       // TODO: maybe make this configurable or part of "strict" option
-      return {}
+      return {};
     }
 
     debug('parse yaml');
-    let result = yamlParser.load(body);
+    const result = yamlParser.load(body);
     return result;
   }
 
-  return function yamlParser (req: Request, res: Response, next: NextFunction) {
+  return function yamlParser (req: any, res: Response, next: NextFunction) {
     if (req._body) {
-      debug('body already parsed')
-      next()
-      return
+      debug('body already parsed');
+      next();
+      return;
     }
 
-    req.body = req.body || {}
+    req.body = req.body || {};
 
     // skip requests without bodies
     if (!typeis.hasBody(req)) {
-      debug('skip empty body')
-      next()
-      return
+      debug('skip empty body');
+      next();
+      return;
     }
 
-    debug('content-type %j', req.headers['content-type'])
+    debug('content-type %j', req.headers['content-type']);
 
     // determine if request should be parsed
     if (!shouldParse(req)) {
-      debug('skip parsing')
-      next()
-      return
+      debug('skip parsing');
+      next();
+      return;
     }
 
     // assert charset per RFC 7159 sec 8.1
-    var charset = getCharset(req) || 'utf-8'
+    const charset = getCharset(req) || 'utf-8';
     if (charset.substr(0, 4) !== 'utf-') {
-      debug('invalid charset')
+      debug('invalid charset');
       next(createError(415, 'unsupported charset "' + charset.toUpperCase() + '"', {
-        charset: charset
-      }))
-      return
+        charset
+      }));
+      return;
     }
 
     // read
     read(req, res, next, parse, debug, {
       encoding: charset,
-      inflate: inflate,
-      limit: limit,
-      verify: verify
-    })
-  }
+      inflate,
+      limit,
+      verify
+    });
+  };
 }
 
 
@@ -94,11 +94,11 @@ export function yaml (options:any) {
  * @api private
  */
 
-function getCharset (req:Request) {
+function getCharset (req: Request) {
   try {
-    return contentType.parse(req).parameters.charset.toLowerCase()
+    return contentType.parse(req).parameters.charset.toLowerCase();
   } catch (e) {
-    return undefined
+    return undefined;
   }
 }
 
@@ -109,8 +109,8 @@ function getCharset (req:Request) {
  * @return {function}
  */
 
-function typeChecker (type:string) {
-  return function checkType (req:Request) {
-    return Boolean(typeis(req, type))
-  }
+function typeChecker (type: string) {
+  return function checkType (req: Request) {
+    return Boolean(typeis(req, type));
+  };
 }
