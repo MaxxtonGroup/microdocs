@@ -14,9 +14,7 @@
     "typeRoots": [
       "../node_modules/@types"
     ],
-    "types": [
-      "hammerjs"
-    ]
+    "types": []
   },
   "exclude": ["node_modules", "**/*.po.ts", "**/*.e2e*"]
 }
