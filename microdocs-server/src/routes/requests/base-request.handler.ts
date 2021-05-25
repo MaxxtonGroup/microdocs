@@ -12,8 +12,8 @@ export class BaseRequestHandler {
   public handleRequest(req: express.Request): Request {
     const tempFolder = getTempFolder();
     const request = new Request(tempFolder);
-    const contentType: string = req.get('content-type') || req.query['content-type'];
-    const importType: string = req.get('import') || req.query['import'];
+    const contentType: string = req.get('content-type')  || req.query['content-type'] as string;
+    const importType: string = req.get('import') || req.query['import'] as string;
 
     if (contentType) {
       let body: {};
