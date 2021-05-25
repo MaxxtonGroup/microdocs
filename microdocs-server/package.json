@@ -8,6 +8,7 @@
   },
   "main": "index.js",
   "scripts": {
+    "build": "tsc -p src/tsconfig.json",
     "start": "ts-node src/index.ts",
     "serve": "ts-node src/index.ts",
     "debug": ".nodemon --watch \"src/**\" --ext \"ts,json\" --ignore \"src/**/*.spec.ts\" --exec  --debug-brk \"ts-node src/index.ts\"",
