@@ -9,9 +9,11 @@ import {Path, Schema, Project, Method} from '@maxxton/microdocs-core/dist/domain
 export class EndpointComponent {
 
   @Input()
-  private endpoint: Path;
+  endpoint: Path;
+
   @Input()
-  private path: string;
+  path: string;
+
   @Input()
   schemaList: {[key: string]: Schema};
 

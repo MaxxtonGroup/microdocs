@@ -11,15 +11,18 @@ import {Schema} from '@maxxton/microdocs-core/dist/domain';
 export class BodyRenderComponent {
 
   @Input()
-  private contentTypes: Array<string>;
+  contentTypes: Array<string>;
+
   @Input()
-  private schema: Schema;
+  schema: Schema;
+
   @Input()
-  private mimes: Array<string>;
+  mimes: Array<string>;
+
   @Input()
   schemaList: {[key: string]: Schema};
 
-  private example: string;
+  example: string;
 
   ngOnInit() {
 
