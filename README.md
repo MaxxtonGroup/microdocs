@@ -29,6 +29,15 @@ To install via Docker run:
 $ docker run --name microdocs -v /some/data/folder:/microdocs/microdocs-server/data -p 3000:3000 -d maxxton/microdocs
 ```
 
+### Build the MicroDocs Docker image
+```
+docker build --no-cache --build-arg=CLI_VERSION='2.0.0' --build-arg NPM_TOKEN={yourtoken} .
+```
+Where yourtoken can be generated as a base64 encoded string of the username and password:
+```
+echo -n 'user:pass' | openssl base64
+```
+
 ### Setup Crawlers
 Crawlers are project and framework specific. Currently only the Spring framework is supported. 
 The setup for each Crawler can be found in their subdirectories

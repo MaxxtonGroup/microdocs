@@ -20,6 +20,7 @@ export class Config {
   public static reload() {
     console.info( "load config" );
     Config.config = (yamlConfig as any).load( Config.configFile );
+    console.info(JSON.stringify(Config.config));
   }
 
   /**

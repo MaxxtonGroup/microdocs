@@ -1,4 +1,4 @@
-FROM node:9.11.1-alpine
+FROM node:14-alpine
 
 # Install microdocs-core
 ADD ./microdocs-core/dist/package.json ./microdocs-core/dist/.npmrc /app/@maxxton/microdocs-core/dist/

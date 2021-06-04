@@ -7,9 +7,9 @@ default:
   viewFolder: views
   dataFolder: data
 
-  application-name: Maxxton 2
-  application-version: 2.0
-  application-description: Maxxton 2 rest api
+  application-name: Maxxton Software
+  application-version: 1.0
+  application-description: Maxxton Software rest api
   application-schema: http
   application-host: localhost:8000
   application-basePath: ''
