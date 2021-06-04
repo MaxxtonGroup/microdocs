@@ -9,14 +9,14 @@ import { StringUtil } from "../../helpers/string.util";
 export class IconGeneratorComponent {
 
   @Input( "text" )
-  private text: string;
+  text: string;
 
   @Input( "color" )
-  private color: string;
+  color: string;
   @Input()
-  private small: boolean = false;
+  small: boolean = false;
 
-  private initials: string;
+  initials: string;
 
   ngOnChanges() {
     if ( !this.text ) {

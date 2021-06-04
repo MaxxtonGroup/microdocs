@@ -8,13 +8,13 @@ import { Component, Input } from "@angular/core";
 export class SimpleCardComponent {
 
   @Input('open')
-  private _open: boolean = true;
+  _open: boolean = true;
   @Input()
-  private text: string;
+  text: string;
   @Input()
-  private subTitle: string;
+  subTitle: string;
   @Input()
-  private paper: boolean;
+  paper: boolean;
 
   constructor() {
   }

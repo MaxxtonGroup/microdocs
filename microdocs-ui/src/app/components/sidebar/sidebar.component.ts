@@ -18,7 +18,7 @@ import { ExportPanelComponent } from "../export-panel/export-panel.component";
 
 export class SidebarComponent {
 
-  private config: any = environment;
+  config: any = environment;
 
   private user = {};
 

@@ -7,7 +7,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 })
 export class DialogBaseComponent {
 
-  private show: boolean = false;
+  show: boolean = false;
 
   constructor() { }
 

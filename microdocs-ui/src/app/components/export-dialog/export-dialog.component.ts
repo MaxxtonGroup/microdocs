@@ -9,6 +9,7 @@ export class ExportDialogComponent {
 
   @Input( "project" )
   defaultProject: string = null;
+
   @Input( "version" )
   defaultVersion: string = null;
 

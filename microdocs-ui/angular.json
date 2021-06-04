@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "aot": false,
+            "aot": true,
             "outputPath": "dist/",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -77,17 +77,12 @@
               "optimization": true,
               "outputHashing": "bundles",
               "baseHref": "/",
-              "index": {
-                "input": "src/client/index-dev.html",
-                "output": "index.html"
-              },
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
-              "aot": true,
               "outputPath": "dist/",
               "tsConfig": "src/tsconfig-ivy.json"
             }
