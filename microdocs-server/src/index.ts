@@ -1,16 +1,17 @@
 #!/usr/bin/env node
 "use strict";
 
+import { Config } from "./config";
+
 /**
  * @author Steven Hermans
  */
 
-let config = require("./config");
 let app = require("./app");
 let http = require("http");
 
 // get port from environment and store in Express.
-let port = normalizePort(process.env.PORT || config.port || 8000);
+let port = normalizePort(process.env.PORT || Config.get("port") || 8000);
 app.set("port", port);
 
 // create http server

@@ -2,10 +2,10 @@
 Express server for storing project definitions and check for compatibility problems. 
 
 ## Setup Development
-This project depends on microdocs-core-ts
+This project depends on microdocs-core
 ```
-# link microdocs-core-ts
-cd ../microdocs-core-ts
+# link microdocs-core
+cd ../microdocs-core
 npm link
 
 # init
@@ -14,7 +14,7 @@ npm install
 npm run link
 
 # compile and watch
-gulp
+npm run watch
 ```
 
 

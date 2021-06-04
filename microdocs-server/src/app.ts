@@ -8,7 +8,7 @@ import * as exphbs from 'express-handlebars';
 import * as multer from 'multer';
 
 import * as logger from './logger';
-import {yaml} from "./middelware/yaml-parser";
+import {yaml} from "./middleware/yaml-parser";
 import {Config} from "./config";
 import {BaseRoute} from "./routes/route";
 import {ProjectsRoute} from "./routes/projects.route";
@@ -73,7 +73,16 @@ class Server {
     // this.app.use(logger);
 
     // mount helmet
-    this.app.use(helmet());
+    this.app.use(
+      helmet({
+        contentSecurityPolicy: {
+          useDefaults: true,
+          directives: {
+            "script-src": ["'self' 'unsafe-eval'"],
+          }
+        }
+      })
+    );
 
     // mount custom parser
     this.app.use(yaml({

@@ -4,8 +4,8 @@
   "license": "MIT",
   "angular-cli": {},
   "scripts": {
-    "ng": "ng build",
-    "build": "ng build",
+    "ng": "ng build --dev",
+    "build": "ng build --dev",
     "start": "ng serve",
     "start.prod": "ng serve --prod",
     "lint": "tslint \"src/**/*.ts\" --project src/tsconfig.json --type-check && tslint \"e2e/**/*.ts\" --project e2e/tsconfig.json --type-check",
@@ -40,12 +40,12 @@
   },
   "devDependencies": {
     "@angular-builders/jest": "9.0.0",
-    "jest": "26.6.3",
     "@angular-devkit/build-angular": "~0.1102.7",
     "@angular/cli": "~11.2.7",
     "@angular/compiler-cli": "~11.2.9",
     "@angular/language-service": "~11.2.8",
     "@types/d3": "6.3.0",
+    "jest": "26.6.3",
     "ts-node": "~8.3.0",
     "tslint": "~6.1.0",
     "typescript": "~4.1.5"
