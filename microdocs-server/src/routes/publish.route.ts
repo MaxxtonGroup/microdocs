@@ -2,8 +2,8 @@
 import * as express from "express";
 
 import { BaseRoute } from "./route";
-import { Project, ProjectInfo, Problem, ProblemLevels } from "@maxxton/microdocs-core/dist/domain";
-import { SchemaHelper } from "@maxxton/microdocs-core/dist/helpers/schema/schema.helper";
+import { Project, ProjectInfo, Problem, ProblemLevels } from "@maxxton/microdocs-core/domain";
+import { SchemaHelper } from "@maxxton/microdocs-core/helpers/schema/schema.helper";
 
 export class PublishZipRoute extends BaseRoute {
 

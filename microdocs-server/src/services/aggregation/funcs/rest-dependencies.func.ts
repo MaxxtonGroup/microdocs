@@ -1,7 +1,7 @@
-import { Project, DependencyTypes, Dependency, ProblemLevels, ParameterPlacings } from "@maxxton/microdocs-core/dist/domain";
+import { Project, DependencyTypes, Dependency, ProblemLevels, ParameterPlacings } from "@maxxton/microdocs-core/domain";
 import { Pipe } from "../pipe";
-import { ProblemReporter } from "@maxxton/microdocs-core/dist/helpers/problem/problem-reporter.helper";
-import { Path } from "@maxxton/microdocs-core/dist/domain/path/path.model";
+import { ProblemReporter } from "@maxxton/microdocs-core/helpers/problem/problem-reporter.helper";
+import { Path } from "@maxxton/microdocs-core/domain/path/path.model";
 import { raw } from "body-parser";
 import { checkPathParameters, checkQueryParameters, checkBodyParameters, checkResponseBody } from "./endpoint-check.func";
 

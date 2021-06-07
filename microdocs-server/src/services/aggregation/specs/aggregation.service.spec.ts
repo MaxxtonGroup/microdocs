@@ -8,7 +8,7 @@ import { ReportRepository } from "../../../repositories/report.repo";
 import { Injection, InjectionConfig } from "../../../injections";
 import { ProjectService } from "../../project.service";
 import { AggregationService } from "../../aggregation.service";
-import { ProjectInfo, Problem, DependencyTypes, SchemaTypes, ParameterPlacings } from "@maxxton/microdocs-core/dist/domain";
+import { ProjectInfo, Problem, DependencyTypes, SchemaTypes, ParameterPlacings } from "@maxxton/microdocs-core/domain";
 
 describe( '#AggregationService:', () => {
 

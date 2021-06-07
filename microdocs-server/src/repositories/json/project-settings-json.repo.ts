@@ -5,7 +5,7 @@ import * as fsHelper from '../../helpers/file.helper';
 
 import {ProjectSettingsRepository} from "../project-settings.repo";
 import {Config} from "../../config";
-import {ProjectSettings, Environments} from '@maxxton/microdocs-core/dist/domain';
+import {ProjectSettings, Environments} from '@maxxton/microdocs-core/domain';
 import { Settings } from "../../domain/settings.model";
 import { Metadata } from "../../domain/metadata.model";
 

@@ -1,6 +1,6 @@
 import { AggregationPipeline } from "./../aggregation-pipeline";
 import { Pipe } from "../pipe";
-import { ProjectInfo } from "@maxxton/microdocs-core/dist/domain/common/project-info.model";
+import { ProjectInfo } from "@maxxton/microdocs-core/domain/common/project-info.model";
 
 /**
  * Add all stored reports as input for the pipeline

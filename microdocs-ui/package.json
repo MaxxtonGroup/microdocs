@@ -29,7 +29,7 @@
     "@angular/platform-browser-dynamic": "11.2.9",
     "@angular/platform-server": "^11.2.9",
     "@angular/router": "11.2.9",
-    "@maxxton/microdocs-core": "2.0.0",
+    "@maxxton/microdocs-core": "2.0.1",
     "angular2-prettyjson": "3.0.1",
     "core-js": "^2.4.1",
     "d3": "6.7.0",

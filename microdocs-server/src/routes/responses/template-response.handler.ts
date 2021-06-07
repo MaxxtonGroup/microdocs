@@ -1,6 +1,6 @@
 
 import * as express from "express";
-import { ProjectTree, Problem, Project, Schema, ProblemLevels, FlatList, ProblemResponse } from '@maxxton/microdocs-core/dist/domain';
+import { ProjectTree, Problem, Project, Schema, ProblemLevels, FlatList, ProblemResponse } from '@maxxton/microdocs-core/domain';
 import { Config } from "../../config";
 import * as fs from 'fs';
 import * as path from 'path';
@@ -8,7 +8,7 @@ import * as fsHelper from '../../helpers/file.helper';
 import { MicroDocsResponseHandler } from "./microdocs-response.handler";
 import * as Handlebars from 'handlebars';
 import { Injection } from "../../injections";
-import { ProjectNode } from "@maxxton/microdocs-core/dist/domain/tree/project-node.model";
+import { ProjectNode } from "@maxxton/microdocs-core/domain/tree/project-node.model";
 
 export class TemplateResponseHandler extends MicroDocsResponseHandler {
 

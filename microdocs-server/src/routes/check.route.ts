@@ -2,7 +2,7 @@
 import * as express from "express";
 
 import {BaseRoute} from "./route";
-import {Problem, ProjectInfo, Project} from "@maxxton/microdocs-core/dist/domain";
+import {Problem, ProjectInfo, Project} from "@maxxton/microdocs-core/domain";
 
 /**
  * @controller

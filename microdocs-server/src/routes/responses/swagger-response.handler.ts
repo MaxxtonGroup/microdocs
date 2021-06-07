@@ -1,7 +1,7 @@
-import {Project, Schema, Path, ProjectInfo, ProjectTree, SchemaTypes} from "@maxxton/microdocs-core/dist/domain";
+import {Project, Schema, Path, ProjectInfo, ProjectTree, SchemaTypes} from "@maxxton/microdocs-core/domain";
 import * as express from "express";
 import {MicroDocsResponseHandler} from "./microdocs-response.handler";
-import { SwaggerAdapter } from  "@maxxton/microdocs-core/dist/adapter";
+import { SwaggerAdapter } from  "@maxxton/microdocs-core/adapter";
 
 export class SwaggerResponseHandler extends MicroDocsResponseHandler {
 

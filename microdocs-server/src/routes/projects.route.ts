@@ -2,7 +2,7 @@
 import * as express from "express";
 
 import {BaseRoute} from "./route";
-import {ProjectTree, ProjectNode, DependencyNode} from '@maxxton/microdocs-core/dist/domain';
+import {ProjectTree, ProjectNode, DependencyNode} from '@maxxton/microdocs-core/domain';
 import {ProjectRepository} from "../repositories/project.repo";
 
 /**

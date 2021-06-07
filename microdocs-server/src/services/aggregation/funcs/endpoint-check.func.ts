@@ -1,5 +1,5 @@
-import {Path, Project, Parameter, ParameterPlacings, ProblemLevels, SchemaTypes, Schema} from "@maxxton/microdocs-core/dist/domain";
-import {ProblemReporter, SchemaHelper} from "@maxxton/microdocs-core/dist/helpers";
+import {Path, Project, Parameter, ParameterPlacings, ProblemLevels, SchemaTypes, Schema} from "@maxxton/microdocs-core/domain";
+import {ProblemReporter, SchemaHelper} from "@maxxton/microdocs-core/helpers";
 
 export function checkQueryParameters(clientEndpoint: Path, producerEndpoint: Path, clientProject: Project, producerProject: Project, problemReport: ProblemReporter): void {
   if (producerEndpoint.parameters) {

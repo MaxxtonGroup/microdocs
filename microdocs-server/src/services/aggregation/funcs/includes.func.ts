@@ -1,8 +1,8 @@
-import { DependencyTypes, Dependency } from "@maxxton/microdocs-core/dist/domain";
+import { DependencyTypes, Dependency } from "@maxxton/microdocs-core/domain";
 import { Pipe } from "../pipe";
-import { Project, ProblemLevels} from "@maxxton/microdocs-core/dist/domain";
-import { ProblemReporter } from "@maxxton/microdocs-core/dist/helpers";
-import { SchemaHelper } from "@maxxton/microdocs-core/dist/helpers/schema/schema.helper";
+import { Project, ProblemLevels} from "@maxxton/microdocs-core/domain";
+import { ProblemReporter } from "@maxxton/microdocs-core/helpers";
+import { SchemaHelper } from "@maxxton/microdocs-core/helpers/schema/schema.helper";
 
 /**
  * Combine project with includes dependency

@@ -1,7 +1,7 @@
 
 import { AggregationPipeline } from "../aggregation-pipeline";
-import { PreProcessor } from "@maxxton/microdocs-core/dist/pre-processor/pre-processor";
-import { ProjectSettings, Project} from "@maxxton/microdocs-core/dist/domain";
+import { PreProcessor } from "@maxxton/microdocs-core/pre-processor/pre-processor";
+import { ProjectSettings, Project} from "@maxxton/microdocs-core/domain";
 
 /**
  * PreProcess a report based on the project settings

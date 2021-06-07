@@ -1,4 +1,4 @@
-import { Problem } from "@maxxton/microdocs-core/dist/domain/problem/problem.model";
+import { Problem } from "@maxxton/microdocs-core/domain/problem/problem.model";
 import { Pipe } from "../pipe";
 /**
  * @author Steven Hermans

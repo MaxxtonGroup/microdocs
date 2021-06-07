@@ -1,4 +1,4 @@
-import { Project } from "@maxxton/microdocs-core/dist/domain";
+import { Project } from "@maxxton/microdocs-core/domain";
 import { buildTags } from "../funcs/build-tags.func";
 
 
