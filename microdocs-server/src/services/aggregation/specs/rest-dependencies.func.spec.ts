@@ -1,5 +1,5 @@
 
-import { Project, DependencyTypes, ProblemLevels, ProjectInfo, SchemaTypes } from "@maxxton/microdocs-core/dist/domain";
+import { Project, DependencyTypes, ProblemLevels, ProjectInfo, SchemaTypes } from "@maxxton/microdocs-core/domain";
 import { PipeMock } from "./mocks/pipe-mock.mock";
 import { resolveRestDependencies } from "../funcs/rest-dependencies.func";
 

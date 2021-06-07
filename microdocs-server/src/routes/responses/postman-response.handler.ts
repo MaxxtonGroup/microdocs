@@ -1,12 +1,12 @@
 
-import { Project, Schema, Path, ProjectInfo, ProjectTree, ParameterPlacings } from "@maxxton/microdocs-core/dist/domain";
+import { Project, Schema, Path, ProjectInfo, ProjectTree, ParameterPlacings } from "@maxxton/microdocs-core/domain";
 import * as uuid from 'uuid';
 import * as express from "express";
 import { MicroDocsResponseHandler } from "./microdocs-response.handler";
 import { Config } from "../../config";
 import { ProjectJsonRepository } from "../../repositories/json/project-json.repo";
-import { PostmanAdapter } from  "@maxxton/microdocs-core/dist/adapter";
-import { mergeProjects } from "@maxxton/microdocs-core/dist/helpers";
+import { PostmanAdapter } from  "@maxxton/microdocs-core/adapter";
+import { mergeProjects } from "@maxxton/microdocs-core/helpers";
 
 export class PostmanResponseHandler extends MicroDocsResponseHandler {
 

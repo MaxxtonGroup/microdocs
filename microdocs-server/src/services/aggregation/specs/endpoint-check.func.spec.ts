@@ -1,5 +1,5 @@
-import { ProblemReporter } from "@maxxton/microdocs-core/dist/helpers";
-import { Path, SchemaTypes, Parameter, Schema } from "@maxxton/microdocs-core/dist/domain";
+import { ProblemReporter } from "@maxxton/microdocs-core/helpers";
+import { Path, SchemaTypes, Parameter, Schema } from "@maxxton/microdocs-core/domain";
 import { checkQueryParameters, checkPathParameters, checkBodyParameters, checkResponseBody } from "../funcs";
 
 describe('#Aggregation: #endpointCheck:', () => {

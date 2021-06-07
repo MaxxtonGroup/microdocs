@@ -1,5 +1,5 @@
 import { ProcessPipe } from "./process.pipe";
-import { Project } from "@maxxton/microdocs-core/dist/domain/project.model";
+import { Project } from "@maxxton/microdocs-core/domain/project.model";
 import { resolveRestDependencies } from "../funcs";
 import { AggregationPipeline } from "../aggregation-pipeline";
 /**

@@ -1,5 +1,5 @@
 import { BaseResponseHandler } from "./base-response.handler";
-import { Project, ProjectInfo, ProjectTree } from "@maxxton/microdocs-core/dist/domain";
+import { Project, ProjectInfo, ProjectTree } from "@maxxton/microdocs-core/domain";
 import * as express from "express";
 import { Config } from "../../config";
 

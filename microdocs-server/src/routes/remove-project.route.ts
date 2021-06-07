@@ -3,7 +3,7 @@ import * as express from "express";
 
 import {BaseRoute} from "./route";
 import {ProjectRepository} from "../repositories/project.repo";
-import {ProjectInfo} from '@maxxton/microdocs-core/dist/domain';
+import {ProjectInfo} from '@maxxton/microdocs-core/domain';
 import {ReportRepository} from "../repositories/report.repo";
 
 /**

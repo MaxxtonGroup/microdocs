@@ -1,7 +1,7 @@
 import { ProcessPipe } from "./process.pipe";
-import { Project } from "@maxxton/microdocs-core/dist/domain/project.model";
-import { PreProcessor } from "@maxxton/microdocs-core/dist/pre-processor/pre-processor";
-import { MicroDocsPreProcessor } from "@maxxton/microdocs-core/dist/pre-processor/microdocs.pre-processor";
+import { Project } from "@maxxton/microdocs-core/domain/project.model";
+import { PreProcessor } from "@maxxton/microdocs-core/pre-processor/pre-processor";
+import { MicroDocsPreProcessor } from "@maxxton/microdocs-core/pre-processor/microdocs.pre-processor";
 import { preProcess } from "../funcs/pre-process.func";
 /**
  * @author Steven Hermans

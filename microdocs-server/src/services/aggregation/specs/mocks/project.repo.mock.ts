@@ -1,5 +1,5 @@
 import { ProjectRepository } from "../../../../repositories/project.repo";
-import { ProjectTree, Project } from "@maxxton/microdocs-core/dist/domain";
+import { ProjectTree, Project } from "@maxxton/microdocs-core/domain";
 /**
  * @author Steven Hermans
  */

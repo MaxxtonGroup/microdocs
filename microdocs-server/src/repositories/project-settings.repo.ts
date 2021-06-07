@@ -1,5 +1,5 @@
 
-import {ProjectSettings, Environments} from '@maxxton/microdocs-core/dist/domain';
+import {ProjectSettings, Environments} from '@maxxton/microdocs-core/domain';
 import { Settings } from "../domain/settings.model";
 import { Metadata } from "../domain/metadata.model";
 

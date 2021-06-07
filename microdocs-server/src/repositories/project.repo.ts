@@ -1,5 +1,5 @@
 
-import {Project, ProjectTree} from "@maxxton/microdocs-core/dist/domain";
+import {Project, ProjectTree} from "@maxxton/microdocs-core/domain";
 
 /**
  * @author Steven Hermans

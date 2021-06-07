@@ -1,5 +1,5 @@
 import * as express from "express";
-import {ProjectTree, Problem, Project, ProblemResponse, ProblemLevels} from '@maxxton/microdocs-core/dist/domain';
+import {ProjectTree, Problem, Project, ProblemResponse, ProblemLevels} from '@maxxton/microdocs-core/domain';
 const yaml = require('js-yaml');
 const xml = require('jsontoxml');
 import {Injection} from "../../injections";
