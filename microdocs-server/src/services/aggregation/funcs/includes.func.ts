@@ -10,6 +10,7 @@ import { SchemaHelper } from "@maxxton/microdocs-core/helpers/schema/schema.help
  * @param project
  */
 export function combineIncludes( pipe: Pipe<any>, project: Project ): void {
+  console.error(JSON.stringify(project.dependencies));
   if ( project.dependencies ) {
     for ( const depTitle in project.dependencies ) {
       const dependency = project.dependencies[ depTitle ];
@@ -29,6 +30,7 @@ export function combineIncludes( pipe: Pipe<any>, project: Project ): void {
  * Combine projects
  * @param pipe
  * @param reporter
+ * @param project
  * @param dependency
  * @param depTitle
  */

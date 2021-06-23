@@ -1,7 +1,7 @@
 import { Component, HostBinding, Input, Output, EventEmitter } from "@angular/core";
 import { Notification } from "rxjs";
 import { Observable } from "rxjs";
-import { ProjectTree } from "@maxxton/microdocs-core/dist/domain";
+import { ProjectTree } from "@maxxton/microdocs-core/domain";
 import { ProjectService } from "../../services/project.service";
 import { environment } from "../../../environments/environment";
 import { MatSnackBar } from "@angular/material/snack-bar";

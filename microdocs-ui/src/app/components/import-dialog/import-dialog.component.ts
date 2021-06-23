@@ -1,6 +1,6 @@
 import {Component, Input, Output, EventEmitter} from "@angular/core";
 import {Router} from "@angular/router";
-import {Project, Problem, ProblemResponse} from "@maxxton/microdocs-core/dist/domain";
+import {Project, Problem, ProblemResponse} from "@maxxton/microdocs-core/domain";
 import {ProjectService} from "../../services/project.service";
 
 /**

@@ -1,6 +1,6 @@
 {
   "name": "@maxxton/microdocs-server",
-  "version": "1.6.10",
+  "version": "2.0.1",
   "description": "MicroDocs server, see http://microdocs.io",
   "repository": {
     "type": "git",
@@ -18,12 +18,12 @@
     "watch": "nodemon --watch \"src/**\" --ext \"ts,json\" --ignore \"src/**/*.spec.ts\" --exec \"ts-node src/index.ts\"",
     "test": "jest",
     "link": "cd dist && npm link",
-    "linkDev": "npm link @maxxton/microdocs-core"
+    "linkDeps": "npm link @maxxton/microdocs-core"
   },
   "author": "Steven Hermans (s.hermans@maxxton.com)",
   "license": "MIT",
   "dependencies": {
-    "@maxxton/microdocs-core": "2.0.1",
+    "@maxxton/microdocs-core": "2.0.2",
     "body-parser": "^1.19.0",
     "express": "^4.17.0",
     "express-handlebars": "^5.3.2",

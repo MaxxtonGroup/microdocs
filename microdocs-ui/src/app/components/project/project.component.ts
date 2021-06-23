@@ -2,9 +2,9 @@ import { Component } from "@angular/core";
 import { ActivatedRoute, Params, Router } from "@angular/router";
 import { ReplaySubject, Subject, Subscription } from "rxjs";
 
-import { Dependency, DependencyTypes, Project, ProjectTree, Schema } from "@maxxton/microdocs-core/dist/domain";
-import { SchemaHelper } from "@maxxton/microdocs-core/dist/helpers/schema/schema.helper";
-import { ProjectChangeRule } from "@maxxton/microdocs-core/dist/domain/settings/project-change-rule.model";
+import { Dependency, DependencyTypes, Project, ProjectTree, Schema } from "@maxxton/microdocs-core/domain";
+import { SchemaHelper } from "@maxxton/microdocs-core/helpers/schema/schema.helper";
+import { ProjectChangeRule } from "@maxxton/microdocs-core/domain/settings/project-change-rule.model";
 
 import { ProjectService } from "../../services/project.service";
 import { environment } from '../../../environments/environment';

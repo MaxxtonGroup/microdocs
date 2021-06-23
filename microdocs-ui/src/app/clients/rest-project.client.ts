@@ -1,10 +1,10 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { ProjectTree, Project, Environments, ProjectChangeRule, ProblemResponse } from "@maxxton/microdocs-core/dist/domain";
+import { ProjectTree, Project, Environments, ProjectChangeRule, ProblemResponse } from "@maxxton/microdocs-core/domain";
 import { Observable } from "rxjs";
 import { ProjectClient } from "./project.client";
 import { map } from "rxjs/operators";
-import { SchemaHelper } from "@maxxton/microdocs-core/dist/helpers";
+import { SchemaHelper } from "@maxxton/microdocs-core/helpers";
 
 /**
  * Client for integration with the microdocs-server implementation.

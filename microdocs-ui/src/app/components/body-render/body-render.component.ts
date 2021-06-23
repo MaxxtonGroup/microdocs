@@ -1,7 +1,7 @@
 import {Component, Input} from "@angular/core";
 
-import {SchemaHelper} from '@maxxton/microdocs-core/dist/helpers';
-import {Schema} from '@maxxton/microdocs-core/dist/domain';
+import {SchemaHelper} from '@maxxton/microdocs-core/helpers';
+import {Schema} from '@maxxton/microdocs-core/domain';
 
 @Component({
   selector: 'body-render',

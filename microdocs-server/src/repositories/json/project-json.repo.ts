@@ -87,8 +87,31 @@ export class ProjectJsonRepository implements ProjectRepository {
 
     mkdir.sync(projectFolder);
 
-    const json = JSON.stringify(project);
-    fs.writeFileSync(storeFile, json);
+    try {
+      let cache: any = [];
+      const json = JSON.stringify(project, (key, value) => {
+        if (key && key.length > 0 && (key.charAt(0) == "$" || key.charAt(0) == "_")) {
+          return;
+        }
+
+        if (typeof value === 'object' && value !== null) {
+          if (cache.indexOf(value) !== -1) {
+            // Circular reference found, discard key
+            console.debug("Storing failed for project: " + project.info.title + ":" + project.info.version + ", circular ref found: " + value);
+            return;
+          }
+          // Store value in our collection
+          cache.push(value);
+        }
+        return value;
+      });
+
+      cache = null;
+      fs.writeFileSync(storeFile, json);
+    } catch (e) {
+      console.error("Storing failed for project: " + project.info.title + ":" + project.info.version);
+      throw e;
+    }
   }
 
 }

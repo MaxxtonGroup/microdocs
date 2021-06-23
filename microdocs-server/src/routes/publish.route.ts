@@ -87,7 +87,7 @@ export class PublishRoute extends BaseRoute {
         if ( version == undefined || version == "" ) {
           version = SchemaHelper.resolveReference( "info.version", report );
         }
-        if ( version == undefined || version == null ) {
+        if ( version == undefined ) {
           handler.handleBadRequest( req, res, "Missing version parameter" );
           return;
         }
@@ -96,7 +96,7 @@ export class PublishRoute extends BaseRoute {
         if ( group == undefined || group == "" ) {
           group = SchemaHelper.resolveReference( "info.group", report );
         }
-        if ( group == undefined || group == null ) {
+        if ( group == undefined ) {
           handler.handleBadRequest( req, res, "Missing group parameter" );
           return;
         }

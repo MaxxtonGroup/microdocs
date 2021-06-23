@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 
-import { ProjectTree } from '@maxxton/microdocs-core/dist/domain';
+import { ProjectTree } from '@maxxton/microdocs-core/domain';
 import { ProjectService } from "../../services/project.service";
 import { ReplaySubject, Subject } from "rxjs";
 import { Router } from "@angular/router";
