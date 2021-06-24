@@ -1,5 +1,5 @@
 import {Component, Input} from '@angular/core';
-import {Path, Schema, Project, Method} from '@maxxton/microdocs-core/dist/domain';
+import {Path, Schema, Project, Method} from '@maxxton/microdocs-core/domain';
 
 @Component({
   selector: 'endpoint',

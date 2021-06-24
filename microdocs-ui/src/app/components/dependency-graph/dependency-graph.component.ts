@@ -4,7 +4,7 @@ import * as d3 from "d3";
 import "d3-force";
 import { Subject, Subscription } from "rxjs";
 import { ProjectService } from "../../services/project.service";
-import { DependencyNode, DependencyTypes, ProjectNode, ProjectTree } from "@maxxton/microdocs-core/dist/domain";
+import { DependencyNode, DependencyTypes, ProjectNode, ProjectTree } from "@maxxton/microdocs-core/domain";
 import { StringUtil } from "app/helpers/string.util";
 
 // import {Observable} from "rxjs";

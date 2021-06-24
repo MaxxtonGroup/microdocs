@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 
-import { ProjectTree, Project, Environments, ProjectChangeRule, ProblemResponse } from "@maxxton/microdocs-core/dist/domain";
+import { ProjectTree, Project, Environments, ProjectChangeRule, ProblemResponse } from "@maxxton/microdocs-core/domain";
 import { Observable } from "rxjs";
-import { SchemaHelper } from "@maxxton/microdocs-core/dist/helpers/schema/schema.helper";
+import { SchemaHelper } from "@maxxton/microdocs-core/helpers/schema/schema.helper";
 import { ProjectClient } from "./project.client";
 import { map } from "rxjs/operators";
 

@@ -1,5 +1,5 @@
 import {Component, Input} from "@angular/core";
-import { Schema } from "@maxxton/microdocs-core/dist/domain";
+import { Schema } from "@maxxton/microdocs-core/domain";
 
 /**
  * @author Steven Hermans

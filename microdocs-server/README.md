@@ -11,7 +11,7 @@ npm link
 # init
 cd ../microdocs-server
 npm install
-npm run link
+npm run linkDeps
 
 # compile and watch
 npm run watch

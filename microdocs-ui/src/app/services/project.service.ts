@@ -3,7 +3,7 @@ import { Subject } from "rxjs";
 import { ReplaySubject } from "rxjs";
 import { Notification } from "rxjs";
 import { HttpResponse } from "@angular/common/http";
-import { ProjectTree, Project, Environments, ProjectChangeRule, ProblemResponse} from "@maxxton/microdocs-core/dist/domain";
+import { ProjectTree, Project, Environments, ProjectChangeRule, ProblemResponse} from "@maxxton/microdocs-core/domain";
 import { ProjectClient } from "../clients/project.client";
 import { Injectable, Inject } from "@angular/core";
 import { MatSnackBar } from "@angular/material/snack-bar";

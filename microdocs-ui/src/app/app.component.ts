@@ -2,7 +2,7 @@ import {Component, Injectable} from "@angular/core";
 import {Router, ActivatedRoute} from "@angular/router";
 import {Subject} from "rxjs";
 import {Notification} from "rxjs";
-import {ProjectTree} from "@maxxton/microdocs-core/dist/domain";
+import {ProjectTree} from "@maxxton/microdocs-core/domain";
 import { ProjectService } from "./services/project.service";
 
 

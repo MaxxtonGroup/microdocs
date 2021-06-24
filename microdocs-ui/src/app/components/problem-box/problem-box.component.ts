@@ -1,6 +1,6 @@
 
 import {Component, Input} from "@angular/core";
-import {Problem} from "@maxxton/microdocs-core/dist/domain";
+import {Problem} from "@maxxton/microdocs-core/domain";
 
 
 @Component({
