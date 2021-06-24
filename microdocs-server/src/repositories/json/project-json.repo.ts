@@ -90,14 +90,14 @@ export class ProjectJsonRepository implements ProjectRepository {
     try {
       let cache: any = [];
       const json = JSON.stringify(project, (key, value) => {
-        if (key && key.length > 0 && (key.charAt(0) == "$" || key.charAt(0) == "_")) {
+        if (key?.length && (key[0] === "$" || key[0] === "_")) {
           return;
         }
 
-        if (typeof value === 'object' && value !== null) {
+        if (value && typeof value === 'object') {
           if (cache.indexOf(value) !== -1) {
             // Circular reference found, discard key
-            console.debug("Storing failed for project: " + project.info.title + ":" + project.info.version + ", circular ref found: " + value);
+            console.debug(`Storing failed for project: ${project.info.title}:${project.info.version}, circular ref found: ${value}`);
             return;
           }
           // Store value in our collection
@@ -109,7 +109,7 @@ export class ProjectJsonRepository implements ProjectRepository {
       cache = null;
       fs.writeFileSync(storeFile, json);
     } catch (e) {
-      console.error("Storing failed for project: " + project.info.title + ":" + project.info.version);
+      console.error(`Storing failed for project: ${project.info.title}:${project.info.version}`);
       throw e;
     }
   }
