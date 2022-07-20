@@ -60,7 +60,6 @@ export class ReportJsonRepository implements ReportRepository {
       console.warn("Empty project info: " + JSON.stringify(projectInfo));
       return null;
     }
-    console.log("Load project: " + projectInfo.title + ":" + projectInfo.version);
 
     // load microdocs.json
     const reportsFolder: string = __dirname + '/../../../' + Config.get("dataFolder") + "/reports/" + env;
